@@ -217,6 +217,7 @@ You succeed in this repository when:
 5. **Hidden assumptions:** Every assumption must be visible
 6. **Academic output:** This is business consulting, not research papers
 7. **Ad-hoc HTML generation for assessments:** Assessment HTML dashboards MUST be produced by the `/generate-assessment-html` skill, which contains the full Future UI design system with sidebar navigation, bento grids, capability heatmaps, ROI scenario toggles, and phone-frame prototypes. NEVER generate assessment HTML by converting markdown to HTML directly or by writing custom CSS inline. The skill output is a 250-400KB self-contained file; anything smaller is wrong.
+8. **Using Prezi templates for client presentations:** Client-facing presentations MUST use `/executive-briefing` (bespoke HTML with the Schroders design system), NOT `/presentation` or `/presentation-v2` (Prezi templates). Prezi templates produce ~300KB files with 260KB of template overhead and cannot render SVG charts, data tables, or journey maps. The `/executive-briefing` format produces ~70-120KB hand-crafted files that are significantly more polished and flexible.
 
 ## Remember
 
@@ -278,51 +279,54 @@ When resolving merge conflicts:
 
 ## Custom Skills Available
 
-### /presentation - Prezi-Style Interactive Presentation Builder
+### /executive-briefing — Bespoke HTML Presentation Builder ⭐ PRIMARY
 
-Transform ANY content into stunning, interactive Prezi-style HTML presentations.
+The preferred format for **all client-facing presentations**. Produces hand-crafted, individually-authored HTML scenes using the proven Schroders/SEB design system. Every scene is bespoke — no template engine, no JSON intermediary, no bloat.
 
-**What It Can Transform:**
-- Consulting reports and value assessments
-- Business reviews and financial reports
+**When to Use:**
+- Client-facing executive briefings and commercial presentations
+- Assessment readouts and value assessments
 - Strategy decks and roadmaps
-- Research findings and survey results
-- Training materials and onboarding docs
-- Project updates and status reports
-- Any content that needs visual storytelling
+- Any content going to C-level stakeholders
+
+**Why This Over Prezi:**
+- **Smaller files**: ~70-120KB vs ~300KB (no template overhead)
+- **Richer components**: SVG charts, data tables, journey maps, architecture diagrams, maturity pyramids
+- **More polished**: Hand-crafted scenes with pixel-perfect control
+- **Proven**: Used on Schroders commercial (v7) and SEB front-office (v5)
 
 **Key Features:**
 - Single-file HTML with all CSS/JS inline (zero dependencies)
-- 12+ scene types: titles, stats, cards, comparisons, timelines, flywheels, matrices
-- Smooth Prezi-style zoom/fade transitions
-- Staggered element animations for complex content
-- Light theme option for dense information
-- Mobile responsive out of the box
-- One-click deploy to GitHub Pages
+- 20+ component types: stat cards, feature cards, vs-columns, timelines, pyramids, journey maps, case studies, architecture stacks, tables, SVG charts
+- Smooth scale+opacity transitions with staggered `.ai` animations
+- Dark hero scenes for covers and section dividers
+- Libre Franklin typography, Backbase color system
+- Keyboard navigation (→/←/Space/Home/End) + click + dot nav
+
+**Usage:**
+```
+/executive-briefing
+```
+Then provide your content (transcript, data, bullet points, or upstream agent outputs).
+
+**Reference Files:**
+- `Engagement/Schroders Group/Output/schroders_commercial_v7.html` — Design system reference (CSS, components, charts)
+- `Engagement/SEB/Output/SEB_AI_Native_Front_Office_v5.html` — Latest example (26 scenes, custom components)
+
+### /presentation — Prezi-Style Presentation (Internal / Quick Use)
+
+> **⚠️ Deprecated for client-facing work.** Use `/executive-briefing` instead.
+> Still useful for internal presentations, quick drafts, or when speed matters more than polish.
+
+Prezi-style zoom/fade HTML presentations using a template engine.
 
 **Usage:**
 ```
 /presentation
 ```
-Then provide your content (PDF path, bullet points, transcript, or description).
 
 **Templates:** `/templates/presentations/`
 - `prezi-template.html` - Starter template with scene type examples
-- `example-ack2026-day2.html` - Full 34-scene sales kickoff example
-
-**Design System (Consistent Branding):**
-- See `knowledge/design-system.md` for the unified design system
-- Primary: #3366FF (Backbase blue) - highlights, CTAs
-- Dark: #091C35 (Backbase dark) - backgrounds
-- Typography: Libre Franklin primary, Inter fallback, mega titles 50-120px
-- Animations: Scale transitions, staggered reveals, glow effects
-
-**Narrative Structure:**
-1. Hook (1-2 scenes) - Bold opening
-2. Context (2-4 scenes) - Set the stage
-3. Content (15-30 scenes) - Main material
-4. Climax (2-3 scenes) - Key insight
-5. Close (1-2 scenes) - Call to action
 
 ### /generate-roi-questionnaire - ROI Questionnaire Generator
 

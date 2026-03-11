@@ -26,6 +26,7 @@ build/
 
 # Engagement data (client-confidential — never commit)
 engagements/
+Engagement/
 
 # Temporary files
 *.tmp
