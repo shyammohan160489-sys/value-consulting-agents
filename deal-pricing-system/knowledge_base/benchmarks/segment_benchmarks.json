@@ -1,0 +1,47 @@
+{
+  "retail": {
+    "arpu_range": [1.5, 5.0],
+    "typical_arr_k": [500, 3000],
+    "typical_arr_growth_pct": 8,
+    "margin_range_pct": [65, 80],
+    "roi_range_pct": [60, 150],
+    "payback_years": [1.5, 2.5],
+    "notes": "High volume, lower ARPU. Protect margin with blocks or floors."
+  },
+  "sme": {
+    "arpu_range": [5.0, 15.0],
+    "typical_arr_k": [300, 1500],
+    "typical_arr_growth_pct": 8,
+    "margin_range_pct": [60, 75],
+    "roi_range_pct": [70, 130],
+    "payback_years": [2.0, 2.5],
+    "notes": "Medium volume, higher ARPU. Per-user works well."
+  },
+  "commercial": {
+    "arpu_range": [10.0, 30.0],
+    "typical_arr_k": [400, 2000],
+    "typical_arr_growth_pct": 8,
+    "margin_range_pct": [60, 75],
+    "roi_range_pct": [80, 140],
+    "payback_years": [2.0, 3.0],
+    "notes": "Low volume, high value. Custom constructs common."
+  },
+  "wealth": {
+    "arpu_range": [15.0, 50.0],
+    "typical_arr_k": [500, 3000],
+    "typical_arr_growth_pct": 10,
+    "margin_range_pct": [65, 80],
+    "roi_range_pct": [120, 200],
+    "payback_years": [1.5, 2.0],
+    "notes": "Premium positioning. Per-advisor or per-client works. High ROI story."
+  },
+  "universal": {
+    "arpu_range": [2.0, 8.0],
+    "typical_arr_k": [800, 5000],
+    "typical_arr_growth_pct": 8,
+    "margin_range_pct": [60, 78],
+    "roi_range_pct": [70, 150],
+    "payback_years": [2.0, 3.0],
+    "notes": "Multi-segment. Dual-track or block pricing preferred."
+  }
+}

@@ -3,3 +3,6 @@
 
 # ROI Excel model generation (tools/roi_excel_generator.py)
 openpyxl>=3.1.0
+
+# PPTX presentation generation (tools/pptx_presenter.py)
+python-pptx>=0.6.21

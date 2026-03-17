@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imagine SEB in the AI Frontier | SEB × Backbase</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700;800;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#3366FF;--dark:#091C35;--purple:#7B2FFF;--cyan:#0891B2;
+  --green:#059669;--red:#DC2626;--amber:#D97706;--gold:#B45309;
+  --bg:#F5FAFF;--card:#FFFFFF;--border:#E2E8F0;--text:#091C35;
+  --sub:#64748B;--muted:#94A3B8;--light:#F0F4F8;
+}
+body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw}
+
+/* ── SCENES ── */
+.scene{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 80px;opacity:0;transform:scale(0.92);transition:all 0.7s cubic-bezier(0.25,0.46,0.45,0.94);pointer-events:none;overflow-y:auto;background:var(--bg)}
+.scene.active{opacity:1;transform:scale(1);pointer-events:all}
+.scene-center{justify-content:center}
+.scene-hero{background:var(--dark);color:#fff}
+
+/* ── NAV ── */
+.nav-bar{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;z-index:100;justify-content:space-between}
+.nav-brand{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:0.5px}
+.nav-brand em{color:var(--blue);font-style:normal}
+.nav-counter{font-size:11px;color:var(--muted);font-weight:600}
+.nav-dots{display:flex;gap:5px}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all 0.3s}
+.nav-dot.active{background:var(--blue);transform:scale(1.3)}
+
+/* ── TYPOGRAPHY ── */
+.section-label{font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--blue);opacity:0.8;margin-bottom:12px}
+.mega-title{font-size:clamp(36px,5vw,56px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:16px;color:var(--dark)}
+.mega-title em{font-style:normal;color:var(--blue)}
+.subtitle{font-size:18px;font-weight:400;color:var(--sub);line-height:1.5;max-width:700px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;position:relative;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.card-sm{padding:16px;border-radius:12px}
+.card-blue{border-color:rgba(51,102,255,0.2);background:rgba(51,102,255,0.03)}
+.card-green{border-color:rgba(5,150,105,0.2);background:rgba(5,150,105,0.03)}
+.card-purple{border-color:rgba(123,47,255,0.2);background:rgba(123,47,255,0.03)}
+.card-red{border-color:rgba(220,38,38,0.2);background:rgba(220,38,38,0.03)}
+.card-amber{border-color:rgba(217,119,6,0.2);background:rgba(217,119,6,0.03)}
+
+/* ── GRIDS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;width:100%}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.5px}
+.pill-blue{background:rgba(51,102,255,0.1);color:var(--blue)}
+.pill-green{background:rgba(5,150,105,0.1);color:var(--green)}
+.pill-purple{background:rgba(123,47,255,0.1);color:var(--purple)}
+.pill-red{background:rgba(220,38,38,0.1);color:var(--red)}
+.pill-amber{background:rgba(217,119,6,0.1);color:var(--amber)}
+.pill-cyan{background:rgba(8,145,178,0.1);color:var(--cyan)}
+
+/* ── STAT BAR ── */
+.stat-bar{display:flex;justify-content:center;gap:40px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.stat-item{text-align:center}
+.stat-value{font-size:22px;font-weight:900;letter-spacing:-0.5px}
+.stat-label{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:2px}
+
+/* ── VS COLUMNS ── */
+.vs-col{flex:1;border-radius:16px;padding:24px;position:relative}
+.vs-col.fragmented{background:rgba(220,38,38,0.03);border:1px solid rgba(220,38,38,0.15)}
+.vs-col.unified{background:rgba(51,102,255,0.03);border:1px solid rgba(51,102,255,0.15)}
+.vs-col.with-agents{background:rgba(5,150,105,0.03);border:1px solid rgba(5,150,105,0.15)}
+.vs-stat{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+.vs-stat .num{font-size:20px;font-weight:900}
+.vs-stat .desc{font-size:10px;color:var(--sub)}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;align-items:flex-start;gap:0;width:100%;position:relative;padding-top:20px}
+.timeline::before{content:'';position:absolute;top:30px;left:5%;right:5%;height:3px;background:var(--border);border-radius:2px}
+.tl-item{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1}
+.tl-dot{width:14px;height:14px;border-radius:50%;border:3px solid var(--blue);background:var(--bg);margin-bottom:12px;position:relative;z-index:2}
+.tl-dot.done{background:var(--green);border-color:var(--green)}
+.tl-dot.current{background:var(--blue);border-color:var(--blue);box-shadow:0 0 12px rgba(51,102,255,0.3)}
+.tl-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;width:90%;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+
+/* ── PYRAMID ── */
+.pyramid-bar{border-radius:10px;padding:12px 20px;text-align:center;color:#fff;font-weight:700;font-size:12px;transition:all 0.3s}
+.pyramid-bar:hover{transform:scale(1.02);box-shadow:0 4px 16px rgba(0,0,0,0.1)}
+.pyramid-label{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+
+/* ── JOURNEY MAP ── */
+.journey-grid{display:grid;gap:0;width:100%;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)}
+.journey-header{background:var(--light);padding:10px 12px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.journey-header:last-child{border-right:none}
+.journey-lane-label{padding:8px 12px;font-size:9px;font-weight:800;color:var(--dark);border-bottom:1px solid var(--border);border-right:1px solid var(--border);display:flex;align-items:center;gap:6px;background:var(--light)}
+.journey-cell{padding:6px 8px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
+.journey-cell:last-child{border-right:none}
+.journey-chip{font-size:8px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(51,102,255,0.08);border:1px solid rgba(51,102,255,0.15);color:var(--blue);line-height:1.3}
+.journey-chip.augment{background:rgba(123,47,255,0.08);border-color:rgba(123,47,255,0.15);color:var(--purple)}
+.journey-chip.automate{background:rgba(5,150,105,0.08);border-color:rgba(5,150,105,0.15);color:var(--green)}
+
+/* ── ANIMATIONS ── */
+.ai{opacity:0;transform:translateY(16px);transition:all 0.6s ease}
+.scene.active .ai{opacity:1;transform:translateY(0)}
+.scene.active .ai:nth-child(1){transition-delay:0.1s}
+.scene.active .ai:nth-child(2){transition-delay:0.2s}
+.scene.active .ai:nth-child(3){transition-delay:0.3s}
+.scene.active .ai:nth-child(4){transition-delay:0.4s}
+.scene.active .ai:nth-child(5){transition-delay:0.5s}
+.scene.active .ai:nth-child(6){transition-delay:0.6s}
+.scene.active .ai:nth-child(7){transition-delay:0.7s}
+.scene.active .ai:nth-child(8){transition-delay:0.8s}
+.scene.active .ai:nth-child(9){transition-delay:0.9s}
+.scene.active .ai:nth-child(10){transition-delay:1.0s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){.scene{padding:48px 40px}.grid-3,.grid-4,.grid-5{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.grid-2,.grid-3,.grid-4,.grid-5{grid-template-columns:1fr}.timeline{flex-direction:column;gap:16px}.timeline::before{display:none}}
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <div class="nav-brand">SEB × BACK<em>BASE</em> — STOCKHOLM · MARCH 2026</div>
+  <div class="nav-dots" id="navDots"></div>
+  <div class="nav-counter" id="navCounter">1 / 26</div>
+</div>
+
+<!-- ═══ SCENE 1: COVER (DARK HERO) ═══ -->
+<div class="scene scene-hero scene-center active" data-title="Cover">
+  <div style="text-align:center;max-width:900px" class="ai">
+    <div class="section-label" style="color:rgba(255,255,255,0.5)">SEB × BACKBASE</div>
+    <h1 style="font-size:clamp(40px,5.5vw,64px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:24px;color:#fff">
+      Imagine SEB in<br><span style="color:var(--blue)">the AI Frontier.</span>
+    </h1>
+    <p style="font-size:18px;font-weight:400;color:rgba(255,255,255,0.45);line-height:1.5;max-width:700px;margin:0 auto 40px">
+      Introducing Backbase's AI-native banking platform.<br>
+      From legacy fragmentation to intelligent orchestration.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+      <div class="pill pill-blue" style="background:rgba(51,102,255,0.2)">AI-Native Platform</div>
+      <div class="pill pill-green" style="background:rgba(5,150,105,0.2)">Agentic Processes</div>
+      <div class="pill pill-purple" style="background:rgba(123,47,255,0.2)">Agentic SDLC</div>
+      <div class="pill" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6)">Nordic Reference</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:40px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 32px;max-width:650px;margin:0 auto">
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#fff">39</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:0.5px;text-transform:uppercase;margin-top:2px">Platforms Today</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:var(--blue)">2x</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:0.5px;text-transform:uppercase;margin-top:2px">Developer Output</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:rgba(255,255,255,0.8)">8 Weeks</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:0.5px;text-transform:uppercase;margin-top:2px">To Prove Value</div></div>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.15);margin-top:32px">Press &rarr; or click to navigate</div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 2: OUR JOURNEY TOGETHER ═══ -->
+<div class="scene" data-title="Our Journey">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">OUR JOURNEY TOGETHER SO FAR</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">SEB &times; Backbase &mdash; <span style="color:var(--blue)">two years of deepening conversation</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:28px">From architecture deep-dives to today's AI-native platform discussion.</p>
+    <div class="timeline ai">
+      <div class="tl-item">
+        <div class="tl-dot done"></div>
+        <div class="tl-card">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">2024</div>
+          <div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:4px">Initial Conversations</div>
+          <div style="font-size:9px;color:var(--sub);line-height:1.5">Architecture deep-dives<br>Platform demos<br>AI capabilities</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done"></div>
+        <div class="tl-card">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">BEG. 2025</div>
+          <div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:4px">Follow-up Meetings</div>
+          <div style="font-size:9px;color:var(--sub);line-height:1.5">Business leadership<br>Head of Channels (Oscar L.)</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done"></div>
+        <div class="tl-card">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">JULY 2025</div>
+          <div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:4px">Mortgages Discussion</div>
+          <div style="font-size:9px;color:var(--sub);line-height:1.5">Lending module intro<br>Mortgage use case for SEB</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done"></div>
+        <div class="tl-card">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">AUGUST 2025</div>
+          <div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:4px">Joint Exploration</div>
+          <div style="font-size:9px;color:var(--sub);line-height:1.5">Contextualized demos<br>Workshop proposal<br>Future state formulation</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done"></div>
+        <div class="tl-card">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">OCTOBER 2025</div>
+          <div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:4px">Deep Dive &mdash; Integrations</div>
+          <div style="font-size:9px;color:var(--sub);line-height:1.5">Backbase in SEB stack<br>AI-powered orchestration</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot current"></div>
+        <div class="tl-card" style="border-color:rgba(51,102,255,0.3);background:rgba(51,102,255,0.03)">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--blue);text-transform:uppercase;margin-bottom:4px">MARCH 2026</div>
+          <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px">Today's Conversation</div>
+          <div style="font-size:9px;color:var(--sub);line-height:1.5">Platform components<br>Business case workshop<br>Where to start</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 3: QUOTE ═══ -->
+<div class="scene scene-center" data-title="The Shift">
+  <div style="text-align:center;max-width:800px" class="ai">
+    <div style="font-size:clamp(24px,3.5vw,40px);font-weight:300;line-height:1.4;color:var(--dark);letter-spacing:-0.5px">
+      &ldquo;The economics that made our last conversation difficult have <span style="color:var(--blue);font-weight:700">fundamentally changed.</span>&rdquo;
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:24px;font-weight:600;letter-spacing:1px;text-transform:uppercase">Backbase, 2026</div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 4: WHERE BUDGETS GO ═══ -->
+<div class="scene" data-title="SEB Today">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">YOUR REALITY</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Where the budget goes today</h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:24px">Pause here for SEB to share their update. These numbers are conversation starters.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="text-align:center;border-color:rgba(220,38,38,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px">FINANCING PLATFORMS</div>
+        <div style="font-size:48px;font-weight:900;color:var(--red);letter-spacing:-2px">39</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Siloed systems to maintain</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(217,119,6,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:10px">CORE PLATFORM AGE</div>
+        <div style="font-size:48px;font-weight:900;color:var(--amber);letter-spacing:-2px">30 yrs</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">End-of-life, built in the 1990s</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(220,38,38,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px">CAPACITY ON LEGACY</div>
+        <div style="font-size:48px;font-weight:900;color:var(--red);letter-spacing:-2px">80%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Developer time on maintenance</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 5: WHERE AI MOVES THE NEEDLE ═══ -->
+<div class="scene" data-title="AI Value">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">WHERE AI MOVES THE NEEDLE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Propensity today vs <span style="color:var(--blue)">payoff future</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Sources: McKinsey, KPMG, Reuters, Teradata. Where banks invest AI today versus where value concentrates over 3-5 years.</p>
+    <div class="grid-4 ai">
+      <div class="card card-sm">
+        <div style="font-size:24px;margin-bottom:8px">&#9881;&#65039;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:6px">Service + Ops = 65%</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:8px">Operational efficiency and service automation dominate near-term AI activity.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-amber" style="font-size:8px">35% operational</div>
+          <div class="pill pill-amber" style="font-size:8px">30% customer exp</div>
+          <div class="pill pill-green" style="font-size:8px">Biggest ROI today</div>
+        </div>
+      </div>
+      <div class="card card-sm" style="border:2px solid rgba(51,102,255,0.25);background:rgba(51,102,255,0.02)">
+        <div style="font-size:24px;margin-bottom:8px">&#128200;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--blue);margin-bottom:6px">Revenue AI: 17&rarr; 30%</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:8px">Revenue-generating AI nearly doubles its share. Better data and governance unlock advice models.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">Advice models</div>
+          <div class="pill pill-blue" style="font-size:8px">Data governance</div>
+          <div class="pill pill-green" style="font-size:8px">Largest growth</div>
+        </div>
+      </div>
+      <div class="card card-sm" style="border:2px solid rgba(123,47,255,0.25);background:rgba(123,47,255,0.02)">
+        <div style="font-size:24px;margin-bottom:8px">&#128295;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--purple);margin-bottom:6px">SDLC Agents: Force &times;</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:8px">Software development agents are a force multiplier. They compound every other AI investment.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-purple" style="font-size:8px">18&rarr; 20% focus</div>
+          <div class="pill pill-purple" style="font-size:8px">Compounds all areas</div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div style="font-size:24px;margin-bottom:8px">&#127919;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:6px">AI-Ready Platform</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:8px">A composable, AI-ready platform accelerates time to market across all value levers.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-cyan" style="font-size:8px">Enables all 4 levers</div>
+          <div class="pill pill-cyan" style="font-size:8px">Composable arch</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 6: BACKBASE BY THE NUMBERS ═══ -->
+<div class="scene" data-title="Backbase Today">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">WHY BACKBASE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">By the numbers</h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:24px">Scale, commitment, and investment in the platform you'd be building on.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">R&D INVESTMENT</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">40%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Of revenue reinvested, every year</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">FINANCIAL INSTITUTIONS</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">120+</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Banking and wealth, live in production</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(5,150,105,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px">REVENUE</div>
+        <div style="font-size:48px;font-weight:900;color:var(--green);letter-spacing:-2px">$300M+</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">20% year-on-year growth, profitable</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 7: FRAGMENTATION VS UNIFIED ═══ -->
+<div class="scene" data-title="The Challenge">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">THE CHALLENGE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Fragmentation is a <span style="color:var(--red)">losing formula</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">The next decade is defined by better operating models, not better channels.</p>
+    <div class="ai" style="display:flex;gap:20px">
+      <div class="vs-col fragmented">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:14px">&#10060; FRONTLINE FRAGMENTATION</div>
+        <div class="vs-stat"><div class="num" style="color:var(--red)">39</div><div class="desc">siloed financing platforms</div></div>
+        <div class="vs-stat"><div class="num" style="color:var(--red)">N&times;M</div><div class="desc">point-to-point integrations</div></div>
+        <div class="vs-stat"><div class="num" style="color:var(--red)">80%</div><div class="desc">of dev time on maintenance</div></div>
+        <div style="margin-top:12px;font-size:10px;color:var(--sub);line-height:1.6;border-top:1px solid rgba(220,38,38,0.15);padding-top:10px">
+          <strong style="color:var(--red)">What this looks like:</strong> Branch, RM portal, web, mobile, AI assistant, call center &mdash; no shared data, no shared outcomes. Slow time to market.
+        </div>
+      </div>
+      <div class="vs-col unified">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:14px">&#10003; UNIFIED BANKING SUITE</div>
+        <div class="vs-stat"><div class="num" style="color:var(--blue)">1</div><div class="desc">platform across all channels</div></div>
+        <div class="vs-stat"><div class="num" style="color:var(--green)">50/50</div><div class="desc">build-to-run ratio target</div></div>
+        <div class="vs-stat"><div class="num" style="color:var(--green)">Days</div><div class="desc">not quarters to deliver</div></div>
+        <div style="margin-top:12px;font-size:10px;color:var(--sub);line-height:1.6;border-top:1px solid rgba(51,102,255,0.15);padding-top:10px">
+          <strong style="color:var(--blue)">What this looks like:</strong> Acquire &rarr; Onboard &rarr; Activate &rarr; Expand &rarr; Retain &mdash; unified across every channel. Agent layer across legacy.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 8: FOUR PLATFORM PILLARS ═══ -->
+<div class="scene" data-title="Banking Suite">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">UNIFIED BANKING SUITE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Four pillars of the <span style="color:var(--blue)">AI-powered platform</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Each pillar delivers standalone value. Together they create a compounding operating model.</p>
+    <div class="grid-4 ai">
+      <div class="card card-sm card-blue">
+        <div style="font-size:24px;margin-bottom:8px">&#128640;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px">Onboarding &amp; Origination</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.5;margin-bottom:8px">End-to-end flows and Application Center. Digital-first from first click to funded.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">E2E digital journeys</div>
+          <div class="pill pill-blue" style="font-size:8px">Application Center</div>
+          <div class="pill pill-blue" style="font-size:8px">Process orchestration</div>
+        </div>
+      </div>
+      <div class="card card-sm card-blue">
+        <div style="font-size:24px;margin-bottom:8px">&#128241;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px">Digital Banking</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.5;margin-bottom:8px">Omnichannel banking across all segments. Retail, business, wealth &mdash; one platform.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">All segments</div>
+          <div class="pill pill-blue" style="font-size:8px">Omnichannel</div>
+          <div class="pill pill-blue" style="font-size:8px">Self-service</div>
+        </div>
+      </div>
+      <div class="card card-sm card-blue">
+        <div style="font-size:24px;margin-bottom:8px">&#128104;&zwj;&#128188;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px">Human Assist</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.5;margin-bottom:8px">Tools for CSR and Relationship Managers. AI-augmented advisory with full customer context.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">CSR workspaces</div>
+          <div class="pill pill-blue" style="font-size:8px">RM tools</div>
+          <div class="pill pill-blue" style="font-size:8px">AI-powered insights</div>
+        </div>
+      </div>
+      <div class="card card-sm card-blue">
+        <div style="font-size:24px;margin-bottom:8px">&#128202;</div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px">Activation &amp; Expansion</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.5;margin-bottom:8px">Multichannel engagement to deepen relationships. Personalised nudges, overlays, campaigns.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">Personalised</div>
+          <div class="pill pill-blue" style="font-size:8px">Cross-sell triggers</div>
+          <div class="pill pill-blue" style="font-size:8px">Lifecycle campaigns</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 9: THREE FABRICS ═══ -->
+<div class="scene" data-title="Architecture">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">PLATFORM ARCHITECTURE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Supercharged with <span style="color:var(--purple)">AI</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Three fabrics working together. The Data &amp; AI Fabric is what makes the platform intelligent.</p>
+    <div class="grid-3 ai">
+      <div class="card card-blue">
+        <div style="font-size:24px;margin-bottom:8px">&#127974;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Digital Banking Fabric</div>
+        <div style="font-size:9px;font-weight:700;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">SYSTEM OF ENGAGEMENT</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Digital banking services, identity &amp; entitlements, process automation.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">Banking services</div>
+          <div class="pill pill-blue" style="font-size:8px">Identity management</div>
+          <div class="pill pill-blue" style="font-size:8px">Process automation</div>
+        </div>
+      </div>
+      <div class="card" style="border:2px solid rgba(123,47,255,0.3);background:rgba(123,47,255,0.03)">
+        <div style="font-size:24px;margin-bottom:8px">&#129504;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--purple);margin-bottom:4px">Data &amp; AI Fabric</div>
+        <div style="font-size:9px;font-weight:700;color:var(--purple);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">SYSTEM OF INTELLIGENCE</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Agentic automation, hybrid AI services, data services. The brain of the platform.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-purple" style="font-size:8px">Agentic automation</div>
+          <div class="pill pill-purple" style="font-size:8px">Hybrid AI</div>
+          <div class="pill pill-purple" style="font-size:8px">Data services</div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div style="font-size:24px;margin-bottom:8px">&#128279;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Integration Fabric</div>
+        <div style="font-size:9px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">SYSTEM OF INTEGRATION</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Integration platform, Connector Studio, Sync Hub. The connective tissue.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-green" style="font-size:8px">Integration platform</div>
+          <div class="pill pill-green" style="font-size:8px">Connector Studio</div>
+          <div class="pill pill-green" style="font-size:8px">Sync Hub</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 10: AI MATURITY PYRAMID ═══ -->
+<div class="scene" data-title="AI Maturity">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">INDUSTRY CONTEXT</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Where does your organisation sit?</h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:28px">Most banks are Level 1&ndash;2. Backbase enables Level 3&ndash;4. Where is SEB today?</p>
+    <div class="ai" style="display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;max-width:800px;margin:0 auto">
+      <div class="pyramid-bar" style="width:35%;background:linear-gradient(135deg,var(--purple),#9B59FF);font-size:13px">
+        <div class="pyramid-label" style="color:rgba(255,255,255,0.7)">LEVEL 4</div>
+        AI-Native &mdash; AI embedded in every process and decision
+      </div>
+      <div class="pyramid-bar" style="width:50%;background:linear-gradient(135deg,var(--blue),#5588FF);font-size:12px">
+        <div class="pyramid-label" style="color:rgba(255,255,255,0.7)">LEVEL 3</div>
+        Orchestrated &mdash; Cross-functional AI, measured outcomes
+      </div>
+      <div class="pyramid-bar" style="width:65%;background:linear-gradient(135deg,var(--cyan),#0DB8D4);font-size:12px">
+        <div class="pyramid-label" style="color:rgba(255,255,255,0.7)">LEVEL 2</div>
+        Defined &mdash; AI roadmap exists, governance emerging
+      </div>
+      <div class="pyramid-bar" style="width:80%;background:linear-gradient(135deg,var(--amber),#EAA520);font-size:12px">
+        <div class="pyramid-label" style="color:rgba(255,255,255,0.7)">LEVEL 1</div>
+        Fragmented &mdash; Isolated experiments, no governance
+      </div>
+      <div class="pyramid-bar" style="width:95%;background:linear-gradient(135deg,#94A3B8,#B0BCC9);font-size:12px">
+        <div class="pyramid-label" style="color:rgba(255,255,255,0.7)">LEVEL 0</div>
+        Absent &mdash; Manual processes, no data strategy
+      </div>
+    </div>
+    <div class="ai" style="text-align:center;margin-top:20px">
+      <div style="display:inline-flex;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 20px">
+        <div style="font-size:10px;color:var(--sub)"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--purple);vertical-align:middle;margin-right:4px"></span> Backbase enables</div>
+        <div style="font-size:10px;color:var(--sub)"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--amber);vertical-align:middle;margin-right:4px"></span> Most banks today</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 11: FIVE AI DIMENSIONS ═══ -->
+<div class="scene" data-title="AI Dimensions">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">AI DIMENSIONS</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Five dimensions of AI maturity <span style="color:var(--blue)">in banking</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:24px">Each dimension is a capability area SEB can measure itself against.</p>
+    <div class="grid-5 ai">
+      <div class="card card-sm" style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">&#128172;</div>
+        <div style="font-size:12px;font-weight:800;color:var(--dark);margin-bottom:4px">Conversational AI</div>
+        <div style="font-size:9px;color:var(--sub);line-height:1.5">Natural language interfaces for customers and advisors</div>
+      </div>
+      <div class="card card-sm" style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">&#128187;</div>
+        <div style="font-size:12px;font-weight:800;color:var(--dark);margin-bottom:4px">Employee Copilots</div>
+        <div style="font-size:9px;color:var(--sub);line-height:1.5">AI assistants that augment banker productivity</div>
+      </div>
+      <div class="card card-sm" style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">&#128737;&#65039;</div>
+        <div style="font-size:12px;font-weight:800;color:var(--dark);margin-bottom:4px">AI Governance</div>
+        <div style="font-size:9px;color:var(--sub);line-height:1.5">Responsible AI frameworks, bias monitoring, compliance</div>
+      </div>
+      <div class="card card-sm" style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">&#9881;&#65039;</div>
+        <div style="font-size:12px;font-weight:800;color:var(--dark);margin-bottom:4px">Agentic Processes</div>
+        <div style="font-size:9px;color:var(--sub);line-height:1.5">Autonomous agents handling end-to-end business flows</div>
+      </div>
+      <div class="card card-sm" style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">&#128295;</div>
+        <div style="font-size:12px;font-weight:800;color:var(--dark);margin-bottom:4px">Agentic SDLC</div>
+        <div style="font-size:9px;color:var(--sub);line-height:1.5">AI-powered software development and delivery</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 12: AGENTS IN PRODUCTION ═══ -->
+<div class="scene" data-title="Agents Live">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">ALREADY LIVE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">What AI-native looks like <span style="color:var(--blue)">in practice</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Not future. Not roadmap. In production today across Backbase customers.</p>
+    <div class="grid-3 ai">
+      <div class="card card-blue">
+        <div style="font-size:24px;margin-bottom:8px">&#129302;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Customer-Facing Agents</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Intelligent assistants handling account queries, transaction disputes, product recommendations.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">Natural language</div>
+          <div class="pill pill-blue" style="font-size:8px">Context-aware</div>
+          <div class="pill pill-blue" style="font-size:8px">24/7 availability</div>
+        </div>
+      </div>
+      <div class="card card-purple">
+        <div style="font-size:24px;margin-bottom:8px">&#128104;&zwj;&#128188;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Employee Copilots</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Relationship managers get AI-powered insights, next-best-action, automated meeting prep.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-purple" style="font-size:8px">Portfolio analysis</div>
+          <div class="pill pill-purple" style="font-size:8px">Meeting prep</div>
+          <div class="pill pill-purple" style="font-size:8px">Compliance checks</div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div style="font-size:24px;margin-bottom:8px">&#9889;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Process Agents</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Autonomous agents for credit decisioning, document verification, risk assessment, compliance.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-green" style="font-size:8px">End-to-end automation</div>
+          <div class="pill pill-green" style="font-size:8px">Human-in-the-loop</div>
+          <div class="pill pill-green" style="font-size:8px">Audit trail</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 13: SEB FINANCING LANDSCAPE ═══ -->
+<div class="scene" data-title="SEB Financing">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">SEB FINANCING</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Your product landscape</h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:24px">Grounding the conversation in SEB's specific financing portfolio.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">CONSUMER PRODUCTS</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">7+</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Enkla L&aring;net, Bill&aring;n, Kreditkort, Solcellsl&aring;n&hellip;</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">BUSINESS PRODUCTS</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">5+</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">F&ouml;retagsl&aring;n, Leasing, Factoring&hellip;</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(217,119,6,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:10px">SHARED INFRASTRUCTURE</div>
+        <div style="font-size:48px;font-weight:900;color:var(--amber);letter-spacing:-2px">4</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">UC, BankID, Skatteverket, Kronofogden</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 14: LENDING LIFECYCLE JOURNEY MAP ═══ -->
+<div class="scene" data-title="Agent Value Map">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">AGENT VALUE MAP</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Where agents transform the <span style="color:var(--blue)">lending lifecycle</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:16px">Three swim lanes. Five stages. Every agent mapped to where it creates value.</p>
+    <div class="ai journey-grid" style="grid-template-columns:100px repeat(5,1fr)">
+      <!-- Header row -->
+      <div class="journey-header" style="background:var(--dark);color:#fff;font-weight:900;letter-spacing:2px">&nbsp;</div>
+      <div class="journey-header" style="background:var(--dark);color:#fff;font-weight:900">DISCOVER</div>
+      <div class="journey-header" style="background:var(--dark);color:#fff;font-weight:900">APPLY</div>
+      <div class="journey-header" style="background:var(--dark);color:#fff;font-weight:900">DECIDE</div>
+      <div class="journey-header" style="background:var(--dark);color:#fff;font-weight:900">FULFILL</div>
+      <div class="journey-header" style="background:var(--dark);color:#fff;font-weight:900;border-right:none">SERVICE</div>
+      <!-- Lane 1: Customer Agents -->
+      <div class="journey-lane-label">&#128100; Customer</div>
+      <div class="journey-cell">
+        <div class="journey-chip automate">Product comparison agent</div>
+        <div class="journey-chip automate">Eligibility pre-check</div>
+      </div>
+      <div class="journey-cell">
+        <div class="journey-chip automate">BankID identity agent</div>
+        <div class="journey-chip automate">Document collection</div>
+      </div>
+      <div class="journey-cell"></div>
+      <div class="journey-cell"></div>
+      <div class="journey-cell" style="border-right:none">
+        <div class="journey-chip augment">Life-event triggers</div>
+      </div>
+      <!-- Lane 2: Operations Agents -->
+      <div class="journey-lane-label">&#128104;&zwj;&#128188; Operations</div>
+      <div class="journey-cell">
+        <div class="journey-chip augment">Personalised offers</div>
+      </div>
+      <div class="journey-cell">
+        <div class="journey-chip automate">KALP income verification</div>
+      </div>
+      <div class="journey-cell">
+        <div class="journey-chip augment">UC credit scoring agent</div>
+        <div class="journey-chip augment">Risk assessment agent</div>
+        <div class="journey-chip augment">Compliance validation</div>
+      </div>
+      <div class="journey-cell"></div>
+      <div class="journey-cell" style="border-right:none">
+        <div class="journey-chip augment">Refinancing agent</div>
+      </div>
+      <!-- Lane 3: Platform Agents -->
+      <div class="journey-lane-label" style="border-bottom:none">&#9881;&#65039; Platform</div>
+      <div class="journey-cell" style="border-bottom:none"></div>
+      <div class="journey-cell" style="border-bottom:none"></div>
+      <div class="journey-cell" style="border-bottom:none"></div>
+      <div class="journey-cell" style="border-bottom:none">
+        <div class="journey-chip automate">Contract generation</div>
+        <div class="journey-chip automate">Disbursement orchestration</div>
+        <div class="journey-chip automate">Core booking agent</div>
+      </div>
+      <div class="journey-cell" style="border-bottom:none;border-right:none">
+        <div class="journey-chip automate">Payment monitoring</div>
+      </div>
+    </div>
+    <div class="ai" style="display:flex;gap:16px;justify-content:center;margin-top:12px">
+      <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--sub)"><div style="width:10px;height:10px;border-radius:3px;background:rgba(5,150,105,0.15);border:1px solid rgba(5,150,105,0.3)"></div> Automate</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--sub)"><div style="width:10px;height:10px;border-radius:3px;background:rgba(123,47,255,0.15);border:1px solid rgba(123,47,255,0.3)"></div> Augment</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 15: THREE AGENT LAYERS ═══ -->
+<div class="scene" data-title="Agent Layers">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">ARCHITECTURE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Three layers of <span style="color:var(--blue)">intelligent agents</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Applied to SEB's lending landscape. Each layer serves a different stakeholder.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="border:2px solid rgba(51,102,255,0.25);background:rgba(51,102,255,0.02)">
+        <div style="font-size:24px;margin-bottom:8px">&#128100;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:4px">Applicant Layer</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Customer-facing agents that guide, verify, and accelerate the application journey.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">BankID verification</div>
+          <div class="pill pill-blue" style="font-size:8px">UC credit pre-check</div>
+          <div class="pill pill-blue" style="font-size:8px">Document intelligence</div>
+        </div>
+      </div>
+      <div class="card card-purple">
+        <div style="font-size:24px;margin-bottom:8px">&#128104;&zwj;&#128188;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Operations Layer</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Agents that augment bankers with AI-powered decisioning and compliance.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-purple" style="font-size:8px">KALP analysis</div>
+          <div class="pill pill-purple" style="font-size:8px">Risk scoring</div>
+          <div class="pill pill-purple" style="font-size:8px">Regulatory checks</div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div style="font-size:24px;margin-bottom:8px">&#9881;&#65039;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Platform Layer</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Infrastructure agents connecting SEB's 39 platforms through one intelligent layer.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-green" style="font-size:8px">Core system agents</div>
+          <div class="pill pill-green" style="font-size:8px">Skatteverket</div>
+          <div class="pill pill-green" style="font-size:8px">Cross-platform</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 16: BEFORE & AFTER ═══ -->
+<div class="scene" data-title="Impact">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">IMPACT</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">One lending flow, <span style="color:var(--green)">transformed</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Concrete impact measured on a single consumer lending flow.</p>
+    <div class="ai" style="display:flex;gap:20px">
+      <div class="vs-col fragmented">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:14px">&#10060; TODAY</div>
+        <div style="text-align:center;margin-bottom:14px">
+          <div style="font-size:48px;font-weight:900;color:var(--red);letter-spacing:-2px">14 days</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px">Application to disbursement</div>
+        </div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.8">
+          <div>&#8226; Manual data entry across systems</div>
+          <div>&#8226; Multiple handoffs between teams</div>
+          <div>&#8226; Paper documents and wet signatures</div>
+          <div>&#8226; 3 systems to coordinate</div>
+          <div>&#8226; Compliance bottleneck at decisioning</div>
+        </div>
+      </div>
+      <div class="vs-col with-agents">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:14px">&#10003; WITH AGENTS</div>
+        <div style="text-align:center;margin-bottom:14px">
+          <div style="font-size:48px;font-weight:900;color:var(--green);letter-spacing:-2px">&lt; 1 day</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px">Application to disbursement</div>
+        </div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.8">
+          <div>&#8226; Auto-verification via BankID + UC</div>
+          <div>&#8226; Straight-through processing</div>
+          <div>&#8226; Digital documents and e-signatures</div>
+          <div>&#8226; One orchestration layer</div>
+          <div>&#8226; AI-powered compliance in real-time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 17: AGENTIC SDLC DIVIDER (DARK HERO) ═══ -->
+<div class="scene scene-hero scene-center" data-title="Agentic SDLC">
+  <div style="text-align:center;max-width:900px" class="ai">
+    <div class="section-label" style="color:rgba(255,255,255,0.5)">DELIVERY ECONOMICS</div>
+    <h1 style="font-size:clamp(40px,5.5vw,64px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:24px;color:#fff">
+      <span style="color:var(--blue)">Agentic</span> SDLC.
+    </h1>
+    <p style="font-size:18px;font-weight:400;color:rgba(255,255,255,0.45);line-height:1.5;max-width:600px;margin:0 auto">
+      How we build what we build.<br>
+      Specification-driven. Agent-powered. Human-validated.
+    </p>
+  </div>
+</div>
+
+<!-- ═══ SCENE 18: SPEC-DRIVEN METHODOLOGY ═══ -->
+<div class="scene" data-title="Methodology">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">METHODOLOGY</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Specification-driven, <span style="color:var(--blue)">not code-first</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Quality depends on input quality. Agents translate business intent into validated specifications before any code is generated.</p>
+    <div class="grid-3 ai">
+      <div class="card card-sm">
+        <div style="font-size:24px;margin-bottom:8px">&#128221;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Business Intent</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Meeting notes, requirements, user stories. Agents translate intent into validated specifications.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">Natural language input</div>
+          <div class="pill pill-blue" style="font-size:8px">Structured spec gen</div>
+          <div class="pill pill-blue" style="font-size:8px">Traceability</div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div style="font-size:24px;margin-bottom:8px">&#9881;&#65039;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Agent Pipeline</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">BA, SA, UX, and Dev agents work in parallel. Human validates at each gate.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-purple" style="font-size:8px">Parallel execution</div>
+          <div class="pill pill-purple" style="font-size:8px">Human-in-the-loop</div>
+          <div class="pill pill-purple" style="font-size:8px">Cross-validated</div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div style="font-size:24px;margin-bottom:8px">&#9989;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Validated Output</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Code generated from pre-validated specs. Tests auto-generated. Review automated.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-green" style="font-size:8px">Spec-to-code</div>
+          <div class="pill pill-green" style="font-size:8px">Auto test coverage</div>
+          <div class="pill pill-green" style="font-size:8px">Auto code review</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 19: PILOT EVIDENCE ═══ -->
+<div class="scene" data-title="Pilot Results">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">MEASURED ACROSS THREE BANK PILOTS</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Live production results</h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:24px">Real measured data from three live bank pilots. Not projections &mdash; actuals.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="text-align:center;border-color:rgba(5,150,105,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px">DEFECT REDUCTION</div>
+        <div style="font-size:48px;font-weight:900;color:var(--green);letter-spacing:-2px">42&ndash;88%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Fewer bugs reaching production</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">PR CYCLE TIME</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">&darr;19&ndash;69%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Faster review-to-merge</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">THROUGHPUT INCREASE</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">+113%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">More features delivered per sprint</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 20: VS COPILOT DIFFERENTIATOR ═══ -->
+<div class="scene" data-title="The Differentiator">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">WHY THIS IS DIFFERENT</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">What makes this different <span style="color:var(--blue)">from Copilot</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Every bank has Copilot. Backbase captures two knowledge layers that no one else does.</p>
+    <div class="grid-3 ai">
+      <div class="card card-sm" style="opacity:0.7">
+        <div style="font-size:24px;margin-bottom:8px">&#128187;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Code Knowledge</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">What was built and how it works. Codebase, dependencies, patterns. Every AI coding tool does this.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill" style="font-size:8px;background:var(--light);color:var(--muted)">Codebase indexing</div>
+          <div class="pill" style="font-size:8px;background:var(--light);color:var(--muted)">Dependency mapping</div>
+          <div class="pill" style="font-size:8px;background:var(--light);color:var(--muted)">Pattern recognition</div>
+        </div>
+      </div>
+      <div class="card card-sm" style="border:2px solid rgba(51,102,255,0.25);background:rgba(51,102,255,0.02)">
+        <div style="font-size:24px;margin-bottom:8px">&#128203;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:4px">Specification Knowledge</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">What should be built and why. Traceability from requirement to release. The layer Copilot misses.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">Requirements tracing</div>
+          <div class="pill pill-blue" style="font-size:8px">Architecture decisions</div>
+          <div class="pill pill-blue" style="font-size:8px">Design rationale</div>
+        </div>
+      </div>
+      <div class="card card-sm" style="border:2px solid rgba(123,47,255,0.25);background:rgba(123,47,255,0.02)">
+        <div style="font-size:24px;margin-bottom:8px">&#127963;&#65039;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--purple);margin-bottom:4px">Delivery Knowledge</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">How your teams decide, collaborate, and govern. The layer no one else captures.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-purple" style="font-size:8px">Team workflows</div>
+          <div class="pill pill-purple" style="font-size:8px">Decision patterns</div>
+          <div class="pill pill-purple" style="font-size:8px">Governance rules</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 21: DANSKE BANK CASE STUDY ═══ -->
+<div class="scene" data-title="Danske Bank">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">NORDIC REFERENCE</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:20px">Danske Bank &mdash; <span style="color:var(--blue)">Denmark's largest bank</span></h2>
+    <div class="ai card" style="border:2px solid rgba(51,102,255,0.15);padding:28px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:8px">THE CHALLENGE</div>
+          <div style="font-size:11px;color:var(--sub);line-height:1.8">
+            <div style="margin-bottom:6px">&#8226; <strong>180</strong> applications across the digital estate</div>
+            <div style="margin-bottom:6px">&#8226; <strong>12+</strong> design systems with no consistency</div>
+            <div style="margin-bottom:6px">&#8226; <strong>500</strong> onboarding flows to maintain</div>
+            <div>&#8226; <strong>2,000</strong> product combinations</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:8px">THE SOLUTION</div>
+          <div style="font-size:11px;color:var(--sub);line-height:1.8">
+            <div style="margin-bottom:6px">&#8226; One Backbase platform as strategic foundation</div>
+            <div style="margin-bottom:6px">&#8226; <strong>Buy 65%</strong>, build 35% &mdash; not rip and replace</div>
+            <div style="margin-bottom:6px">&#8226; Multi-million, multi-year strategic partnership</div>
+            <div>&#8226; First go-live in under 6 months</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border);margin-top:20px;padding-top:16px">
+        <div style="display:flex;gap:20px;justify-content:center">
+          <div style="text-align:center;flex:1;background:rgba(5,150,105,0.04);border-radius:10px;padding:12px">
+            <div style="font-size:28px;font-weight:900;color:var(--green);letter-spacing:-1px">75%</div>
+            <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:2px">Faster time to market</div>
+          </div>
+          <div style="text-align:center;flex:1;background:rgba(51,102,255,0.04);border-radius:10px;padding:12px">
+            <div style="font-size:28px;font-weight:900;color:var(--blue);letter-spacing:-1px">80%</div>
+            <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:2px">IT capacity to innovation</div>
+          </div>
+          <div style="text-align:center;flex:1;background:rgba(5,150,105,0.04);border-radius:10px;padding:12px">
+            <div style="font-size:28px;font-weight:900;color:var(--green);letter-spacing:-1px">&lt;6 mo</div>
+            <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:2px">Contract to production</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 22: DANSKE RESULTS ═══ -->
+<div class="scene" data-title="Danske Results">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">TRANSFORMATION OUTCOMES</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">What Danske Bank achieved</h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:24px">The 80% IT capacity shift is the most relevant number for SEB.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="text-align:center;border-color:rgba(5,150,105,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px">TIME TO MARKET</div>
+        <div style="font-size:48px;font-weight:900;color:var(--green);letter-spacing:-2px">75%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Faster delivery of new capabilities</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">IT CAPACITY SHIFT</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">80%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Moved from maintenance to innovation</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(5,150,105,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px">FIRST GO-LIVE</div>
+        <div style="font-size:48px;font-weight:900;color:var(--green);letter-spacing:-2px">&lt;6 mo</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">From contract to production</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 23: APPLIED TO SEB ═══ -->
+<div class="scene" data-title="For SEB">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">FOR SEB</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Applied to your <span style="color:var(--blue)">financing landscape</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:20px">Three paths to value. SDLC First is the lowest-risk, highest-signal starting point.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="border:2px solid rgba(51,102,255,0.25);background:rgba(51,102,255,0.02)">
+        <div style="position:absolute;top:-8px;right:16px;background:var(--blue);color:#fff;font-size:8px;font-weight:800;letter-spacing:1px;padding:3px 10px;border-radius:10px">RECOMMENDED</div>
+        <div style="font-size:24px;margin-bottom:8px">&#9889;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:4px">SDLC First</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Start with developer velocity. Prove 2x output on one lending flow before making platform decisions.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-blue" style="font-size:8px">Low-risk start</div>
+          <div class="pill pill-blue" style="font-size:8px">8 weeks</div>
+          <div class="pill pill-blue" style="font-size:8px">No infra change</div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div style="font-size:24px;margin-bottom:8px">&#128279;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Agents Across Legacy</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Deploy intelligent agents across existing platforms. No rip-and-replace required.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-cyan" style="font-size:8px">Current stack</div>
+          <div class="pill pill-cyan" style="font-size:8px">Incremental</div>
+          <div class="pill pill-cyan" style="font-size:8px">39 platforms</div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div style="font-size:24px;margin-bottom:8px">&#127919;</div>
+        <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px">Build-or-Buy Clarity</div>
+        <div style="font-size:10px;color:var(--sub);line-height:1.6;margin-bottom:10px">Use the pilot to answer the question: is this better than what SEB can do internally?</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <div class="pill pill-amber" style="font-size:8px">Evidence-based</div>
+          <div class="pill pill-amber" style="font-size:8px">Comparable metrics</div>
+          <div class="pill pill-amber" style="font-size:8px">Go/no-go</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 24: ENGAGEMENT PLAN TIMELINE ═══ -->
+<div class="scene" data-title="Engagement Plan">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">APPROACH</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">Start small, prove value, <span style="color:var(--blue)">scale</span></h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:28px">Phase 1 is the only commitment. The rest follows evidence.</p>
+    <div class="timeline ai">
+      <div class="tl-item">
+        <div class="tl-dot current"></div>
+        <div class="tl-card" style="border-color:rgba(51,102,255,0.3);background:rgba(51,102,255,0.03)">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--blue);text-transform:uppercase;margin-bottom:4px">PHASE 1 &bull; 8 WEEKS</div>
+          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:8px">SDLC Proof of Value</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">
+            <div class="pill pill-blue" style="font-size:8px">Map one lending flow</div>
+            <div class="pill pill-blue" style="font-size:8px">Deploy DeliveryOS</div>
+            <div class="pill pill-blue" style="font-size:8px">Measure velocity</div>
+            <div class="pill pill-blue" style="font-size:8px">Go/no-go decision</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">PHASE 2 &bull; Q3 2026</div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px">Agent Expansion</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">
+            <div class="pill" style="font-size:8px;background:var(--light);color:var(--sub)">UC &amp; BankID agents</div>
+            <div class="pill" style="font-size:8px;background:var(--light);color:var(--sub)">Credit decisioning</div>
+            <div class="pill" style="font-size:8px;background:var(--light);color:var(--sub)">Roll out across products</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px">PHASE 3 &bull; 2027</div>
+          <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px">Platform Scale</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">
+            <div class="pill" style="font-size:8px;background:var(--light);color:var(--sub)">Full financing portfolio</div>
+            <div class="pill" style="font-size:8px;background:var(--light);color:var(--sub)">Agent Factory for SEB</div>
+            <div class="pill" style="font-size:8px;background:var(--light);color:var(--sub)">Cost &rarr; revenue enabler</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 25: TARGET OUTCOMES ═══ -->
+<div class="scene" data-title="SEB Targets">
+  <div style="width:100%;max-width:1100px;margin:0 auto">
+    <div class="section-label ai">TARGET OUTCOMES</div>
+    <h2 class="ai" style="font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px">What SEB should expect</h2>
+    <p class="ai" style="font-size:12px;color:var(--sub);margin-bottom:24px">Tied to Oscar's stated goals. Conservative estimates based on pilot data.</p>
+    <div class="grid-3 ai">
+      <div class="card" style="text-align:center;border-color:rgba(51,102,255,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">DEVELOPER OUTPUT</div>
+        <div style="font-size:48px;font-weight:900;color:var(--blue);letter-spacing:-2px">2x</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Per engineer, Oscar's stated target</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(5,150,105,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px">MAINTENANCE RATIO</div>
+        <div style="font-size:48px;font-weight:900;color:var(--green);letter-spacing:-2px">50/50</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">From current 80/20 to balanced</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(5,150,105,0.15)">
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px">UNIT COST</div>
+        <div style="font-size:48px;font-weight:900;color:var(--green);letter-spacing:-2px">&minus;30%</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">Per delivered feature, based on pilot data</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE 26: CLOSE (DARK HERO) ═══ -->
+<div class="scene scene-hero scene-center" data-title="Close">
+  <div style="text-align:center;max-width:900px" class="ai">
+    <div class="section-label" style="color:rgba(255,255,255,0.5)">NEXT STEP</div>
+    <h1 style="font-size:clamp(40px,5.5vw,64px);font-weight:900;line-height:1.1;letter-spacing:-2px;margin-bottom:24px;color:#fff">
+      <span style="color:var(--blue)">Prove it</span><br>
+      on one flow.<br>
+      Then decide.
+    </h1>
+  </div>
+</div>
+
+<script>
+// ── NAVIGATION ──
+let current = 0;
+let scenes = [];
+
+function showScene(idx) {
+  if (idx < 0 || idx >= scenes.length) return;
+  scenes[current].classList.remove('active');
+  current = idx;
+  scenes[current].classList.add('active');
+  updateNav();
+}
+
+function updateNav() {
+  document.getElementById('navCounter').textContent = (current + 1) + ' / ' + scenes.length;
+  const dots = document.getElementById('navDots');
+  dots.innerHTML = '';
+  scenes.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i === current ? ' active' : '');
+    d.onclick = () => showScene(i);
+    dots.appendChild(d);
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showScene(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); showScene(current - 1); }
+  if (e.key === 'Home') { e.preventDefault(); showScene(0); }
+  if (e.key === 'End') { e.preventDefault(); showScene(scenes.length - 1); }
+});
+
+document.addEventListener('click', e => {
+  if (e.target.closest('.nav-dot') || e.target.closest('button') || e.target.closest('a') || e.target.closest('.pill')) return;
+  if (e.clientX > window.innerWidth * 0.5) showScene(current + 1);
+  else showScene(current - 1);
+});
+
+// ── INIT ──
+scenes = Array.from(document.querySelectorAll('.scene'));
+showScene(0);
+</script>
+</body>
+</html>

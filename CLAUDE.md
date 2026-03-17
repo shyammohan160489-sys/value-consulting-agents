@@ -217,7 +217,7 @@ You succeed in this repository when:
 5. **Hidden assumptions:** Every assumption must be visible
 6. **Academic output:** This is business consulting, not research papers
 7. **Ad-hoc HTML generation for assessments:** Assessment HTML dashboards MUST be produced by the `/generate-assessment-html` skill, which contains the full Future UI design system with sidebar navigation, bento grids, capability heatmaps, ROI scenario toggles, and phone-frame prototypes. NEVER generate assessment HTML by converting markdown to HTML directly or by writing custom CSS inline. The skill output is a 250-400KB self-contained file; anything smaller is wrong.
-8. **Using Prezi templates for client presentations:** Client-facing presentations MUST use `/executive-briefing` (bespoke HTML with the Schroders design system), NOT `/presentation` or `/presentation-v2` (Prezi templates). Prezi templates produce ~300KB files with 260KB of template overhead and cannot render SVG charts, data tables, or journey maps. The `/executive-briefing` format produces ~70-120KB hand-crafted files that are significantly more polished and flexible.
+8. **Using Prezi templates for client presentations:** Client-facing presentations MUST use `/executive-briefing` (HTML) or `/executive-briefing-slides` (PPTX), NOT `/presentation` or `/presentation-v2` (Prezi templates). Use HTML when pixel-perfect animations matter; use PPTX when the deck needs collaborative editing in Google Slides. Prezi templates are deprecated for client-facing work.
 
 ## Remember
 
@@ -312,6 +312,41 @@ Then provide your content (transcript, data, bullet points, or upstream agent ou
 **Reference Files:**
 - `Engagement/Schroders Group/Output/schroders_commercial_v7.html` — Design system reference (CSS, components, charts)
 - `Engagement/SEB/Output/SEB_AI_Native_Front_Office_v5.html` — Latest example (26 scenes, custom components)
+
+### /executive-briefing-slides — PPTX Presentation Builder (Collaborative)
+
+Generates `.pptx` files with Backbase branding that open in Google Slides for collaborative editing. Same narrative quality as `/executive-briefing` HTML, but editable by anyone on the team.
+
+**When to Use:**
+- Decks that need last-minute edits by team members (license numbers, pricing, scope)
+- Content with numbers/scope that change frequently before client delivery
+- Anything that lives in Google Drive for collaboration
+- When the team uses Google Slides as the delivery format
+
+**When to Use HTML Instead (`/executive-briefing`):**
+- Standalone demos with animations and interactivity
+- Self-running presentations (no presenter needed)
+- When pixel-perfect control matters more than editability
+
+**Key Features:**
+- Google Slides compatible (13.333" x 7.5" widescreen)
+- Backbase brand colors baked into theme (validated against Master Template)
+- Libre Franklin typography
+- Reusable `PptxPresenter` base class with 15+ helper methods
+- Same component types: stat cards, feature cards, comparison columns, timelines, tables, architecture stacks
+- Speaker notes support for talking points
+- 50-150KB output size
+
+**Usage:**
+```
+/executive-briefing-slides
+```
+Then provide your content (transcript, data, bullet points, or upstream agent outputs).
+
+**Technical Files:**
+- `tools/pptx_presenter.py` — Reusable base class with Backbase brand and helpers
+- `templates/presentations/backbase_slides.pptx` — Lightweight branded template
+- `tools/schroders_commercial_v2_pptx.py` — Full 15-slide reference implementation
 
 ### /presentation — Prezi-Style Presentation (Internal / Quick Use)
 

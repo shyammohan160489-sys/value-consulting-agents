@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNB Commercial Proposal - Backbase</title>
+    <style>
+        :root {
+            --bb-primary: #1A1F71;
+            --bb-accent: #00B4D8;
+            --bb-dark: #0F1340;
+            --bb-light: #E8F4F8;
+            --bb-green: #28A745;
+            --bb-orange: #FF9500;
+            --text-primary: #2C3E50;
+            --text-secondary: #6C757D;
+            --border-color: #DEE2E6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Cover Page */
+        .cover {
+            background: linear-gradient(135deg, var(--bb-primary) 0%, var(--bb-dark) 100%);
+            color: white;
+            padding: 120px 60px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .cover h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .cover h2 {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            color: var(--bb-accent);
+        }
+        
+        .cover h3 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 60px;
+            opacity: 0.9;
+        }
+        
+        .cover-meta {
+            margin-top: 80px;
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        .cover-highlight {
+            background: rgba(0, 180, 216, 0.2);
+            padding: 40px;
+            border-radius: 12px;
+            margin: 40px auto;
+            max-width: 800px;
+        }
+        
+        .cover-highlight p {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+        
+        /* Content Sections */
+        .section {
+            padding: 60px;
+            page-break-inside: avoid;
+        }
+        
+        .section:nth-child(even) {
+            background: #fafbfc;
+        }
+        
+        h1.section-title {
+            color: var(--bb-primary);
+            font-size: 42px;
+            margin-bottom: 30px;
+            border-bottom: 4px solid var(--bb-accent);
+            padding-bottom: 15px;
+        }
+        
+        h2.subsection {
+            color: var(--bb-primary);
+            font-size: 28px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h3.subheading {
+            color: var(--bb-dark);
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        /* Executive Summary Box */
+        .exec-summary {
+            background: linear-gradient(135deg, var(--bb-light) 0%, white 100%);
+            border-left: 6px solid var(--bb-accent);
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .exec-summary h2 {
+            color: var(--bb-primary);
+            margin-bottom: 20px;
+        }
+        
+        /* Highlight Boxes */
+        .highlight-box {
+            background: var(--bb-light);
+            border-left: 4px solid var(--bb-accent);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+        
+        .highlight-box.success {
+            background: #E8F5E9;
+            border-left-color: var(--bb-green);
+        }
+        
+        .highlight-box.warning {
+            background: #FFF3E0;
+            border-left-color: var(--bb-orange);
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        thead {
+            background: var(--bb-primary);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background: var(--bb-light);
+        }
+        
+        tr.total-row {
+            background: var(--bb-primary) !important;
+            color: white;
+            font-weight: 700;
+        }
+        
+        tr.total-row td {
+            border-bottom: none;
+        }
+        
+        tr.highlight-row {
+            background: #E8F5E9 !important;
+            font-weight: 600;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+        
+        /* Checkmarks */
+        .checkmark {
+            color: var(--bb-green);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--bb-primary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* Call-to-Action */
+        .cta-box {
+            background: linear-gradient(135deg, var(--bb-primary) 0%, var(--bb-dark) 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin: 50px 0;
+            text-align: center;
+        }
+        
+        .cta-box h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--bb-dark);
+            color: white;
+            padding: 40px 60px;
+            text-align: center;
+        }
+        
+        .footer p {
+            opacity: 0.8;
+            margin: 5px 0;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .cover {
+                page-break-after: always;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+        
+        /* ROI Highlight */
+        .roi-highlight {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border: 3px solid var(--bb-green);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .roi-highlight .big-number {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--bb-green);
+            margin: 20px 0;
+        }
+        
+        /* Pricing Table Special */
+        .pricing-table {
+            margin: 40px 0;
+        }
+        
+        .pricing-table th {
+            background: var(--bb-green);
+        }
+        
+        .pricing-table .recommended {
+            background: #E8F5E9 !important;
+            border-left: 5px solid var(--bb-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- Cover Page -->
+        <div class="cover">
+            <h1>Hatton National Bank</h1>
+            <h2>Backbase Engagement Platform</h2>
+            <h3>Commercial Proposal - Phase 1: Wealth Management Transformation</h3>
+            
+            <div class="cover-highlight">
+                <p><strong>5-Year Investment:</strong> $8.0M</p>
+                <p><strong>Expected Benefits:</strong> $15-35M</p>
+                <p><strong>ROI:</strong> 43-233%</p>
+                <p><strong>Payback:</strong> 14-18 months</p>
+            </div>
+            
+            <div class="cover-meta">
+                <p><strong>Date:</strong> February 10, 2026</p>
+                <p><strong>Prepared for:</strong> Hatton National Bank Leadership Team</p>
+                <p><strong>Prepared by:</strong> Backbase Deal Team</p>
+            </div>
+        </div>
+        
+        <!-- Executive Summary -->
+        <div class="section">
+            <h1 class="section-title">Executive Summary</h1>
+            
+            <p style="font-size: 18px; line-height: 1.8;">
+                Hatton National Bank stands at a strategic inflection point. With <strong>2.8 million customers</strong> but only 
+                <strong>13,000 wealth management relationships</strong>, HNB has a <strong>$10-15M revenue opportunity</strong> 
+                by converting just 5-10% of its customer base into active wealth clients.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">2.8M</div>
+                    <div class="stat-label">Total Customers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">13K</div>
+                    <div class="stat-label">Wealth Clients (0.5%)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$15M</div>
+                    <div class="stat-label">Revenue Opportunity</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">14x</div>
+                    <div class="stat-label">User Growth Y2→Y3</div>
+                </div>
+            </div>
+            
+            <div class="highlight-box warning">
+                <h3><strong>The Challenge</strong></h3>
+                <p>The original pricing proposal of <strong>$1.4M in Year 1</strong> exceeded board approval thresholds, creating a roadblock despite strong strategic alignment and compelling ROI.</p>
+            </div>
+            
+            <div class="highlight-box success">
+                <h3><strong>Our Solution</strong></h3>
+                <p>We've restructured the commercial proposal with a <strong>phased value ramp</strong> aligned to launch milestones—a significantly lower entry during the Wealth pilot phase, scaling with Retail/SME activation.</p>
+                <ul>
+                    <li><span class="checkmark">✓</span> <strong>Y1 starting point:</strong> $0.80M (43% below original quote)</li>
+                    <li><span class="checkmark">✓</span> <strong>Phased growth:</strong> Lower entry in Y1-Y2, scaling with platform launches</li>
+                    <li><span class="checkmark">✓</span> <strong>Launch alignment:</strong> Pricing scales from 130K to 1.88M users at Y3 launch</li>
+                    <li><span class="checkmark">✓</span> <strong>Total 5-year investment:</strong> $8.0M</li>
+                    <li><span class="checkmark">✓</span> <strong>Expected 5-year benefit:</strong> $15-35M</li>
+                </ul>
+            </div>
+            
+            <div class="roi-highlight">
+                <h2 style="color: var(--bb-green); margin-bottom: 10px;">Payback Period</h2>
+                <div class="big-number">14-18</div>
+                <p style="font-size: 20px; color: var(--text-primary);"><strong>months</strong> through retail-to-wealth upgrades, digital activation, and RM capacity redeployment</p>
+            </div>
+        </div>
+        
+        <!-- Strategic Context -->
+        <div class="section">
+            <h1 class="section-title">Part 1: Strategic Context</h1>
+            
+            <h2 class="subsection">1.1 HNB's Strategic Objectives</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Objective</th>
+                        <th>What This Means</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Digital innovation with one HNB experience</strong></td>
+                        <td>Unified digital front door for retail, SME, corporate and wealth—customers enjoy similar digital experiences regardless of segment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deepen customer relationships</strong></td>
+                        <td>360° view and orchestrated journeys that connect HNB and its subsidiaries to grow AUM and fee income</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Scale profitable growth</strong></td>
+                        <td>Automate journeys and repurpose staff to value-adding tasks so HNB can grow 3-4x in size and ~2.5x in profitability</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Use Wealth as the digital lighthouse</strong></td>
+                        <td>Start with Club, Priority Circle and Emerging Affluent on Backbase—then replicate the same platform patterns across retail, SME, corporate</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2 class="subsection">1.2 Current State: The Challenges</h2>
+            
+            <h3 class="subheading">Digital Fragmentation</h3>
+            <ul>
+                <li>Multiple frontline apps (HNB Fit, DL mobile, Lime) with disconnected UX</li>
+                <li>Fragile integration mesh between frontend and core systems</li>
+                <li>Slow time-to-market for new features</li>
+                <li>High vendor dependency—HNB lacks direct control of digital roadmap</li>
+            </ul>
+            
+            <h3 class="subheading">Manual Operating Model</h3>
+            <ul>
+                <li>Paper-heavy onboarding and servicing for non-retail segments</li>
+                <li>RM time lost to admin instead of client relationships</li>
+                <li>Portfolio reviews require 1-2 hours of manual data consolidation</li>
+                <li>Change capacity tied to "keeping the lights on"</li>
+            </ul>
+            
+            <h3 class="subheading">Untapped Opportunity</h3>
+            <div class="highlight-box">
+                <ul>
+                    <li><strong>2.8M total customers, only 13K WM clients</strong> (0.5% penetration)</li>
+                    <li>30% of Sri Lankan population (1.8M households) are Emerging Affluent but don't consider HNB's WM proposition</li>
+                    <li>Competitors with holistic digital propositions are capturing wallet share</li>
+                    <li>Average Sri Lankan has 3-4 financial relationships—HNB is losing to NDB Wealth, Capital Alliance, JB Advantage</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Business Benefits -->
+        <div class="section">
+            <h1 class="section-title">Part 2: Business Benefits</h1>
+            
+            <h2 class="subsection">2.1 Annual Run-Rate Benefits (Phase 1 - Wealth)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Benefit Area</th>
+                        <th style="width: 150px;">Annual Value</th>
+                        <th>How We Get There</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Prospecting & Conversion</strong></td>
+                        <td><strong>$30-40K</strong></td>
+                        <td>
+                            • +20-30% prospect conversion through digital lead management<br>
+                            • 30-40% reduction in RM admin time on events and follow-ups<br>
+                            • Centralized Prospect Lounge replaces Excel and ad-hoc lists
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Digital Onboarding</strong></td>
+                        <td><strong>$30-40K</strong></td>
+                        <td>
+                            • 40% reduction in manual onboarding tasks<br>
+                            • 20-30% reduction in rework and mandate returns<br>
+                            • Pre-filled KYC for existing HNB customers
+                        </td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Digital Wealth & RM Portal</strong></td>
+                        <td><strong>$3-7M</strong></td>
+                        <td>
+                            • $2-5M revenue from retail-to-wealth upgrades (20% digital activation uplift)<br>
+                            • $1-2M cost avoided from RM capacity redeployment<br>
+                            • Self-service moves 20-40% of simple requests out of RM channel
+                        </td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>Total Annual (at full run-rate)</strong></td>
+                        <td><strong>$3-7M</strong></td>
+                        <td>Achievable by Y3 when full platform is activated</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2 class="subsection">2.2 5-Year Cumulative Benefits</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 36px;">$15-20M</div>
+                    <div class="stat-label">Conservative Scenario</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 36px;">$20-30M</div>
+                    <div class="stat-label">Moderate Scenario</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 36px;">$30-35M</div>
+                    <div class="stat-label">Optimistic Scenario</div>
+                </div>
+            </div>
+            
+            <h3 class="subheading">Key Drivers:</h3>
+            <ol>
+                <li><strong>Retail-to-wealth upgrades:</strong> Converting 5-10% of 2.8M customer base to wealth products</li>
+                <li><strong>AUM growth:</strong> Each upgraded customer brings LKR 15K revenue per product/year × 2.2 products</li>
+                <li><strong>RM capacity redeployment:</strong> Equivalent of 220 RMs avoided through digital self-service</li>
+                <li><strong>Transaction revenue:</strong> 12 transactions per customer/year × LKR 25 fee</li>
+            </ol>
+        </div>
+        
+        <!-- Commercial Proposal -->
+        <div class="section">
+            <h1 class="section-title">Part 3: Commercial Proposal</h1>
+            
+            <h2 class="subsection">3.1 Pricing Philosophy</h2>
+            <p style="font-size: 17px;">We've structured pricing to align with your <strong>strategic rollout and value realization</strong>:</p>
+            <ul style="font-size: 16px;">
+                <li><strong>Y1-Y2: Wealth Pilot Phase</strong> (130K users) — Proving value, establishing foundation</li>
+                <li><strong>Y3: Full Launch</strong> (1.88M users) — Retail + SME activation, 14x user growth</li>
+                <li><strong>Y4-Y5: At-Scale Maturity</strong> — Full platform utilization, continuous optimization</li>
+            </ul>
+            
+            <div class="highlight-box success">
+                <p style="font-size: 18px;"><strong>Key Principle:</strong> Cost should scale with business value, not create upfront barriers.</p>
+            </div>
+            
+            <h2 class="subsection" style="color: var(--bb-green); font-size: 32px;">3.2 RECOMMENDED: Phased Value Ramp</h2>
+            
+            <table class="pricing-table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Annual License Fee</th>
+                        <th>YoY Growth</th>
+                        <th>Active Users</th>
+                        <th>Cost per User</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="recommended">
+                        <td><strong>Y1</strong></td>
+                        <td><strong>$800,000</strong></td>
+                        <td>—</td>
+                        <td>130,000</td>
+                        <td>$6.15</td>
+                    </tr>
+                    <tr class="recommended">
+                        <td><strong>Y2</strong></td>
+                        <td><strong>$1,100,000</strong></td>
+                        <td>+37.5%</td>
+                        <td>130,000</td>
+                        <td>$8.46</td>
+                    </tr>
+                    <tr class="recommended">
+                        <td><strong>Y3</strong></td>
+                        <td><strong>$1,600,000</strong></td>
+                        <td>+45.5%</td>
+                        <td>1,880,000</td>
+                        <td>$0.85</td>
+                    </tr>
+                    <tr class="recommended">
+                        <td><strong>Y4</strong></td>
+                        <td><strong>$2,000,000</strong></td>
+                        <td>+25.0%</td>
+                        <td>1,880,000</td>
+                        <td>$1.06</td>
+                    </tr>
+                    <tr class="recommended">
+                        <td><strong>Y5</strong></td>
+                        <td><strong>$2,500,000</strong></td>
+                        <td>+25.0%</td>
+                        <td>1,880,000</td>
+                        <td>$1.33</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>TOTAL</strong></td>
+                        <td><strong>$8,000,000</strong></td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td><strong>$1.36 avg</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 class="subheading">Why This Structure:</h3>
+            <div class="highlight-box success">
+                <ul>
+                    <li><span class="checkmark">✓</span> <strong>Lowest Possible Entry</strong> — $0.80M Y1 (43% below original $1.40M quote)</li>
+                    <li><span class="checkmark">✓</span> <strong>Board-Friendly</strong> — Y1-Y2 well within approval thresholds</li>
+                    <li><span class="checkmark">✓</span> <strong>Launch-Aligned</strong> — Y3 step-up coincides with Retail/SME activation (14x user growth)</li>
+                    <li><span class="checkmark">✓</span> <strong>Cost-Per-User Decreases</strong> — From $6.15/user (Y1) to $1.33/user (Y5) at scale</li>
+                    <li><span class="checkmark">✓</span> <strong>Value-Linked Growth</strong> — Costs scale only when platform delivers expanded value</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- ROI Analysis -->
+        <div class="section">
+            <h1 class="section-title">Part 4: Return on Investment</h1>
+            
+            <h2 class="subsection">4.1 Payback Analysis</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Investment (License + Services)</th>
+                        <th>Returns (Cumulative)</th>
+                        <th>Net Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Y1</strong></td>
+                        <td>$1.65M</td>
+                        <td>$0.5-1M</td>
+                        <td style="color: red;">-$0.65M to -$1.15M</td>
+                    </tr>
+                    <tr style="background: #FFFDE7 !important;">
+                        <td><strong>Y2</strong></td>
+                        <td>$1.32M</td>
+                        <td>$2-3M</td>
+                        <td style="color: var(--bb-green); font-weight: 700;">BREAKEVEN ✓</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Y3</strong></td>
+                        <td>$1.82M</td>
+                        <td>$6-10M</td>
+                        <td style="color: var(--bb-green); font-weight: 700;">+$2-4M</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="roi-highlight">
+                <h2 style="color: var(--bb-green);">Breakeven Point</h2>
+                <div class="big-number">14-18</div>
+                <p style="font-size: 22px; color: var(--text-primary);"><strong>MONTHS</strong> (Q2-Q3 of Year 2)</p>
+            </div>
+            
+            <h2 class="subsection">4.2 ROI by Year 5</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>5-Year Investment</th>
+                        <th>5-Year Benefit</th>
+                        <th>Net ROI</th>
+                        <th>ROI %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Conservative</td>
+                        <td>$10.5M</td>
+                        <td>$15M</td>
+                        <td>$4.5M</td>
+                        <td style="color: var(--bb-green); font-weight: 700;">43%</td>
+                    </tr>
+                    <tr>
+                        <td>Moderate</td>
+                        <td>$10.5M</td>
+                        <td>$25M</td>
+                        <td>$14.5M</td>
+                        <td style="color: var(--bb-green); font-weight: 700;">138%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Optimistic</strong></td>
+                        <td>$10.5M</td>
+                        <td>$35M</td>
+                        <td><strong>$24.5M</strong></td>
+                        <td style="color: var(--bb-green); font-weight: 700; font-size: 20px;">233%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 14px; color: var(--text-secondary); font-style: italic;">*Investment = License + Services. Benefits = Revenue Uplift + Cost Avoidance.</p>
+        </div>
+        
+        <!-- Comparison -->
+        <div class="section">
+            <h1 class="section-title">Part 5: Comparison with Original Quote</h1>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Original Quote</th>
+                        <th>Revised Proposal</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Y1</strong></td>
+                        <td>$1,402,976</td>
+                        <td style="color: var(--bb-green); font-weight: 700;">$800,000</td>
+                        <td style="color: var(--bb-green);">-$603K (-43%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Y2</strong></td>
+                        <td>$1,402,976</td>
+                        <td style="color: var(--bb-green); font-weight: 700;">$1,100,000</td>
+                        <td style="color: var(--bb-green);">-$303K (-22%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Y3</strong></td>
+                        <td>$1,742,511</td>
+                        <td style="color: var(--bb-green); font-weight: 700;">$1,600,000</td>
+                        <td style="color: var(--bb-green);">-$143K (-8%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Y4</strong></td>
+                        <td>$1,742,511</td>
+                        <td style="color: var(--bb-orange);">$2,000,000</td>
+                        <td style="color: var(--bb-orange);">+$257K (+15%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Y5</strong></td>
+                        <td>$1,742,511</td>
+                        <td style="color: var(--bb-orange);">$2,500,000</td>
+                        <td style="color: var(--bb-orange);">+$757K (+43%)</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>TOTAL</strong></td>
+                        <td>$8,033,486</td>
+                        <td>$8,000,000</td>
+                        <td>-$33K (-0.4%)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2 class="subsection">Key Improvements</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 36px;">-43%</div>
+                    <div class="stat-label">Y1 Cost Reduction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 36px;">25%</div>
+                    <div class="stat-label">Steady Y3-Y5 Growth</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 36px;">-89%</div>
+                    <div class="stat-label">Cost/User Decrease at Scale</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 36px;">$0</div>
+                    <div class="stat-label">Shock Increases</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="section">
+            <div class="cta-box">
+                <h1 style="color: white; font-size: 48px; margin-bottom: 30px;">An Investment in HNB's Future</h1>
+                <p style="font-size: 20px; margin-bottom: 20px;">
+                    This proposal represents more than a software licensing agreement. It's a <strong>strategic partnership</strong> 
+                    to transform HNB into a unified, AI-powered engagement banking platform.
+                </p>
+                
+                <div style="margin: 40px 0;">
+                    <h2 style="color: var(--bb-accent); font-size: 32px; margin-bottom: 20px;">The Opportunity</h2>
+                    <p style="font-size: 18px;">Convert 5-10% of 2.8M customers into active wealth clients</p>
+                    <p style="font-size: 18px;">Redeploy equivalent of 220 RMs to value-adding activities</p>
+                    <p style="font-size: 18px;">Drive cost-to-income from 55-60% to 30-35%</p>
+                    <p style="font-size: 18px;">Establish HNB as the digital banking leader in Sri Lanka</p>
+                </div>
+                
+                <div style="margin: 40px 0;">
+                    <h2 style="color: var(--bb-accent); font-size: 32px; margin-bottom: 20px;">The Right Structure</h2>
+                    <p style="font-size: 18px;">✓ Y1 at $0.80M (lowest possible entry, 43% below original)</p>
+                    <p style="font-size: 18px;">✓ Phased ramp aligned to platform launch milestones</p>
+                    <p style="font-size: 18px;">✓ Milestone protections (launch delay safeguards)</p>
+                    <p style="font-size: 18px;">✓ Performance upside sharing (reward over-achievement)</p>
+                </div>
+                
+                <p style="font-size: 24px; margin-top: 40px; font-weight: 700;">
+                    We're ready to move forward together. Let's build the future of HNB.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <h2 style="color: white; margin-bottom: 20px;">Contact Information</h2>
+            <p><strong>Backbase Deal Team</strong></p>
+            <p>Email: hnb-deal-team@backbase.com</p>
+            <p>Phone: +31 20 465 8888</p>
+            <p style="margin-top: 30px; font-size: 14px;">
+                This proposal is valid for 90 days from February 10, 2026.<br>
+                Pricing is subject to final contract terms and scope confirmation.
+            </p>
+        </div>
+        
+    </div>
+</body>
+</html>

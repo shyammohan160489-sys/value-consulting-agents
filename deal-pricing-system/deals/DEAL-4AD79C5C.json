@@ -1,0 +1,74 @@
+{
+  "deal_id": "DEAL-4AD79C5C",
+  "deal_type": "new_logo",
+  "client": {
+    "name": "Hatton National Bank",
+    "region": "APAC",
+    "country": "Sri Lanka",
+    "segments": [
+      "wealth",
+      "retail",
+      "sme"
+    ],
+    "institution_size_users": 1000000,
+    "institution_size_employees": 3000,
+    "institution_size_aum": null,
+    "is_existing_customer": false,
+    "contract_start_date": null,
+    "contract_renewal_date": null,
+    "current_annual_spend": 0.0
+  },
+  "demand": {
+    "current_active_users": 1000000,
+    "year_1_users": 130000,
+    "year_2_users": 130000,
+    "year_3_users": 1880000,
+    "year_4_users": 1880000,
+    "year_5_users": 1880000,
+    "demand_firmness": "validated",
+    "planned_launches": [
+      "Y1: Wealth Management launch (130K users + onboarding)",
+      "Y3: Full Retail rollout (1.5M users)",
+      "Y3: SME Banking launch (250K users)"
+    ],
+    "assist_employees": 500,
+    "lending_aum": null
+  },
+  "scope": {
+    "currently_licensed": [],
+    "proposed_additions": [
+      "wealth_premium",
+      "onboarding_private",
+      "case_manager",
+      "retail_essential",
+      "sme_essential",
+      "assist_retail_premium"
+    ],
+    "hosting_model": "managed",
+    "ai_analytics_plans": null,
+    "services_scope": "Implementation + wealth onboarding customization"
+  },
+  "constraints": {
+    "client_concerns": [
+      "Y1 upfront cost too high ($1.4M in original quote)",
+      "Budget approval cycle requires lower initial commitment",
+      "Need gradual cost ramp aligned to business value and launch timeline"
+    ],
+    "arr_uplift_target_min": null,
+    "arr_uplift_target_max": null,
+    "sensitivities": [
+      "Must maintain approximately $8M total over 5 years",
+      "Y1/Y2 costs must be significantly lower than $1.4M for board approval",
+      "Willing to accept higher Y3-Y5 costs if early years reduced",
+      "Costs should align with launch milestones (Wealth Y1, Retail/SME Y3)"
+    ],
+    "tax_jurisdiction_preference": null,
+    "preferred_contract_years": 5,
+    "license_activation": "price_ramp",
+    "payment_terms": "Annual payment in advance",
+    "renewal_cap_pct": 8.0,
+    "notes": "Client rejected original quote due to high Y1 cost. Need pricing structure with lower Y1/Y2 (ideally under $1M) that ramps to full value by Y3-Y5. Total must remain ~$8M. Consider milestone-based or graduated pricing."
+  },
+  "created_at": "2026-02-10T10:09:00.305067",
+  "updated_at": "2026-02-10T10:09:00.308728"
+}

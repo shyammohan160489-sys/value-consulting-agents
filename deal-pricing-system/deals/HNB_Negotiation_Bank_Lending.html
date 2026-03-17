@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNB Negotiation Bank — Scope Options Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bb-primary: #1A1F71;
+            --bb-accent: #00B4D8;
+            --bb-dark: #0F1340;
+            --bb-light: #E8F4F8;
+            --bb-green: #28A745;
+            --bb-orange: #FF9500;
+            --bb-red: #DC3545;
+            --bb-purple: #6A4C93;
+            --bb-teal: #20C997;
+            --glass: rgba(255,255,255,0.06);
+            --glass-border: rgba(255,255,255,0.12);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#000; color:#fff; overflow:hidden; }
+
+        .slide {
+            width:100vw; height:100vh; position:absolute; top:0; left:0;
+            display:none; opacity:0; transition:opacity 0.4s ease;
+            padding:60px 80px; flex-direction:column;
+        }
+        .slide.active { display:flex; opacity:1; }
+
+        .nav { position:fixed; bottom:30px; right:40px; display:flex; gap:12px; z-index:1000; }
+        .nav button {
+            width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:18px; cursor:pointer;
+        }
+        .nav button:hover { background:var(--bb-accent); border-color:var(--bb-accent); }
+        .counter { position:fixed; bottom:40px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.4); font-size:13px; z-index:1000; }
+        .doc-label { position:fixed; top:20px; left:40px; color:rgba(255,255,255,0.2); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:2px; z-index:1000; }
+
+        .dark { background:linear-gradient(135deg, #050818 0%, #0a0f2e 100%); }
+        .stitle { font-size:40px; font-weight:700; margin-bottom:8px; background:linear-gradient(90deg,var(--bb-accent),#fff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .ssub { font-size:17px; color:rgba(255,255,255,0.5); font-weight:300; margin-bottom:40px; }
+        .tag { display:inline-block; padding:6px 16px; border-radius:20px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+
+        .glass-card {
+            background:var(--glass); border:1px solid var(--glass-border);
+            border-radius:16px; padding:26px; backdrop-filter:blur(8px);
+        }
+
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:32px; flex:1; }
+        .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; }
+        .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+        .grid-5 { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+
+        .stat { text-align:center; }
+        .stat-v { font-size:40px; font-weight:900; color:var(--bb-accent); }
+        .stat-l { font-size:12px; color:rgba(255,255,255,0.6); margin-top:6px; line-height:1.4; }
+
+        .option-card {
+            border-radius:20px; padding:32px; height:100%; display:flex; flex-direction:column; position:relative;
+        }
+        .option-card.option-a {
+            background:linear-gradient(135deg, rgba(0,180,216,0.08), rgba(0,180,216,0.02));
+            border:2px solid rgba(0,180,216,0.3);
+        }
+        .option-card.option-b {
+            background:linear-gradient(135deg, rgba(106,76,147,0.10), rgba(106,76,147,0.03));
+            border:2px solid rgba(106,76,147,0.4);
+        }
+        .option-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; }
+        .option-name { font-size:24px; font-weight:700; margin-bottom:18px; }
+
+        .bullets { list-style:none; padding:0; }
+        .bullets li { padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:15px; display:flex; gap:12px; line-height:1.5; }
+        .bullets li:last-child { border-bottom:none; }
+        .bullets li .icon { font-size:16px; flex-shrink:0; }
+
+        .module-pill {
+            display:inline-flex; align-items:center; gap:8px; padding:8px 16px;
+            border-radius:12px; font-size:13px; font-weight:500; margin:3px;
+        }
+        .module-pill.kept { background:rgba(40,167,69,0.12); border:1px solid rgba(40,167,69,0.3); color:var(--bb-green); }
+        .module-pill.removed { background:rgba(220,53,69,0.12); border:1px solid rgba(220,53,69,0.3); color:var(--bb-red); text-decoration:line-through; opacity:0.7; }
+        .module-pill.added { background:rgba(106,76,147,0.15); border:1px solid rgba(106,76,147,0.4); color:#B794F4; }
+
+        .compare-table { width:100%; border-collapse:collapse; }
+        .compare-table th, .compare-table td { padding:12px 16px; text-align:center; }
+        .compare-table thead th { background:var(--bb-primary); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+        .compare-table thead th:first-child { text-align:left; border-radius:8px 0 0 0; }
+        .compare-table thead th:last-child { border-radius:0 8px 0 0; }
+        .compare-table tbody td { border-bottom:1px solid rgba(255,255,255,0.06); font-size:14px; }
+        .compare-table tbody td:first-child { text-align:left; }
+        .compare-table .a-col { color:var(--bb-accent); }
+        .compare-table .b-col { color:#B794F4; }
+        .compare-table .total-row { background:rgba(26,31,113,0.4); font-weight:700; }
+        .compare-table .delta-row { background:rgba(255,149,0,0.08); }
+        .compare-table .highlight { background:rgba(40,167,69,0.1); }
+
+        .impact-row { display:flex; align-items:center; gap:16px; margin:10px 0; }
+        .impact-label { width:180px; font-size:13px; color:rgba(255,255,255,0.7); text-align:right; flex-shrink:0; }
+        .impact-bar-track { flex:1; height:26px; background:rgba(255,255,255,0.04); border-radius:6px; position:relative; overflow:hidden; display:flex; }
+        .impact-bar-a { height:100%; border-radius:6px 0 0 6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; }
+
+        @media print { .slide { page-break-after:always; display:block !important; opacity:1 !important; position:relative; } .nav,.counter,.doc-label{display:none;} }
+    </style>
+</head>
+<body>
+
+<div class="doc-label">Internal &mdash; Negotiation Preparation</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: COVER                                                -->
+<!-- ============================================================ -->
+<div class="slide active dark" id="s1">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+        <div class="tag" style="background:rgba(106,76,147,0.2);color:#B794F4;">Internal Negotiation Bank</div>
+        <h1 style="font-size:60px;font-weight:900;margin-bottom:16px;background:linear-gradient(90deg,#fff,var(--bb-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">HNB Scope Options</h1>
+        <h2 style="font-size:26px;font-weight:300;color:rgba(255,255,255,0.6);margin-bottom:12px;">Retail Banking vs. Lending Capability</h2>
+        <p style="font-size:16px;color:rgba(255,255,255,0.35);margin-bottom:50px;">Backup scenario if HNB requests lending in the deal</p>
+
+        <div class="grid-4" style="max-width:1000px;width:100%;">
+            <div class="glass-card stat"><div class="stat-v">$8.0M</div><div class="stat-l">Option A<br>(Current Proposal)</div></div>
+            <div class="glass-card stat"><div class="stat-v" style="color:#B794F4;">$8.75M</div><div class="stat-l">Option B<br>(With Lending)</div></div>
+            <div class="glass-card stat"><div class="stat-v" style="color:var(--bb-orange);">+$750K</div><div class="stat-l">Wealth Migration<br>User Fees (5yr)</div></div>
+            <div class="glass-card stat"><div class="stat-v" style="font-size:32px;">50K/yr</div><div class="stat-l">Retail &rarr; Wealth<br>Migration Rate</div></div>
+        </div>
+
+        <div class="glass-card" style="max-width:1000px;width:100%;margin-top:40px;border-color:rgba(106,76,147,0.3);">
+            <p style="font-size:14px;line-height:1.7;color:rgba(255,255,255,0.7);text-align:center;">
+                <strong style="color:#B794F4;">Purpose:</strong> If HNB asks to include Backbase Lending, this analysis shows
+                two scope configurations. Retail Banking module is replaced by Lending &mdash;
+                but retail-to-wealth upgrades <strong>still happen</strong>. Those 50K customers/year migrate onto the
+                Wealth platform at wealth user fee rates, adding <strong>$750K</strong> over 5 years.
+            </p>
+        </div>
+
+        <p style="margin-top:30px;font-size:13px;color:rgba(255,255,255,0.2);">February 2026 &nbsp;|&nbsp; Backbase Deal Team &nbsp;|&nbsp; Not for client distribution</p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: CONTEXT                                              -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s2">
+    <div class="stitle">Why This Analysis</div>
+    <div class="ssub">Preparing for HNB's potential ask to include lending capabilities</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="glass-card" style="margin-bottom:20px;">
+                <div class="tag" style="background:rgba(0,180,216,0.15);color:var(--bb-accent);">Current Proposal</div>
+                <h3 style="font-size:18px;margin-bottom:12px;">Wealth + Retail + SME</h3>
+                <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:12px;">
+                    Retail customers use <strong>Retail Essential</strong> on Backbase. When they qualify for wealth services,
+                    they upgrade within the platform. Retail users are charged at <strong>retail user fee rates</strong>.
+                </p>
+                <div style="display:flex;flex-wrap:wrap;gap:3px;">
+                    <span class="module-pill kept">Wealth Premium</span>
+                    <span class="module-pill kept">Onboarding</span>
+                    <span class="module-pill kept">Retail Essential</span>
+                    <span class="module-pill kept">SME Essential</span>
+                    <span class="module-pill kept">Assist Premium</span>
+                    <span class="module-pill kept">Case Manager</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="glass-card" style="margin-bottom:20px;border-color:rgba(106,76,147,0.3);">
+                <div class="tag" style="background:rgba(106,76,147,0.15);color:#B794F4;">Potential HNB Ask</div>
+                <h3 style="font-size:18px;margin-bottom:12px;">"Can we add Lending?"</h3>
+                <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:12px;">
+                    HNB's Assessment Report (p.5) mentions <strong>"deposits, lending and group investments"</strong>
+                    as part of the wealth vision. If they want Lending within the same budget, Retail Essential is removed.
+                </p>
+                <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">
+                    <strong style="color:#B794F4;">Key implication:</strong> Retail-to-wealth conversions still happen, but those
+                    50K customers/year go <strong>directly onto the Wealth platform</strong> at wealth user fee rates &mdash;
+                    not the cheaper retail rates.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card" style="margin-top:auto;">
+        <div class="grid-4">
+            <div style="text-align:center;">
+                <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:6px;">Retail Essential (removed)</div>
+                <div style="font-size:24px;font-weight:700;color:var(--bb-red);">-$2.0M</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.4);">Base + User over 5yr</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:6px;">Lending (added)</div>
+                <div style="font-size:24px;font-weight:700;color:#B794F4;">+$2.0M</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.4);">Flat fee allocation</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:6px;">Wealth Migration Fees</div>
+                <div style="font-size:24px;font-weight:700;color:var(--bb-orange);">+$750K</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.4);">50K users/yr @ $1.50/user</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:6px;">Option B Total</div>
+                <div style="font-size:24px;font-weight:700;color:#B794F4;">$8.75M</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.4);">vs $8.0M in Option A</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: OPTION A — CURRENT (RETAIL)                          -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s3">
+    <div class="stitle">Option A: Digital Channel Transformation</div>
+    <div class="ssub">Current proposal &mdash; Wealth + Retail + SME on Backbase &mdash; $8.0M total</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="option-card option-a">
+                <div class="option-label" style="color:var(--bb-accent);">Option A &mdash; Current Proposal</div>
+                <div class="option-name" style="color:var(--bb-accent);">All Segments on Backbase</div>
+
+                <h4 style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Modules</h4>
+                <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:20px;">
+                    <span class="module-pill kept">Wealth Premium</span>
+                    <span class="module-pill kept">Onboarding</span>
+                    <span class="module-pill kept">Retail Essential</span>
+                    <span class="module-pill kept">SME Essential</span>
+                    <span class="module-pill kept">Assist Premium</span>
+                    <span class="module-pill kept">Case Manager</span>
+                </div>
+
+                <h4 style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Wealth User Base</h4>
+                <div class="grid-5" style="text-align:center;margin-bottom:16px;">
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y1</div><div style="font-size:18px;font-weight:700;">130K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y2</div><div style="font-size:18px;font-weight:700;">130K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y3</div><div style="font-size:18px;font-weight:700;">130K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y4</div><div style="font-size:18px;font-weight:700;">130K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y5</div><div style="font-size:18px;font-weight:700;">130K</div></div>
+                </div>
+                <p style="font-size:12px;color:rgba(255,255,255,0.4);">Retail-to-wealth conversions stay on Retail Essential at retail rates. Wealth base stays flat.</p>
+
+                <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(0,180,216,0.2);">
+                    <div style="font-size:22px;font-weight:700;color:var(--bb-accent);">$8.0M <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,0.4);">/ 5 years / 13% CAGR</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="glass-card" style="margin-bottom:16px;">
+                <h3 style="font-size:16px;color:var(--bb-accent);margin-bottom:12px;">What HNB Gets</h3>
+                <ul class="bullets" style="font-size:14px;">
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Unified digital experience</strong> across Wealth, Retail, and SME on one platform</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>1.88M users on Backbase</strong> from Y3 &mdash; full digital modernisation</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Retail-to-wealth conversion at retail rates</strong> &mdash; 1.5M retail users identified and nurtured via modern platform</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Cost-to-serve reduction</strong> &mdash; massive volume goes self-service</li>
+                </ul>
+            </div>
+
+            <div class="glass-card">
+                <h3 style="font-size:16px;color:var(--bb-orange);margin-bottom:12px;">What HNB Doesn't Get</h3>
+                <ul class="bullets" style="font-size:14px;">
+                    <li><span class="icon" style="color:var(--bb-orange);">&#10007;</span> No digital loan origination or lifecycle management</li>
+                    <li><span class="icon" style="color:var(--bb-orange);">&#10007;</span> Lending modernisation deferred to a future phase</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: OPTION B — LENDING + WEALTH MIGRATION                -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s4">
+    <div class="stitle">Option B: Wealth + Lending Focus</div>
+    <div class="ssub">Replace Retail Essential with Lending &mdash; retail conversions migrate to Wealth platform</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="option-card option-b">
+                <div class="option-label" style="color:#B794F4;">Option B &mdash; Lending Alternative</div>
+                <div class="option-name" style="color:#B794F4;">Lending + Wealth Migration</div>
+
+                <h4 style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Modules</h4>
+                <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;">
+                    <span class="module-pill kept">Wealth Premium</span>
+                    <span class="module-pill kept">Onboarding</span>
+                    <span class="module-pill added">Backbase Lending</span>
+                    <span class="module-pill kept">SME Essential</span>
+                    <span class="module-pill kept">Assist Premium</span>
+                    <span class="module-pill kept">Case Manager</span>
+                </div>
+                <div style="margin-bottom:16px;"><span class="module-pill removed">Retail Essential</span></div>
+
+                <h4 style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Wealth User Base (grows with migration)</h4>
+                <div class="grid-5" style="text-align:center;margin-bottom:8px;">
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y1</div><div style="font-size:18px;font-weight:700;">130K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y2</div><div style="font-size:18px;font-weight:700;color:#B794F4;">180K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y3</div><div style="font-size:18px;font-weight:700;color:#B794F4;">230K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y4</div><div style="font-size:18px;font-weight:700;color:#B794F4;">280K</div></div>
+                    <div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Y5</div><div style="font-size:18px;font-weight:700;color:#B794F4;">330K</div></div>
+                </div>
+                <p style="font-size:12px;color:#B794F4;">+50K retail-to-wealth conversions/year migrate directly onto Wealth platform</p>
+
+                <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(106,76,147,0.3);">
+                    <div style="font-size:22px;font-weight:700;color:#B794F4;">$8.75M <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,0.4);">/ 5 years / 13% CAGR + user fees</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="glass-card" style="margin-bottom:16px;">
+                <h3 style="font-size:16px;color:#B794F4;margin-bottom:12px;">What HNB Gets</h3>
+                <ul class="bullets" style="font-size:14px;">
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>End-to-end digital lending</strong> &mdash; application, decisioning, lifecycle</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Wealth + Lending synergy</strong> &mdash; portfolio loans, property financing for HNW</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Retail-to-wealth conversion still happens</strong> &mdash; 50K customers/year migrate to Wealth platform</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Interest income growth</strong> &mdash; digital origination drives loan book expansion</li>
+                </ul>
+            </div>
+
+            <div class="glass-card" style="margin-bottom:16px;">
+                <h3 style="font-size:16px;color:var(--bb-orange);margin-bottom:12px;">What HNB Doesn't Get</h3>
+                <ul class="bullets" style="font-size:14px;">
+                    <li><span class="icon" style="color:var(--bb-red);">&#10007;</span> <strong>Retail banking NOT on Backbase</strong> &mdash; existing ~1M retail users stay on current platform</li>
+                    <li><span class="icon" style="color:var(--bb-red);">&#10007;</span> <strong>No unified digital front door</strong> for all segments &mdash; only Wealth + SME on Backbase</li>
+                </ul>
+            </div>
+
+            <div class="glass-card" style="border-color:rgba(255,149,0,0.3);">
+                <h3 style="font-size:16px;color:var(--bb-orange);margin-bottom:8px;">Price Premium: +$750K</h3>
+                <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;">
+                    Migrated customers are charged at <strong>wealth user fee rates</strong> ($1.50/user)
+                    instead of retail rates. 200K cumulative migrations over Y2-Y5 add $750K to the deal.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: PRICING IMPACT — YEAR-BY-YEAR                        -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s5">
+    <div class="stitle">Pricing Impact: Year-by-Year</div>
+    <div class="ssub">How the wealth user migration changes the cost in Option B</div>
+
+    <table class="compare-table">
+        <thead>
+            <tr>
+                <th style="text-align:left;">Year</th>
+                <th>Wealth Users<br><span style="font-weight:400;font-size:10px;opacity:0.7;">Option B</span></th>
+                <th>Migrated<br><span style="font-weight:400;font-size:10px;opacity:0.7;">Cumulative</span></th>
+                <th><span style="color:var(--bb-accent);">Option A</span><br><span style="font-weight:400;font-size:10px;opacity:0.7;">13% CAGR</span></th>
+                <th>Migration<br><span style="font-weight:400;font-size:10px;opacity:0.7;">Fee @ $1.50/user</span></th>
+                <th><span style="color:#B794F4;">Option B</span><br><span style="font-weight:400;font-size:10px;opacity:0.7;">Total</span></th>
+                <th>Delta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">Y1</td>
+                <td>130,000</td>
+                <td style="color:rgba(255,255,255,0.4);">0</td>
+                <td class="a-col">$1,234,516</td>
+                <td style="color:rgba(255,255,255,0.4);">$0</td>
+                <td class="b-col">$1,234,516</td>
+                <td style="color:rgba(255,255,255,0.4);">$0</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Y2</td>
+                <td style="color:#B794F4;">180,000</td>
+                <td style="color:#B794F4;">+50,000</td>
+                <td class="a-col">$1,395,003</td>
+                <td style="color:var(--bb-orange);">+$75,000</td>
+                <td class="b-col" style="font-weight:600;">$1,470,003</td>
+                <td style="color:var(--bb-orange);">+$75K</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Y3</td>
+                <td style="color:#B794F4;">230,000</td>
+                <td style="color:#B794F4;">+100,000</td>
+                <td class="a-col">$1,576,354</td>
+                <td style="color:var(--bb-orange);">+$150,000</td>
+                <td class="b-col" style="font-weight:600;">$1,726,354</td>
+                <td style="color:var(--bb-orange);">+$150K</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Y4</td>
+                <td style="color:#B794F4;">280,000</td>
+                <td style="color:#B794F4;">+150,000</td>
+                <td class="a-col">$1,781,280</td>
+                <td style="color:var(--bb-orange);">+$225,000</td>
+                <td class="b-col" style="font-weight:600;">$2,006,280</td>
+                <td style="color:var(--bb-orange);">+$225K</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Y5</td>
+                <td style="color:#B794F4;">330,000</td>
+                <td style="color:#B794F4;">+200,000</td>
+                <td class="a-col">$2,012,846</td>
+                <td style="color:var(--bb-orange);">+$300,000</td>
+                <td class="b-col" style="font-weight:600;">$2,312,846</td>
+                <td style="color:var(--bb-orange);">+$300K</td>
+            </tr>
+            <tr class="total-row">
+                <td>TOTAL</td>
+                <td>330,000</td>
+                <td>200,000</td>
+                <td class="a-col" style="font-size:16px;">$8,000,000</td>
+                <td style="color:var(--bb-orange);font-size:16px;">+$750,000</td>
+                <td class="b-col" style="font-size:16px;">$8,750,000</td>
+                <td style="color:var(--bb-orange);font-size:16px;">+$750K</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="grid-2" style="margin-top:24px;flex:unset;">
+        <div class="glass-card" style="border-color:rgba(0,180,216,0.3);">
+            <h3 style="font-size:16px;color:var(--bb-accent);margin-bottom:10px;">Option A: Wealth stays at 130K</h3>
+            <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">
+                Retail-to-wealth conversions use the <strong>Retail Essential</strong> module at retail user fee rates.
+                Converts browse wealth products while remaining on the cheaper retail tier.
+                Migration to the wealth tier happens <strong>within the platform at no incremental cost</strong>.
+            </p>
+        </div>
+
+        <div class="glass-card" style="border-color:rgba(106,76,147,0.3);">
+            <h3 style="font-size:16px;color:#B794F4;margin-bottom:10px;">Option B: Wealth grows to 330K</h3>
+            <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">
+                Without Retail on Backbase, converted customers go <strong>directly onto the Wealth Premium</strong> platform.
+                Each migrated user is charged at the <strong>wealth user fee rate ($1.50/user/yr)</strong>.
+                200K cumulative migrations by Y5 add <strong style="color:var(--bb-orange);">$750K</strong> to the total deal.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: SIDE-BY-SIDE COMPARISON                              -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s6">
+    <div class="stitle">Side-by-Side Comparison</div>
+    <div class="ssub">Option A is cheaper AND has more validated benefits</div>
+
+    <table class="compare-table">
+        <thead>
+            <tr>
+                <th style="text-align:left;width:26%;">Dimension</th>
+                <th style="width:37%;"><span style="color:var(--bb-accent);">Option A: Retail + Wealth</span></th>
+                <th style="width:37%;"><span style="color:#B794F4;">Option B: Lending + Wealth</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="delta-row">
+                <td style="font-weight:700;">5-Year Total</td>
+                <td class="a-col highlight" style="font-weight:700;font-size:16px;">$8.0M</td>
+                <td class="b-col" style="font-weight:700;font-size:16px;">$8.75M (+$750K)</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Annual Ramp</td>
+                <td class="a-col">13% CAGR</td>
+                <td class="b-col">13% CAGR + migration fees</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Retail Banking</td>
+                <td class="a-col highlight">On Backbase (1.5M users from Y3)</td>
+                <td class="b-col" style="color:var(--bb-orange);">NOT on Backbase &mdash; stays on current system</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Retail-to-Wealth Path</td>
+                <td class="a-col">Seamless upgrade within platform at retail rates</td>
+                <td class="b-col">50K/yr migrate directly to Wealth at wealth rates</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Wealth Users by Y5</td>
+                <td class="a-col">130,000 (flat)</td>
+                <td class="b-col highlight" style="font-weight:700;">330,000 (growing)</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Total Users on Backbase</td>
+                <td class="a-col highlight" style="font-weight:700;">1.88M from Y3</td>
+                <td class="b-col">330K Wealth + 250K SME = 580K by Y5</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Lending Capability</td>
+                <td class="a-col" style="color:var(--bb-orange);">Not included</td>
+                <td class="b-col highlight" style="font-weight:700;">Full digital origination + lifecycle</td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Assessed Benefits</td>
+                <td class="a-col highlight" style="font-weight:700;">$20-25M (fully validated)</td>
+                <td class="b-col">$13-26M (lending unvalidated)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="glass-card" style="margin-top:16px;">
+        <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,0.8);text-align:center;">
+            <strong style="color:var(--bb-accent);">Key insight:</strong> Option B costs <strong style="color:var(--bb-orange);">$750K more</strong> because
+            retail-to-wealth conversions are charged at wealth premium rates instead of retail rates.
+            HNB gets lending but <strong>pays more</strong> and has <strong>fewer users on the platform</strong> (580K vs 1.88M).
+        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: BENEFITS IMPACT                                      -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s7">
+    <div class="stitle">Benefits Impact Analysis</div>
+    <div class="ssub">How the $20-25M benefits case changes (from HNB Assessment p.117)</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="glass-card" style="height:100%;border-color:rgba(0,180,216,0.3);">
+                <h3 style="font-size:16px;color:var(--bb-accent);margin-bottom:16px;">Option A: Full Assessment Benefits</h3>
+                <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">1.5M retail users on Backbase enables full retail upgrade value</p>
+
+                <div class="impact-row">
+                    <div class="impact-label">Retail Upgrade</div>
+                    <div class="impact-bar-track">
+                        <div class="impact-bar-a" style="width:100%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));border-radius:6px;">$10-15M</div>
+                    </div>
+                </div>
+                <div class="impact-row">
+                    <div class="impact-label">RM Capacity (digital)</div>
+                    <div class="impact-bar-track">
+                        <div class="impact-bar-a" style="width:55%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));border-radius:6px;">$5-10M</div>
+                    </div>
+                </div>
+                <div class="impact-row">
+                    <div class="impact-label">Servicing + Other</div>
+                    <div class="impact-bar-track">
+                        <div class="impact-bar-a" style="width:12%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));border-radius:6px;font-size:10px;">$2-3M</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:auto;padding-top:14px;border-top:1px solid rgba(0,180,216,0.2);text-align:center;">
+                    <div style="font-size:13px;color:rgba(255,255,255,0.4);">Total Benefits</div>
+                    <div style="font-size:32px;font-weight:900;color:var(--bb-accent);">$20-25M</div>
+                    <div style="font-size:12px;color:var(--bb-green);font-weight:600;">Assessment intact &nbsp;|&nbsp; ROI: 212%</div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="glass-card" style="height:100%;border-color:rgba(106,76,147,0.3);">
+                <h3 style="font-size:16px;color:#B794F4;margin-bottom:16px;">Option B: Modified Benefits</h3>
+                <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Retail upgrade reduced (50K/yr vs 1.5M), lending benefits unvalidated</p>
+
+                <div class="impact-row">
+                    <div class="impact-label" style="color:var(--bb-orange);">Retail Upgrade (reduced)</div>
+                    <div class="impact-bar-track">
+                        <div class="impact-bar-a" style="width:40%;background:linear-gradient(90deg,rgba(255,149,0,0.4),rgba(255,149,0,0.2));border-radius:6px;font-size:11px;">$5-8M</div>
+                    </div>
+                </div>
+                <div class="impact-row">
+                    <div class="impact-label">RM Capacity (digital)</div>
+                    <div class="impact-bar-track">
+                        <div class="impact-bar-a" style="width:55%;background:linear-gradient(90deg,#4A3060,#B794F4);border-radius:6px;">$5-10M</div>
+                    </div>
+                </div>
+                <div class="impact-row">
+                    <div class="impact-label">Servicing + Other</div>
+                    <div class="impact-bar-track">
+                        <div class="impact-bar-a" style="width:12%;background:linear-gradient(90deg,#4A3060,#B794F4);border-radius:6px;font-size:10px;">$2-3M</div>
+                    </div>
+                </div>
+                <div class="impact-row">
+                    <div class="impact-label" style="color:#B794F4;font-weight:600;">NEW: Lending</div>
+                    <div class="impact-bar-track" style="border:1px dashed rgba(106,76,147,0.4);">
+                        <div class="impact-bar-a" style="width:35%;background:linear-gradient(90deg,rgba(106,76,147,0.3),rgba(106,76,147,0.15));border-radius:6px;font-size:11px;">$3-8M est.</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:auto;padding-top:14px;border-top:1px solid rgba(106,76,147,0.2);text-align:center;">
+                    <div style="font-size:13px;color:rgba(255,255,255,0.4);">Total Benefits</div>
+                    <div style="font-size:32px;font-weight:900;color:#B794F4;">$15-29M</div>
+                    <div style="font-size:12px;color:var(--bb-orange);font-weight:600;">Wider range &nbsp;|&nbsp; Lending unvalidated</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card" style="margin-top:12px;border-color:rgba(255,149,0,0.3);background:linear-gradient(90deg,rgba(255,149,0,0.04),transparent);">
+        <p style="font-size:14px;line-height:1.7;color:rgba(255,255,255,0.8);text-align:center;">
+            <strong style="color:var(--bb-orange);">Key point:</strong> In Option B, the retail-to-wealth conversion still generates value &mdash;
+            50K users/year migrate to wealth, producing an estimated <strong>$5-8M</strong> (vs $10-15M with full retail platform).
+            Lending adds <strong>$3-8M in new benefits</strong>, but this hasn't been validated with HNB.
+            Option A has <strong>higher certainty at lower cost</strong>.
+        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: STRATEGIC TRADE-OFF                                  -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s8">
+    <div class="stitle">The Strategic Trade-Off</div>
+    <div class="ssub">What matters more: platform breadth or lending capability?</div>
+
+    <div class="grid-2">
+        <div>
+            <h3 style="font-size:20px;color:var(--bb-accent);margin-bottom:20px;">Option A wins if...</h3>
+            <ul class="bullets">
+                <li><span class="icon" style="color:var(--bb-accent);">01</span> <strong>"Unified digital front door"</strong> is a board priority &mdash; HNB's #1 stated objective</li>
+                <li><span class="icon" style="color:var(--bb-accent);">02</span> <strong>Cost-to-serve reduction</strong> matters &mdash; 1.88M users going digital vs 580K</li>
+                <li><span class="icon" style="color:var(--bb-accent);">03</span> <strong>Budget certainty</strong> &mdash; $8.0M flat vs $8.75M with migration fees</li>
+                <li><span class="icon" style="color:var(--bb-accent);">04</span> <strong>Validated business case</strong> &mdash; $20-25M benefits already agreed with HNB team</li>
+            </ul>
+        </div>
+
+        <div>
+            <h3 style="font-size:20px;color:#B794F4;margin-bottom:20px;">Option B wins if...</h3>
+            <ul class="bullets">
+                <li><span class="icon" style="color:#B794F4;">01</span> <strong>Loan book growth</strong> is the #1 revenue priority over channel modernisation</li>
+                <li><span class="icon" style="color:#B794F4;">02</span> <strong>Existing retail digital is "good enough"</strong> &mdash; 1M users already active</li>
+                <li><span class="icon" style="color:#B794F4;">03</span> <strong>Wealth + Lending synergy</strong> is critical for HNW clients</li>
+                <li><span class="icon" style="color:#B794F4;">04</span> <strong>$750K premium is acceptable</strong> for the added lending capability</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="grid-3" style="margin-top:24px;">
+        <div class="glass-card" style="text-align:center;border-color:rgba(0,180,216,0.3);">
+            <div style="font-size:12px;color:var(--bb-accent);font-weight:600;margin-bottom:8px;">OPTION A — LOWER COST, HIGHER CERTAINTY</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
+                $8.0M with <strong>$20-25M validated benefits</strong>. Full platform for 1.88M users.
+                No new assessment needed. Board case already built.
+            </div>
+        </div>
+        <div class="glass-card" style="text-align:center;border-color:rgba(106,76,147,0.3);">
+            <div style="font-size:12px;color:#B794F4;font-weight:600;margin-bottom:8px;">OPTION B — HIGHER COST, MORE RISK</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
+                $8.75M with <strong>$15-29M mixed benefits</strong>. Lending value is plausible
+                but needs a supplementary assessment to validate.
+            </div>
+        </div>
+        <div class="glass-card" style="text-align:center;border-color:rgba(40,167,69,0.3);">
+            <div style="font-size:12px;color:var(--bb-green);font-weight:600;margin-bottom:8px;">BEST OUTCOME (UPSELL)</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
+                <strong>Option A now + Lending in Phase 2.</strong> Total deal grows to
+                <strong>$9.5-10M</strong> with both capabilities fully validated.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: RECOMMENDED NEGOTIATION POSITION                     -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s9">
+    <div class="stitle">Recommended Negotiation Position</div>
+    <div class="ssub">How to respond if HNB asks for Lending</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="glass-card" style="height:100%;">
+                <div class="tag" style="background:rgba(40,167,69,0.15);color:var(--bb-green);">Primary Position</div>
+                <h3 style="font-size:20px;margin-bottom:16px;color:var(--bb-green);">Keep Retail, Phase Lending</h3>
+
+                <ul class="bullets" style="font-size:14px;">
+                    <li><span class="icon" style="color:var(--bb-green);">1</span>
+                        <span><strong>"Retail-to-wealth conversion is your #1 value driver at $10-15M."</strong>
+                        With Retail on Backbase, those conversions happen at retail rates. Without it, each convert costs more on the wealth tier.</span>
+                    </li>
+                    <li><span class="icon" style="color:var(--bb-green);">2</span>
+                        <span><strong>"Lending is a natural Phase 2."</strong>
+                        Once Wealth is live (Y2), we scope Lending with its own validated business case and incremental budget.</span>
+                    </li>
+                    <li><span class="icon" style="color:var(--bb-green);">3</span>
+                        <span><strong>"1.88M users on one platform = better lending decisions later."</strong>
+                        Retail transaction data improves credit scoring when Lending is added in Phase 2.</span>
+                    </li>
+                </ul>
+
+                <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(40,167,69,0.2);">
+                    <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;">
+                        <strong style="color:var(--bb-green);">Give-to-get:</strong> Complimentary
+                        <strong>Lending Discovery Workshop</strong> (2-3 days) as part of the deal.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="glass-card" style="margin-bottom:16px;border-color:rgba(106,76,147,0.3);">
+                <div class="tag" style="background:rgba(106,76,147,0.15);color:#B794F4;">Fallback Position</div>
+                <h3 style="font-size:20px;margin-bottom:12px;color:#B794F4;">Offer the Scope Trade at $8.75M</h3>
+
+                <ul class="bullets" style="font-size:14px;">
+                    <li><span class="icon" style="color:#B794F4;">1</span>
+                        <span>Present both options. Be transparent about the <strong>$750K premium</strong> from wealth migration fees.</span>
+                    </li>
+                    <li><span class="icon" style="color:#B794F4;">2</span>
+                        <span>Show the <strong>benefits impact</strong>: validated $20-25M vs mixed $15-29M range.</span>
+                    </li>
+                    <li><span class="icon" style="color:#B794F4;">3</span>
+                        <span>Recommend a <strong>lending mini-assessment</strong> (4-6 weeks) to quantify lending benefits before committing.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glass-card" style="border-color:rgba(40,167,69,0.3);background:linear-gradient(135deg,rgba(40,167,69,0.05),transparent);">
+                <div class="tag" style="background:rgba(40,167,69,0.15);color:var(--bb-green);">Best Outcome</div>
+                <h3 style="font-size:18px;margin-bottom:10px;color:var(--bb-green);">Both: Option A + Lending Expansion</h3>
+
+                <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">
+                    HNB takes Option A ($8M) + adds Lending as Y2-Y3 upsell (~$300-400K/yr).
+                    Total deal: <strong style="color:var(--bb-green);">$9.5-10M</strong>. Both capabilities.
+                    Both business cases validated. No compromises.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: TALK TRACK                                          -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s10">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+        <div class="tag" style="background:rgba(0,180,216,0.15);color:var(--bb-accent);">Summary</div>
+        <h1 style="font-size:44px;font-weight:900;margin-bottom:36px;background:linear-gradient(90deg,#fff,var(--bb-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Negotiation Talk Track</h1>
+
+        <div style="max-width:900px;width:100%;text-align:left;">
+            <div class="glass-card" style="margin-bottom:16px;">
+                <div style="display:flex;gap:16px;align-items:flex-start;">
+                    <div style="font-size:28px;font-weight:900;color:var(--bb-accent);flex-shrink:0;width:40px;">01</div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Acknowledge the interest</div>
+                        <div style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">"Lending is absolutely part of the Backbase vision for HNB. Your Assessment Report specifically mentions it as a component of the Wealth lighthouse."</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-bottom:16px;">
+                <div style="display:flex;gap:16px;align-items:flex-start;">
+                    <div style="font-size:28px;font-weight:900;color:var(--bb-accent);flex-shrink:0;width:40px;">02</div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Anchor on the cost implication</div>
+                        <div style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">"If we swap Retail for Lending, the retail-to-wealth conversions don't stop &mdash; but those 50,000 customers per year move onto the Wealth platform at wealth user fees. That adds $750K to the 5-year total, making it $8.75M instead of $8M."</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-bottom:16px;">
+                <div style="display:flex;gap:16px;align-items:flex-start;">
+                    <div style="font-size:28px;font-weight:900;color:var(--bb-accent);flex-shrink:0;width:40px;">03</div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Redirect to the better path</div>
+                        <div style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">"Let's proceed with Wealth + Retail + SME at $8M, and include a complimentary Lending Discovery Workshop. By Year 2, we'll have a validated lending business case for Phase 2."</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div style="display:flex;gap:16px;align-items:flex-start;">
+                    <div style="font-size:28px;font-weight:900;color:var(--bb-orange);flex-shrink:0;width:40px;">04</div>
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--bb-orange);">If they insist (fallback only)</div>
+                        <div style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">"We can do this at $8.75M. Here's exactly how the scope, pricing, and benefits change..."
+                        Then walk through slides 3-7 of this deck.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p style="margin-top:30px;font-size:13px;color:rgba(255,255,255,0.2);">Internal preparation document &nbsp;|&nbsp; Backbase Deal Team &nbsp;|&nbsp; Feb 2026</p>
+    </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+    <button onclick="prev()">&#8592;</button>
+    <button onclick="next()">&#8594;</button>
+</div>
+<div class="counter"><span id="cur">1</span> / <span id="tot">10</span></div>
+
+<script>
+    let c=1, t=10;
+    document.getElementById('tot').textContent=t;
+    function show(n){
+        if(n>t) c=1; else if(n<1) c=t; else c=n;
+        document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+        document.getElementById('s'+c).classList.add('active');
+        document.getElementById('cur').textContent=c;
+    }
+    function next(){show(c+1)} function prev(){show(c-1)}
+    document.addEventListener('keydown',e=>{
+        if(e.key==='ArrowRight'||e.key===' ')next();
+        if(e.key==='ArrowLeft')prev();
+    });
+    let tx=0;
+    document.addEventListener('touchstart',e=>tx=e.changedTouches[0].screenX);
+    document.addEventListener('touchend',e=>{let d=e.changedTouches[0].screenX-tx;if(d<-50)next();if(d>50)prev();});
+</script>
+</body>
+</html>

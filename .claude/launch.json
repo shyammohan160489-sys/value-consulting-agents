@@ -1,0 +1,53 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "schroders-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8091", "--directory", "Engagement/Schroders Group/Past working folder/schroders/2026-02_wealth_playback/outputs"],
+      "port": 8091
+    },
+    {
+      "name": "moneycorp-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8092", "--directory", "Engagement/Moneycorp"],
+      "port": 8092
+    },
+    {
+      "name": "schroders-commercial",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8093", "--directory", "Engagement/Schroders Group/Output"],
+      "port": 8093
+    },
+    {
+      "name": "bbva-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8094", "--directory", "engagements/bbva_spain/2026-02_wealth_ignite/outputs"],
+      "port": 8094
+    },
+    {
+      "name": "seb-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8095", "--directory", "Engagement/SEB/Output"],
+      "port": 8095
+    },
+    {
+      "name": "danske-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8096", "--directory", "/Users/shyam/claude-work/X/Final"],
+      "port": 8096
+    },
+    {
+      "name": "tfbank-pov",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8097", "--directory", "engagements/tf_bank_avarda/outputs"],
+      "port": 8097
+    },
+    {
+      "name": "banking-os-narrative",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8098", "--directory", "Engagement/Banking_OS_Sales_Narrative/Output"],
+      "port": 8098
+    }
+  ]
+}
