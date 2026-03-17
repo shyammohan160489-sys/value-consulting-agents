@@ -1,0 +1,78 @@
+{
+  "deal_id": "DEAL-053CBE9B",
+  "deal_type": "upsell",
+  "client": {
+    "name": "CIH Bank",
+    "region": "EMEA",
+    "country": "Morocco",
+    "segments": [
+      "retail"
+    ],
+    "institution_size_users": 2000000,
+    "institution_size_employees": 5000,
+    "institution_size_aum": null,
+    "is_existing_customer": true,
+    "contract_start_date": null,
+    "contract_renewal_date": null,
+    "current_annual_spend": 1284426.0
+  },
+  "demand": {
+    "current_active_users": 2000000,
+    "year_1_users": 2000000,
+    "year_2_users": 2500000,
+    "year_3_users": 3000000,
+    "year_4_users": 3000000,
+    "year_5_users": 3500000,
+    "demand_firmness": "validated",
+    "planned_launches": [
+      "Banque Directe launch (April 2026) — new direct banking entity for digital sales",
+      "Managed Hosting migration (July 2026) — move from self-hosted to MH Enterprise 2",
+      "CLO activation (H2 2026) — activate 500K inactive customers via AI-powered campaigns",
+      "Family Banking, Pockets, TVP (2027+) — Ignite workshop roadmap items"
+    ],
+    "assist_employees": 50,
+    "lending_aum": null
+  },
+  "scope": {
+    "currently_licensed": [
+      "digital_banking_signature",
+      "digital_onboarding_retail",
+      "case_manager_50_users",
+      "digital_engage_premium_20_users",
+      "digital_assist_essentials_unlimited"
+    ],
+    "proposed_additions": [
+      "managed_hosting_enterprise_2",
+      "digital_assist_premium_50_users",
+      "customer_lifecycle_orchestrator"
+    ],
+    "hosting_model": "managed",
+    "ai_analytics_plans": "CLO for behavioral segmentation, next-best-offer, campaign orchestration targeting 500K inactive customers",
+    "services_scope": "Existing managed services contract covers implementation capacity"
+  },
+  "constraints": {
+    "client_concerns": [
+      "CIO is price-sensitive — got 65%+ discounts on current contract",
+      "Adding €1M+ to existing €1.3M/yr spend feels like doubling the bill",
+      "Budget needs steer-co approval — CIO defends but loses interest if numbers too high",
+      "Procurement doesn't interfere but CEO asks 'where is my cut' at the end"
+    ],
+    "arr_uplift_target_min": 1000000.0,
+    "arr_uplift_target_max": 1400000.0,
+    "sensitivities": [
+      "CIO needs to feel he negotiated well — leave room for a visible win",
+      "MH + DA pricing already shown at €751,659/yr — that number is anchored",
+      "CLO pricing NOT yet shared — this is the key variable",
+      "Current contract has 65%+5% discount — client expects similar treatment",
+      "Chinabank Philippines CLO model (fixed $140K + variable take rate) is a viable precedent"
+    ],
+    "tax_jurisdiction_preference": null,
+    "preferred_contract_years": 5,
+    "license_activation": "buy_upfront",
+    "payment_terms": "Annual in advance",
+    "renewal_cap_pct": 5.0,
+    "notes": "Two genuinely different options: Option 1 = Activation Partnership (low fixed CLO ~€150K + variable take rate on outcomes, total fixed ~€900K) inspired by Chinabank CLO model. Option 2 = Growth Bundle (all-inclusive flat ~€1.15M/yr, no variable). CIO narrative for Option 1: 'Under €1M fixed, we earn when you earn.' MH+DA already at €751K so CLO is the swing factor. Walk-away is €1M ARR. Opening at €1.15-1.4M depending on option. Business case shows €4.8M/yr value at stake — investment pays for itself even at 25% confidence."
+  },
+  "created_at": "2026-03-17T14:16:27.351699",
+  "updated_at": "2026-03-17T14:16:27.355872"
+}

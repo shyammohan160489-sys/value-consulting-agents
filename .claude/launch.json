@@ -34,7 +34,7 @@
     {
       "name": "danske-presentation",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8096", "--directory", "/Users/shyam/claude-work/X/Final"],
+      "runtimeArgs": ["-m", "http.server", "8096", "--directory", "Engagement/Danske Bank/Output"],
       "port": 8096
     },
     {
