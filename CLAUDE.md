@@ -363,6 +363,55 @@ Prezi-style zoom/fade HTML presentations using a template engine.
 **Templates:** `/templates/presentations/`
 - `prezi-template.html` - Starter template with scene type examples
 
+### /frontline-html — Frontline 2026 HTML Preview
+
+Interactive HTML presentation in the **Backbase Unified Frontline 2026** design system. For brainstorming and iterating on content before generating PPTX.
+
+**When to Use:**
+- Drafting and iterating on presentation content
+- Previewing slides before committing to PPTX
+- Quick visual sharing (self-contained HTML, zero dependencies)
+
+**Key Features:**
+- Single-file HTML with Inter font, navy/blue palette
+- Keyboard navigation (← → Space Home End) + dot nav + click nav
+- 9 component types: cover, divider, agenda, content, split comparison, showcase, architecture, stat cards, case study
+- Design tokens from `presentations/frontline-2026/design-tokens.json`
+
+**Usage:**
+```
+/frontline-html
+```
+
+**Technical Files:**
+- `tools/frontline_2026_html.py` — HTML builder class
+- `presentations/frontline-2026/` — Design system files
+
+### /frontline-slides — Frontline 2026 Google Slides PPTX
+
+PPTX builder optimized for **Google Slides import**. Uses the Backbase Unified Frontline 2026 design system at 20"x11.25" canvas with all Google Slides compatibility rules enforced.
+
+**When to Use:**
+- Building decks for collaborative editing in Google Slides
+- Final presentation output in the 2026 Backbase style
+- Any deck that needs to survive PPTX → Google Slides import without formatting issues
+
+**Key Features:**
+- 20"x11.25" canvas (Google Slides native resolution)
+- 15% text width buffer prevents text wrapping on import
+- Autofit disabled, no gradients/shadows/rotated text
+- Inter font with Libre Franklin fallback
+- 9 slide layout types matching the HTML counterpart
+
+**Usage:**
+```
+/frontline-slides
+```
+
+**Technical Files:**
+- `tools/frontline_2026_presenter.py` — PPTX builder class
+- `presentations/frontline-2026/` — Design system files
+
 ### /generate-roi-questionnaire - ROI Questionnaire Generator
 
 Generate a customized Business Case Questionnaire pre-populated with upstream agent data.

@@ -4,7 +4,7 @@
     {
       "name": "schroders-presentation",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8091", "--directory", "Engagement/Schroders Group/Past working folder/schroders/2026-02_wealth_playback/outputs"],
+      "runtimeArgs": ["-m", "http.server", "8091", "--directory", "Engagement/Schroders Group/Output"],
       "port": 8091
     },
     {
@@ -48,6 +48,24 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8098", "--directory", "Engagement/Banking_OS_Sales_Narrative/Output"],
       "port": 8098
+    },
+    {
+      "name": "cih-proposal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8099", "--directory", "Engagement/CIH Bank/Output"],
+      "port": 8099
+    },
+    {
+      "name": "absa-briefing",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8100", "--directory", "Engagement/Absa/Output"],
+      "port": 8100
+    },
+    {
+      "name": "frontline-2026-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8101", "--directory", "Engagement/Schroders Group/Output"],
+      "port": 8101
     }
   ]
 }

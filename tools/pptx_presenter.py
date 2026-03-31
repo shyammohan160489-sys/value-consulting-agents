@@ -293,11 +293,12 @@ class PptxPresenter:
         return tbl
 
     def _footer(self, slide, slide_number, dark=False):
-        """Add 'Backbase | n' footer at bottom-right."""
+        """Add 'Backbase  |  n' footer text at bottom-right."""
         text_color = self.MUTED if dark else self.SUB_TEXT
+        pipe_color = RGBColor(0xCB, 0xD5, 0xE1) if not dark else RGBColor(0x47, 0x55, 0x69)
         tb = slide.shapes.add_textbox(
-            self.SLIDE_W - Inches(1.8), self.SLIDE_H - Inches(0.4),
-            Inches(1.5), Inches(0.25)
+            self.SLIDE_W - Inches(2.0), self.SLIDE_H - Inches(0.42),
+            Inches(1.7), Inches(0.3)
         )
         tf = tb.text_frame
         tf.word_wrap = False
@@ -306,19 +307,19 @@ class PptxPresenter:
         # "Backbase" text
         r1 = p.add_run()
         r1.text = 'Backbase'
-        r1.font.size = Pt(8)
+        r1.font.size = Pt(10)
         r1.font.color.rgb = text_color
         r1.font.name = self.FONT
-        # separator
+        # pipe separator
         r2 = p.add_run()
-        r2.text = '  |  '
-        r2.font.size = Pt(8)
-        r2.font.color.rgb = text_color
+        r2.text = '   |   '
+        r2.font.size = Pt(10)
+        r2.font.color.rgb = pipe_color
         r2.font.name = self.FONT
         # slide number
         r3 = p.add_run()
         r3.text = str(slide_number)
-        r3.font.size = Pt(8)
+        r3.font.size = Pt(10)
         r3.font.color.rgb = text_color
         r3.font.name = self.FONT
 

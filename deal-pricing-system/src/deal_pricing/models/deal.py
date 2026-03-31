@@ -96,6 +96,9 @@ class ModuleScope(BaseModel):
     ai_analytics_plans: Optional[str] = None
     services_scope: Optional[str] = None
 
+    # Structured AI pricing configuration (replaces ai_analytics_plans for computation)
+    ai_pricing_config: Optional[dict] = None  # serialised AIPricingConfig
+
     @property
     def all_modules(self) -> list[str]:
         """All modules (current + proposed)."""

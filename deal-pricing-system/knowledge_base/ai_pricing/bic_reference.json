@@ -1,0 +1,93 @@
+{
+  "bic_model": {
+    "description": "Backbase Intelligence Credits (BICs) — a normalised unit of AI work. Each agent action has a defined BIC weight based on complexity.",
+    "weight_scale": {
+      "0.1": "Deterministic workflow step (rule-based routing, status update)",
+      "0.2": "Simple agent action (data lookup, field extraction)",
+      "0.5": "Agent reasoning + tool call (NBA calculation, compliance check)",
+      "0.7": "Document extraction — simple (OCR, classification)",
+      "1.0": "Standard agent action (document processing, summarisation)",
+      "1.5": "Document extraction — complex (multi-page KYC parsing)",
+      "2.0": "Multi-step agent reasoning (credit assessment, risk scoring)",
+      "3.0": "Multi-step agent plan (review briefing, case analysis)",
+      "5.0": "Complex orchestrated workflow (meeting summarisation, periodic review)"
+    }
+  },
+  "if_domain_base": {
+    "description": "Intelligence Fabric Domain Base — covers Agent Factory, AI gateway, orchestration, guardrails, prompt management, telemetry.",
+    "tiers": {
+      "entry": {
+        "label": "Entry Domain",
+        "annual_usd": 250000,
+        "includes": "Agent Factory access, AI gateway, basic orchestration, compliance guardrails"
+      },
+      "standard": {
+        "label": "Standard Domain",
+        "annual_usd": 350000,
+        "includes": "Entry + advanced model routing, multi-model support, enhanced observability"
+      },
+      "enterprise": {
+        "label": "Enterprise Domain",
+        "annual_usd": 500000,
+        "includes": "Standard + dedicated infrastructure, custom model hosting, SLA guarantees"
+      }
+    }
+  },
+  "bic_blocks": {
+    "description": "Pre-purchased BIC blocks. First block priced at premium; additional blocks at standard rate.",
+    "first_block": {
+      "size": 250000,
+      "price_usd": 45000
+    },
+    "additional_blocks": {
+      "size": 250000,
+      "price_usd": 39000
+    },
+    "notes": "BIC blocks are annual. Unused BICs do not roll over. Overage billed at the additional block rate pro-rated."
+  },
+  "compute_passthrough": {
+    "description": "Raw LLM inference costs passed through to the bank with an orchestration margin.",
+    "markup_pct": 15,
+    "model_rates_per_1k_tokens": {
+      "gpt-4o": {"input": 0.0025, "output": 0.010},
+      "gpt-4o-mini": {"input": 0.00015, "output": 0.0006},
+      "claude-sonnet": {"input": 0.003, "output": 0.015},
+      "claude-haiku": {"input": 0.0008, "output": 0.004},
+      "claude-opus": {"input": 0.015, "output": 0.075}
+    },
+    "notes": "Rates as of Q1 2026. LLM costs decline 30-50% annually — Backbase retains savings as expanding margin."
+  },
+  "build_it_yourself_benchmarks": {
+    "description": "Reference costs for banks building equivalent AI capabilities internally. Used as value anchor in three-layer pricing transparency.",
+    "engineering_fte_loaded_cost_usd": 180000,
+    "ftes_per_agent": {
+      "simple": 1.5,
+      "medium": 2.5,
+      "complex": 4.0
+    },
+    "infrastructure_overhead_pct": 25,
+    "maintenance_pct_of_build": 30,
+    "time_to_production_months": {
+      "simple": 3,
+      "medium": 6,
+      "complex": 12
+    },
+    "notes": "Conservative estimates. Does not include compliance certification, model fine-tuning, or ongoing MLOps costs."
+  },
+  "volume_discount_curves": {
+    "description": "BIC block volume discounts based on total annual commitment.",
+    "tiers": [
+      {"min_bics_annual": 0, "max_bics_annual": 500000, "discount_pct": 0},
+      {"min_bics_annual": 500001, "max_bics_annual": 1000000, "discount_pct": 5},
+      {"min_bics_annual": 1000001, "max_bics_annual": 2500000, "discount_pct": 10},
+      {"min_bics_annual": 2500001, "max_bics_annual": 5000000, "discount_pct": 15},
+      {"min_bics_annual": 5000001, "max_bics_annual": null, "discount_pct": 20}
+    ]
+  },
+  "margin_protection": {
+    "description": "Minimum margin floors to protect Backbase economics at all scale points.",
+    "min_platform_to_compute_ratio": 15,
+    "min_gross_margin_pct": 60,
+    "notes": "Platform price must be at least 15x raw compute cost. Gross margin must not drop below 60%."
+  }
+}

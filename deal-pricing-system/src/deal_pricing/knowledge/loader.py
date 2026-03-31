@@ -54,6 +54,20 @@ class KnowledgeBase:
         if nego_path.exists():
             self._negotiation_md = nego_path.read_text()
 
+        # AI pricing playbook (markdown)
+        ai_playbook_path = templates_dir / "ai_pricing_playbook.md"
+        if ai_playbook_path.exists():
+            self._ai_pricing_md = ai_playbook_path.read_text()
+        else:
+            self._ai_pricing_md = ""
+
+        # AI pricing rationale template (markdown)
+        ai_template_path = templates_dir / "ai_pricing_rationale_template.md"
+        if ai_template_path.exists():
+            self._ai_rationale_template_md = ai_template_path.read_text()
+        else:
+            self._ai_rationale_template_md = ""
+
         self._loaded = True
 
     # ── Context builders for agent prompts ──────────────────────
@@ -134,6 +148,20 @@ class KnowledgeBase:
         self.load()
         if self._negotiation_md:
             return "--- NEGOTIATION BEST PRACTICES ---\n\n" + self._negotiation_md
+        return ""
+
+    def get_ai_pricing_context(self) -> str:
+        """Return AI pricing playbook for the strategist/narrator."""
+        self.load()
+        if self._ai_pricing_md:
+            return "--- AI PRICING PLAYBOOK ---\n\n" + self._ai_pricing_md
+        return ""
+
+    def get_ai_rationale_template(self) -> str:
+        """Return client-facing AI pricing rationale template."""
+        self.load()
+        if self._ai_rationale_template_md:
+            return "--- AI PRICING RATIONALE TEMPLATE ---\n\n" + self._ai_rationale_template_md
         return ""
 
     def get_full_context(

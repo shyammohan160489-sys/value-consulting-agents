@@ -1,0 +1,128 @@
+{
+  "pillars": {
+    "embedded_ai": {
+      "name": "Embedded AI in Digital Banking",
+      "description": "Agentic capabilities embedded directly into Online & Mobile App — smart recommendations, proactive alerts, intelligent search, contextual assistance.",
+      "pricing_model": "signature_tier_plus_token_passthrough",
+      "buyer_persona": ["CDO", "CTO"],
+      "recommendation": "Part of Signature Tier with token pass-through. Positions AI as hallmark of premium offering.",
+      "base_fee_included_in": "signature_tier_license",
+      "variable_component": "token_passthrough",
+      "notes": "No separate AI line item — included in Signature upgrade. Token costs passed through to bank."
+    },
+    "conversational_engine": {
+      "name": "Conversational Engines",
+      "description": "Employee Workspace (agent-assisted) and Conversational Banking (customer self-service). Chat-based interfaces.",
+      "pricing_model": "base_fee_plus_per_interaction",
+      "buyer_persona": ["CDO", "COO"],
+      "recommendation": "Per-interaction pricing with tiered volume discounts. Base fee with included conversation allowance.",
+      "base_fee_tiers": {
+        "entry": {
+          "label": "Entry — Controlled Use",
+          "sla": "99.5%",
+          "support": "Business hours",
+          "incident_response": "Next business day",
+          "annual_fee_usd": 500000
+        },
+        "critical": {
+          "label": "Critical — Mission Critical",
+          "sla": "99.8%",
+          "support": "24x5",
+          "incident_response": "4 hours",
+          "annual_fee_usd": 1000000
+        },
+        "enterprise": {
+          "label": "Enterprise — Bank-wide Dependency",
+          "sla": "99.9%",
+          "support": "24x7",
+          "incident_response": "1 hour",
+          "annual_fee_usd": 1500000
+        }
+      },
+      "per_interaction_rates": {
+        "employee_workspace": {
+          "base_rate_usd": 1.80,
+          "volume_tiers": [
+            {"up_to_monthly": 10000, "rate_usd": 1.80},
+            {"up_to_monthly": 50000, "rate_usd": 1.40},
+            {"up_to_monthly": 200000, "rate_usd": 1.00},
+            {"above_monthly": 200000, "rate_usd": 0.70}
+          ]
+        },
+        "conversational_banking": {
+          "base_rate_usd": 1.20,
+          "volume_tiers": [
+            {"up_to_monthly": 50000, "rate_usd": 1.20},
+            {"up_to_monthly": 200000, "rate_usd": 0.90},
+            {"up_to_monthly": 1000000, "rate_usd": 0.60},
+            {"above_monthly": 1000000, "rate_usd": 0.40}
+          ]
+        }
+      }
+    },
+    "process_automation": {
+      "name": "Agentic Process Automation",
+      "description": "End-to-end process execution: Onboarding, KYC/KYB, Disputes, Financial Crime triage.",
+      "pricing_model": "per_execution_with_outcome_slide",
+      "buyer_persona": ["COO", "CTO"],
+      "recommendation": "Start with per-execution pricing, slide into outcome-based as baselines are established.",
+      "per_execution_rates_by_category": {
+        "onboarding": {
+          "label": "Onboarding & Loan Origination",
+          "base_rate_usd": 8.00,
+          "volume_tiers": [
+            {"up_to_monthly": 5000, "rate_usd": 8.00},
+            {"up_to_monthly": 20000, "rate_usd": 6.00},
+            {"above_monthly": 20000, "rate_usd": 4.50}
+          ]
+        },
+        "kyc_kyb": {
+          "label": "KYC / KYB / CDD",
+          "base_rate_usd": 12.00,
+          "volume_tiers": [
+            {"up_to_monthly": 2000, "rate_usd": 12.00},
+            {"up_to_monthly": 10000, "rate_usd": 9.00},
+            {"above_monthly": 10000, "rate_usd": 7.00}
+          ]
+        },
+        "disputes": {
+          "label": "Disputes & Chargebacks",
+          "base_rate_usd": 6.00,
+          "volume_tiers": [
+            {"up_to_monthly": 5000, "rate_usd": 6.00},
+            {"up_to_monthly": 20000, "rate_usd": 4.50},
+            {"above_monthly": 20000, "rate_usd": 3.50}
+          ]
+        },
+        "financial_crime": {
+          "label": "Financial Crime Triage",
+          "base_rate_usd": 15.00,
+          "volume_tiers": [
+            {"up_to_monthly": 1000, "rate_usd": 15.00},
+            {"up_to_monthly": 5000, "rate_usd": 11.00},
+            {"above_monthly": 5000, "rate_usd": 8.00}
+          ]
+        }
+      }
+    },
+    "byo_platform": {
+      "name": "Build Your Own Agent Platform",
+      "description": "Agent Studio (lowcode) or Agentic Platform (procode) for banks to build custom agents.",
+      "pricing_model": "platform_fee_plus_deployment_plus_tokens",
+      "buyer_persona": ["CTO"],
+      "platform_access_fee_usd": {
+        "standard": 150000,
+        "enterprise": 350000
+      },
+      "per_agent_deployment_fee_usd": {
+        "monthly_per_agent": 2500,
+        "included_agents_by_tier": {
+          "standard": 3,
+          "enterprise": 10
+        }
+      },
+      "sandbox_token_allowance_monthly": 100000,
+      "notes": "Four stacking revenue layers: platform fee + developer tooling + per-agent deployment + token margin"
+    }
+  }
+}

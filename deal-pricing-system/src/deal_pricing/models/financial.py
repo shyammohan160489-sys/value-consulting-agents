@@ -28,6 +28,10 @@ class YearlyBreakdown(BaseModel):
     lending_revenue: float = 0.0
     add_on_revenue: float = 0.0
 
+    # AI pricing layer (stacks on platform licensing)
+    ai_revenue: float = 0.0
+    ai_bic_consumption: float = 0.0
+
 
 class FinancialModel(BaseModel):
     """Complete 5-year financial projection for one scenario."""
@@ -35,6 +39,9 @@ class FinancialModel(BaseModel):
     scenario_label: str
     construct_type: ConstructType
     yearly: list[YearlyBreakdown]
+
+    # AI pricing detail (optional, populated when AI config is present)
+    ai_pricing_detail: Optional[dict] = None  # serialised AIPricingResult
 
     # Aggregates (computed)
     total_license_5yr: float = 0.0
