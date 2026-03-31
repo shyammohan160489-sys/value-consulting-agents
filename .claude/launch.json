@@ -1,0 +1,71 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "schroders-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8091", "--directory", "Engagement/Schroders Group/Output"],
+      "port": 8091
+    },
+    {
+      "name": "moneycorp-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8092", "--directory", "Engagement/Moneycorp"],
+      "port": 8092
+    },
+    {
+      "name": "schroders-commercial",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8093", "--directory", "Engagement/Schroders Group/Output"],
+      "port": 8093
+    },
+    {
+      "name": "bbva-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8094", "--directory", "engagements/bbva_spain/2026-02_wealth_ignite/outputs"],
+      "port": 8094
+    },
+    {
+      "name": "seb-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8095", "--directory", "Engagement/SEB/Output"],
+      "port": 8095
+    },
+    {
+      "name": "danske-presentation",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8096", "--directory", "Engagement/Danske Bank/Output"],
+      "port": 8096
+    },
+    {
+      "name": "tfbank-pov",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8097", "--directory", "engagements/tf_bank_avarda/outputs"],
+      "port": 8097
+    },
+    {
+      "name": "banking-os-narrative",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8098", "--directory", "Engagement/Banking_OS_Sales_Narrative/Output"],
+      "port": 8098
+    },
+    {
+      "name": "cih-proposal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8099", "--directory", "Engagement/CIH Bank/Output"],
+      "port": 8099
+    },
+    {
+      "name": "absa-briefing",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8100", "--directory", "Engagement/Absa/Output"],
+      "port": 8100
+    },
+    {
+      "name": "frontline-2026-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8101", "--directory", "Engagement/Schroders Group/Output"],
+      "port": 8101
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "patterns": {
+    "renewal_stable": {
+      "recommended": ["base_fee_tiered", "flat_block"],
+      "rationale": "Stable renewal — 2025 edition model (base fee + tiered users) is the new default. Block pricing as fallback for legacy contracts.",
+      "avoid": ["milestone_ramp"]
+    },
+    "renewal_audit_averse": {
+      "recommended": ["base_fee_tiered", "all_you_can_eat"],
+      "rationale": "Client wants zero audit friction — 2025 model reduces discountable components to additional users only. AYCE eliminates counting entirely.",
+      "avoid": ["milestone_ramp", "dual_track"]
+    },
+    "renewal_with_expansion": {
+      "recommended": ["base_fee_tiered", "cross_sell_bundle"],
+      "rationale": "Edition upgrade (Essential → Premium) or bundle new modules into renewal for ARR uplift.",
+      "avoid": []
+    },
+    "expansion_budget_tight": {
+      "recommended": ["milestone_ramp", "floor_kicker"],
+      "rationale": "Budget-constrained expansion — ramp delays full cost until adoption proves value. Floor protects Backbase.",
+      "avoid": ["all_you_can_eat"]
+    },
+    "expansion_multi_segment": {
+      "recommended": ["dual_track", "cross_sell_bundle"],
+      "rationale": "Different segments have different economics — dual-track keeps pricing clean.",
+      "avoid": ["flat_block"]
+    },
+    "new_logo_standard": {
+      "recommended": ["base_fee_tiered"],
+      "rationale": "New logos should default to the 2025 edition model. Fixed base fee + tiered users provides simplicity and embedded hosting.",
+      "avoid": []
+    },
+    "new_logo_competitive": {
+      "recommended": ["milestone_ramp", "base_fee_tiered"],
+      "rationale": "Win the deal with competitive entry pricing via ramp, or use 2025 edition with lower tier for entry.",
+      "avoid": ["all_you_can_eat"]
+    },
+    "new_logo_large": {
+      "recommended": ["base_fee_tiered", "floor_kicker"],
+      "rationale": "Large new logo — 2025 edition model scales well with tiered pricing. Floor/kicker protects long-term ARR.",
+      "avoid": []
+    },
+    "upsell_edition_upgrade": {
+      "recommended": ["base_fee_tiered"],
+      "rationale": "Upsell from Essential to Premium or Signature edition — natural upgrade path with clear feature differentiation.",
+      "avoid": ["milestone_ramp"]
+    },
+    "upsell_premium": {
+      "recommended": ["cross_sell_bundle"],
+      "rationale": "Upsell to premium modules — bundle for optics and margin protection.",
+      "avoid": ["milestone_ramp"]
+    },
+    "high_growth_market": {
+      "recommended": ["floor_kicker", "base_fee_tiered"],
+      "rationale": "Rapid user growth expected — floor protects base, kicker shares upside. 2025 tiered model scales naturally.",
+      "avoid": ["all_you_can_eat"]
+    }
+  },
+  "deal_type_defaults": {
+    "renewal": ["base_fee_tiered", "flat_block"],
+    "expansion": ["cross_sell_bundle", "base_fee_tiered"],
+    "upsell": ["base_fee_tiered", "cross_sell_bundle"],
+    "new_logo": ["base_fee_tiered", "milestone_ramp"]
+  }
+}

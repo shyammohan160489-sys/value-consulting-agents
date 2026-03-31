@@ -1,0 +1,40 @@
+{
+  "deal_type": "new_logo",
+  "client": {
+    "name": "Nordic Wealth Partners",
+    "region": "Europe",
+    "country": "Sweden",
+    "segments": ["wealth", "retail"],
+    "institution_size_users": 150000,
+    "institution_size_employees": 1200,
+    "institution_size_aum": 25000000000,
+    "is_existing_customer": false,
+    "current_annual_spend": 0
+  },
+  "demand": {
+    "current_active_users": 0,
+    "year_1_users": 50000,
+    "year_2_users": 80000,
+    "year_3_users": 120000,
+    "year_4_users": 140000,
+    "year_5_users": 150000,
+    "planned_launches": ["Wealth Portal", "Client Onboarding", "RM Dashboard"],
+    "assist_employees": 400,
+    "lending_aum": 5000000000
+  },
+  "scope": {
+    "currently_licensed": [],
+    "proposed_additions": ["digital_banking", "assist", "lending", "onboarding"],
+    "hosting_model": "managed",
+    "ai_analytics_plans": "AI-powered portfolio insights",
+    "services_scope": "Full implementation + data migration"
+  },
+  "constraints": {
+    "client_concerns": ["Implementation timeline", "Integration with existing core banking", "Total cost of ownership"],
+    "arr_uplift_target_min": null,
+    "arr_uplift_target_max": null,
+    "sensitivities": ["Competitive pressure from Avaloq", "Board wants fixed-cost predictability"],
+    "preferred_contract_years": 5,
+    "notes": "High-value new logo. Competitive bake-off with Avaloq and Temenos. Decision expected Q2 2026."
+  }
+}

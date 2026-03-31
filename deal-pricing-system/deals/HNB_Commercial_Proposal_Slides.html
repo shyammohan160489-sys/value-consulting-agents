@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNB Commercial Proposal - Backbase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bb-primary: #1A1F71;
+            --bb-accent: #00B4D8;
+            --bb-dark: #0F1340;
+            --bb-light: #E8F4F8;
+            --bb-green: #28A745;
+            --bb-orange: #FF9500;
+            --bb-red: #DC3545;
+            --bb-purple: #6A4C93;
+            --glass: rgba(255,255,255,0.06);
+            --glass-border: rgba(255,255,255,0.12);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#000; color:#fff; overflow:hidden; }
+
+        .slide {
+            width:100vw; height:100vh; position:absolute; top:0; left:0;
+            display:none; opacity:0; transition:opacity 0.4s ease;
+            padding:60px 80px; flex-direction:column;
+        }
+        .slide.active { display:flex; opacity:1; }
+
+        .nav { position:fixed; bottom:30px; right:40px; display:flex; gap:12px; z-index:1000; }
+        .nav button {
+            width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:18px; cursor:pointer;
+        }
+        .nav button:hover { background:var(--bb-accent); border-color:var(--bb-accent); }
+        .counter { position:fixed; bottom:40px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.4); font-size:13px; z-index:1000; }
+
+        .dark { background:linear-gradient(135deg, #050818 0%, #0a0f2e 100%); }
+        .stitle { font-size:42px; font-weight:700; margin-bottom:8px; background:linear-gradient(90deg,var(--bb-accent),#fff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .ssub { font-size:18px; color:rgba(255,255,255,0.5); font-weight:300; margin-bottom:44px; }
+        .tag { display:inline-block; padding:6px 16px; border-radius:20px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px; }
+
+        .glass-card {
+            background:var(--glass); border:1px solid var(--glass-border);
+            border-radius:16px; padding:30px; backdrop-filter:blur(8px);
+        }
+
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:36px; flex:1; }
+        .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:28px; }
+        .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+        .grid-5 { display:grid; grid-template-columns:repeat(5,1fr); gap:20px; }
+
+        .stat { text-align:center; }
+        .stat-v { font-size:46px; font-weight:900; color:var(--bb-accent); }
+        .stat-l { font-size:14px; color:rgba(255,255,255,0.6); margin-top:8px; line-height:1.4; }
+
+        .scenario-card {
+            border-radius:20px; padding:36px; height:100%; display:flex; flex-direction:column; position:relative;
+        }
+        .scenario-card.original {
+            background:linear-gradient(135deg, rgba(255,149,0,0.08), rgba(255,149,0,0.02));
+            border:2px solid rgba(255,149,0,0.3);
+        }
+        .scenario-card.recommended {
+            background:linear-gradient(135deg, rgba(40,167,69,0.12), rgba(0,180,216,0.06));
+            border:2px solid var(--bb-green);
+        }
+        .scenario-label {
+            font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px;
+            margin-bottom:16px;
+        }
+        .scenario-name { font-size:26px; font-weight:700; margin-bottom:22px; }
+
+        .price-row {
+            display:grid; grid-template-columns:60px 1fr 80px; gap:12px; align-items:center;
+            padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08);
+        }
+        .price-row:last-child { border-bottom:none; }
+        .price-year { font-size:16px; font-weight:700; color:var(--bb-accent); }
+        .price-bar { height:28px; border-radius:6px; position:relative; }
+        .price-bar span { position:absolute; right:8px; top:4px; font-size:13px; font-weight:600; }
+        .price-val { font-size:15px; font-weight:600; text-align:right; }
+
+        .compare-table { width:100%; border-collapse:collapse; margin:16px 0; }
+        .compare-table th, .compare-table td { padding:14px 18px; text-align:center; }
+        .compare-table thead th { background:var(--bb-primary); font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+        .compare-table tbody td { border-bottom:1px solid rgba(255,255,255,0.08); font-size:15px; }
+        .compare-table tbody tr:hover { background:rgba(255,255,255,0.03); }
+        .compare-table .s1-col { color:var(--bb-orange); }
+        .compare-table .s2-col { color:var(--bb-green); font-weight:600; }
+        .compare-table .total-row { background:rgba(26,31,113,0.4); font-weight:700; }
+        .compare-table .winner { background:rgba(40,167,69,0.15); }
+
+        .value-bar-container { display:flex; align-items:center; gap:12px; margin:10px 0; }
+        .value-label { width:120px; font-size:14px; color:rgba(255,255,255,0.7); text-align:right; }
+        .value-bar-track { flex:1; height:30px; background:rgba(255,255,255,0.05); border-radius:8px; position:relative; overflow:hidden; }
+        .value-bar-fill { height:100%; border-radius:8px; display:flex; align-items:center; justify-content:flex-end; padding-right:12px; font-size:13px; font-weight:600; }
+        .value-number { width:80px; font-size:16px; font-weight:600; }
+
+        .callout { text-align:center; padding:36px; }
+        .callout-value { font-size:80px; font-weight:900; line-height:1; margin-bottom:12px; }
+        .callout-label { font-size:22px; color:rgba(255,255,255,0.7); }
+        .callout-sub { font-size:15px; color:rgba(255,255,255,0.4); margin-top:12px; }
+
+        .bullets { list-style:none; padding:0; }
+        .bullets li { padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:17px; display:flex; gap:12px; line-height:1.5; }
+        .bullets li .icon { font-size:18px; flex-shrink:0; }
+
+        .timeline { display:flex; gap:0; margin:30px 0; }
+        .timeline-step {
+            flex:1; padding:22px; background:var(--glass); border:1px solid var(--glass-border);
+            position:relative; text-align:center;
+        }
+        .timeline-step:first-child { border-radius:12px 0 0 12px; }
+        .timeline-step:last-child { border-radius:0 12px 12px 0; }
+        .timeline-week { font-size:12px; color:var(--bb-accent); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+        .timeline-label { font-size:14px; font-weight:500; }
+        .timeline-owner { font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px; }
+
+        .caveat-banner {
+            background:linear-gradient(90deg, rgba(255,149,0,0.08), rgba(255,149,0,0.03));
+            border:1px solid rgba(255,149,0,0.3); border-radius:12px;
+            padding:14px 24px; font-size:13px; color:rgba(255,255,255,0.8); line-height:1.6;
+        }
+
+        @media print { .slide { page-break-after:always; display:block !important; opacity:1 !important; position:relative; } .nav,.counter{display:none;} }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: COVER                                                -->
+<!-- ============================================================ -->
+<div class="slide active dark" id="s1">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+        <div class="tag" style="background:rgba(0,180,216,0.15);color:var(--bb-accent);">Commercial Proposal</div>
+        <h1 style="font-size:72px;font-weight:900;margin-bottom:16px;background:linear-gradient(90deg,#fff,var(--bb-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Hatton National Bank</h1>
+        <h2 style="font-size:34px;font-weight:300;color:var(--bb-accent);margin-bottom:16px;">Backbase Engagement Platform</h2>
+        <p style="font-size:18px;color:rgba(255,255,255,0.5);margin-bottom:60px;">Wealth Management Transformation &mdash; Phase 1</p>
+
+        <div class="grid-4" style="max-width:1000px;width:100%;">
+            <div class="glass-card stat"><div class="stat-v">~$8M</div><div class="stat-l">5-Year Investment</div></div>
+            <div class="glass-card stat"><div class="stat-v">$25M</div><div class="stat-l">Projected Benefits</div></div>
+            <div class="glass-card stat"><div class="stat-v" style="color:var(--bb-green);">212%</div><div class="stat-l">5-Year ROI</div></div>
+            <div class="glass-card stat"><div class="stat-v" style="color:var(--bb-green);">Y1</div><div class="stat-l">Payback from Year 1</div></div>
+        </div>
+
+        <p style="margin-top:60px;font-size:14px;color:rgba(255,255,255,0.3);">February 2026 &nbsp;|&nbsp; Prepared by Backbase Deal Team</p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: OUR JOURNEY                                          -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s2">
+    <div class="stitle">Our Journey Together</div>
+    <div class="ssub">What we've established and where we go from here</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="glass-card" style="margin-bottom:24px;">
+                <div class="tag" style="background:rgba(0,180,216,0.15);color:var(--bb-accent);">Completed</div>
+                <h3 style="font-size:22px;margin-bottom:16px;">Assessment &amp; Solutioning</h3>
+                <ul class="bullets" style="font-size:15px;">
+                    <li><span class="icon">&#10003;</span> 6 discovery workshops with HNB stakeholders</li>
+                    <li><span class="icon">&#10003;</span> 12 customer journeys mapped (as-is &rarr; to-be)</li>
+                    <li><span class="icon">&#10003;</span> 126-page Assessment &amp; Solutioning Report delivered</li>
+                    <li><span class="icon">&#10003;</span> Business benefits case: <strong>$20-25M over 5 years</strong></li>
+                    <li><span class="icon">&#10003;</span> Architecture and delivery roadmap agreed</li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            <div class="glass-card" style="border-color:var(--bb-green);">
+                <div class="tag" style="background:rgba(40,167,69,0.15);color:var(--bb-green);">This Proposal</div>
+                <h3 style="font-size:22px;margin-bottom:16px;">Commercial Structure</h3>
+                <ul class="bullets" style="font-size:15px;">
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9654;</span> <strong>Two pricing scenarios</strong> for HNB to evaluate</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9654;</span> Year-by-year value articulation against HNB benefits case</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9654;</span> Clear trade-off analysis between scenarios</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9654;</span> Mutual close plan with agreed milestones</li>
+                </ul>
+            </div>
+
+            <div class="glass-card" style="margin-top:24px;">
+                <h3 style="font-size:18px;margin-bottom:12px;color:var(--bb-accent);">The Opportunity</h3>
+                <p style="font-size:16px;color:rgba(255,255,255,0.8);line-height:1.6;">
+                    HNB serves <strong>2.8 million customers</strong>, but only <strong>13,000</strong> are in wealth management today.
+                    Backbase unlocks the retail-to-wealth conversion path &mdash; projected at
+                    <strong style="color:var(--bb-green);">$10-15M</strong> in revenue uplift over 5 years.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: TWO PRICING SCENARIOS                                -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s3">
+    <div class="stitle">Two Pricing Scenarios</div>
+    <div class="ssub">Both deliver ~$8M total &mdash; the structure differs</div>
+
+    <div class="grid-2">
+        <!-- Scenario 1: Original Quote -->
+        <div class="scenario-card original">
+            <div class="scenario-label" style="color:var(--bb-orange);">Scenario 1 &mdash; Original Quote</div>
+            <div class="scenario-name" style="color:var(--bb-orange);">Standard Pricing</div>
+            <p style="font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:24px;">
+                As quoted. Flat Y1-Y2, step-up at Y3 when Retail &amp; SME modules activate. No conditions on LOB commitment.
+            </p>
+
+            <div class="price-row"><div class="price-year">Y1</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-orange),rgba(255,149,0,0.4));width:68%;"><span>$1.40M</span></div><div class="price-val" style="color:rgba(255,255,255,0.5);">base</div></div>
+            <div class="price-row"><div class="price-year">Y2</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-orange),rgba(255,149,0,0.4));width:68%;"><span>$1.40M</span></div><div class="price-val">0%</div></div>
+            <div class="price-row"><div class="price-year">Y3</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-orange),rgba(255,149,0,0.4));width:85%;"><span>$1.74M</span></div><div class="price-val">+24%</div></div>
+            <div class="price-row"><div class="price-year">Y4</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-orange),rgba(255,149,0,0.4));width:85%;"><span>$1.74M</span></div><div class="price-val">0%</div></div>
+            <div class="price-row"><div class="price-year">Y5</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-orange),rgba(255,149,0,0.4));width:85%;"><span>$1.74M</span></div><div class="price-val">0%</div></div>
+
+            <div style="margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,149,0,0.2);">
+                <div style="font-size:26px;font-weight:700;color:var(--bb-orange);">$8.03M <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,0.5);">total</span></div>
+            </div>
+        </div>
+
+        <!-- Scenario 2: Recommended Ramp -->
+        <div class="scenario-card recommended">
+            <div style="position:absolute;top:-14px;right:24px;background:var(--bb-green);color:#fff;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Recommended</div>
+            <div class="scenario-label" style="color:var(--bb-green);">Scenario 2 &mdash; Backbase Recommendation</div>
+            <div class="scenario-name" style="color:var(--bb-green);">Implementation-Aligned Ramp</div>
+            <p style="font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:24px;">
+                Y1-Y2 aligned to <strong>wealth-only</strong> implementation phase. Y3-Y5 reflect full platform
+                with all LOBs (Retail, Business, Wealth) live.
+            </p>
+
+            <div class="price-row"><div class="price-year">Y1</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-green),rgba(40,167,69,0.4));width:39%;"><span>$0.80M</span></div><div class="price-val" style="color:var(--bb-green);">-43%</div></div>
+            <div class="price-row"><div class="price-year">Y2</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-green),rgba(40,167,69,0.4));width:51%;"><span>$1.05M</span></div><div class="price-val">+31%</div></div>
+            <div class="price-row"><div class="price-year">Y3</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-green),rgba(40,167,69,0.4));width:100%;"><span>$2.06M</span></div><div class="price-val" style="color:var(--bb-orange);">+96%*</div></div>
+            <div class="price-row"><div class="price-year">Y4</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-green),rgba(40,167,69,0.4));width:100%;"><span>$2.06M</span></div><div class="price-val">0%</div></div>
+            <div class="price-row"><div class="price-year">Y5</div><div class="price-bar" style="background:linear-gradient(90deg,var(--bb-green),rgba(40,167,69,0.4));width:100%;"><span>$2.06M</span></div><div class="price-val">0%</div></div>
+
+            <div style="margin-top:auto;padding-top:20px;border-top:1px solid rgba(40,167,69,0.3);">
+                <div style="font-size:26px;font-weight:700;color:var(--bb-green);">$8.03M <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,0.5);">total</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="caveat-banner" style="margin-top:20px;">
+        <strong style="color:var(--bb-orange);">* Y3 commitment caveat:</strong> Scenario 2 pricing assumes HNB commits to deploying
+        <strong>all three lines of business</strong> (Wealth, Retail Banking, and Business Banking) on the Backbase platform by Year 3.
+        The Y3-Y5 price reflects the full platform scope across all LOBs. If these LOBs are not activated, Scenario 1 pricing applies.
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: VALUE vs COST                                        -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s4">
+    <div class="stitle">Value vs. Cost &mdash; Year by Year</div>
+    <div class="ssub">Benefits from HNB Assessment Report (p.117) vs. license cost per scenario</div>
+
+    <table class="compare-table">
+        <thead>
+            <tr>
+                <th style="text-align:left;">Year</th>
+                <th>Projected Benefits<br><span style="font-weight:400;font-size:11px;opacity:0.7;">(HNB Assessment)</span></th>
+                <th>S1: Original Quote</th>
+                <th>S1: Net Value</th>
+                <th>S2: Ramp</th>
+                <th>S2: Net Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:left;font-weight:600;">Y1</td>
+                <td>$3.1M</td>
+                <td class="s1-col">$1.40M</td>
+                <td style="color:var(--bb-green);">+$1.70M</td>
+                <td class="s2-col">$0.80M</td>
+                <td class="winner" style="color:var(--bb-green);font-weight:700;">+$2.30M</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;">Y2</td>
+                <td>$3.9M</td>
+                <td class="s1-col">$1.40M</td>
+                <td style="color:var(--bb-green);">+$2.50M</td>
+                <td class="s2-col">$1.05M</td>
+                <td class="winner" style="color:var(--bb-green);font-weight:700;">+$2.85M</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;">Y3</td>
+                <td>$4.8M</td>
+                <td class="s1-col">$1.74M</td>
+                <td style="color:var(--bb-green);font-weight:700;">+$3.06M</td>
+                <td class="s2-col">$2.06M</td>
+                <td style="color:var(--bb-green);">+$2.74M</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;">Y4</td>
+                <td>$6.3M</td>
+                <td class="s1-col">$1.74M</td>
+                <td style="color:var(--bb-green);font-weight:700;">+$4.56M</td>
+                <td class="s2-col">$2.06M</td>
+                <td style="color:var(--bb-green);">+$4.24M</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;">Y5</td>
+                <td>$6.9M</td>
+                <td class="s1-col">$1.74M</td>
+                <td style="color:var(--bb-green);font-weight:700;">+$5.16M</td>
+                <td class="s2-col">$2.06M</td>
+                <td style="color:var(--bb-green);">+$4.84M</td>
+            </tr>
+            <tr class="total-row">
+                <td style="text-align:left;">TOTAL</td>
+                <td>$25.0M</td>
+                <td class="s1-col">$8.03M</td>
+                <td style="color:var(--bb-green);">+$16.97M</td>
+                <td class="s2-col">$8.03M</td>
+                <td style="color:var(--bb-green);">+$16.97M</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="glass-card" style="margin-top:16px;">
+        <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.85);">
+            <strong style="color:var(--bb-accent);">Key insight:</strong> Both scenarios deliver the same 5-year total ($8.03M), same net value (+$16.97M), and same ROI (~212%).
+            However, Scenario 2 delivers <strong style="color:var(--bb-green);">$950K more net value in the first two years</strong> ($5.15M vs $4.20M)
+            &mdash; the period when HNB needs to demonstrate ROI to justify the full platform commitment at Y3.
+            Benefits exceed cost from <strong>Year 1</strong> in both scenarios.
+        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: THE TRADE-OFF                                        -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s5">
+    <div class="stitle">The Trade-Off</div>
+    <div class="ssub">Why Scenario 2 aligns cost with implementation reality</div>
+
+    <div class="grid-2">
+        <div>
+            <h3 style="font-size:22px;color:var(--bb-orange);margin-bottom:22px;">Scenario 1: Original Quote</h3>
+            <ul class="bullets">
+                <li><span class="icon" style="color:var(--bb-red);">&#10007;</span> <strong>$1.4M in Y1</strong> while system is still under implementation &mdash; paying full price before full value</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>No LOB commitment caveat</strong> &mdash; Y3-Y5 pricing is unconditional</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Lower Y3-Y5</strong> at $1.74M/yr &mdash; flatter long-term cost</li>
+                <li><span class="icon" style="color:var(--bb-red);">&#10007;</span> <strong>Board approval harder</strong> &mdash; justifying $1.4M upfront during build phase</li>
+            </ul>
+
+            <div class="glass-card" style="margin-top:20px;border-color:rgba(255,149,0,0.3);">
+                <div style="font-size:13px;color:var(--bb-orange);font-weight:600;margin-bottom:8px;">Annual Cost Pattern</div>
+                <div style="font-size:28px;font-weight:700;">
+                    <span style="color:var(--bb-orange);">$1.40M</span> &rarr;
+                    <span style="color:var(--bb-orange);">$1.40M</span> &rarr;
+                    <span>$1.74M</span> &rarr;
+                    <span style="color:rgba(255,255,255,0.3);">$1.74M</span> &rarr;
+                    <span style="color:rgba(255,255,255,0.3);">$1.74M</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="font-size:22px;color:var(--bb-green);margin-bottom:22px;">Scenario 2: Implementation-Aligned</h3>
+            <ul class="bullets">
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Y1 at $800K</strong> &mdash; 43% lower, aligned with wealth-only build phase</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>Y2 at $1.05M</strong> &mdash; still 25% below original as wealth goes live</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>$950K more net value in Y1-Y2</strong> &mdash; proves ROI before full commitment</li>
+                <li><span class="icon" style="color:var(--bb-orange);">&#9888;</span> <strong>Y3 step-up to $2.06M</strong> &mdash; reflects scope tripling (1 LOB &rarr; 3 LOBs)</li>
+            </ul>
+
+            <div class="glass-card" style="margin-top:20px;border-color:var(--bb-green);">
+                <div style="font-size:13px;color:var(--bb-green);font-weight:600;margin-bottom:8px;">Annual Cost Pattern</div>
+                <div style="font-size:28px;font-weight:700;">
+                    <span style="color:var(--bb-green);">$0.80M</span> &rarr;
+                    <span style="color:var(--bb-green);">$1.05M</span> &rarr;
+                    <span style="color:var(--bb-orange);">$2.06M</span> &rarr;
+                    <span style="color:rgba(255,255,255,0.4);">$2.06M</span> &rarr;
+                    <span style="color:rgba(255,255,255,0.4);">$2.06M</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card" style="margin-top:24px;border-color:var(--bb-green);background:linear-gradient(90deg,rgba(40,167,69,0.06),rgba(0,180,216,0.04));">
+        <p style="font-size:17px;text-align:center;line-height:1.7;">
+            <strong style="color:var(--bb-green);">The logic:</strong> &nbsp;
+            <strong>Y1-Y2</strong> = you pay for what's live (Wealth only). &nbsp;
+            <strong>Y3-Y5</strong> = you pay for the full platform (Wealth + Retail + Business). &nbsp;
+            The Y3 step-up is <strong>not a price increase on the same scope</strong> &mdash; it reflects the
+            activation of two additional lines of business.
+        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: BUSINESS CASE                                        -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s6">
+    <div class="stitle">Business Case</div>
+    <div class="ssub">Benefits exceed cost from Year 1 in both scenarios &mdash; data from HNB Assessment Report</div>
+
+    <div class="grid-3">
+        <div class="callout glass-card">
+            <div class="callout-value" style="font-size:68px;background:linear-gradient(135deg,var(--bb-green),var(--bb-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">$25M</div>
+            <div class="callout-label" style="font-size:18px;">5-Year Benefits</div>
+            <div class="callout-sub">Revenue uplift + cost avoidance</div>
+        </div>
+        <div class="callout glass-card">
+            <div class="callout-value" style="font-size:68px;color:var(--bb-accent);">$8M</div>
+            <div class="callout-label" style="font-size:18px;">5-Year Investment</div>
+            <div class="callout-sub">License fees (both scenarios)</div>
+        </div>
+        <div class="callout glass-card" style="border-color:var(--bb-green);">
+            <div class="callout-value" style="font-size:68px;color:var(--bb-green);">+$17M</div>
+            <div class="callout-label" style="font-size:18px;">5-Year Net Value</div>
+            <div class="callout-sub">Benefits minus investment</div>
+        </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:36px;">
+        <div class="glass-card">
+            <h3 style="font-size:18px;color:var(--bb-accent);margin-bottom:16px;">Benefit Drivers (from Assessment)</h3>
+            <div class="value-bar-container"><div class="value-label">Retail Upgrade</div><div class="value-bar-track"><div class="value-bar-fill" style="width:60%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));">$10-15M</div></div></div>
+            <div class="value-bar-container"><div class="value-label">RM Capacity</div><div class="value-bar-track"><div class="value-bar-fill" style="width:40%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));">$5-10M</div></div></div>
+            <div class="value-bar-container"><div class="value-label">Servicing</div><div class="value-bar-track"><div class="value-bar-fill" style="width:10%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));">$1-2M</div></div></div>
+            <div class="value-bar-container"><div class="value-label">Prospecting</div><div class="value-bar-track"><div class="value-bar-fill" style="width:3%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));">$0.2M</div></div></div>
+            <div class="value-bar-container"><div class="value-label">Onboarding</div><div class="value-bar-track"><div class="value-bar-fill" style="width:2%;background:linear-gradient(90deg,var(--bb-primary),var(--bb-accent));">$0.1M</div></div></div>
+        </div>
+
+        <div class="glass-card">
+            <h3 style="font-size:18px;color:var(--bb-green);margin-bottom:16px;">Key Metrics</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="stat"><div class="stat-v" style="font-size:36px;color:var(--bb-green);">212%</div><div class="stat-l">5-Year ROI</div></div>
+                <div class="stat"><div class="stat-v" style="font-size:36px;color:var(--bb-green);">Y1</div><div class="stat-l">Benefits &gt; Cost</div></div>
+                <div class="stat"><div class="stat-v" style="font-size:36px;">3.1x</div><div class="stat-l">Benefits Multiple<br>(for every $1 invested)</div></div>
+                <div class="stat"><div class="stat-v" style="font-size:36px;">220</div><div class="stat-l">RMs Capacity<br>Redeployed (Y5)</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: WHAT'S INCLUDED                                      -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s7">
+    <div class="stitle">What's Included</div>
+    <div class="ssub">Modules, phases, and user ramp &mdash; Scenario 2 pricing assumes all LOBs from Y3</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="glass-card" style="margin-bottom:20px;">
+                <h3 style="font-size:18px;color:var(--bb-accent);margin-bottom:14px;">Y1-Y2: Wealth Phase ($800K &rarr; $1.05M)</h3>
+                <ul class="bullets" style="font-size:15px;">
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9632;</span> Digital Banking Wealth Management Premium</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9632;</span> Digital Onboarding Private Banking</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9632;</span> Digital Assist Retail Banking Premium (base fee)</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9632;</span> Case Manager</li>
+                </ul>
+            </div>
+            <div class="glass-card">
+                <h3 style="font-size:18px;color:var(--bb-green);margin-bottom:14px;">Y3-Y5: Full Platform ($2.06M/yr)</h3>
+                <ul class="bullets" style="font-size:15px;">
+                    <li><span class="icon" style="color:var(--bb-green);">+</span> Digital Banking Retail Essential (1.5M users)</li>
+                    <li><span class="icon" style="color:var(--bb-green);">+</span> Digital Banking SME Essential (250K users)</li>
+                </ul>
+                <div class="caveat-banner" style="margin-top:16px;">
+                    <strong>LOB commitment:</strong> Scenario 2 Y3-Y5 pricing requires Retail &amp; Business Banking to be deployed on the platform by Year 3.
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="glass-card" style="height:100%;">
+                <h3 style="font-size:18px;color:var(--bb-accent);margin-bottom:22px;">User Ramp</h3>
+                <div class="grid-5" style="text-align:center;margin-bottom:28px;">
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y1</div><div style="font-size:22px;font-weight:700;">130K</div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Wealth</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y2</div><div style="font-size:22px;font-weight:700;">130K</div><div style="font-size:11px;color:rgba(255,255,255,0.4);">Wealth</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y3</div><div style="font-size:22px;font-weight:700;color:var(--bb-green);">1.88M</div><div style="font-size:11px;color:var(--bb-green);">All LOBs</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y4</div><div style="font-size:22px;font-weight:700;">1.88M</div><div style="font-size:11px;color:rgba(255,255,255,0.4);">All LOBs</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y5</div><div style="font-size:22px;font-weight:700;">1.88M</div><div style="font-size:11px;color:rgba(255,255,255,0.4);">All LOBs</div></div>
+                </div>
+
+                <h3 style="font-size:18px;color:var(--bb-accent);margin-bottom:14px;">Cost per User (Scenario 2)</h3>
+                <div class="grid-5" style="text-align:center;margin-bottom:24px;">
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y1</div><div style="font-size:20px;font-weight:700;">$6.15</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y2</div><div style="font-size:20px;font-weight:700;">$8.08</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y3</div><div style="font-size:20px;font-weight:700;color:var(--bb-green);">$1.10</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y4</div><div style="font-size:20px;font-weight:700;color:var(--bb-green);">$1.10</div></div>
+                    <div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Y5</div><div style="font-size:20px;font-weight:700;color:var(--bb-green);">$1.10</div></div>
+                </div>
+                <p style="font-size:14px;color:rgba(255,255,255,0.5);text-align:center;">Cost/user drops <strong>82%</strong> at full LOB scale ($6.15 &rarr; $1.10)</p>
+
+                <div style="margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);">
+                    <p style="font-size:14px;color:rgba(255,255,255,0.5);">
+                        <strong style="color:var(--bb-accent);">Hosting:</strong> Backbase Managed Cloud (embedded)<br>
+                        <strong style="color:var(--bb-accent);">Support:</strong> Premium SLAs with dedicated CSM<br>
+                        <strong style="color:var(--bb-accent);">Contract:</strong> 5-year term, annual payments
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: REASONS TO BELIEVE                                   -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s8">
+    <div class="stitle">Reasons to Believe</div>
+    <div class="ssub">Proven results with banks similar to HNB</div>
+
+    <div class="grid-2">
+        <div class="glass-card" style="border-color:var(--bb-accent);">
+            <div class="tag" style="background:rgba(0,180,216,0.15);color:var(--bb-accent);">Case Study</div>
+            <h3 style="font-size:24px;margin-bottom:8px;">MCB Group</h3>
+            <p style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:22px;">Mauritius | Universal Bank | 3 Countries</p>
+
+            <div class="grid-2" style="gap:16px;margin-bottom:22px;">
+                <div class="stat"><div class="stat-v" style="font-size:34px;">500K+</div><div class="stat-l">Retail users (Juice app)</div></div>
+                <div class="stat"><div class="stat-v" style="font-size:34px;">250K+</div><div class="stat-l">Wealth subscribers</div></div>
+                <div class="stat"><div class="stat-v" style="font-size:34px;">+8%</div><div class="stat-l">Subscriber surge Y1</div></div>
+                <div class="stat"><div class="stat-v" style="font-size:34px;">4</div><div class="stat-l">Segments on 1 platform</div></div>
+            </div>
+
+            <ul class="bullets" style="font-size:14px;">
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> Same progressive modernisation: Wealth &rarr; Corporate &rarr; SME &rarr; Retail</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> Launched across 3 countries in 3 years</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> Platform reuse reduced deployment time by 40% per segment</li>
+            </ul>
+        </div>
+
+        <div>
+            <div class="glass-card" style="margin-bottom:20px;">
+                <h3 style="font-size:18px;color:var(--bb-accent);margin-bottom:16px;">Industry Benchmarks</h3>
+                <ul class="bullets" style="font-size:15px;">
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>15-20%</strong> reductions in cost-to-serve</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>1.5-1.7x</strong> revenue growth (Asia digital transformations)</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>20-40%</strong> efficiency gains from automation</li>
+                    <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> <strong>40-50%</strong> faster onboarding (digital KYC)</li>
+                </ul>
+            </div>
+
+            <div class="glass-card">
+                <h3 style="font-size:18px;color:var(--bb-accent);margin-bottom:16px;">Risk Mitigations</h3>
+                <ul class="bullets" style="font-size:15px;">
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9632;</span> <strong>Scope-aligned pricing:</strong> Y1-Y2 cost reflects wealth-only build &mdash; you don't overpay during implementation</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9632;</span> <strong>LOB commitment gate:</strong> Y3 step-up only activates when all LOBs go live</li>
+                    <li><span class="icon" style="color:var(--bb-accent);">&#9632;</span> <strong>Fallback to S1:</strong> If LOB expansion is delayed, Scenario 1 pricing applies</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: MUTUAL CLOSE PLAN                                    -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s9">
+    <div class="stitle">Mutual Close Plan</div>
+    <div class="ssub">Agreed steps to finalise the engagement</div>
+
+    <div class="timeline">
+        <div class="timeline-step" style="background:linear-gradient(135deg,rgba(0,180,216,0.1),transparent);">
+            <div class="timeline-week">Week 1-2</div>
+            <div class="timeline-label">Internal Review<br>&amp; Alignment</div>
+            <div class="timeline-owner">HNB Finance, IT, BU</div>
+        </div>
+        <div class="timeline-step">
+            <div class="timeline-week">Week 3</div>
+            <div class="timeline-label">Scenario Selection<br>&amp; Board Presentation</div>
+            <div class="timeline-owner">Joint</div>
+        </div>
+        <div class="timeline-step">
+            <div class="timeline-week">Week 4-5</div>
+            <div class="timeline-label">Negotiation Sprint:<br>Terms &amp; Scope</div>
+            <div class="timeline-owner">Joint</div>
+        </div>
+        <div class="timeline-step">
+            <div class="timeline-week">Week 6</div>
+            <div class="timeline-label">C-Suite Alignment<br>&amp; Final Approvals</div>
+            <div class="timeline-owner">Execs</div>
+        </div>
+        <div class="timeline-step" style="background:linear-gradient(135deg,rgba(40,167,69,0.1),transparent);">
+            <div class="timeline-week">Week 7-8</div>
+            <div class="timeline-label">Contract Execution<br>&amp; Kickoff Planning</div>
+            <div class="timeline-owner">Backbase Ops + HNB IT</div>
+        </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:36px;">
+        <div class="glass-card">
+            <h3 style="font-size:18px;color:var(--bb-accent);margin-bottom:16px;">What We Need from HNB</h3>
+            <ul class="bullets" style="font-size:15px;">
+                <li><span class="icon" style="color:var(--bb-accent);">1</span> Confirmation of user ramp assumptions</li>
+                <li><span class="icon" style="color:var(--bb-accent);">2</span> Scenario selection (S1 or S2)</li>
+                <li><span class="icon" style="color:var(--bb-accent);">3</span> LOB commitment timeline (if S2 selected)</li>
+                <li><span class="icon" style="color:var(--bb-accent);">4</span> Executive sponsor and steering committee</li>
+            </ul>
+        </div>
+
+        <div class="glass-card" style="border-color:var(--bb-green);">
+            <h3 style="font-size:18px;color:var(--bb-green);margin-bottom:16px;">What Backbase Commits</h3>
+            <ul class="bullets" style="font-size:15px;">
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> Dedicated implementation team (CxO workshop in Week 1)</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> Full Assessment Report findings incorporated</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> MVP in 9 months, Go-Live in 18 months</li>
+                <li><span class="icon" style="color:var(--bb-green);">&#10003;</span> Quarterly business reviews from Y1</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: CLOSING                                              -->
+<!-- ============================================================ -->
+<div class="slide dark" id="s10">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+        <h1 style="font-size:52px;font-weight:900;margin-bottom:40px;background:linear-gradient(90deg,#fff,var(--bb-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">The Decision</h1>
+
+        <div class="grid-2" style="max-width:920px;width:100%;margin-bottom:40px;">
+            <div class="scenario-card original" style="padding:28px;text-align:center;">
+                <div style="font-size:13px;color:var(--bb-orange);font-weight:600;margin-bottom:8px;">SCENARIO 1</div>
+                <div style="font-size:22px;font-weight:700;margin-bottom:12px;">Original Quote</div>
+                <div style="font-size:38px;font-weight:900;color:var(--bb-orange);margin-bottom:6px;">$1.40M</div>
+                <div style="font-size:14px;color:rgba(255,255,255,0.5);">Y1 starting point</div>
+                <div style="margin-top:14px;font-size:14px;color:rgba(255,255,255,0.6);">Flat start, +24% at Y3<br>No LOB conditions</div>
+                <div style="margin-top:10px;font-size:18px;font-weight:700;color:var(--bb-orange);">$8.03M total</div>
+            </div>
+
+            <div class="scenario-card recommended" style="padding:28px;text-align:center;">
+                <div style="font-size:13px;color:var(--bb-green);font-weight:600;margin-bottom:8px;">SCENARIO 2 &mdash; RECOMMENDED</div>
+                <div style="font-size:22px;font-weight:700;margin-bottom:12px;">Implementation-Aligned</div>
+                <div style="font-size:38px;font-weight:900;color:var(--bb-green);margin-bottom:6px;">$800K</div>
+                <div style="font-size:14px;color:rgba(255,255,255,0.5);">Y1 starting point</div>
+                <div style="margin-top:14px;font-size:14px;color:rgba(255,255,255,0.6);">43% lower Y1, steps up when all LOBs go live<br>Requires Retail + Business by Y3</div>
+                <div style="margin-top:10px;font-size:18px;font-weight:700;color:var(--bb-green);">$8.03M total</div>
+            </div>
+        </div>
+
+        <div class="glass-card" style="max-width:920px;">
+            <p style="font-size:18px;line-height:1.7;text-align:center;">
+                Both scenarios: <strong>$8.03M investment</strong> &rarr; <strong>$25M benefits</strong> &rarr; <strong>+$16.97M net value</strong> &rarr; <strong>212% ROI</strong>.<br>
+                Scenario 2 lets HNB <strong style="color:var(--bb-green);">start at $800K</strong> during implementation,
+                prove value in Y1-Y2, then commit to the full platform at Y3.
+            </p>
+        </div>
+
+        <p style="margin-top:40px;font-size:18px;color:rgba(255,255,255,0.6);">
+            Let's build the future of HNB together.
+        </p>
+
+        <div style="margin-top:30px;">
+            <div style="font-size:14px;color:rgba(255,255,255,0.3);">
+                Backbase Deal Team &nbsp;|&nbsp; hnb-deal-team@backbase.com &nbsp;|&nbsp; Proposal valid 90 days from Feb 13, 2026
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+    <button onclick="prev()">&#8592;</button>
+    <button onclick="next()">&#8594;</button>
+</div>
+<div class="counter"><span id="cur">1</span> / <span id="tot">10</span></div>
+
+<script>
+    let c=1, t=10;
+    document.getElementById('tot').textContent=t;
+    function show(n){
+        if(n>t) c=1; else if(n<1) c=t; else c=n;
+        document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+        document.getElementById('s'+c).classList.add('active');
+        document.getElementById('cur').textContent=c;
+    }
+    function next(){show(c+1)} function prev(){show(c-1)}
+    document.addEventListener('keydown',e=>{
+        if(e.key==='ArrowRight'||e.key===' ')next();
+        if(e.key==='ArrowLeft')prev();
+    });
+    let tx=0;
+    document.addEventListener('touchstart',e=>tx=e.changedTouches[0].screenX);
+    document.addEventListener('touchend',e=>{let d=e.changedTouches[0].screenX-tx;if(d<-50)next();if(d>50)prev();});
+</script>
+</body>
+</html>

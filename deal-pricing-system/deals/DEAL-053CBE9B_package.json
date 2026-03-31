@@ -1,0 +1,519 @@
+{
+  "deal_brief": {
+    "deal_id": "DEAL-053CBE9B",
+    "deal_type": "upsell",
+    "client": {
+      "name": "CIH Bank",
+      "region": "EMEA",
+      "country": "Morocco",
+      "segments": [
+        "retail"
+      ],
+      "institution_size_users": 2000000,
+      "institution_size_employees": 5000,
+      "institution_size_aum": null,
+      "is_existing_customer": true,
+      "contract_start_date": null,
+      "contract_renewal_date": null,
+      "current_annual_spend": 1284426.0
+    },
+    "demand": {
+      "current_active_users": 2000000,
+      "year_1_users": 2000000,
+      "year_2_users": 2500000,
+      "year_3_users": 3000000,
+      "year_4_users": 3000000,
+      "year_5_users": 3500000,
+      "demand_firmness": "validated",
+      "planned_launches": [
+        "Banque Directe launch (April 2026) — new direct banking entity for digital sales",
+        "Managed Hosting migration (July 2026) — move from self-hosted to MH Enterprise 2",
+        "CLO activation (H2 2026) — activate 500K inactive customers via AI-powered campaigns",
+        "Family Banking, Pockets, TVP (2027+) — Ignite workshop roadmap items"
+      ],
+      "assist_employees": 50,
+      "lending_aum": null
+    },
+    "scope": {
+      "currently_licensed": [
+        "digital_banking_signature",
+        "digital_onboarding_retail",
+        "case_manager_50_users",
+        "digital_engage_premium_20_users",
+        "digital_assist_essentials_unlimited"
+      ],
+      "proposed_additions": [
+        "managed_hosting_enterprise_2",
+        "digital_assist_premium_50_users",
+        "customer_lifecycle_orchestrator"
+      ],
+      "hosting_model": "managed",
+      "ai_analytics_plans": "CLO for behavioral segmentation, next-best-offer, campaign orchestration targeting 500K inactive customers",
+      "services_scope": "Existing managed services contract covers implementation capacity"
+    },
+    "constraints": {
+      "client_concerns": [
+        "CIO is price-sensitive — got 65%+ discounts on current contract",
+        "Adding €1M+ to existing €1.3M/yr spend feels like doubling the bill",
+        "Budget needs steer-co approval — CIO defends but loses interest if numbers too high",
+        "Procurement doesn't interfere but CEO asks 'where is my cut' at the end"
+      ],
+      "arr_uplift_target_min": 1000000.0,
+      "arr_uplift_target_max": 1400000.0,
+      "sensitivities": [
+        "CIO needs to feel he negotiated well — leave room for a visible win",
+        "MH + DA pricing already shown at €751,659/yr — that number is anchored",
+        "CLO pricing NOT yet shared — this is the key variable",
+        "Current contract has 65%+5% discount — client expects similar treatment",
+        "Chinabank Philippines CLO model (fixed $140K + variable take rate) is a viable precedent"
+      ],
+      "tax_jurisdiction_preference": null,
+      "preferred_contract_years": 5,
+      "license_activation": "buy_upfront",
+      "payment_terms": "Annual in advance",
+      "renewal_cap_pct": 5.0,
+      "notes": "Two genuinely different options: Option 1 = Activation Partnership (low fixed CLO ~€150K + variable take rate on outcomes, total fixed ~€900K) inspired by Chinabank CLO model. Option 2 = Growth Bundle (all-inclusive flat ~€1.15M/yr, no variable). CIO narrative for Option 1: 'Under €1M fixed, we earn when you earn.' MH+DA already at €751K so CLO is the swing factor. Walk-away is €1M ARR. Opening at €1.15-1.4M depending on option. Business case shows €4.8M/yr value at stake — investment pays for itself even at 25% confidence."
+    },
+    "created_at": "2026-03-17T14:16:27.351699",
+    "updated_at": "2026-03-17T14:16:27.355872"
+  },
+  "deal_context": {
+    "deal_classification": "Upsell — CIH Bank",
+    "baseline_summary": "Current annual spend: $1,284,426 across retail segments.",
+    "baseline_arr": 1284426.0,
+    "baseline_per_user": 0.642213,
+    "client_pressure_points": [
+      "CIO is price-sensitive — got 65%+ discounts on current contract",
+      "Adding €1M+ to existing €1.3M/yr spend feels like doubling the bill",
+      "Budget needs steer-co approval — CIO defends but loses interest if numbers too high"
+    ],
+    "backbase_pressure_points": [
+      "ARR growth",
+      "Platform stickiness"
+    ],
+    "strategic_considerations": [
+      "5-year user ramp: 2,000,000 → 3,500,000"
+    ],
+    "relevant_benchmarks": [],
+    "recommended_construct_types": [
+      "base_fee_tiered",
+      "milestone_ramp"
+    ]
+  },
+  "pricing_strategy": {
+    "recommended": {
+      "construct_type": "flat_block",
+      "label": "Block Pricing",
+      "description": "Fixed-price blocks of users for predictable ARR.",
+      "licensing_logic": "Pre-purchased user blocks. Next block activates on boundary crossing.",
+      "true_up_mechanism": null,
+      "cap_or_floor": null,
+      "digital_banking_rate": null,
+      "digital_banking_block_size": 100000,
+      "digital_banking_block_price": 250000.0,
+      "assist_rate": null,
+      "lending_rate_bps": null,
+      "add_on_rates": {},
+      "services_year_1": 200000.0,
+      "services_ongoing_annual": 50000.0,
+      "ramp_schedule": null,
+      "floor_amount": null,
+      "kicker_threshold": null,
+      "kicker_rate": null,
+      "ayce_annual_fee": null,
+      "ayce_user_cap": null,
+      "track_definitions": null,
+      "edition": null,
+      "base_fee": null,
+      "included_users": null,
+      "tiered_user_rates": null,
+      "hosting_embedded": true,
+      "pros_client": [
+        "Predictable costs",
+        "No per-user audits"
+      ],
+      "pros_backbase": [
+        "ARR predictability",
+        "Block upside on growth"
+      ],
+      "cons_client": [
+        "May overpay if under-utilized"
+      ],
+      "cons_backbase": [
+        "Capped upside within block"
+      ]
+    },
+    "alternative": {
+      "construct_type": "milestone_ramp",
+      "label": "Milestone Ramp",
+      "description": "Reduced rates in early years, full pricing at adoption maturity.",
+      "licensing_logic": "Per-user pricing with year-based multiplier ramp.",
+      "true_up_mechanism": null,
+      "cap_or_floor": null,
+      "digital_banking_rate": 3.0,
+      "digital_banking_block_size": null,
+      "digital_banking_block_price": null,
+      "assist_rate": null,
+      "lending_rate_bps": null,
+      "add_on_rates": {},
+      "services_year_1": 200000.0,
+      "services_ongoing_annual": 50000.0,
+      "ramp_schedule": {
+        "1": 0.7,
+        "2": 0.85,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0
+      },
+      "floor_amount": null,
+      "kicker_threshold": null,
+      "kicker_rate": null,
+      "ayce_annual_fee": null,
+      "ayce_user_cap": null,
+      "track_definitions": null,
+      "edition": null,
+      "base_fee": null,
+      "included_users": null,
+      "tiered_user_rates": null,
+      "hosting_embedded": true,
+      "pros_client": [
+        "Lower entry cost",
+        "Aligned to adoption curve"
+      ],
+      "pros_backbase": [
+        "Competitive entry pricing",
+        "Full rate by Y3"
+      ],
+      "cons_client": [
+        "Rising costs each year"
+      ],
+      "cons_backbase": [
+        "Lower Y1 ARR"
+      ]
+    },
+    "rationale": "Block pricing recommended for ARR predictability. Milestone ramp as alternative if client needs lower Y1 commitment.",
+    "key_trade_offs": [
+      "Predictability vs. lower entry cost",
+      "Block simplicity vs. usage alignment"
+    ],
+    "negotiation_plan": null,
+    "deal_levers": []
+  },
+  "financials": {
+    "baseline": {
+      "scenario_label": "Current Baseline",
+      "construct_type": "flat_block",
+      "yearly": [
+        {
+          "year": 1,
+          "users": 2000000,
+          "license_revenue": 1284426.0,
+          "services_revenue": 0.0,
+          "total_revenue": 1284426.0,
+          "per_user_cost": 0.64,
+          "arr": 1284426.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 0.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 2,
+          "users": 2500000,
+          "license_revenue": 1284426.0,
+          "services_revenue": 0.0,
+          "total_revenue": 1284426.0,
+          "per_user_cost": 0.51,
+          "arr": 1284426.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 0.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 3,
+          "users": 3000000,
+          "license_revenue": 1284426.0,
+          "services_revenue": 0.0,
+          "total_revenue": 1284426.0,
+          "per_user_cost": 0.43,
+          "arr": 1284426.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 0.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 4,
+          "users": 3000000,
+          "license_revenue": 1284426.0,
+          "services_revenue": 0.0,
+          "total_revenue": 1284426.0,
+          "per_user_cost": 0.43,
+          "arr": 1284426.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 0.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 5,
+          "users": 3500000,
+          "license_revenue": 1284426.0,
+          "services_revenue": 0.0,
+          "total_revenue": 1284426.0,
+          "per_user_cost": 0.37,
+          "arr": 1284426.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 0.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        }
+      ],
+      "total_license_5yr": 6422130.0,
+      "total_services_5yr": 0.0,
+      "total_deal_value_5yr": 6422130.0,
+      "avg_per_user_5yr": 0.45872357142857145,
+      "arr_year_1": 1284426.0,
+      "arr_year_5": 1284426.0,
+      "arr_cagr": 0.0,
+      "breakeven_months": null
+    },
+    "recommended": {
+      "scenario_label": "Recommended",
+      "construct_type": "flat_block",
+      "yearly": [
+        {
+          "year": 1,
+          "users": 2000000,
+          "license_revenue": 5000000.0,
+          "services_revenue": 200000.0,
+          "total_revenue": 5200000.0,
+          "per_user_cost": 2.5,
+          "arr": 5000000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 5000000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 2,
+          "users": 2500000,
+          "license_revenue": 6250000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 6300000.0,
+          "per_user_cost": 2.5,
+          "arr": 6250000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 6250000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 3,
+          "users": 3000000,
+          "license_revenue": 7500000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 7550000.0,
+          "per_user_cost": 2.5,
+          "arr": 7500000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 7500000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 4,
+          "users": 3000000,
+          "license_revenue": 7500000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 7550000.0,
+          "per_user_cost": 2.5,
+          "arr": 7500000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 7500000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 5,
+          "users": 3500000,
+          "license_revenue": 8750000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 8800000.0,
+          "per_user_cost": 2.5,
+          "arr": 8750000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 8750000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        }
+      ],
+      "total_license_5yr": 35000000.0,
+      "total_services_5yr": 400000.0,
+      "total_deal_value_5yr": 35400000.0,
+      "avg_per_user_5yr": 2.5,
+      "arr_year_1": 5000000.0,
+      "arr_year_5": 8750000.0,
+      "arr_cagr": 0.15016331689560292,
+      "breakeven_months": 0.5
+    },
+    "alternative": {
+      "scenario_label": "Alternative",
+      "construct_type": "milestone_ramp",
+      "yearly": [
+        {
+          "year": 1,
+          "users": 2000000,
+          "license_revenue": 4200000.0,
+          "services_revenue": 200000.0,
+          "total_revenue": 4400000.0,
+          "per_user_cost": 2.1,
+          "arr": 4200000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 4200000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 2,
+          "users": 2500000,
+          "license_revenue": 6375000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 6425000.0,
+          "per_user_cost": 2.55,
+          "arr": 6375000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 6375000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 3,
+          "users": 3000000,
+          "license_revenue": 9000000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 9050000.0,
+          "per_user_cost": 3.0,
+          "arr": 9000000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 9000000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 4,
+          "users": 3000000,
+          "license_revenue": 9000000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 9050000.0,
+          "per_user_cost": 3.0,
+          "arr": 9000000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 9000000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        },
+        {
+          "year": 5,
+          "users": 3500000,
+          "license_revenue": 10500000.0,
+          "services_revenue": 50000.0,
+          "total_revenue": 10550000.0,
+          "per_user_cost": 3.0,
+          "arr": 10500000.0,
+          "margin_estimate": null,
+          "digital_banking_revenue": 10500000.0,
+          "assist_revenue": 0.0,
+          "lending_revenue": 0.0,
+          "add_on_revenue": 0.0
+        }
+      ],
+      "total_license_5yr": 39075000.0,
+      "total_services_5yr": 400000.0,
+      "total_deal_value_5yr": 39475000.0,
+      "avg_per_user_5yr": 2.7910714285714286,
+      "arr_year_1": 4200000.0,
+      "arr_year_5": 10500000.0,
+      "arr_cagr": 0.2574334296829355,
+      "breakeven_months": 0.6
+    },
+    "arr_uplift_pct": 289.27894639317486,
+    "arr_uplift_abs": 3715574.0,
+    "total_uplift_abs": 28977870.0,
+    "per_user_delta_year1": 1.8599999999999999,
+    "per_user_delta_year5": 2.13
+  },
+  "narrative": {
+    "executive_summary": "Deal pricing recommendation for CIH Bank (upsell).",
+    "deal_context_recap": "CIH Bank is a retail bank in Morocco.",
+    "construct_explanation": "We recommend Block Pricing: Fixed-price blocks of users for predictable ARR.",
+    "proposal_storyline": {
+      "mutual_journey": "Our partnership with CIH Bank is built on a shared vision of digital banking transformation.",
+      "pricing_options_summary": "We present two options: Block Pricing (recommended) and Milestone Ramp (alternative).",
+      "business_case": "Investment breakeven is targeted within 12-16 months, making this an attractive proposition for board approval.",
+      "reasons_to_believe": [
+        "Proven platform with 150+ bank implementations globally"
+      ]
+    },
+    "objections": [
+      {
+        "objection": "Why this pricing model over alternatives?",
+        "response": "Block pricing recommended for ARR predictability. Milestone ramp as alternative if client needs lower Y1 commitment.",
+        "supporting_data": null
+      }
+    ],
+    "next_steps": [
+      {
+        "step": "Internal deal review and pricing approval",
+        "owner": "Backbase",
+        "timeline": "Week 1",
+        "deliverables": [
+          "Pricing memo",
+          "Financial projections"
+        ]
+      },
+      {
+        "step": "Present proposal to client",
+        "owner": "Joint",
+        "timeline": "Week 2-3",
+        "deliverables": [
+          "Client presentation",
+          "Deal terms sheet"
+        ]
+      },
+      {
+        "step": "Negotiation rounds",
+        "owner": "Joint",
+        "timeline": "Week 3-5",
+        "deliverables": [
+          "Counter-proposal",
+          "Final terms"
+        ]
+      },
+      {
+        "step": "Executive sign-off and contract execution",
+        "owner": "Joint",
+        "timeline": "Week 6-8",
+        "deliverables": [
+          "Signed contract"
+        ]
+      }
+    ]
+  },
+  "generated_at": "2026-03-17T14:16:32.077503"
+}

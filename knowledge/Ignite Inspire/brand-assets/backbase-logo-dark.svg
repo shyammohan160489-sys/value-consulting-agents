@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 56" fill="#001C3D">
+  <defs>
+    <clipPath id="b-notch">
+      <!-- Clip out a square notch from top-left of the B -->
+      <rect x="0" y="0" width="320" height="56"/>
+      <rect x="0" y="0" width="7" height="16" fill="black" style="clip-rule:evenodd"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#b-notch)">
+    <text x="0" y="46" font-family="Libre Franklin, Inter, Helvetica, Arial, sans-serif" font-size="56" font-weight="900" letter-spacing="-0.5">Backbase</text>
+  </g>
+</svg>

@@ -1,0 +1,39 @@
+{
+  "deal_type": "renewal",
+  "client": {
+    "name": "Southeast Asia Digital Bank",
+    "region": "APAC",
+    "country": "Indonesia",
+    "segments": ["retail"],
+    "institution_size_users": 2000000,
+    "institution_size_employees": 3500,
+    "is_existing_customer": true,
+    "contract_start_date": "2022-01-01",
+    "contract_renewal_date": "2027-01-01",
+    "current_annual_spend": 800000
+  },
+  "demand": {
+    "current_active_users": 1200000,
+    "year_1_users": 1500000,
+    "year_2_users": 1800000,
+    "year_3_users": 2200000,
+    "year_4_users": 2600000,
+    "year_5_users": 3000000,
+    "planned_launches": ["Mobile Banking 2.0", "Personal Finance Manager"],
+    "assist_employees": 800
+  },
+  "scope": {
+    "currently_licensed": ["digital_banking", "onboarding"],
+    "proposed_additions": ["assist", "banking_premium"],
+    "hosting_model": "managed",
+    "services_scope": "Implementation + 2 phases of customization"
+  },
+  "constraints": {
+    "client_concerns": ["Budget approval process", "Per-user cost optics", "Audit complexity"],
+    "arr_uplift_target_min": 15,
+    "arr_uplift_target_max": 30,
+    "sensitivities": ["Price per user must decrease year-over-year", "No retroactive true-ups"],
+    "preferred_contract_years": 5,
+    "notes": "Strong relationship. CEO met Backbase leadership at Money20/20. Client considering Temenos for SME banking."
+  }
+}

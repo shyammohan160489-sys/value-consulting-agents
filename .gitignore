@@ -6,6 +6,7 @@
 
 # Python
 __pycache__/
+.pytest_cache/
 *.pyc
 *.pyo
 *.egg-info/
@@ -26,6 +27,7 @@ build/
 
 # Engagement data (client-confidential — never commit)
 engagements/
+Engagement/
 
 # Temporary files
 *.tmp
