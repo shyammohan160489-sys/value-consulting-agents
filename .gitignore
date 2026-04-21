@@ -27,7 +27,10 @@ build/
 
 # Engagement data (client-confidential — never commit)
 engagements/
-Engagement/
+# Ignore all direct children of Engagement/ except explicit exceptions below
+Engagement/*
+# Exceptions: non-client content that lives under Engagement/ (events, talks, internal)
+!Engagement/events/
 
 # Temporary files
 *.tmp
