@@ -26,8 +26,21 @@ build/
 .claude/settings.local.json
 
 # Engagement data (client-confidential — never commit)
-engagements/
-Engagement/
+/engagements/
+/Engagement/
+
+# Team Ops (manager second brain) — content is local-only
+# Only structure, READMEs, and templates are tracked
+team-ops/inbox/*
+team-ops/people/*
+team-ops/engagements/*
+team-ops/areas/*
+team-ops/meetings/*
+team-ops/decisions/*
+team-ops/actions/*
+team-ops/archive/*
+!team-ops/**/README.md
+!team-ops/templates/**
 
 # Environment files (may contain secrets)
 .env
