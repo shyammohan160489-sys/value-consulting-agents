@@ -131,6 +131,7 @@ ALL agents (current and future) MUST comply with these protocols:
 |----------|------|----------|
 | **Auditability Protocol** | `knowledge/standards/auditability_protocol.md` | Journal entries, telemetry, output provenance, checkpoint logging |
 | **Context Management Protocol** | `knowledge/standards/context_management_protocol.md` | File size checks, chunking, context preservation |
+| **Security Protocol** | `knowledge/standards/security_protocol.md` | Prompt injection defense, untrusted data handling, MCP query anonymization, web source validation, stakeholder intelligence bounds |
 | **Unified Design System** | `knowledge/design-system.md` | Visual output standards, brand colors, typography, layout patterns |
 
 **Non-negotiable rules for every agent:**
@@ -432,6 +433,6 @@ Generate a customized Business Case Questionnaire pre-populated with upstream ag
 ```
 Then provide the engagement directory path. The skill reads ENGAGEMENT_CONTEXT.md and all available upstream outputs automatically.
 
-**Output:** `[CLIENT]_Business_Case_Questionnaire.xlsx` — feeds into `roi-business-case-builder` agent as input 7b.
+**Output:** `[CLIENT]_Business_Case_Questionnaire.xlsx` — feeds into `roi-financial-modeler` agent as input 7b.
 
 **Knowledge Reference:** `knowledge/Ignite Inspire/agent-7-roi.md` — value lever framework, calculation methodology, ROI examples.

@@ -32,6 +32,16 @@ Engagement/*
 # Exceptions: non-client content that lives under Engagement/ (events, talks, internal)
 !Engagement/events/
 
+# Environment files (may contain secrets)
+.env
+.env.local
+.env.*.local
+.git_askpass.sh
+
+# PII anonymization artifacts (contain real client names)
+.pii_mapping.json
+.anon_*
+
 # Temporary files
 *.tmp
 /tmp/
