@@ -11,7 +11,7 @@ Use this skill when the presentation **needs to be edited by other team members*
 **Do NOT use this for:**
 - Standalone animated presentations → use `/executive-briefing` (HTML)
 - Assessment dashboards → use `/generate-assessment-html`
-- Quick internal decks → use `/presentation` (Prezi template)
+- Quick internal decks → use `/frontline-slides-html`
 
 ## Content Types You Can Transform
 

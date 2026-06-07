@@ -10,7 +10,7 @@ For best results on complex, client-facing presentations, use **Opus** (`/model 
 
 Use this skill for **any** executive-facing or client-facing presentation. This is the **preferred format** for all Backbase Value Consulting presentations — commercial proposals, executive briefings, assessment readouts, engagement kickoffs, strategy decks, and meeting materials.
 
-**Do NOT use the Prezi template (`/presentation` or `/presentation-v2`) for client-facing work.** Those templates are being phased out. This format produces smaller files (~70-120KB vs ~300KB), supports richer components (SVG charts, data tables, journey maps, architecture diagrams), and looks significantly more polished.
+**For standard 17-layout decks, use `/frontline-slides-html` (HTML) or `/frontline-slides-pptx` (PPTX).** Use this skill only when you need bespoke scene-by-scene control — custom SVG charts, journey maps, architecture diagrams, or unique narrative layouts the standard engine can't carry. The retired Prezi templates (`/presentation`, `/presentation-v2`) live in `legacy/`.
 
 **Do NOT use this for assessment dashboards** — use `/generate-assessment-html` for 7-act assessment reports with sidebar navigation.
 

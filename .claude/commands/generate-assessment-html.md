@@ -2,7 +2,7 @@
 
 Generate a premium interactive HTML dashboard from the engagement's markdown deliverables and upstream JSON artifacts. This skill produces a single self-contained HTML file with a Future UI-inspired design — dark sidebar navigation, bento grids, dark feature sections, phone-frame prototypes, journey visualizations, scroll-reveal animations, and business line differentiation.
 
-**Do NOT use this skill for general presentations.** For slide decks, Innovation Day pitches, or any non-assessment deliverable, use `/presentation` instead. This skill is exclusively for Detailed Assessment / Ignite Assess engagements that follow the 7-act narrative structure.
+**Do NOT use this skill for general presentations.** For slide decks, Innovation Day pitches, or any non-assessment deliverable, use `/frontline-slides-html` instead. This skill is exclusively for Detailed Assessment / Ignite Assess engagements that follow the 7-act narrative structure.
 
 **CRITICAL DESIGN RULE:** This dashboard uses a **LIGHT base theme** (`#FFFFFF` background). The body background is NEVER dark. Dark colors are used ONLY for:
 - The sidebar (`#0F172A`)
