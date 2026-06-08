@@ -53,3 +53,26 @@ Desktop.ini
 
 # Miscellaneous
 *.webloc
+
+# Generated / transient artifacts (never commit — these inflate Source Control)
+# git worktrees spun up by background agents
+.claude/worktrees/
+# generated knowledge graph (rebuilt from code)
+graphify-out/
+# generated deliverable scratch
+/outputs/
+# generated pricing output
+deal-pricing-system/output/
+# downloaded/packaged archives
+*.zip
+# superseded — retired skills now live in .claude/commands/deprecated/
+legacy/
+
+# Unpacked archives / scratch design kits (downloaded, not source)
+circularize-design-system/
+circularise-design-system/
+claude-starter-kit/
+skill-package/
+uploads-for-claude-design/
+frontline-2026-design-system/
+frontline-2026-for-claude-design/
