@@ -98,7 +98,7 @@ For each lever candidate, document:
 - **Operational Change** — 1-2 sentences naming specific Backbase capability and what changes
 - **Volume/Rate Impact** — current value, target value, derivation method (gap-based / client target / benchmark)
 - **Financial Impact Direction** — what inputs are needed to calculate the dollar value (e.g., "recovered applications x funding rate x avg revenue per customer"). Do NOT compute the number.
-- **Backbase Enabler** — specific capability name (e.g., DOL.1-5, RB.15.3, BB.17, Flow Foundation)
+- **Backbase Enabler** — specific capability / Solution (e.g., DOL.1-5, RB.15.3, Conversational Banking · Resolve, Customer Operations Resolution Loop)
 - **Confidence** — HIGH / MEDIUM / LOW per the criteria in value_lever_framework.md
 - **Evidence IDs** — references to evidence register items
 

@@ -45,7 +45,7 @@ python3 tools/pricing_model.py --selftest                              # sanity:
 
 ## Pricing bases (works across deal types)
 
-Each scenario declares a `basis`. The engine handles both — pick per deal, or mix
+Each scenario declares a `basis`. The engine handles all three — pick per deal, or mix
 scenarios within one model:
 
 **1. `band_multiplier` (default) — WEALTH / AUM** (e.g. Schroders)
@@ -60,8 +60,8 @@ curve. The growth metric is a count (customers / accounts / loans), not a £ amo
 set `metric_prefix:""`, `metric_suffix:" cust"`, and a `display.divisor` to render
 the resulting absolute fees in millions.
 
-**3. Conversational Banking shape — PLATFORM + LOB + PER-INTERACTION + COMPUTE** (per `knowledge/product/banking-os.md` §10)
-The canonical Banking OS / Conversational Banking deal shape: **platform fee** (Entry €350K · Critical €700K · Enterprise €1.5M) **+ LOB fee** €350K/domain (Retail/SME/Commercial/Wealth; one included; waived on Enterprise) **+ per-interaction** from €0.07 (drops with volume) **+ LLM compute** as a transparent pass-through at cost — *"pay for outcomes, not infrastructure,"* activated **per domain, not per customer/channel**. This is a documented basis the skill should support: model the platform + LOB fees as the flat component and the per-interaction step-downs via `tiered_per_unit` (interaction count as the growth metric), carrying LLM compute as a flat 3rd-party pass-through line in the POF split. `knowledge/product/banking-os.md` §10 is the source of truth for this deal shape.
+**3. `conversational` — CONVERSATIONAL BANKING** (the canonical Banking OS deal shape · `knowledge/product/banking-os.md` §10)
+Annual fee = **platform fee** (`platform_fee`: Entry €350K · Critical €700K · Enterprise €1.5M) **+ LOB fee** (`lob_fee_per_domain` €350K × billable `domains`, where `lob_included` are bundled and `lob_waived:true` zeroes it on Enterprise) **+ per-interaction** (`interaction_tiers` `[lo,hi,rate]` on **monthly** volume, from €0.07, dropping with volume, annualised ×12). **LLM compute** (`llm_passthrough_annual`) is a transparent pass-through at cost — echoed in Assumptions, **not** added to the Backbase fee. The growth metric `g` is **monthly interactions** (set `metric_suffix:"/mo"`). *"Pay for outcomes, not infrastructure" — activated per domain, not per customer/channel.* Regression-tested in `--selftest`.
 
 The POF software/3rd-party back-solve, crossover, and margin H2H all work identically
 across these bases.
@@ -108,10 +108,31 @@ across these bases.
   }
 }
 ```
+```json
+// CONVERSATIONAL BANKING (conversational) — g = monthly interactions
+{
+  "client": "Example Bank", "currency": "€", "metric": "interactions",
+  "metric_prefix": "", "metric_suffix": "/mo",
+  "display": {"divisor": 1000000, "suffix": "M"},
+  "scalar_model": {
+    "milestones": [250000,500000,1000000,2000000,3000000],
+    "scenarios": [
+      {"name":"Critical · 3 domains","basis":"conversational",
+       "platform_fee":700000,"lob_fee_per_domain":350000,"domains":3,"lob_included":1,"lob_waived":false,
+       "interaction_tiers":[[0,500000,0.070],[500000,2000000,0.063],[2000000,null,0.057]],
+       "llm_passthrough_annual":300000},
+      {"name":"Enterprise · all domains","basis":"conversational",
+       "platform_fee":1500000,"lob_fee_per_domain":350000,"domains":4,"lob_included":4,"lob_waived":true,
+       "interaction_tiers":[[0,500000,0.070],[500000,2000000,0.063],[2000000,null,0.057]]}
+    ]
+  }
+}
+```
 - `band_multiplier`: band `[lo,hi,rate]` × `(1+rate)` once growth crosses `lo`; `top_band` compounds `(1+rate)^((g-from)/step)` above `from` (lower rate = smoothing).
 - `tiered_per_unit`: `flat` + Σ over `tiers` `[lo,hi,per_unit]` of `(units in tier × per_unit)`; `hi:null` = open-ended.
-- `pof` is optional; include only when you need the software/3rd-party POF split (works on either basis).
-- Run `--print-schema` for a complete worked wealth example; `--selftest` regression-tests both bases.
+- `conversational`: `platform_fee` + LOB (`max(0, domains − lob_included) × lob_fee_per_domain`, or 0 if `lob_waived`) + per-interaction (Σ `interaction_tiers` on monthly volume × 12). `llm_passthrough_annual` echoes in Assumptions only.
+- `pof` is optional; include only when you need the software/3rd-party POF split (works on any basis).
+- Run `--print-schema` for a complete worked wealth example; `--selftest` regression-tests all three bases.
 
 ## Guardrails (conservative-by-default)
 

@@ -138,7 +138,7 @@ You operate in four distinct modes based on workshop type:
   - System landscape assessment
   - Transaction Center → Advisory Hub transformation vision
   - Day-in-the-life journey maps
-  - Digital Assist capability alignment
+  - Conversational Banking / employee-workspace capability alignment
   - Validation questions
 - Updated ENGAGEMENT_CONTEXT.md section 4
 
@@ -307,7 +307,7 @@ Before delivering workshop materials, verify:
 - [ ] 2-4 employee personas with specific roles
 - [ ] System count and landscape documented
 - [ ] Transaction Center → Advisory Hub vision presented
-- [ ] Digital Assist capabilities mapped to pain points
+- [ ] Conversational Banking / employee-workspace capabilities mapped to pain points
 
 **Architecture Mode:**
 - [ ] Core banking system integration approach defined

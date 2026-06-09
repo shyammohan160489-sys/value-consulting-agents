@@ -142,17 +142,17 @@ Use cases should map to lifecycle stages:
 | **At-Risk Customer** | Showing churn signals | Retention, win-back |
 
 ### Backbase Architecture Layers
-Use cases must align with the 10-layer Backbase architecture:
-1. **Presentation Services** - Web, Mobile, Apps
-2. **Banking Services** - Digital Banking capabilities
-3. **Process Automation (Flow)** - Orchestration and workflows
-4. **Agentic Services** - AI/ML capabilities
-5. **Semantic Services** - Content and knowledge
-6. **Entitlements** - Permissions and access control
-7. **Security** - Authentication, authorization
-8. **Integration Services (Grand Central)** - Core system connectivity
-9. **Marketplace** - Partner integrations
-10. **Managed Hosting** - Infrastructure
+Use cases align to the **Banking OS** model (canonical: `knowledge/product/banking-os.md`) — map each to the relevant layer and Solution:
+1. **Digital frontline** - customer apps + employee workspaces (→ Digital Banking; Conversational "Just Ask")
+2. **Banking Services** - composable banking capabilities (accounts, payments, cards, lending, investing)
+3. **Orchestration layer** - workflows + agents coordinating the work (→ Customer Operations / Resolution Loops)
+4. **Intelligence layer** - reasoning, decisioning, simulation (→ Relationship Intelligence)
+5. **Nexus (semantic layer)** - shared source of customer truth; banking ontology
+6. **Sentinel (authority layer)** - entitlements, policies, governed & auditable execution
+7. **Security** - authentication, authorization, fraud
+8. **Connectivity / Integration** - core-system connectivity (no rip-and-replace)
+9. **Marketplace** - partner / fintech integrations
+10. **Managed Hosting** - infrastructure (BaaS)
 
 ## Product Directory Validation
 

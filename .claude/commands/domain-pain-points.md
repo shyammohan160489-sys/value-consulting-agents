@@ -57,7 +57,7 @@ Assistant: Loading Retail Banking customer pain points...
 
 | Pain Point | Impact | Backbase Solution |
 |------------|--------|-------------------|
-| Fragmented experience across channels | Frustration, low NPS | Omnichannel platform |
+| Fragmented experience across channels | Frustration, low NPS | Unified Frontline (Digital Banking) |
 | Limited self-service options | High call center volume | Self-service features |
 | Poor mobile app experience | Low engagement, churn | Mobile banking app |
 

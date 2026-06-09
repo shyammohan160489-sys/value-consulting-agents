@@ -72,7 +72,7 @@ This agent accepts use cases in ANY of the following formats. Your first task is
 
 | UC ID | Use Case Name | Description | Segments Served | Journey Stage | Enabled By (Backbase Capabilities) |
 |-------|--------------|-------------|-----------------|---------------|-------------------------------------|
-| UC-001 | Digital Account Opening | ... | Retail | Acquire | Digital Onboarding, Flow Foundation, Platform Identity |
+| UC-001 | Digital Account Opening | ... | Retail | Acquire | Digital Onboarding, Process Orchestration, Platform Identity |
 
 #### Format B: Journey-Stage Map (BECU-style Ignite Day presentation)
 
@@ -121,7 +121,7 @@ Journey Stage: [Stage name from the bank's journey framework]
 Initiative: [Parent initiative if applicable]
 Required Capabilities:
   - [Capability 1 — e.g., "Digital Onboarding"]
-  - [Capability 2 — e.g., "Flow Foundation"]
+  - [Capability 2 — e.g., "Process Orchestration"]
   - [Capability 3 — e.g., "KYC/AML Screening"]
 Business Value:
   - [Value driver 1]

@@ -48,13 +48,17 @@ def scalar_price(scenario, g):
             baseline × Π(1+rate) for each band crossed, × top-band smoothing.
       - "tiered_per_unit" (RETAIL / BANKING / LENDING):
             flat platform fee + Σ(units in each volume tier × per-unit rate).
+      - "conversational" (CONVERSATIONAL BANKING · banking-os.md §10):
+            platform fee + LOB fee + per-interaction (g = monthly interactions).
 
-    Both return a fee in the scenario's own value unit; keep scenarios within
+    All return a fee in the scenario's own value unit; keep scenarios within
     one model internally consistent so they can be compared / crossed.
     """
     basis = scenario.get("basis", "band_multiplier")
     if basis == "tiered_per_unit":
         return price_tiered(scenario, g)
+    if basis == "conversational":
+        return price_conversational(scenario, g)
     return price_band_multiplier(scenario, g)
 
 
@@ -91,6 +95,35 @@ def price_tiered(scenario, g):
         if g > lo:
             price += (hi - lo) * per_unit
     return price
+
+
+def price_conversational(scenario, g):
+    """CONVERSATIONAL BANKING (banking-os.md §10). Annual Backbase fee =
+    platform fee + LOB fee + per-interaction, where `g` is the MONTHLY
+    interaction volume. Per-interaction is volume-tiered on monthly volume and
+    annualised (×12). LLM compute is a transparent pass-through billed at cost —
+    echoed in Assumptions, NOT added to the Backbase fee here.
+
+      platform_fee        : annual platform fee (Entry/Critical/Enterprise tier)
+      lob_fee_per_domain  : annual fee per activated LOB / business domain
+      domains             : number of activated domains (default 1)
+      lob_included        : domains bundled in the platform fee (default 1)
+      lob_waived          : true on Enterprise (all domains included → LOB = 0)
+      interaction_tiers   : [lo, hi, per_interaction] on MONTHLY volume; hi=null open
+      llm_passthrough_annual : optional · echoed only (pass-through, at cost)
+    """
+    platform = float(scenario.get("platform_fee", 0.0))
+    if scenario.get("lob_waived"):
+        lob = 0.0
+    else:
+        billable = max(0, int(scenario.get("domains", 1)) - int(scenario.get("lob_included", 1)))
+        lob = billable * float(scenario.get("lob_fee_per_domain", 0.0))
+    monthly = 0.0
+    for lo, hi, rate in scenario.get("interaction_tiers", []):
+        hi = g if hi is None else min(g, hi)
+        if g > lo:
+            monthly += (hi - lo) * rate
+    return platform + lob + monthly * 12.0
 
 
 def projection(model):
@@ -349,6 +382,22 @@ def build_xlsx(model, out_path):
                 hi_lbl = "∞" if hi is None else f"{hi:,}"
                 wsa.cell(row=r, column=2, value=f"{lo:,}–{hi_lbl} {metric}: {cur}{pu}/unit")
                 r += 1
+        elif basis == "conversational":
+            wsa.cell(row=r, column=2, value=f"[conversational] platform fee {cur}{s.get('platform_fee',0):,.0f}/yr")
+            r += 1
+            if s.get("lob_waived"):
+                wsa.cell(row=r, column=2, value="LOB: all domains included (Enterprise — waived)")
+                r += 1
+            else:
+                wsa.cell(row=r, column=2, value=f"LOB: {s.get('domains',1)} domains · {s.get('lob_included',1)} included · {cur}{s.get('lob_fee_per_domain',0):,.0f}/domain/yr")
+                r += 1
+            for lo, hi, rate in s.get("interaction_tiers", []):
+                hi_lbl = "∞" if hi is None else f"{hi:,}"
+                wsa.cell(row=r, column=2, value=f"{lo:,}–{hi_lbl}/mo: {cur}{rate}/interaction")
+                r += 1
+            if s.get("llm_passthrough_annual"):
+                wsa.cell(row=r, column=2, value=f"+ LLM compute pass-through ~{cur}{s['llm_passthrough_annual']:,.0f}/yr (at cost, billed separately)")
+                r += 1
         else:
             wsa.cell(row=r, column=2, value=f"[band_multiplier] baseline {cur}{s['baseline']}{suf} at {cur}{s.get('baseline_at','?')}{unit}")
             r += 1
@@ -431,6 +480,39 @@ RETAIL_FIXTURE = {
 #   600k: 2,000,000 + 100,000×40 + 400,000×30 + 100,000×20       = 20,000,000
 EXPECT_TIERED = {"Standard": {50000: 4_000_000, 300000: 12_000_000, 600000: 20_000_000}}
 
+# CONVERSATIONAL BANKING flavour (banking-os.md §10 — illustrative reference rates).
+# g = MONTHLY interaction volume. Annual fee = platform + LOB + per-interaction×12.
+CONVERSATIONAL_FIXTURE = {
+    "client": "Illustrative Conversational Banking", "currency": "€", "unit": "",
+    "metric": "interactions", "metric_prefix": "", "metric_suffix": "/mo",
+    "display": {"divisor": 1_000_000, "suffix": "M"},
+    "scalar_model": {
+        "milestones": [250_000, 500_000, 1_000_000, 2_000_000, 3_000_000],
+        "scenarios": [
+            {"name": "Critical · 3 domains", "basis": "conversational",
+             "platform_fee": 700_000, "lob_fee_per_domain": 350_000,
+             "domains": 3, "lob_included": 1, "lob_waived": False,
+             "interaction_tiers": [[0, 500_000, 0.070], [500_000, 2_000_000, 0.063], [2_000_000, None, 0.057]],
+             "llm_passthrough_annual": 300_000},
+            {"name": "Enterprise · all domains", "basis": "conversational",
+             "platform_fee": 1_500_000, "lob_fee_per_domain": 350_000,
+             "domains": 4, "lob_included": 4, "lob_waived": True,
+             "interaction_tiers": [[0, 500_000, 0.070], [500_000, 2_000_000, 0.063], [2_000_000, None, 0.057]]},
+        ],
+    },
+}
+# Hand-computed annual totals (platform + LOB + per-interaction×12):
+#   Critical(3dom): platform 700k + LOB (3-1)×350k=700k + interaction×12
+#     @1.0M/mo: (500k×.070 + 500k×.063)=66,500/mo ×12 = 798,000 → 700k+700k+798k = 2,198,000
+#     @2.0M/mo: (500k×.070 + 1.5M×.063)=129,500/mo ×12 = 1,554,000 → = 2,954,000
+#   Enterprise: platform 1.5M + LOB 0 (waived) + interaction×12
+#     @1.0M/mo: 1,500,000 + 798,000 = 2,298,000
+EXPECT_CONVERSATIONAL = {
+    "Critical · 3 domains": {250_000: 1_610_000, 500_000: 1_820_000, 1_000_000: 2_198_000,
+                             2_000_000: 2_954_000, 3_000_000: 3_638_000},
+    "Enterprise · all domains": {1_000_000: 2_298_000, 2_000_000: 3_054_000},
+}
+
 
 def selftest():
     ok = True
@@ -454,6 +536,16 @@ def selftest():
             if got != expected:
                 ok = False
             print(f"  {scen:>8} @ {v:,} cust = €{got:,.0f}  (expect €{expected:,.0f})  [{mark}]")
+    # 1c · CONVERSATIONAL BANKING — conversational basis
+    print("— CONVERSATIONAL (platform + LOB + per-interaction) —")
+    for scen, points in EXPECT_CONVERSATIONAL.items():
+        s = next(x for x in CONVERSATIONAL_FIXTURE["scalar_model"]["scenarios"] if x["name"] == scen)
+        for v, expected in points.items():
+            got = round(scalar_price(s, v), 2)
+            mark = "ok" if got == expected else "FAIL"
+            if got != expected:
+                ok = False
+            print(f"  {scen[:20]:>20} @ {v:,}/mo = €{got:,.0f}  (expect €{expected:,.0f})  [{mark}]")
     print("— POF back-solve —")
     # 2 · POF back-solve
     res = pof_backsolve(SCHRODERS_FIXTURE["pof"])

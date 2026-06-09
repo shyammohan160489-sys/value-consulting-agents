@@ -77,26 +77,26 @@ Before producing any deliverable, you MUST have working knowledge of the Backbas
 ### BIAN Alignment (Important for Credibility)
 The capability assessment framework is built on **BIAN Service Landscape v13** — the banking industry's standard architecture framework (~322 service domains). Key mapping:
 
-| BIAN Business Area | Backbase Capability Domain | Quadrant |
+| BIAN Business Area | Backbase Capability Domain | Banking OS Solution / Layer |
 |---|---|---|
 | Sales & Service | Customer Channels & Engagement | Digital Banking |
-| Customer Management | Customer Lifecycle Management | Cross-cutting |
-| Products: Consumer Banking | Retail Banking Services | Digital Banking - Retail |
-| Products: Lending | Digital Lending & Origination | Onboarding & Origination |
-| Products: Investment | Wealth & Investment Services | Digital Banking / Wealth |
-| Operations: Payments | Payments & Transfers | Digital Banking |
-| Operations: Fulfillment | Process Orchestration & Fulfillment | Flow Foundation |
-| Risk & Compliance | Risk, Compliance & Security | Platform Identity |
-| Business Support | Employee Enablement | Human Assist / Digital Assist |
-| Reference Data | Data Foundation | Data Foundations |
-| *Beyond BIAN* | Data & Intelligence | Intelligence Fabric |
-| *Beyond BIAN* | AI & Agentic | Agentic AI |
+| Customer Management | Customer Lifecycle Management | Customer Engagement (domain) |
+| Products: Consumer Banking | Retail Banking Services | Digital Banking — Retail |
+| Products: Lending | Digital Lending & Origination | Digital Banking — Onboarding & Origination |
+| Products: Investment | Wealth & Investment Services | Digital Banking — Wealth |
+| Operations: Payments | Payments & Transfers | Digital Banking / Customer Operations |
+| Operations: Fulfillment | Process Orchestration & Fulfillment | Customer Operations (Resolution Loops) |
+| Risk & Compliance | Risk, Compliance & Security | Sentinel (governed execution) |
+| Business Support | Employee Enablement | Conversational Banking / employee workspaces |
+| Reference Data | Data Foundation | Nexus (shared source of truth) |
+| *Beyond BIAN* | Data & Intelligence | Relationship Intelligence / Intelligence layer |
+| *Beyond BIAN* | AI & Agentic | Agentic execution — Conversational Banking + Customer Operations |
 
 When writing the capability assessment section (Act 5), reference the BIAN alignment — it signals to banks that the assessment uses an industry-recognized framework, not a proprietary vendor model.
 
 ### Customer Lifecycle Model
 
-The Backbase platform orchestrates four lifecycle stages: **Acquire → Activate → Expand → Retain**. Detailed lifecycle-to-product-line mappings are in the **domain-indexed product directory summary** (`product_directory_{domain}.md`) and the **platform lexicon** (`backbase_platform_lexicon.md`).
+**Canonical framing:** the **Customer Engagement** domain coordinates the customer lifecycle — acquisition · onboarding · origination · servicing · cross-sell · retention — orchestrated end-to-end, with **Customer Operations / Resolution Loops** closing the loop on every request. The older **Acquire → Activate → Expand → Retain** flywheel is a *legacy lens* — usable as a scoring/structuring scaffold, but do not present it as the product story; lead with the Customer Engagement lifecycle + the 4 Solutions. Detailed lifecycle-to-journey mappings are in the **domain-indexed product directory summary** (`product_directory_{domain}.md`).
 
 **Critical distinctions to avoid common errors:**
 - **Activate ≠ Onboarding.** Onboarding is Acquire. Activate starts AFTER the customer exists — it's about USAGE.
@@ -118,6 +118,8 @@ The current product surface is the **Banking OS control plane** (see reference #
 > **The tables below (13 Product Lines, Three Fabrics, NEXUS-as-semantic-fabric, Acquire/Activate/Expand/Retain) are LEGACY** — retained for BIAN capability-scoring continuity only. Do not present them as the lead product story; translate to the Banking OS model above.
 
 ### 13 Product Lines (Quick Reference) — LEGACY
+
+> **Map to the 4 Solutions when naming scope in a deliverable:** Digital Onboarding · Lending · Banking-Retail · Banking-Business · Invest · Wealth → **Digital Banking**. Digital Engage + conversational interfaces → **Conversational Banking** (Assist/Transact/Resolve/Grow). NBA / propensity / Data Foundations → **Relationship Intelligence**. Digital Assist + Flow + case management → **Customer Operations** (Resolution Loops). Grand Central / Platform Identity / Developer Platform → Banking OS platform layers (Integration · Sentinel · developer surface).
 
 | # | Product Line | Core Capability | Lifecycle Stages |
 |---|-------------|----------------|-----------------|
@@ -145,14 +147,21 @@ The Backbase platform is organized into **three fabrics** (evolved from the earl
 | **Data + AI Fabric** | **Middle Layer** | What orchestrates, decides, and controls behind the scenes | **NEXUS** (Customer State Graph, Semantic Banking Ontology), Agent Studio, Agent Orchestration, Process Automation (Flow), Entitlements & Access Control, Data Foundation, Intelligence Fabric |
 | **Integration Fabric** | **Back Layer** | What connects, stores, and processes | **Grand Central** (iPaaS), Connector Studio, 100+ Pre-built Connectors, Unified Domain Model, API Management, Fintech Marketplace |
 
-**NEXUS — The Semantic Fabric (2026+):**
-NEXUS is the evolution of the Customer Brain (previously HELIX). It provides the semantic intelligence layer for autonomous banking:
+**Nexus — the shared source of truth (semantic layer):**
+Per `banking-os.md`, the Banking OS middle is **two distinct primitives — Nexus and Sentinel** (do not collapse them into one). Nexus is the system of *truth*, not the system of record:
 - **Customer State Graph** — Single real-time truth about every customer across all channels, products, and systems
 - **Semantic Banking Ontology** — Shared domain language for every system and AI model (ensures "savings account" means the same thing everywhere)
 - **Action & Behavior Layer** — Catalog of available actions (open account, make payment, file dispute) exposed to every UI and AI
-- **Agentic Intelligence Layer** — Real-time decisioning, recommendations, and automation (NBA, risk scoring, churn prediction)
-- **Trust & Control Layer** — Policy enforcement, audit trails, secure orchestration within governance boundaries
 - **Unified Journeys & Workflows** — End-to-end operations across channels with full context continuity
+- *(Supersedes the older "Customer Brain / HELIX" naming.)*
+
+**Sentinel — governed, auditable execution (authority layer):**
+The governance primitive — what makes agentic execution safe and explainable:
+- **Authority** — who (human or agent) may decide, on the recommend → approve → execute spectrum
+- **Policies & Entitlements** — under which rules; multi-entity access rights
+- **Observability** — real-time visibility into decisions, performance and signals
+- **Auditability** — immutable record of decisions, policies and evidence; humans *and* agents stay within guardrails
+- *(Real-time decisioning / recommendations / risk scoring sit in the **Intelligence layer**, governed by Sentinel.)*
 
 **Grand Central — Integration Platform:**
 Unified connectivity to systems of record:
