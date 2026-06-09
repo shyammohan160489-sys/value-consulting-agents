@@ -2,6 +2,8 @@
 
 Query domain-specific benchmarks and KPIs from the Consulting Playbook to support capability assessment, ROI analysis, and client conversations.
 
+> **Canon — read first.** Align this query's framing to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). "Digital Onboarding" here is the onboarding *process/journey* benchmark category, not a retired product module. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## Usage
 `/domain-benchmarks [domain] [journey]`
 

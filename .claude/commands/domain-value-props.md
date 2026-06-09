@@ -2,6 +2,8 @@
 
 Retrieve Backbase value propositions and differentiation for a specific banking domain.
 
+> **Canon — read first.** Align this query's output to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Map value props onto the Unified Frontline / 4 solutions. Retire "engagement banking" / "better channels" / "engagement platform". Where other repo files diverge, banking-os.md wins.
+
 ## Usage
 `/domain-value-props [domain] [theme]`
 

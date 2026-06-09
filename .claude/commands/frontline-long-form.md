@@ -10,8 +10,12 @@ Read the canonical token file and the template before writing a single line of H
 
 1. **`knowledge/design-system/frontline-tokens.json`** — the source of truth for all hex values, typography, geometry. Do not invent or override these.
 2. **`templates/long-form/document-template.html`** — the complete CSS + class library. Clone its `<style>` block verbatim into your output.
+3. **`knowledge/product/banking-os.md`** — Banking OS product substance (control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools). Where other repo files diverge, banking-os.md wins.
+4. **`knowledge/design-system/narrative-spine.md`** — voice (operating-model thesis, From→To, vocabulary). Retire "engagement banking" / "better channels".
 
 Do not rewrite, simplify, or replace the CSS. The classes are the contract.
+
+> **Canon — read first.** This is the most positioning-sensitive long document. Open on From→To, anchor on the AI-Native Banking OS, and use the **three value pools** (cost-to-serve ↓ 20–40% · conversion/cross-sell/retention ↑ 10–25% · AI approval-to-production 3–5× faster) as the hero-stat vocabulary.
 
 ## When to Use This Skill
 

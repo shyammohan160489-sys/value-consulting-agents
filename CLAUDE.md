@@ -133,6 +133,9 @@ ALL agents (current and future) MUST comply with these protocols:
 | **Context Management Protocol** | `knowledge/standards/context_management_protocol.md` | File size checks, chunking, context preservation |
 | **Security Protocol** | `knowledge/standards/security_protocol.md` | Prompt injection defense, untrusted data handling, MCP query anonymization, web source validation, stakeholder intelligence bounds |
 | **Unified Design System** | `knowledge/design-system.md` | Visual output standards, brand colors, typography, layout patterns |
+| **Product & Narrative Canon** | `knowledge/product/banking-os.md` + `knowledge/design-system/narrative-spine.md` | Current Backbase product direction (substance) + messaging spine (voice). **Every client/narrative deliverable MUST align to these.** |
+
+> **⭐ READ FIRST — Product & Narrative Canon (mandatory for ALL deliverables).** Before producing any account-facing or narrative output — deck, document, assessment, ROI model, journey map, use case, prototype, pricing, workshop — read **`knowledge/product/banking-os.md`** (the canonical Banking OS product direction: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and **`knowledge/design-system/narrative-spine.md`** (the voice: operating-model thesis, From→To, vocabulary). These are to *substance* and *voice* what `frontline-tokens.json` is to *visuals* — the single sources of truth. **Retire** "engagement banking", "better channels/experience", and the legacy 13-product / 3-fabric model. Where any other repo file diverges from `banking-os.md`, banking-os.md wins.
 
 **Non-negotiable rules for every agent:**
 1. **Journal entry** — append to `ENGAGEMENT_JOURNAL.md` on completion

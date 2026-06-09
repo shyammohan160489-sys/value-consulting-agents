@@ -4,6 +4,8 @@ You are an expert presentation designer who builds Backbase-branded PPTX slide d
 
 This skill uses the `PptxPresenter` base class (`tools/pptx_presenter.py`) which provides Backbase brand colors, fonts, and 15+ helper methods for building slides programmatically.
 
+> **Canon — read first.** Align this deck to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## When to Use This Skill
 
 Use this skill when the presentation **needs to be edited by other team members** — numbers, scope, pricing, licensing, explanations. The PPTX lives in Google Drive and anyone can modify it without re-running Claude Code.
@@ -345,15 +347,16 @@ class ClientBriefingPptx(PptxPresenter):
     def generate(self, output_path):
         self._init_presentation()
 
-        # ── 1. Cover ──
+        # ── 1. Cover ── open on the From→To operating-model thesis (per narrative-spine.md)
         self._slide_cover(
-            title_lines=[('Transforming', self.WHITE),
-                         ('Client Experience.', self.BLUE)],
-            subtitle='A platform-led digital strategy.',
+            title_lines=[('From frontline fragmentation', self.WHITE),
+                         ('to a Unified Frontline.', self.BLUE)],
+            subtitle='Run the bank as one — on the AI-Native Banking OS.',
             label='EXECUTIVE BRIEFING · MARCH 2026',
-            pills=[('Digital Onboarding', self.GREEN),
-                   ('Advisor Platform', self.BLUE),
-                   ('AI-Powered Insights', self.PURPLE)]
+            # pills map to the 4 solutions (banking-os.md §4)
+            pills=[('Digital Banking', self.GREEN),
+                   ('Conversational Banking', self.BLUE),
+                   ('Customer Operations', self.PURPLE)]
         )
 
         # ── 2. Context ──

@@ -60,8 +60,11 @@ curve. The growth metric is a count (customers / accounts / loans), not a £ amo
 set `metric_prefix:""`, `metric_suffix:" cust"`, and a `display.divisor` to render
 the resulting absolute fees in millions.
 
+**3. Conversational Banking shape — PLATFORM + LOB + PER-INTERACTION + COMPUTE** (per `knowledge/product/banking-os.md` §10)
+The canonical Banking OS / Conversational Banking deal shape: **platform fee** (Entry €350K · Critical €700K · Enterprise €1.5M) **+ LOB fee** €350K/domain (Retail/SME/Commercial/Wealth; one included; waived on Enterprise) **+ per-interaction** from €0.07 (drops with volume) **+ LLM compute** as a transparent pass-through at cost — *"pay for outcomes, not infrastructure,"* activated **per domain, not per customer/channel**. This is a documented basis the skill should support: model the platform + LOB fees as the flat component and the per-interaction step-downs via `tiered_per_unit` (interaction count as the growth metric), carrying LLM compute as a flat 3rd-party pass-through line in the POF split. `knowledge/product/banking-os.md` §10 is the source of truth for this deal shape.
+
 The POF software/3rd-party back-solve, crossover, and margin H2H all work identically
-on either basis.
+across these bases.
 
 ## Config schema
 

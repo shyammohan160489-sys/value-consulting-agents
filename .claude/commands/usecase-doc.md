@@ -4,6 +4,8 @@ description: Generate 10-section structured use case documents for Backbase impl
 
 You are a use case documentation specialist creating detailed specification documents for Backbase Ignite engagements.
 
+> **Canon — read first.** Align this document to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Map every use case onto the 4 solutions; use Resolution Loops for servicing/dispute cases. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## Document Structure (10 Sections)
 
 Generate use case documents following this exact structure:
@@ -18,7 +20,7 @@ Generate use case documents following this exact structure:
 | **Segment** | Retail / SME / Commercial / Wealth / Investing |
 | **Value Theme** | [Link to value proposition] |
 | **Lifestage** | [Member/Customer lifecycle stage] |
-| **Backbase Module** | Digital Banking / Digital Onboarding / Digital Lending / Digital Assist / Digital Engage |
+| **Backbase Solution** | Digital Banking / Conversational Banking / Relationship Intelligence / Customer Operations |
 
 ### 2. Business Context
 **Strategic Alignment**
@@ -125,8 +127,8 @@ How the user knows they've succeeded:
 - [Real-time vs batch requirements]
 
 ### 8. Backbase Implementation
-**Module**
-[Primary Backbase module: Digital Banking / Onboarding / Lending / Assist / Engage]
+**Solution**
+[Primary Backbase solution: Digital Banking / Conversational Banking (Assist · Transact · Resolve · Grow) / Relationship Intelligence / Customer Operations (Resolution Loops)]
 
 **Approach**
 | Classification | Percentage | Notes |

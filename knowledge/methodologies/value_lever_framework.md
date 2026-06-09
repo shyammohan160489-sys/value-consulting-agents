@@ -210,9 +210,35 @@ A hypothesis tree node becomes a value lever candidate when:
 3. The improvement can be estimated (this becomes the Volume/Rate Impact)
 4. The financial value can be calculated (this becomes the Financial Impact)
 
-### Lifecycle Alignment
+### Value Taxonomy — the Three Value Pools (primary lens)
 
-Levers map to the Backbase customer lifecycle flywheel, but a single lever can span stages:
+> **Canonical product model:** [`knowledge/product/banking-os.md`](../product/banking-os.md) (substance) + [`knowledge/design-system/narrative-spine.md`](../design-system/narrative-spine.md) (voice). The four-link chain above is unchanged — what changes is how levers are **classified and aggregated**.
+
+Every value lever rolls up into **one of three value pools** (banking-os.md §8). This is now the primary top-level taxonomy — it reconciles to the canonical **$150M–$300M+ annual value unlock** envelope (bank-size dependent) and to the From→To narrative:
+
+| Value pool | Direction | What lives here |
+|-----------|-----------|-----------------|
+| **Cost-to-serve** | **↓ 20–40%** | Seamless front-to-back resolution loops: servicing cost reduction, call/branch deflection, KYC & onboarding automation, exception/handoff elimination, compliance automation, RM/advisor capacity redeployment, IT rationalization |
+| **Conversion / cross-sell / retention** | **↑ 10–25%** | Onboarding & application conversion, lending origination, funding & activation, cross-sell / share-of-wallet, churn reduction & competitive defense |
+| **AI approval-to-production** | **3–5× faster** | Time-to-market for governed AI use cases — Factory Missions live in 6–12 weeks vs. quarters; the "AI out of pilots" pool |
+
+Tag every lever with its primary pool; a lever may touch two (e.g., a unified resolution loop cuts cost-to-serve *and* lifts retention) — tag the dominant pool and note the secondary.
+
+### Value-Leakage / Resolution-Loop discovery method
+
+Use this as the **lever-discovery lens** (banking-os.md §9 — a close cousin of the internal APA Domain Matrix value-bleed method):
+
+1. **Capture customer intent** — what the customer is actually trying to get done.
+2. **Map resolution leakage** — find broken **customer-intent loops** where **time · contact · evidence · ownership** leak across the bank (handoffs, exceptions, manual coordination in the ~60% whitespace *between* systems). Each leak is a candidate Root Driver.
+3. **Prioritise the mission** — pain × economics × feasibility.
+4. **Frame the lever as a Customer Resolution Loop** — capture intent → coordinate fulfilment across the unified frontline → return the outcome — governed by Banking OS (Nexus truth + Sentinel authority).
+5. **Prove ROI & scale** — size against the three pools; turn it into a repeatable mission pattern.
+
+**For AI/agentic and operations levers, use the APA Domain Matrix as the catalog + per-process engine that operationalises this method:** [`knowledge/domains/apa-matrix/`](../domains/apa-matrix/) — 4 LOBs × 9 domains × process simulations, with a per-process **Value Bleed (desirability) → Banking OS Simulation (feasibility) → Elastic Operations Business Case (viability)** engine. Map its Growth / Efficiency / Control outputs onto the three pools above (Growth → conversion/cross-sell/retention; Efficiency → cost-to-serve; Control & speed → AI approval-to-production).
+
+### Lifecycle Alignment (secondary view — legacy)
+
+The customer-lifecycle flywheel below remains a **useful secondary tagging view**, but it is **superseded as the primary taxonomy by the three value pools above**. Map each lifecycle family to a pool when aggregating: Acquire/Activate/Expand revenue → **conversion/cross-sell/retention**; all cost levers → **cost-to-serve**; Operating-Model time-to-market → **AI approval-to-production**.
 
 | Stage | Revenue Levers | Cost Levers |
 |-------|---------------|-------------|

@@ -1,8 +1,10 @@
 # Capability Taxonomy: BIAN-Aligned with Backbase Terminology
 
-**Standard:** BIAN Service Landscape (v13) mapped to Backbase Unified Banking Suite
+**Standard:** BIAN Service Landscape (v13) mapped to the Backbase product surface
 **Scale:** 0-4 Maturity (Absent → Fragmented → Defined → Orchestrated → Intelligent)
 **Structure:** Front Layer / Middle Layer / Back Layer per capability
+
+> **⚠️ Canonical product model:** [`knowledge/product/banking-os.md`](../product/banking-os.md) (substance) + [`knowledge/design-system/narrative-spine.md`](../design-system/narrative-spine.md) (voice). Read maturity as **distance from a Unified Frontline running on a control plane** — the top of every ladder is the bank "running as one" on **one shared truth (Nexus)** and **one governed execution engine (Sentinel)** with **Resolution-Loop coverage**, not "omnichannel context continuity" (a useful mid-rung, not the destination). Where a rung says "omnichannel," read it as a step toward the Unified Frontline, not the end state. (This pointer applies to the LOB variants — `_retail / _sme / _wealth / _commercial / _investing` — which inherit this ladder.)
 
 ---
 

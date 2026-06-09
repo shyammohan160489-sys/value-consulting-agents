@@ -6,12 +6,15 @@
 
 ---
 
+> **Open on From→To** (canonical: [`knowledge/product/banking-os.md`](../../knowledge/product/banking-os.md) · [`knowledge/design-system/narrative-spine.md`](../../knowledge/design-system/narrative-spine.md)). Lead the Situation with one From→To line — *"FROM a fragmented frontline (6–12 systems per journey, 30–60% manual work, ~60% of work in the whitespace between systems) → TO a Unified Frontline that runs the bank as one, on the AI-Native Banking OS (the control plane: shared truth via Nexus, governed execution via Sentinel)."* Lead with the operating model, not "better channels / better experience."
+
 ## Situation
 
-[2-3 sentences describing:
+[2-3 sentences. **Start with the client's specific From→To:** name their actual fragmentation as the FROM, the Unified Frontline as the TO. Then:
 - Business context: industry, company stage, market position
 - What prompted this engagement
-- Why this matters now (strategic timing, competitive pressure, pain points)]
+- Why this matters now (strategic timing, competitive pressure, pain points)
+- The stance, where it lands: *"AI won't fix fragmentation — without shared truth and guardrails it amplifies it."*]
 
 ---
 
@@ -37,6 +40,16 @@
 | **Net Present Value (NPV)** | $[A] |
 | **Payback Period** | [B] months |
 | **ROI** | [C]% |
+
+### Value Mapped to the Three Value Pools
+
+[Aggregate the benefits into the three canonical value pools (`banking-os.md` §8) — this is the primary value taxonomy and reconciles to the $150–300M+ envelope (bank-size dependent):]
+
+| Value Pool | Direction (benchmark) | This Engagement | Annual Value |
+|-----------|----------------------|-----------------|-------------|
+| **Cost-to-serve** | ↓ 20–40% | [client-specific levers — servicing, resolution loops, automation] | $[X] |
+| **Conversion / cross-sell / retention** | ↑ 10–25% | [client-specific levers — onboarding, cross-sell, churn] | $[Y] |
+| **AI approval-to-production** | 3–5× faster | [time-to-market — Factory Missions live in 6–12 weeks] | $[Z] / [speed] |
 
 ### Benefit Realization
 

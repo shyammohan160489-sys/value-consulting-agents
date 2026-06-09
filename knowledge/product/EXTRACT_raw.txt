@@ -1,0 +1,1304 @@
+
+########################################################################
+# DECK: Banking_OS_Conversational_Banking_June2026.pptx
+########################################################################
+
+----- SLIDE 1 -----
+AI NATIVE BANKING OS
+Conversational Banking
+JUNE 2026
+
+----- SLIDE 2 -----
+AI-NATIVE BANKING OS
+Conversational
+Banking
+Solution Overview
+How it Works | Demo
+Next Steps
+Pricing
+Enablement
+[NOTES] Objective: Orient the prospect on the flow of the session and set expectations. Give them a mental map so they can engage more actively.
+ 
+Key Points to Cover:
+Walk through each agenda item in 10–15 seconds: 'We'll start with the problem, show you what the Unified Frontline looks like, walk through the platform, share how other banks have done it, and then agree on next steps.'
+Pause and ask: 'Does this agenda work for you? Is there anything you'd like us to spend more time on?' This creates early engagement and signals you're here to have a dialogue, not deliver a monologue.
+Note that the customer case studies section is for 1:1 discussions only — not for public sharing or broader distribution.
+If time is limited, flag which sections you'll prioritise. The Banking OS and Unified Frontline sections are mandatory.
+ 
+Hot Tip: Swap the placeholder '<Customer>' with the prospect's actual name before presenting. It's a small detail that signals you've prepared — and prospects notice.
+
+----- SLIDE 3 -----
+Digital Banking - Modernize your Digital Foundation - Move toward Unified Frontline
+Conversational Banking  - Give Customers & Employees a Natural Language Interface
+Relationship Intelligence - Bank-owned AI for financial progress and growth
+Customer Operations  - Close the Loop from Trigger to Resolution Outcome
+Banking Operations
+Coordinate front-to-back work execution
+Customer Engagement
+Coordinate customer lifecycle execution
+Banking OS • Solutions
+Pre-built Solutions • Easy to Adopt, Easy to Customize.
+ | Banking OS • Control Plane • Governed Execution |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 4 -----
+Kasisto 
+Acquisition 
+
+Backbase
+Conversational
+Banking
+
+----- SLIDE 5 -----
+Conversational Banking  •  Instant Credibility
+Measurable outcomes with our customers
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 6 -----
+Banking OS  •  Conversational Studio
+DEMO - Robin Bultot
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 7 -----
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 8 -----
+Market shift • From Answering to Acting
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 9 -----
+Agentic Banking  •  Conversational Banking
+turns natural language into governed banking services and fast resolutions — for customers and employees.
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 10 -----
+Conversational Banking  •  Customers
+turns natural language into governed banking services and fast resolutions — for customers and employees.
+Capability | Short description / example
+Assist | Helps customers ask questions, find information, and navigate digital banking. Example: “How do I increase my card limit?” or “Where can I find my statements?”
+Transact | Lets customers complete routine authenticated actions through conversation. Example: freeze a card, download a statement, update contact details, book an appointment, or check payment status.
+Resolve | Turn customer needs into governed resolution loops that execute faster across cases, workflows, fulfilment, and status updates. Example: start a dispute, report a missing payment, submit a complaint, provide missing onboarding documents, or track the progress of a service request (linked with Customer Operations solutions).
+Grow | Identify timely moments where the bank can help customers make financial progress while deepening the relationship. Example: help a customer complete a savings goal, improve cash-flow visibility, finish an application, prepare for a life event, reduce avoidable fees, or consider a relevant next-best action — without positioning it as formal advice (linked with Relationship Intelligence solutions).
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 11 -----
+Conversational Banking  •  Core Concepts
+turns natural language into governed banking services and fast resolutions — for customers and employees.
+Banking OS powers intelligent customer services across chat and voice channels, handling the vast majority of customer requests with the option to handoff to human experts where needed.
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 12 -----
+Agentic Banking •  xxx
+Banking OS turns intent into action, status, resolution and growth.
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 13 -----
+Agentic Banking  •  Customer Operations
+From Intent → Trigger Workflows →  to Governed Execution → to Faster Resolutions
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 14 -----
+Agentic Banking  •  Relationship Intelligence
+From Transactions → to Intent →  to Intelligent Relationships
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 15 -----
+AI-NATIVE BANKING OS
+Conversational
+Banking
+Solution Overview
+Demo
+Next Steps
+Pricing
+Enablement
+[NOTES] Objective: Orient the prospect on the flow of the session and set expectations. Give them a mental map so they can engage more actively.
+ 
+Key Points to Cover:
+Walk through each agenda item in 10–15 seconds: 'We'll start with the problem, show you what the Unified Frontline looks like, walk through the platform, share how other banks have done it, and then agree on next steps.'
+Pause and ask: 'Does this agenda work for you? Is there anything you'd like us to spend more time on?' This creates early engagement and signals you're here to have a dialogue, not deliver a monologue.
+Note that the customer case studies section is for 1:1 discussions only — not for public sharing or broader distribution.
+If time is limited, flag which sections you'll prioritise. The Banking OS and Unified Frontline sections are mandatory.
+ 
+Hot Tip: Swap the placeholder '<Customer>' with the prospect's actual name before presenting. It's a small detail that signals you've prepared — and prospects notice.
+
+----- SLIDE 16 -----
+
+----- SLIDE 17 -----
+Banking OS  •  Conversational Studio
+DEMO - Robin Bultot
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 18 -----
+Banking OS  •  Conversational Studio
+DEMO - Robin Bultot
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 19 -----
+Banking OS  •  Conversational Studio
+DEMO - Robin Bultot
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 20 -----
+AI-NATIVE BANKING OS
+Conversational
+Banking
+Solution Overview
+How it Works | Demo
+Next Steps
+Pricing
+Enablement
+[NOTES] Objective: Orient the prospect on the flow of the session and set expectations. Give them a mental map so they can engage more actively.
+ 
+Key Points to Cover:
+Walk through each agenda item in 10–15 seconds: 'We'll start with the problem, show you what the Unified Frontline looks like, walk through the platform, share how other banks have done it, and then agree on next steps.'
+Pause and ask: 'Does this agenda work for you? Is there anything you'd like us to spend more time on?' This creates early engagement and signals you're here to have a dialogue, not deliver a monologue.
+Note that the customer case studies section is for 1:1 discussions only — not for public sharing or broader distribution.
+If time is limited, flag which sections you'll prioritise. The Banking OS and Unified Frontline sections are mandatory.
+ 
+Hot Tip: Swap the placeholder '<Customer>' with the prospect's actual name before presenting. It's a small detail that signals you've prepared — and prospects notice.
+
+----- SLIDE 21 -----
+Formula •  Ignite (light) and Mission Sprints
+Expansion
+Ignite Lite (4 hours)
+Mission Sprints
+Educate + Strategy
+VC works with senior bankers to identify high ROI but risk-free use cases & prioritise that for a mission sprint
+Proof - Outcome
+Bank pick one use case and SE and FDE work together to specify and prototype outcomes (6-12 weeks).
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 22 -----
+Conversational Banking  •  From Pilot to Production
+Go-live in 6 - 12 weeks
+Digital Banking implementation
+Conversational Banking
+0
+3 mo
+6 mo
+9 mo
+12 mo
+Build
+Integrate
+Test
+Deploy
+Go-live · 12+ months
+≈ 10 months sooner to upsell & cross-sell
+EXPAND
+Relationship Intelligence · Customer Operations · upsell & cross-sell
+▸
+Go-live · ~ 6 - 12 weeks
+Land with small use cases, and expand from there
+EXPAND
+Operated by Backbase AI Consultants (small - 2 FTE team)
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 23 -----
+Conversational Banking  •  Land & Expand
+Start with one natural-language interface — then light up the next solution lines on the same Banking OS.
+1
+LAND
+Live in months
+THE LANDING ZONE
+Conversational Banking
+2
+EXPAND
+Next solution lines, same platform
+Relationship Intelligence - Financial Wellness + Product Holding Plays
+Make conversation proactive
+Add the intelligence layer
+Proactive nudges & insight
+Financial wellness & upsell
+Customer Operations - Resolution Loops
+Close the loop on every request
+Query or case from the chat
+Lands employee-side
+Faster Resolution Times
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 24 -----
+AI-NATIVE BANKING OS
+Conversational
+Banking
+Solution Overview
+How it Works | Demo
+Next Steps
+Pricing
+Enablement
+[NOTES] Objective: Orient the prospect on the flow of the session and set expectations. Give them a mental map so they can engage more actively.
+ 
+Key Points to Cover:
+Walk through each agenda item in 10–15 seconds: 'We'll start with the problem, show you what the Unified Frontline looks like, walk through the platform, share how other banks have done it, and then agree on next steps.'
+Pause and ask: 'Does this agenda work for you? Is there anything you'd like us to spend more time on?' This creates early engagement and signals you're here to have a dialogue, not deliver a monologue.
+Note that the customer case studies section is for 1:1 discussions only — not for public sharing or broader distribution.
+If time is limited, flag which sections you'll prioritise. The Banking OS and Unified Frontline sections are mandatory.
+ 
+Hot Tip: Swap the placeholder '<Customer>' with the prospect's actual name before presenting. It's a small detail that signals you've prepared — and prospects notice.
+
+----- SLIDE 25 -----
+Pricing  •  Conversational Banking
+1
+PLATFORM FEE · PER YEAR
+from €350K
+A small entry point — scale up as the platform becomes mission-critical.
+Entry
+Controlled use · limited risk
+€350K
+Critical
+Mission-critical · advisory · 24×7
+€700K
+Enterprise
+Bank-wide · all domains included
+€1.5M
++
+2
+LOB FEE · PER YEAR
+€350K/ domain
+Activated per business domain — not per customer or channel. One Business domain included in Platform Fee.
+Retail
+SME
+Commercial
+Wealth
+Waived on Enterprise — all domains included, bank-wide.
++
+3
+PER INTERACTION
+from €0.07
+Pay for outcomes, not infrastructure — rate drops with volume.
+First 500K / month
+€0.070
+1M–1.5M / month
+€0.063
+2M+ / month
+€0.057
++
+LLM tokens
+COMPUTE
+Billed as a transparent pass-through — at cost, no markup, no lock-in to any model provider.
+Simple and predictable — a platform fee, a LOB fee, and a per-interaction rate. 
+LLM compute is billed straight through.
+
+----- SLIDE 26 -----
+AI-NATIVE BANKING OS
+Conversational
+Banking
+Solution Overview
+How it Works | Demo
+Next Steps
+Pricing
+Enablement
+[NOTES] Objective: Orient the prospect on the flow of the session and set expectations. Give them a mental map so they can engage more actively.
+ 
+Key Points to Cover:
+Walk through each agenda item in 10–15 seconds: 'We'll start with the problem, show you what the Unified Frontline looks like, walk through the platform, share how other banks have done it, and then agree on next steps.'
+Pause and ask: 'Does this agenda work for you? Is there anything you'd like us to spend more time on?' This creates early engagement and signals you're here to have a dialogue, not deliver a monologue.
+Note that the customer case studies section is for 1:1 discussions only — not for public sharing or broader distribution.
+If time is limited, flag which sections you'll prioritise. The Banking OS and Unified Frontline sections are mandatory.
+ 
+Hot Tip: Swap the placeholder '<Customer>' with the prospect's actual name before presenting. It's a small detail that signals you've prepared — and prospects notice.
+
+----- SLIDE 27 -----
+Next on the Agenda
+CONTINUOUS ENABLEMENT
+Week of June 15th 
+SE Enablement session with Robin for the US market on conversational banking tech
+NEXT WEEK
+Week of June 22nd
+Sessions for the VC team to formalise ROI models
+NEXT WEEK
+
+----- SLIDE 28 -----
+Conversational Banking  •  Persona to reach out to
+Any channel
+customers & employees · anytime
+BANKING OS · ORCHESTRATION PLATFORM
+Understand
+PRE-PROCESS
+Identity & verification
+Authenticate the user
+Intent & entities
+Understand the request
+Orchestrate
+ENGINE
+Knowledge & RAG
+Your SOPs + Banking Intent Library
+AI agents & skills
+Reason and take action
+Integration & APIs
+Connect core systems & data
+Assure
+POST-PROCESS
+Quality
+Relevance & accuracy
+Safety
+No hallucinations · secure
+Resolved
+governed answer or action
+GENERATIVE GUARDRAILS
+Security
+Risk
+Fraud
+Compliance
+Sentinel governance at every step — fully auditable.
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 29 -----
+Formalise ROI data & create calculator 
+With VC team and make a scalable ROI model
+NEXT STEPS ON ROI
+
+########################################################################
+# DECK: Banking_OS_Unified_Frontline_May2026.pptx
+########################################################################
+
+----- SLIDE 1 -----
+AI-native Banking OS
+the operating system for banks & credit unions
+
+----- SLIDE 2 -----
+The next decade will not be defined by better channels, but by better operating models
+Challenge • Fragmentation is a Losing Formula
+from:  Frontline Fragmentation
+no shared truth, no shared outcomes
+Branch
+RM Portal
+3rdy Party
+Web  App
+Mobile App
+AI-Assistant
+Mid-Office
+Call Center
+
+----- SLIDE 3 -----
+Humans & Agents Collaborating - Shared Truth & Operating Model
+Target State • Unified Frontline Operating Model
+INTEGRATION
+Banking OS  •  Control Plane - Governed Execution
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 4 -----
+Make Agentic Banking execution Safe, Explainable, and Governable
+Target State • Agentic Banking • Elastic Operations
+Fragmented systems of record, business applications & 3rd-party services
+Core Banking
+CRM
+Cards
+Payments
+KYC
+Fraud
+Documents
+Case Mngt
+INTEGRATION
+Skills
+LLMs
+Banking OS  
+Control Plane - Governed Execution
+[NOTES] Question - who of you is familiar with Agents?
+
+Think of an Agents as a little Robot that you can train to execute tasks - and become really good at it. 
+
+> Agents will help Customers and Employees
+
+> Agents will have access to downstream systems to get information or give instructions
+
+----- SLIDE 5 -----
+Unified Frontline
+control plane for governed execution
+Business Impact • Cost ↓ Relationship↑
+$150M - $300M + annual value unlock (dependent on bank size)
+Unified Frontline
+Measurable Value
+Unified Frontline +  Agentic Execution
+Three Value pools that drive ROI.
+TODAY
+Fragmented Frontline
+The hidden tax on customer experience, operations and AI adoption.
+→  6-12 systems per journey
+→  30-60 % manual work
+→  High cost-to-serve
+→  Slow cycle times
+→  AI stuck in pilots
+AI Agents
+Employees
+Channels
+Seamless front-to-back resolution loops
+20-40%
+Cost-to-serve reduction
+10-25%
+Conversion, cross-sell & retention uplift
+3-5x faster
+AI approval-to-production cycle
+Drive better economics
+Disconnected systems. 
+Humans coordinate the work.
+[NOTES] Question - who of you is familiar with Agents?
+
+> Agents will help Customers and Employees
+
+> Agents will be trained for very specific tasks - and become really good at it
+
+> Agents will have access to downstream systems to get information or give instructions
+
+----- SLIDE 6 -----
+Global Partner Ecosystem
++28 global & local partnerships
+Key Facts
+120+ Customers (live)
+$350m+ Revenue 
+2,000+ Global FTEs (700+ R&D | 900 FDE)
+Industry Recognized
+Trusted by 120+ Banks & CUs
+AI-native Banking OS
+"I am seeing big players in the market move into this AI operating system space… but Backbase seems to be light years ahead of the traditional banking vendors"Senior Research Director, Banking, Gartner
+“...the Palantir of Banking." … An industry-specific, out-of-the-box ontology is a strategic moat that generic semantic graphs cannot replicate.” Director Analyst: AI, Gartner
+
+----- SLIDE 7 -----
+Analyst Recognition
+Market Leader
+CUSTOMER’S FAVORITE:
+“Customers would enthusiastically select Backbase again, citing high trust and the platform’s flexibility and foundational layers”
+
+----- SLIDE 8 -----
+The AI-native Operating System to Future Proof Banking
+PLATFORM
+Banking OS
+
+----- SLIDE 9 -----
+Agents
+mesh
+Unified Frontline
+Banking OS
+Banking OS
+control plane of 
+the unified frontline
+
+the system to coordinate and govern the work across your frontline
+
+----- SLIDE 10 -----
+Banking OS
+The control plane of the unified frontline
+the system to coordinate and govern the work across your frontline.
+ORCHESTRATE
+OPTIMIZE
+Internal systems
+Fintech systems
+Intelligencelayer
+Connectivity
+layer
+INTEGRATE
+AUTHORIZE
+Authoritylayer
+UNDERSTAND
+Semantic
+layer
+Orchestration
+layer
+[NOTES] Thanks Deepak
+
+----- SLIDE 11 -----
+one share truth and operating model
+Semantic Layer  •  One Source - Customer Truth
+Account
+Current
+$12.400
+Account
+Savings
+$48.100
+Debt
+Mortgage
+$185k-$1.9k/mo
+Credit
+FICO 742
+On-time 99%
+hasAccount
+hasAccount
+hasDebtObligation
+hasCreditScore
+Affordability assessment
+ACTION
+Agent - DAT authorized
+Approved - $28k
+OUTCOME
+$548/mo - 6.4% - 60 months
+appliesTo
+hasOutcome
+Policy exception
+DTI 43% override
+Soft cap 40% waived - approved by SR agent
+Reasoning 
+trace
+Why
+approved
+8yr relationship - salary growth 12% YoY - 3 clean disputes
+Monitoring
+condition
+6-month review
+Stress check at month 6 - flag if DTI > 48%
+Relationship
+history
+Trust
+earned
+3 disputes resolved 
+in favour - NPS72 
+- 8yr tenure
+hasException
+hasTrace
+hasCondition
+hasRelationshipHistory
+[NOTES] "Now watch it work. State Graph comes in from the left — four data points. The agent runs one assessment in the centre. 
+And on the right  what nobody else captures. The policy exception. The
+  reasoning. The monitoring condition. The relationship history." - The context graph
+  "That's not in the CRM. That only exists because we were in the execution path when the decision happened."
+
+----- SLIDE 12 -----
+Understand the frontline
+Semantic
+Layer
+BANKING OS
+READ
+LINK
+LINK
+WRITE
+SHARED SOURCE OF CUSTOMER TRUTH
+Unified frontline
+Connectivity Layer
+[NOTES] Nexus - is the SHARED SOURCE OF TRUTH LAYER of the Banking OS
+
+This layer is inspired by a company called Palantir. 
+
+This is where we are connecting scatterd data (from multiple sources) into a single UNIFIED SOURCE OF TRUTH
+Explain - Integration (from the core, the LMS, the CRM, the credit score system, etc).
+
+To be clear - we are NOT the becoming the system of record. 
+We are not your data lake. 
+Nexus is your system of Truth.
+
+With NEXUS we know have a share source of truth for the Frontline (in real time) 
+All the the frontline actors (customers, employees and agenent have to same context to collaborate.
+
+----- SLIDE 13 -----
+Authorize your Frontline -  both humans and agents operate within predefined guardrails and policies
+Authority Layer  •  Governed Execution
+Systems
+Automated decisions and workflows
+
+People
+Consistent, explainable decisions
+Authority Engine
+Authority Spectrum
+Recommend, approve, execute
+Observability
+Real-time visibility into decisions, performance and signals
+Auditability
+Immutable record of decisions, policies and evidence
+govern
+Authority
+Who may Decide
+Policies
+Under which Rules
+Entitlements
+Multi-Entity Access Rights
+guide
+Review
+Escalate
+Approve
+Decline
+
+----- SLIDE 14 -----
+AI-native
+Banking Platform
+Banking OS  •  Move toward AI-native Operating Model
+AI experiments
+Point solutions, limited synergy
+Banking OS
+Layer 1
+Mid & Back Office
+Layer 2
+Front Office
+Layer 3
+Digital Channels
+[NOTES] Question - who of you is familiar with Agents?
+
+> Agents will help Customers and Employees
+
+> Agents will be trained for very specific tasks - and become really good at it
+
+> Agents will have access to downstream systems to get information or give instructions
+
+----- SLIDE 15 -----
+Fast Time to Market
+BANKING OS
+Solutions
+
+----- SLIDE 16 -----
+Pre-build Solutions - Easy to Adopt, Easy to Customize
+Banking OS  •  Solutions
+Digital Banking - Modernize your Digital Foundation - Move toward Unified Frontline
+Conversational Banking  - Give Customers & Employees a Natural Language Interface
+Relationship Intelligence - Bank-owned AI for financial progress and growth
+Customer Operations   - Close the Loop from Trigger to resolved Resolved Outcome
+Employee Productivity
+Coordinate front-to-back work execution
+Customer Engagement
+Coordinate customer lifecycle execution
+ |  |  | Banking OS  •  Control Plane - Governed Execution |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 17 -----
+Move towards a Unified Frontline Operating Model
+Digital Banking  •  Modernize your Digital Foundation
+Unified frontline : Retail | SME | Commercial | Wealth
+Empowerfront-office
+Banking OS  •  Control Plane  - Governed Execution
+Delight clients
+Streamline
+middle & back-office operations
+
+----- SLIDE 18 -----
+Enable natural language interactions within the strict guardrails of financial institutions.
+Conversational Banking  •  The Next Interface
+UNDERSTAND INTENT
+Verify identity
+Detect intent
+Capture context
+1
+REASON 
+& ASSIST
+Knowledge
+Policies
+Customer context
+2
+ORCHESTRATE & ACT
+Workflows
+AI agents
+Human handoff
+3
+Task execution
+Understand
+Interprets requests 
+in natural language
+Orchestrate
+Connects conv. to workflows & systems
+Respond safely
+Delivers secure, compliant responses
+Banking OS  •  Control Plane  - Governed Execution
+[NOTES] "Now watch it work. State Graph comes in from the left — four data points. The agent runs one assessment in the centre. 
+And on the right  what nobody else captures. The policy exception. The
+  reasoning. The monitoring condition. The relationship history." - The context graph
+  "That's not in the CRM. That only exists because we were in the execution path when the decision happened."
+
+----- SLIDE 19 -----
+Just Ask - AI agents that autonomously resolving complex inquiries. It doesn’t just answer—it takes action, reducing costs while improving customer satisfaction.
+Banking OS proactively optimizes performance, runs real-world simulations pre-launch, and adjusts in real time—ensuring your AI Agents remains accurate, compliant, and ahead of the curve.
+Conversational
+Banking
+BANKING OS
+[NOTES] Lets start with Conversational Banking
+
+This is a major step in the evolution of the user interface. 
+
+Firs we had the Internet (mouse pointer, drop down menus). 
+Then we got Mobile (use your fingers)
+And now we are moving more and more towards Conversational user interfaces  (use text and speech)
+
+So how does it work. You can simply embed our new “Just Ask” capability directly inside your Online & Mobile banking App. 
+
+Customers can just declare their intent or ask their question, the underlying Agentic infrastructure is guiding them to the right outcome. 
+
+Just Ask is available in chat (as you see here on the screen and in voice).
+
+----- SLIDE 20 -----
+Financial coaching
+Turn customer insight into trusted guidance and relationship growth
+Relationship Intelligence  •  Financial Wellness - Grow
+UNDERSTAND INTENTSemantic Layer
+Goals & life stage
+Behavior & signals
+Products & finances
+1
+REASON 
+& ASSIST
+Intelligence Layer
+Proactive alerts
+Personalized offers
+2
+ORCHESTRATE & ACT
+Orchestration Layer
+Nudges & journeys
+Banker prompts
+Follow-up actions
+3
+Relationship expansion
+Guide | Coach
+FINANCIAL WELLNESS
+Grow
+SHARE OF WALLET
+OUTCOME
+Banking OS  •  Control Plane  - Governed Execution
+[NOTES] "Now watch it work. State Graph comes in from the left — four data points. The agent runs one assessment in the centre. 
+And on the right  what nobody else captures. The policy exception. The
+  reasoning. The monitoring condition. The relationship history." - The context graph
+  "That's not in the CRM. That only exists because we were in the execution path when the decision happened."
+
+----- SLIDE 21 -----
+Every member & customer is planning for their financial future. You can now monitor where they are, learn where they're headed, and guide them to their next milestone - without waiting to be asked.
+Relationship
+Intelligence
+BANKING OS
+Banking OS  •  Control Plane - Governed Execution
+Improve
+Financial Wellness
+Help customers progress in their financial lifetime
+[NOTES] Here you see an example - the Home Ownership Roadmap Play.
+ 
+Simply said a Play is a combination of meaningful event signals, trained agents, ML algorithms and all the security and compliance guardrails.
+ 
+This Home Onwership roadmap is one of many FW Plays we offer.  
+
+Together with launching customers - we are developing additional FW Plays across multiple high value use cases.
+
+----- SLIDE 22 -----
+Intelligence that monitors financial behaviour, income, and life signals. Then surfaces the right product recommendation for every member & customer before they even think to ask.
+Relationship
+Intelligence
+BANKING OS
+Grow
+Share of Wallet
+Offer the right product, 
+at the right time
+Banking OS  •  Control Plane - Governed Execution
+[NOTES] And similar for Growing Product Holdings - also here we provide a dozen of pre-build Plays to activate newly onboarded customers and drive relevant product holding expansion across  your install base.
+
+----- SLIDE 23 -----
+Capture Customer Intent - Coordinate fulfillment across the unified frontline - Return outcome to Customer
+Customer Operations  •  Resolution Loops
+Mobile Banking
+Online Banking
+Conversational Banking
+Secure Messages
+Start with Customer Intent
+intent triggers streamlined resolution loop
+Unified Frontline Execution
+Card resolution
+Dispute resolution
+Payment inquiry
+Profile / KYC Update
+Fraud intake / recovery
+Banking OS  •  Control Plane  - Governed Execution
+STP - Straight Through
+Human - CCC / Branch
+Human - Ops / Specialists
+Onboarding - Loan Origination - …
+Core Banking
+Cards
+Payments
+Fraud
+Lending
+CRM / Docs
+coordinate across existing systems 
+no rip-and-replace
+Shorten Resolution Time
+Status ᐧ Next Action ᐧ Fulfilment
+[NOTES] "Now watch it work. State Graph comes in from the left — four data points. The agent runs one assessment in the centre. 
+And on the right  what nobody else captures. The policy exception. The
+  reasoning. The monitoring condition. The relationship history." - The context graph
+  "That's not in the CRM. That only exists because we were in the execution path when the decision happened."
+
+----- SLIDE 24 -----
+AI Agents
+Servicing · Sales · Operations
+Employees do the Work
+CSR · RM  · Branch  · Operations
+Customer Intent
+Mobile · Web  · Conversational
+THE WHITESPACE BETWEEN SYSTEMS
+60% of the 
+bank work 
+lives here
+Handoffs - Manual coordination - Exceptions
+Fragmented systems of record, business applications, & 3rd-party services
+The messy middle
+the highest-value banking work happens in the handoffs between systems.
+The expensive whitespace between systems: handoffs ᐧ exceptions ᐧ manual coordination
+Problem we Solve  •  60% of work lives between systems
+[NOTES] Here we have the Messy Middle - The Whitespace between Systems 
+60% of the Bank work lives here.
+
+----- SLIDE 25 -----
+Humans & Agents Collaborating - Shared Truth & Operating Model
+Target State • Unified Frontline Operating Model
+INTEGRATION
+Banking OS  •  Control Plane - Governed Execution
+[NOTES] Upstream - Unify the Frontline - Customer, Employees and Agents to collaborate
+
+Downstream - coordinate the work to existing banking systems
+
+Between customers, employees, agents and hundreds of downstream systems.
+
+----- SLIDE 26 -----
+Streamline Customer Onboarding
+Streamline the entire workflow—from gathering and processing documents to extracting meaningful insights that go beyond the data, to implementing actions that drive seamless onboarding.
+Financial data summary
+Open source research
+Website report
+Adverse media research
+Narrative summary
+Case ready
+False positive
+Certificate of incorporation
+Proof of address
+KYC form
+Website URL
+Source of funds
+Adverse media
+Customer review
+Tax registration
+Transactions
+Customer Resolution Loop
+Customer Onboarding
+SOLUTIONS
+[NOTES] The Transaction Dispute use case is just one of the many use cases we can solve.
+
+----- SLIDE 27 -----
+Customer Resolution Loop
+Customer Support
+Unified Frontline - Regulated Execution
+Self-healing Agents that tackle up to 96% of complex, regulated customer support request. Deliver compliant and reliable customer service at scale. 
+Banking OS proactively optimizes performance, runs real-world simulations pre-launch, and adjusts in real time—ensuring your AI Agents remains accurate, compliant, and ahead of the curve.
+SOLUTIONS
+[NOTES] The Transaction Dispute use case is just one of the many use cases we can solve.
+
+----- SLIDE 28 -----
+Customer Resolution Loop
+Transaction Disputes
+Resolve Disputes in Hours
+Purpose-built AI agents and dispute management workflows. Classify disputes, gather transactions evidence, check policies, evaluate fraud risk, route for approval, files response, updates customer and logs evidence.
+SOLUTIONS
+[NOTES] The Transaction Dispute use case is just one of the many use cases we can solve.
+
+----- SLIDE 29 -----
+Customer Resolution Loop
+Payment Resolution
+SOLUTIONS
+Resolve Disputes in Hours
+Agents get full context the moment a dispute lands, resolve it faster, and make every customer feel heard, not held up in endless handovers.
+[NOTES] The Transaction Dispute use case is just one of the many use cases we can solve.
+
+----- SLIDE 30 -----
+Eliminate Risk. Work Smarter
+Leverage audit ready agents and workflows that work inside of your existing compliance systems - avoiding the need for big migrations or overhauls.
+Customer Resolution Loop
+Fraud Resolution
+SOLUTIONS
+[NOTES] The Transaction Dispute use case is just one of the many use cases we can solve.
+
+----- SLIDE 31 -----
+Help you Identify High Impact Use Cases
+Customer Resolution Loops  •  Value Leakage Assessment
+Whitespace work     ● HIGH  Significant   ● MED  Moderate   ● Low
+Customer
+Operations
+Onboarding Ops
+Account Servicing
+Payments & Dispute Operations
+Lending 
+Operations
+Loan Origination
+Credit Risk & Decisionings
+KYC & Due Diligence
+Risk & Compliance
+Operations
+Financial Crime
+& Fraud
+Regulatory &
+Compliance
+Retail Banking
+● MED
+● HIGH
+● HIGH
+● MED
+● MED
+● HIGH
+● MED
+SME Banking
+● HIGH
+● MED
+● HIGH
+● HIGH
+● MED
+● MED
+● MED
+Commercial
+Banking
+● HIGH
+● MED
+● HIGH
+● MED
+● HIGH
+● HIGH
+● HIGH
+Wealth + Private
+Banking
+● HIGH
+● MED
+● MED
+● MED
+● HIGH
+● HIGH
+● HIGH
+Payment & Cash Mgmt
+● LOW
+● MED
+● HIGH
+● MED
+Disputes & Chargebacks
+● HIGH
+● HIGH
+●MED
+● LOW
+[NOTES] This table shows the problems we solve. 
+
+Its shows a detailed overview of the different domains inside the bank where you have a lot of whitespace work. 
+
+Customer Operations
+Payment & Dispute Operations
+Lending Operations
+Risk & Compliance Operations
+
+The colours show the amount of whitepace work - From High to Medium 
+
+Our mission is to help Banks and CU redesign their operation model and automate the 
+Lets take an concrete example - Payment Disputes & Chargebacks (in Retail Banking)
+
+----- SLIDE 32 -----
+Customer Resolution Loops  •  Value Leakage Assessment
+Find broken customer intent loops where time, effort, evidence and status leak across the bank
+CAPTURE CUSTOMER INTENT
+1
+What is the customer trying to resolve?
+My card is blocked
+Where is my payment
+I don’t recognize this transaction
+MAP RESOLUTION LEAKAGEFind where intent gets delayed, 
+repeated, reworked, or lost
+2
+Time leakage
+Contact
+leakage
+Long resolution time
+Repeat calls & status inquiries
+Evidence
+leakage
+Missing info & rework
+Ownership
+leakage
+Handoffs & manual rescue
+Broken loop across the bank
+Digital frontline
+Operations
+Legacy systems
+Customer status
+PRIORITIZE MISSION OPPORTUNITY
+3
+Select the broken loop with the best pain, economics & feasibility
+Customer pain
+Operational cost
+Speed to proof
+LAUNCH CUSTOMER RESOLUTION MISSION
+4
+Fix the loop from digital to operations & back
+Governed by
+Banking OS
+PROVE ROI & 
+SCALE
+5
+Turn the first fixed loop into a repeatable mission pattern
+Assessment outputs
+Recommended First mission
+ROI Estimate
+Pilot Plan
+
+----- SLIDE 33 -----
+
+----- SLIDE 34 -----
+SOLUTIONS
+Conversational Banking
+
+----- SLIDE 35 -----
+Conversational Banking  •  How it Works
+xxxx
+
+----- SLIDE 36 -----
+Conversational Banking  •  Collaboration Model
+xxxx
+
+----- SLIDE 37 -----
+
+----- SLIDE 38 -----
+SOLUTIONS
+Relationship Intelligence
+
+----- SLIDE 39 -----
+AI Relationship Banking  •  How it Works
+xxxx
+
+----- SLIDE 40 -----
+AI Relationship Banking  •  Collaboration Model
+xxxx
+
+----- SLIDE 41 -----
+Customer Operations
+Lending 
+Operations
+Payment Operations
+Fraud & Risk Operations
+Resolution Loops  •  Collaboration Model
+Use Factory to design, build and deploy working AI solutions in 6 - 12 weeks
+Pick one high-value case with clear ownership and measurable outcomes.
+Working AI solution live in production
+Governed executionfrom day one
+Measurable value in weeks, not years
+Blueprint for the next mission
+Land fast. Prove value. Expand.
+1. Design
+
+Define mission scope & KPI
+Map workflow & workspace
+Model policies & guardrails
+2. Build
+
+Configure workflows & agents
+Connect systems & data
+Test with simulation & evidence
+3. Deploy
+
+Launch on Banking OS
+Monitor & govern execution
+Prove value & optimize
+Process & Workspace Designer
+Semantic Modeler
+Agent Builder
+Decision & Policy
+Connector Studio
+Simulation & Testing
+Deployment & Ops Control
+Factory : Mission Sprint  •  6-12 weeks
+[NOTES] Together with you can run a Proof of Value exercise. 
+
+Learn & Pick a Use Case
+Deliver a working MVP  
+Decide for
+
+----- SLIDE 42 -----
+SOLUTIONS
+Resolution Loops
+
+----- SLIDE 43 -----
+Front to Back Resolution Loops
+Problem we Solve  •  Front to Back Orchestration Loop
+Front Office
+Support, advice, sell
+Digital Channels
+Primary interface
+Customer Servicing
+Financial Wellness
+Point Solutions
+Unified  Workspace
+Point Solutions
+Onboarding & Origination
+Grow Product Holdings
+Operations
+Mid & back office
+Point Solutions
+Unified  Workspace
+Point Solutions
+Banking OS  • the control plane to unify your frontline
+
+----- SLIDE 44 -----
+
+----- SLIDE 45 -----
+Banking OS  •  Human + Agents Doing the Work Together
+GATE 1
+Dispute intake
+GATE 2
+Lifecycle & evidence
+GATE 3
+Eligibility & policy
+GATE 4
+Recommendation
+1a
+Dispute classifier agent
+Classify intent · Sentinel check
+1b
+Merchant intel agent
+Query Ethoca: enrolled? policy?
+2a
+Subscription lifecycle
+Trial start · charges · cancellation
+2b
+Evidence scanner
+Sender · ref # · 
+date · DKIM
+3a
+Chargeback eligibility
+Reason code · timeline · docs.
+3b
+Regulation & policy
+Reg E/Z · goodwill ceilings
+4
+Resolution strategy
+Path selection · credit type · escalation
+Employee
+Human in the loop
+Good evidence path
+87%
+✓ Temp credit issued (evidence-verified)
+✓ Ethoca refund request $249.95 in progress
+✓ Cancellation proof on file
+Bad-evidence path
+68%
+★ CSR grants goodwill credit $49.99
+✓ Ethoca refund $249.95 in progress
+✓ Cancel subscription
+87% chance of success
+CONFIDENCE
+GATE
+68% 
+chance of success
+5
+Case manager agent
+Manages the case 
+workflow and tasks
+Chat assistant
+Coordinator
+6
+Ethoca monitoring agent
+Monitors merchant response.
+Ethoca refund request sent
+James M.
+High value customerMedium attrition risk
+[NOTES] What the video is showing is the a combination of classic workflow and case management, powered with Agents 
+
+At the left you see the Customer - at the right you see the CSR
+
+In the middle you see all the agents doing the work
+
+Its very powerful. And you can apply this mode on very workflow, every process inside your bank.
+
+----- SLIDE 46 -----
+Mission Object  • The organization object inside Factory
+Resolution Loops  •  Execution Model
+Turning Banking OS primitives into repeatable, governed banking missions
+Product
+Solution
+Operations
+Risk / Compliance
+Accessible, inspectable, configurable
+Mission Design
+Nexus 
+Binding
+Sentinel Binding
+Workflow + Agent Assembly
+Testing + Simulation
+Deployment Packaging
+Observability
+Banking OS Factory
+Mission Contract  •  Declarative, machine-readable definition of the Mission
+Learning Signals
+Agentic SDLC  •  Engineering Automation inside Factory
+Code generation
+Test generation
+CI/CD
+Environment promotion
+Engineers
+FDEs
+Partners
+DevOps
+Versionable, testable, deployable
+Repeatable Customer Resolution Missions
+Deployable, governed mission packages
+[NOTES] Together with you can run a Proof of Value exercise. 
+
+Learn & Pick a Use Case
+Deliver a working MVP  
+Decide for

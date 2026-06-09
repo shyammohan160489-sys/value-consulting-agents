@@ -1,5 +1,7 @@
 # Backbase Infobank MCP Integration
 
+> **⚠️ Canonical product model:** [`knowledge/product/banking-os.md`](../product/banking-os.md) (substance) + [`knowledge/design-system/narrative-spine.md`](../design-system/narrative-spine.md) (voice). Phrase Infobank queries in current vocabulary — **AI-Native Banking OS / Unified Frontline / control plane / Nexus / Sentinel / 4 solutions** — not the retired "engagement banking" framing, which biases retrieval toward legacy content.
+
 ## What This Is
 
 The **Backbase Infobank** is a live MCP (Model Context Protocol) server that gives agents direct access to the full Backbase platform and product knowledge base — documentation, product capabilities, architecture references, API details, and more.
@@ -25,7 +27,7 @@ This means:
 | **Validating product capabilities** | "Does Backbase support instant card issuance?" |
 | **Architecture questions** | "How does the Identity layer integrate with core banking?" |
 | **Product directory lookups** | "What OOTB features exist for loan origination?" |
-| **Competitive positioning** | "What differentiates Backbase's engagement banking approach?" |
+| **Competitive positioning** | "What differentiates Backbase's AI-Native Banking OS / Unified Frontline control-plane approach?" |
 | **Implementation guidance** | "What are the integration patterns for payment hubs?" |
 | **Version/release info** | "What capabilities were added in the latest platform release?" |
 

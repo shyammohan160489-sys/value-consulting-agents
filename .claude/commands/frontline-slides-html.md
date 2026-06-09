@@ -8,6 +8,8 @@ This is the **default HTML deck builder**. For long-form documents use `/frontli
 
 Read `knowledge/design-system/frontline-tokens.json` before generating. All hex values, typography, and geometry come from there — do not invent or override. Tokens are aligned to Master Template `theme1.xml` (navy `#041326`, blue `#3367FF`).
 
+> **Canon — read first.** The token file above is the *visual* source of truth; align the *substance and voice* to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Open the deck on From→To. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## How This Skill Works
 
 You generate a **single self-contained HTML file** that embeds:
