@@ -114,7 +114,28 @@ Reframe from "what's your discount?" to "which configuration?". Worked example s
 
 ---
 
-## 9. Provenance & related
+## 9. Deal-desk approval governance (Backbase · Salesforce CPQ)
+
+Discounting is **role-gated** — an AE cannot self-discount. Know which tier a move triggers *before* you make it.
+
+| Role | Discount authority |
+|---|---|
+| **AE** | Up to **0%** |
+| **RVP** | Up to **20%** |
+| **SVP** | Up to **40%** |
+| **CCO / Deal Desk** | **Over 40%** |
+
+(Applies across all editions + embedded hosting pricing.)
+
+**Mandatory Deal-Desk triggers** (regardless of discount %): selling **outside ICP** · a deal **without managed hosting** · a **new-logo deal under €600K** · a **contract term over 5 years** → early qualification, in or out.
+
+**Approval flows:** *Happy* (within model → straight to order form) · *Approval* (threshold crossed → approvals workflow) · *Validation* (discount on an existing run-rate → added Finance check). Cadence: Wed review → Thu Finance prep → Fri Executive Deal Desk (deal economics + concessions).
+
+**Packaging context (the real Good/Better/Best, §7):** three editions — **Essential / Premium / Signature** (use-case packaged; Premium ≈ 100% baseline, Essential ≈ 70–80%, Signature ≈ 130–180%), with **localized geo pricing** (Tier-1 markets 100%, others ~70%). License model = **Base Fee + User/AUM Fee**; cloud-default; **€600K minimum deal size**.
+
+**Deploy:** plan concessions *within* the AE's authority; when a move crosses a tier, route it deliberately with the deal-economics pack. This is Anton's "internal approval gate" trigger and the gated levers in §4, made concrete. *Source: Elevate Rookie Basecamp Day 1 (slides 57–80) + Schroders CPQ Q-06367.*
+
+## 10. Provenance & related
 
 - **Source:** Aniket's Negotiation Planner (Jun 2026). The planner also computes a live offer table, detects the concession shape, and meters discount headroom to floor.
 - **Related:** Schroders negotiation playbook + "travel" anchoring 1-pager; `deal-pricing-system/knowledge_base/templates/`; the deal-desk codification (`knowledge/learnings/pipeline_gaps/deal_desk_commercial_track.md`); the **proposal builder** (`presentations/gtm-os-proposal-builder/`).
