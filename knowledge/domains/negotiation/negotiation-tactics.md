@@ -114,26 +114,38 @@ Reframe from "what's your discount?" to "which configuration?". Worked example s
 
 ---
 
-## 9. Deal-desk approval governance (Backbase · Salesforce CPQ)
+## 9. Deal-desk governance (Backbase — CFO framework, June 2026)
 
-Discounting is **role-gated** — an AE cannot self-discount. Know which tier a move triggers *before* you make it.
+**Authoritative.** The enhanced Deal Desk framework (CFO-initiated, Jun 2026) is **cross-functional commercial governance** — Sales + Services + Product, *not* a Finance process; the **Account Team** owns deal success. It is **triggered before pricing is proposed to the client, regardless of the Salesforce stage.** Purpose: protect margins, align Sales/Services/Product, govern custom-dev & roadmap, and make every price/scope/implementation/product commitment with full visibility of its impact on ARR, margins, delivery effort and product strategy. *Decisions: **Approve** (offer shareable, can be conditional / reflect negotiation room) · **Clarify** (update & resubmit) · **Reject** (unhealthy to execute).* Cadence: review every Thursday (90′ max), template submitted COB Tuesday; ad-hoc possible.
 
-| Role | Discount authority |
-|---|---|
-| **AE** | Up to **0%** |
-| **RVP** | Up to **20%** |
-| **SVP** | Up to **40%** |
-| **CCO / Deal Desk** | **Over 40%** |
+**Every deal needs a COMPLETE commercial model:** ARR (recurring) + Professional Services (one-off/implementation) + Managed Services, with **Gross Margin by component** (subscription · managed hosting · managed services · professional services · ecosystems/marketplace). Inputs: **Digital Solutioning Document** (Services pricing source) · **RFF** (Request for Features — product, pre-aligned/validated/locked) · **Deal QA** (delivery-risk review).
 
-(Applies across all editions + embedded hosting pricing.)
+**Deal Desk is MANDATORY if any of these "unhealthy" thresholds is breached** (else no Deal Desk needed):
 
-**Mandatory Deal-Desk triggers** (regardless of discount %): selling **outside ICP** · a deal **without managed hosting** · a **new-logo deal under €600K** · a **contract term over 5 years** → early qualification, in or out.
+| Metric | Healthy (no DD) | Deal Desk required |
+|---|---|---|
+| GM ARR | > 83% | **< 83%** |
+| Managed Hosting (standalone) GM | > 25% | **< 25%** |
+| Managed Services GM | > 45% | **< 45%** |
+| Professional Services GM | > 35% | **< 35%** |
+| Marketplace GM | > 40% | **< 40%** |
+| 1st-year ARR value (ramp-up) | > 60% | **< 60%** |
+| ARR ACV | — | **€ +2M** |
+| Exceptional pricing metrics (e.g. **AUM**) | — | **applied** |
+| ARR discount | within authority (below) | **above authority** |
 
-**Approval flows:** *Happy* (within model → straight to order form) · *Approval* (threshold crossed → approvals workflow) · *Validation* (discount on an existing run-rate → added Finance check). Cadence: Wed review → Thu Finance prep → Fri Executive Deal Desk (deal economics + concessions).
+**Discount approval authority — by region, role & product** (GM-ARR profile is the leading metric):
 
-**Packaging context (the real Good/Better/Best, §7):** three editions — **Essential / Premium / Signature** (use-case packaged; Premium ≈ 100% baseline, Essential ≈ 70–80%, Signature ≈ 130–180%), with **localized geo pricing** (Tier-1 markets 100%, others ~70%). License model = **Base Fee + User/AUM Fee**; cloud-default; **€600K minimum deal size**.
+| Region (price list) | SVP up to | CRO up to | Deal Desk |
+|---|---|---|---|
+| NAM · NW Europe · Australia (100%) | **≤ 20%** | ≤ 40% | **> 40%** |
+| E. Europe · LATAM · Middle East · Africa · Asia (70%) | **≤ 40%** | ≤ 60% | **> 60%** |
 
-**Deploy:** plan concessions *within* the AE's authority; when a move crosses a tier, route it deliberately with the deal-economics pack. This is Anton's "internal approval gate" trigger and the gated levers in §4, made concrete. *Source: Elevate Rookie Basecamp Day 1 (slides 57–80) + Schroders CPQ Q-06367.*
+> **⚠️ Agentic Banking is EXCLUDED from the discounting framework — always CRO + CEO approval:** Conversational Banking · all APA use cases (outside standard O&O) · Relationship Intelligence · Delivery Factory · Customer Operations · Nexus & other platform components. *(This is why their pricing is TBD, not discountable — see `knowledge/domains/pricing/pricing-methodology.md`.)* Non-cloud deals: CRO (countries without Azure access) / CEO (all other cases).
+
+**Account triangle (every account has 3 leaders):** AE (new + expansion ARR) · CSD (Services-subscription renewal) · RVP Services. ARR commercial ownership sits with the CCO.
+
+**Deploy:** plan within authority; when a move crosses a tier or breaches a GM threshold, the deal goes to Deal Desk — so come with the **complete commercial model + GM-by-component + Digital Solutioning / RFF / Deal-QA summaries** ready. *The proposal builder's job is to produce exactly this pack and flag the tier/threshold before you commit.* *Source: CFO "enhanced Deal Desk framework" email + Deal Desk Process & Template decks (Jun 2026); editions/packaging context from Elevate Rookie Basecamp.*
 
 ## 10. Provenance & related
 
