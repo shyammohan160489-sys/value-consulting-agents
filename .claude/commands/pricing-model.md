@@ -46,7 +46,10 @@ python3 tools/pricing_model.py --selftest                              # sanity:
 ## Pricing bases (works across deal types)
 
 Each scenario declares a `basis`. The engine handles all three — pick per deal, or mix
-scenarios within one model:
+scenarios within one model. **Pick the basis by solution AND line of business** — pricing
+is not one-size (wealth ≠ retail ≠ conversational); see `knowledge/domains/pricing/pricing-methodology.md`
+for the Solution × LOB map and the solutions whose basis is still **TBD** (Relationship
+Intelligence, Customer Operations, Agentic-AI — define at the deal, don't default to AUM):
 
 **1. `band_multiplier` (default) — WEALTH / AUM** (e.g. Schroders)
 Baseline fee × `(1+rate)` for each band the growth metric crosses, with an open

@@ -58,6 +58,24 @@ AI bolted onto a fragmented frontline makes the mess faster and more expensive. 
 
 **Retire:** "engagement banking platform" and "better channels / better experience" as the lead positioning. Lead with the **operating model** → Banking OS / Unified Frontline.
 
+### Parlance translation (loose / old → canonical)
+
+Speakers (incl. our own team) mix old and new terms. **Translate to the canonical model — don't take the words literally.**
+
+| If you hear / see… | Map it to |
+|---|---|
+| "engagement banking", "the platform", "portal", "channels" | **Banking OS** (control plane) / the **Unified Frontline** |
+| "Customer Brain", "HELIX" | **Nexus** (semantic layer / shared source of truth) |
+| "Grand Central", "iPaaS", "integration platform" | **Connectivity / Integration layer** |
+| "Flow Foundation", "process automation", "workflow" | **Orchestration layer** (and Customer Operations / Resolution Loops) |
+| "Digital Engage", "campaigns", "NBA" | **Conversational Banking** and/or **Relationship Intelligence** |
+| "Digital Assist", "employee app/workspace" | **Conversational Banking** / employee workspaces |
+| "3 fabrics / planes", "13 product lines" | the **Banking OS layers** + **2 domains → 4 solutions** |
+| "Acquire / Activate / Expand / Retain" | the **Customer Engagement** lifecycle (acquisition→onboarding→origination→servicing→cross-sell→retention) |
+| "CLO", "charge for AI", "agentic pricing" | **Agentic-AI pricing** — currently **TBD** (see `knowledge/domains/pricing/pricing-methodology.md`) |
+| "wealth/PB pricing", "AUM options" | Digital Banking · **Wealth** basis (`band_multiplier`) |
+| "case managers / onboarding cases / net assets" | Digital Banking · **Retail/SME/Commercial** basis (`tiered_per_unit`) |
+
 ## 5. Tone
 
 Direct, opinionated, problem-first. **Short declarative sentences.** Name a technical term once, then move on — keep it CEO-level. Quantify the pain ("crosses twelve systems"). State the stance, don't hedge it. Outcomes before features, always (cf. the SparD gold-standard look: the hero shows investment / returns / payback / time-to-value, not capabilities).
