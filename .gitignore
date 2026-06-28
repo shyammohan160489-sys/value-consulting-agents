@@ -79,3 +79,5 @@ frontline-2026-for-claude-design/
 
 # Large source decks (kept locally; consumed into knowledge/product/banking-os.md)
 knowledge/product/source/*.pptx
+~\$*
+*.pre-*.bak
