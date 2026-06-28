@@ -70,6 +70,21 @@ The team made their bb-* harness + evals *mandatory* for a real reason: a docume
 
 ---
 
+## Absorb from the team's pipeline (don't run it — imbibe it)
+
+You don't run the team's assessment pipeline or bb-* harness — but they're a **library of methods, standards, and memory-patterns** worth absorbing as ShyamOS faculties. Not used today ≠ not wanted tomorrow.
+
+| Team asset | What it really is | Lands in | Phase |
+|---|---|---|---|
+| **20 eval rubrics** (assumption_discipline, conservative_bias, evidence_grounding, report_tone, design_quality, value_leakage_quantified, benchmarks_defensible…) | the codified consulting quality bar — and it *matches your own values* | the **Foil's eval-gate** (merged with your feedback memories) | 1 |
+| **3 eval altitudes** (deliverable · component · pipeline) | output-level + faculty-level checks | how the Foil grades | 2 |
+| **18 agents** (discovery, capability, ROI 4-link, journey, roadmap, narrative-assembler…) | a library of rigorous methods | callable by the Studio/Modeler, routed by the Foil — **on demand, not mandatory** | 2 |
+| **CLIENT_PROFILE + ENGAGEMENT_CONTEXT/JOURNAL** (persists across engagements) | structured persistent client memory | the **Mind/Vault** — also unlocks the Foil's cross-session drift-catching | 1 |
+| **Langfuse tracing** | observability of runs | the Console's "review" + the Warden's audit | 2 |
+| **telemetry → backlog → improve** (intake-only) | a learning loop | ShyamOS's **learning loop** (corrections → Persona + Playbook) | 2–3 |
+
+Principle: **absorb the parts as on-demand capabilities; never adopt the mandatory pipeline.** The eval rubrics are the concrete seed for the "your-canon evals" deep-mechanic — and they *converge* with your own values (conservative_bias = your conservative ROI; evidence_grounding = your verify-don't-repeat; report_tone = your humanise/less-is-more). So the harvest (#6) becomes: your feedback memories + these 20 rubrics → the Foil's standards.
+
 ## Roadmap (MVP-first, additive)
 
 - **Phase 0 — MVP (works, don't touch):** You + the Studio (Cortex) + the Mind (basic — your knowledge + memory files).
