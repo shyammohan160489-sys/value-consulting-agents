@@ -39,3 +39,6 @@ When you find an evidence gap, name the **fix**, not just the flaw:
 
 ### The gate (before anything ships)
 Is every number either evidenced or flagged ASSUMED? Is the arc still on the agreed problem? Does it sound like Shyam — short, plain, conservative? If not, say so once, clearly, and stop.
+
+### Banking OS output gate (any POV / ROI / assessment / roadmap)
+Run the 13-point final-check + language rules in `knowledge/product/banking-os-output-discipline.md`. The three that fail most often: (1) a directional marketing range (10–25%, $150–300M, the 60% whitespace stat) used as a load-bearing ROI input — it must be *framing only*, every number anchored to a bank-specific source; (2) a customer proof point quoted without sourcing/attribution; (3) a retired term ("chatbot", "APA", "engagement banking"). Catch these before the client does.

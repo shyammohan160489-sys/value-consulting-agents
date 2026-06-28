@@ -90,3 +90,4 @@ Simple & predictable: **Platform fee** (Entry €350K · Critical €700K · Ent
 5. **Position delivery as Factory Missions** — land fast (6–12 weeks), prove value, expand.
 6. **Shape commercials** on the platform + LOB + per-interaction + compute-pass-through model (usable directly in `/pricing-model`).
 7. **Lead with governed, auditable agentic execution** — "AI won't fix fragmentation; without shared truth and guardrails it amplifies it."
+8. **Run the output discipline before it ships** — apply the language rules + 13-point final-check in [`banking-os-output-discipline.md`](banking-os-output-discipline.md): proof points sourced not invented, directional ranges never load-bearing in ROI, no retired terms.
