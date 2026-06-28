@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DECK_TITLE</title>
+<title>Differentiation in the Age of AI — Nordic FinTech Forum 2026 (v2)</title>
 <style>
+
 /* ===== RESET & BASE ===== */
 *{margin:0;padding:0;box-sizing:border-box}
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap');
@@ -76,7 +77,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-cover-color-block .cover-logo svg{height:100%;width:auto;display:block}
 .layout-cover-color-block .slide-motif{left:54.1%;top:21.54%}
 .layout-cover-color-block .cover-label{position:absolute;left:8%;top:25.5%;font-size:0.75em;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.8)}
-.layout-cover-color-block .cover-title{position:absolute;left:8%;top:32%;bottom:35%;width:80%;font-size:3em;font-weight:300;line-height:1.05;color:#fff;display:flex;align-items:flex-start;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.layout-cover-color-block .cover-title{position:absolute;left:8%;top:32%;width:48%;font-size:4em;font-weight:300;line-height:1.12;color:#fff}
 .layout-cover-color-block .cover-date{position:absolute;left:8%;bottom:30%;font-size:1em;font-weight:300;color:rgba(255,255,255,0.7)}
 .layout-cover-color-block .partner-logo{position:absolute;right:8%;top:7%;height:4.5%;display:flex;align-items:center;padding:0 1.2em;border:1px dashed rgba(255,255,255,0.3);color:rgba(255,255,255,0.4);font-size:0.6em;font-weight:300}
 
@@ -114,13 +115,8 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-content-standard .content-label{position:absolute;left:5.8%;top:10%}
 .layout-content-standard .content-title{position:absolute;left:5.8%;top:15%;width:88%}
 .layout-content-standard .content-subtitle{position:absolute;left:5.8%;top:24%;width:70%}
-.layout-content-standard .content-body{position:absolute;left:5.8%;top:34%;width:88%;bottom:7.5%;display:flex;flex-direction:column;justify-content:flex-start;gap:0.9em}
-.layout-content-standard .content-body.body-only{justify-content:center}
+.layout-content-standard .content-body{position:absolute;left:5.8%;top:32%;width:88%}
 .layout-content-standard .content-body.body-only{top:15%}
-.layout-content-standard .content-body.no-subtitle{top:26%}
-/* Body fills the region from below the subtitle to just above the footer, and
-   centres its blocks vertically — content is never top-anchored with dead space
-   below. Author bodies should size tiles/text to occupy this space, not hug the top. */
 
 /* ===================================================================
    TEMPLATE: THANK YOU
@@ -226,7 +222,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-cover-photo .cover-logo svg{height:100%;width:auto;display:block}
 .layout-cover-photo .slide-motif{left:54.1%;top:21.54%;transform:translate(-100%,0) rotate(-90deg)}
 .layout-cover-photo .cover-label{position:absolute;left:8%;top:25.5%;font-size:0.75em;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:#041326}
-.layout-cover-photo .cover-title{position:absolute;left:8%;top:32%;bottom:35%;width:42%;font-size:2.6em;font-weight:300;line-height:1.05;color:#041326;overflow:hidden}
+.layout-cover-photo .cover-title{position:absolute;left:8%;top:32%;width:48%;font-size:3.5em;font-weight:300;line-height:1.12;color:#041326}
 .layout-cover-photo .cover-date{position:absolute;left:8%;bottom:30%;font-size:1em;font-weight:300;color:rgba(9,28,53,0.6)}
 .layout-cover-photo[data-theme="navy"]{--t-grid:#6b7786}
 .layout-cover-photo[data-theme="navy"] .cover-panel{display:none}
@@ -353,7 +349,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-roadmap .roadmap-row:last-child{border-bottom:none}
 .layout-roadmap .roadmap-row-label{width:15%;padding-left:3.08%;font-size:0.7em;font-weight:400;color:var(--t-text,#041326);flex-shrink:0}
 .layout-roadmap .roadmap-row-track{flex:1;position:relative;height:100%}
-.layout-roadmap .roadmap-bar{position:absolute;height:60%;top:20%;border-radius:0.2em;display:flex;align-items:center;padding:0 0.5em;font-size:0.6em;font-weight:500;color:#fff;white-space:nowrap;overflow:visible;text-overflow:clip}
+.layout-roadmap .roadmap-bar{position:absolute;height:60%;top:20%;border-radius:0.2em;display:flex;align-items:center;padding:0 0.5em;font-size:0.6em;font-weight:400;color:#fff;white-space:nowrap;overflow:hidden}
 .layout-roadmap .roadmap-dividers{position:absolute;inset:0;padding-left:15%;display:flex;pointer-events:none}
 .layout-roadmap .roadmap-divider{flex:1;border-right:1px solid var(--t-grid,#CED2D7)}
 .layout-roadmap .roadmap-divider:first-child{border-left:1px solid var(--t-grid,#CED2D7)}
@@ -362,30 +358,6 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-roadmap .roadmap-bar.bar-navy{background:var(--bb-navy)}
 .layout-roadmap .roadmap-bar.bar-cyan{background:#2BBCC4}
 .layout-roadmap .roadmap-bar.bar-red{background:var(--bb-red)}
-
-/* ===== TIMELINE (horizontal milestone) ===== */
-.layout-timeline{background:var(--t-bg,#fff)}
-.layout-timeline .slide-motif{left:2.9%;top:5.15%}
-.layout-timeline .content-label{position:absolute;left:5.8%;top:10%}
-.layout-timeline .content-title{position:absolute;left:5.8%;top:15%;width:88%}
-.layout-timeline .content-subtitle{position:absolute;left:5.8%;top:24%;width:80%}
-.layout-timeline .tl-wrap{position:absolute;left:5.8%;right:5.8%;top:34%;bottom:6%;display:flex;flex-direction:column;justify-content:center;gap:0.6em}
-.layout-timeline .tl-labels,.layout-timeline .tl-cards{display:flex}
-.layout-timeline .tl-labels{gap:0.7em}
-.layout-timeline .tl-cell{flex:1;display:flex;justify-content:center;align-items:center}
-.layout-timeline .tl-node-label{font-size:0.62em;font-weight:700;letter-spacing:0.04em}
-.layout-timeline .tl-dots{position:relative;display:flex;height:1em;align-items:center;margin-top:0.45em}
-.layout-timeline .tl-dots .tl-cell{flex:1}
-.layout-timeline .tl-line{position:absolute;top:50%;transform:translateY(-50%);height:2px;background:var(--bb-border,#CED2D7)}
-.layout-timeline .tl-dot{width:0.85em;height:0.85em;border-radius:50%;border:0.18em solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.08);z-index:1}
-.layout-timeline .tl-cards{gap:0.7em;margin-top:0.7em}
-.layout-timeline .tl-card{flex:1;border-radius:0.5em;padding:0.85em 0.95em;display:flex;flex-direction:column}
-.layout-timeline .tl-card-title{font-size:0.72em;font-weight:700;color:var(--bb-navy)}
-.layout-timeline .tl-card-body{font-size:0.58em;font-weight:300;line-height:1.5;color:var(--bb-navy);margin-top:0.45em;flex:1}
-.layout-timeline .tl-card-footer{font-size:0.55em;font-weight:700;margin-top:0.7em}
-.layout-timeline .tl-callout{background:var(--bb-navy);border-radius:0.5em;padding:0.7em 1em;margin-top:0.5em}
-.layout-timeline .tl-callout-lead{font-size:0.62em;font-weight:700;color:var(--bb-cyan)}
-.layout-timeline .tl-callout-body{font-size:0.62em;font-weight:300;color:#fff}
 
 /* ===== SLIDE PREVIEW (for overview & presenter clones) ===== */
 .thumb-render{width:1920px;height:1080px;position:absolute;top:0;left:0;transform-origin:top left;overflow:hidden}
@@ -432,6 +404,18 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 @media(min-aspect-ratio:16/9){.slide-frame{height:100%;width:auto;aspect-ratio:16/9}}
 @media(max-aspect-ratio:16/9){.slide-frame{width:100%;height:auto;aspect-ratio:16/9}}
 .slide{font-size:min(1.67vw,1.67vh * 16/9)}
+
+/* ─── Nordic 2026 deck overrides ─── */
+/* Allow the cover title to fit longer two-line questions */
+.layout-cover-color-block .cover-title{width:78%;font-size:3em;line-height:1.15}
+/* Content-standard / content-columns titles: give 2-line titles breathing room
+   so the subtitle and body don't collide with a wrapped second line. */
+.layout-content-standard .content-title{font-size:1.55em;line-height:1.2}
+.layout-content-standard .content-subtitle{top:27%}
+.layout-content-standard .content-body{top:35%}
+.layout-content-columns .columns-title{font-size:1.55em;line-height:1.2}
+.layout-content-columns .columns-row{top:35%}
+
 </style>
 </head>
 <body>
@@ -477,7 +461,5 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
   <input type="number" id="gotoInput" min="1">
 </div>
 
-<script src="slides.js"></script>
-<script src="../backbase-slides-app/engine.js"></script>
-</body>
-</html>
+<script>
+window.BB_SHARED_ASSETS = '.';

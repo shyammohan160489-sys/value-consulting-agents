@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DECK_TITLE</title>
+<title>ABSA × Backbase — Amsterdam Visit Options</title>
 <style>
 /* ===== RESET & BASE ===== */
 *{margin:0;padding:0;box-sizing:border-box}
@@ -12,8 +12,8 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 
 /* ===== DESIGN TOKENS ===== */
 :root{
-  --bb-navy:#041326;
-  --bb-blue:#3367FF;
+  --bb-navy:#091C35;
+  --bb-blue:#3366FF;
   --bb-cyan:#69FEFF;
   --bb-red:#FF503C;
   --bb-light-blue:#E5EBFF;
@@ -23,9 +23,9 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 }
 
 /* ===== THEME SYSTEM ===== */
-[data-theme="navy"]{--t-bg:#041326;--t-text:#fff;--t-text-muted:rgba(255,255,255,0.6);--t-grid:rgba(255,255,255,0.35)}
-[data-theme="blue"]{--t-bg:#3367FF;--t-text:#fff;--t-text-muted:rgba(255,255,255,0.6);--t-grid:rgba(255,255,255,0.35)}
-[data-theme="white"]{--t-bg:#fff;--t-text:#041326;--t-text-muted:rgba(9,28,53,0.45);--t-grid:#CED2D7}
+[data-theme="navy"]{--t-bg:#091C35;--t-text:#fff;--t-text-muted:rgba(255,255,255,0.6);--t-grid:rgba(255,255,255,0.35)}
+[data-theme="blue"]{--t-bg:#3366FF;--t-text:#fff;--t-text-muted:rgba(255,255,255,0.6);--t-grid:rgba(255,255,255,0.35)}
+[data-theme="white"]{--t-bg:#fff;--t-text:#091C35;--t-text-muted:rgba(9,28,53,0.45);--t-grid:#CED2D7}
 
 /* ===== PRESENTATION CONTAINER ===== */
 .pres-container{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#000;position:relative}
@@ -51,7 +51,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .slide-footer{position:absolute;left:89.25%;top:96.54%;width:6.5%;height:1.865%;display:flex;align-items:center}
 .slide-footer-logo{width:100%;height:100%;color:#000}
 .slide-footer-logo svg{width:100%;height:100%;display:block}
-.slide-footer-num{position:absolute;left:98.55%;top:96.54%;transform:translateX(-50%);font-size:0.5em;font-weight:700;color:#041326}
+.slide-footer-num{position:absolute;left:98.55%;top:96.54%;transform:translateX(-50%);font-size:0.5em;font-weight:700;color:#091c35}
 [data-theme="navy"] .slide-footer-logo{color:#fff}
 [data-theme="navy"] .slide-footer-num{color:#fff}
 .bb-logo{display:block}
@@ -71,12 +71,12 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
    TEMPLATE: COVER - COLOR BLOCK
    Navy bg with blue glow gradient, Backbase logo top-left, large title
    =================================================================== */
-.layout-cover-color-block{background:#041326;background-image:radial-gradient(ellipse at 80% 95%,rgba(51,102,255,0.22) 0%,rgba(51,102,255,0.05) 35%,transparent 60%)}
+.layout-cover-color-block{background:#091C35;background-image:radial-gradient(ellipse at 80% 95%,rgba(51,102,255,0.22) 0%,rgba(51,102,255,0.05) 35%,transparent 60%)}
 .layout-cover-color-block .cover-logo{position:absolute;left:8%;top:7%;height:4.5%}
 .layout-cover-color-block .cover-logo svg{height:100%;width:auto;display:block}
 .layout-cover-color-block .slide-motif{left:54.1%;top:21.54%}
 .layout-cover-color-block .cover-label{position:absolute;left:8%;top:25.5%;font-size:0.75em;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.8)}
-.layout-cover-color-block .cover-title{position:absolute;left:8%;top:32%;bottom:35%;width:80%;font-size:3em;font-weight:300;line-height:1.05;color:#fff;display:flex;align-items:flex-start;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.layout-cover-color-block .cover-title{position:absolute;left:8%;top:32%;width:48%;font-size:4em;font-weight:300;line-height:1.12;color:#fff}
 .layout-cover-color-block .cover-date{position:absolute;left:8%;bottom:30%;font-size:1em;font-weight:300;color:rgba(255,255,255,0.7)}
 .layout-cover-color-block .partner-logo{position:absolute;right:8%;top:7%;height:4.5%;display:flex;align-items:center;padding:0 1.2em;border:1px dashed rgba(255,255,255,0.3);color:rgba(255,255,255,0.4);font-size:0.6em;font-weight:300}
 
@@ -114,13 +114,8 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-content-standard .content-label{position:absolute;left:5.8%;top:10%}
 .layout-content-standard .content-title{position:absolute;left:5.8%;top:15%;width:88%}
 .layout-content-standard .content-subtitle{position:absolute;left:5.8%;top:24%;width:70%}
-.layout-content-standard .content-body{position:absolute;left:5.8%;top:34%;width:88%;bottom:7.5%;display:flex;flex-direction:column;justify-content:flex-start;gap:0.9em}
-.layout-content-standard .content-body.body-only{justify-content:center}
+.layout-content-standard .content-body{position:absolute;left:5.8%;top:32%;width:88%}
 .layout-content-standard .content-body.body-only{top:15%}
-.layout-content-standard .content-body.no-subtitle{top:26%}
-/* Body fills the region from below the subtitle to just above the footer, and
-   centres its blocks vertically — content is never top-anchored with dead space
-   below. Author bodies should size tiles/text to occupy this space, not hug the top. */
 
 /* ===================================================================
    TEMPLATE: THANK YOU
@@ -146,7 +141,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-toc .toc-row{flex:1;display:flex;align-items:center;border-bottom:1px solid var(--t-grid,#CED2D7);padding:0 1.5em;gap:1em}
 .layout-toc .toc-row:last-child{border-bottom:none}
 .layout-toc .toc-num{font-size:1.5em;font-weight:300;color:var(--bb-blue);min-width:2em}
-.layout-toc .toc-entry{font-size:0.95em;font-weight:300;color:var(--t-text,#041326)}
+.layout-toc .toc-entry{font-size:0.95em;font-weight:300;color:var(--t-text,#091C35)}
 
 /* ===================================================================
    TEMPLATE: CONTENT - COLUMNS
@@ -179,7 +174,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-overview-about .stat-item{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 1em;border-right:1px solid var(--t-grid,#CED2D7)}
 .layout-overview-about .stat-item:last-child{border-right:none}
 .layout-overview-about .stat-value{font-size:1.6em;font-weight:500;color:var(--bb-blue)}
-.layout-overview-about .stat-label{font-size:0.7em;font-weight:400;color:var(--t-text,#041326);margin-top:0.2em}
+.layout-overview-about .stat-label{font-size:0.7em;font-weight:400;color:var(--t-text,#091C35);margin-top:0.2em}
 
 /* ===================================================================
    TEMPLATE: OVERVIEW - STATS (4/5 stat variant with image)
@@ -189,14 +184,14 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-overview-stats .slide-motif{left:2.9%;top:5.15%}
 .layout-overview-stats .about-label{position:absolute;left:5.8%;top:10%}
 .layout-overview-stats .about-title{position:absolute;left:5.8%;top:15%;width:38%}
-.layout-overview-stats .about-subtitle{position:absolute;left:5.8%;top:28%;width:38%;font-size:0.85em;font-weight:400;line-height:1.6;color:var(--t-text,#041326)}
+.layout-overview-stats .about-subtitle{position:absolute;left:5.8%;top:28%;width:38%;font-size:0.85em;font-weight:400;line-height:1.6;color:var(--t-text,#091C35)}
 .layout-overview-stats .about-image{position:absolute;left:50%;right:2.9%;top:5.15%;bottom:25.15%;background:var(--bb-off-white);display:flex;align-items:center;justify-content:center;color:var(--t-text-muted);font-size:0.8em;font-weight:300;overflow:hidden}
 .layout-overview-stats .about-image img{width:100%;height:100%;object-fit:cover}
 .layout-overview-stats .about-stats{position:absolute;left:2.9%;right:2.9%;bottom:5.15%;height:20%;display:flex;border-top:1px solid var(--t-grid,#CED2D7)}
 .layout-overview-stats .stat-item{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 1em;border-right:1px solid var(--t-grid,#CED2D7)}
 .layout-overview-stats .stat-item:last-child{border-right:none}
 .layout-overview-stats .stat-value{font-size:1.6em;font-weight:500;color:var(--bb-blue)}
-.layout-overview-stats .stat-label{font-size:0.7em;font-weight:400;color:var(--t-text,#041326);margin-top:0.2em}
+.layout-overview-stats .stat-label{font-size:0.7em;font-weight:400;color:var(--t-text,#091C35);margin-top:0.2em}
 
 /* ===================================================================
    TEMPLATE: PRODUCT
@@ -217,7 +212,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
    TEMPLATE: COVER - PHOTO
    Full-bleed photo, dark overlay, frosted panel, logo+label+title+date
    =================================================================== */
-.layout-cover-photo{background:#041326;--t-grid:#ffffff}
+.layout-cover-photo{background:#091C35;--t-grid:#ffffff}
 .layout-cover-photo .cover-bg{position:absolute;inset:0}
 .layout-cover-photo .cover-bg img{width:100%;height:100%;object-fit:cover}
 .layout-cover-photo .cover-overlay{position:absolute;inset:0;background:rgba(4,19,38,0.1)}
@@ -226,7 +221,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-cover-photo .cover-logo svg{height:100%;width:auto;display:block}
 .layout-cover-photo .slide-motif{left:54.1%;top:21.54%;transform:translate(-100%,0) rotate(-90deg)}
 .layout-cover-photo .cover-label{position:absolute;left:8%;top:25.5%;font-size:0.75em;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:#041326}
-.layout-cover-photo .cover-title{position:absolute;left:8%;top:32%;bottom:35%;width:42%;font-size:2.6em;font-weight:300;line-height:1.05;color:#041326;overflow:hidden}
+.layout-cover-photo .cover-title{position:absolute;left:8%;top:32%;width:48%;font-size:3.5em;font-weight:300;line-height:1.12;color:#091C35}
 .layout-cover-photo .cover-date{position:absolute;left:8%;bottom:30%;font-size:1em;font-weight:300;color:rgba(9,28,53,0.6)}
 .layout-cover-photo[data-theme="navy"]{--t-grid:#6b7786}
 .layout-cover-photo[data-theme="navy"] .cover-panel{display:none}
@@ -248,10 +243,10 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-statement .statement-band.band-red{background:#FFEFEC}
 .layout-statement .statement-band.band-dark{background:rgba(51,102,255,0.15)}
 .layout-statement .statement-label{position:absolute;left:5.8%;top:27.27%}
-.layout-statement .statement-text{position:absolute;left:5.8%;right:5.8%;top:37%;font-size:1.5em;font-weight:400;line-height:1.5;color:var(--t-text,#041326)}
+.layout-statement .statement-text{position:absolute;left:5.8%;right:5.8%;top:37%;font-size:1.5em;font-weight:400;line-height:1.5;color:var(--t-text,#091C35)}
 .layout-statement .statement-text .hl{color:var(--bb-blue)}
 .layout-statement.accent-red .statement-text .hl{color:var(--bb-red)}
-.layout-statement[data-theme="navy"]{background:#041326;background-image:radial-gradient(ellipse at 80% 95%,rgba(51,102,255,0.15) 0%,transparent 55%)}
+.layout-statement[data-theme="navy"]{background:#091C35;background-image:radial-gradient(ellipse at 80% 95%,rgba(51,102,255,0.15) 0%,transparent 55%)}
 .layout-statement[data-theme="navy"] .statement-text{color:#fff}
 .layout-statement[data-theme="navy"] .statement-text .hl{color:var(--bb-blue)}
 .layout-statement[data-theme="navy"] .statement-band.band-dark{background:rgba(255,255,255,0.06)}
@@ -272,7 +267,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-statement-stat .stat-number.num-blue{color:var(--bb-blue)}
 .layout-statement-stat .stat-number.num-red{color:var(--bb-red)}
 .layout-statement-stat .stat-desc{flex:1}
-.layout-statement-stat .stat-desc-text{font-size:1em;font-weight:300;line-height:1.5;color:var(--t-text,#041326)}
+.layout-statement-stat .stat-desc-text{font-size:1em;font-weight:300;line-height:1.5;color:var(--t-text,#091C35)}
 .layout-statement-stat .stat-desc-text .hl{color:var(--bb-blue)}
 .layout-statement-stat.accent-red .stat-desc-text .hl{color:var(--bb-red)}
 .layout-statement-stat .stat-source{font-size:0.7em;font-weight:400;color:var(--t-text-muted);margin-top:0.8em}
@@ -289,8 +284,8 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-testimonial .testimonial-image .placeholder-icon svg{display:block;width:1.3em;height:1.3em;color:#c0c4cc}
 .layout-testimonial .testimonial-label{position:absolute;left:33%;top:8.5%;padding-left:1em}
 .layout-testimonial .testimonial-content{position:absolute;left:33%;right:2.9%;top:12%;bottom:5.15%;display:flex;flex-direction:column;justify-content:center;padding:0 1em;border-left:1px solid var(--t-grid,#CED2D7)}
-.layout-testimonial .testimonial-logo{font-size:1.8em;font-weight:800;color:var(--t-text,#041326);margin-bottom:1em;letter-spacing:0.05em}
-.layout-testimonial .testimonial-quote{font-size:1.05em;font-weight:300;color:var(--t-text,#041326);line-height:1.6;margin-bottom:1.5em}
+.layout-testimonial .testimonial-logo{font-size:1.8em;font-weight:800;color:var(--t-text,#091C35);margin-bottom:1em;letter-spacing:0.05em}
+.layout-testimonial .testimonial-quote{font-size:1.05em;font-weight:300;color:var(--t-text,#091C35);line-height:1.6;margin-bottom:1.5em}
 .layout-testimonial .testimonial-author{border-top:1px solid var(--t-grid,#CED2D7);padding-top:1em}
 .layout-testimonial .testimonial-name{font-size:0.9em;font-weight:400;color:var(--bb-blue)}
 .layout-testimonial .testimonial-title{font-size:0.75em;font-weight:300;color:var(--t-text-muted)}
@@ -326,7 +321,7 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
    TEMPLATE: AGENDA TABLE
    Navy bg, table layout with session/time/location/speaker columns
    =================================================================== */
-.layout-agenda-table{background:#041326;background-image:radial-gradient(ellipse at 80% 95%,rgba(51,102,255,0.15) 0%,transparent 55%)}
+.layout-agenda-table{background:#091C35;background-image:radial-gradient(ellipse at 80% 95%,rgba(51,102,255,0.15) 0%,transparent 55%)}
 .layout-agenda-table .slide-motif{left:2.9%;top:5.15%}
 .layout-agenda-table .agenda-label{position:absolute;left:5.8%;top:14%}
 .layout-agenda-table .agenda-title{position:absolute;left:5.8%;top:19%;width:80%}
@@ -347,13 +342,13 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-roadmap .roadmap-title{position:absolute;left:5.8%;top:15%;width:80%}
 .layout-roadmap .roadmap-chart{position:absolute;left:2.9%;right:2.9%;top:25%;bottom:5.15%;display:flex;flex-direction:column}
 .layout-roadmap .roadmap-months{display:flex;align-items:center;padding:0.8em 0 0.8em 15%;border-bottom:1px solid var(--t-grid,#CED2D7);flex-shrink:0}
-.layout-roadmap .roadmap-month{flex:1;text-align:center;font-size:0.7em;font-weight:600;color:var(--t-text,#041326)}
+.layout-roadmap .roadmap-month{flex:1;text-align:center;font-size:0.7em;font-weight:600;color:var(--t-text,#091C35)}
 .layout-roadmap .roadmap-rows{display:flex;flex-direction:column;flex:1}
 .layout-roadmap .roadmap-row{display:flex;align-items:center;flex:1;border-bottom:1px solid var(--t-grid,#CED2D7)}
 .layout-roadmap .roadmap-row:last-child{border-bottom:none}
-.layout-roadmap .roadmap-row-label{width:15%;padding-left:3.08%;font-size:0.7em;font-weight:400;color:var(--t-text,#041326);flex-shrink:0}
+.layout-roadmap .roadmap-row-label{width:15%;padding-left:3.08%;font-size:0.7em;font-weight:400;color:var(--t-text,#091C35);flex-shrink:0}
 .layout-roadmap .roadmap-row-track{flex:1;position:relative;height:100%}
-.layout-roadmap .roadmap-bar{position:absolute;height:60%;top:20%;border-radius:0.2em;display:flex;align-items:center;padding:0 0.5em;font-size:0.6em;font-weight:500;color:#fff;white-space:nowrap;overflow:visible;text-overflow:clip}
+.layout-roadmap .roadmap-bar{position:absolute;height:60%;top:20%;border-radius:0.2em;display:flex;align-items:center;padding:0 0.5em;font-size:0.6em;font-weight:400;color:#fff;white-space:nowrap;overflow:hidden}
 .layout-roadmap .roadmap-dividers{position:absolute;inset:0;padding-left:15%;display:flex;pointer-events:none}
 .layout-roadmap .roadmap-divider{flex:1;border-right:1px solid var(--t-grid,#CED2D7)}
 .layout-roadmap .roadmap-divider:first-child{border-left:1px solid var(--t-grid,#CED2D7)}
@@ -362,30 +357,6 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-roadmap .roadmap-bar.bar-navy{background:var(--bb-navy)}
 .layout-roadmap .roadmap-bar.bar-cyan{background:#2BBCC4}
 .layout-roadmap .roadmap-bar.bar-red{background:var(--bb-red)}
-
-/* ===== TIMELINE (horizontal milestone) ===== */
-.layout-timeline{background:var(--t-bg,#fff)}
-.layout-timeline .slide-motif{left:2.9%;top:5.15%}
-.layout-timeline .content-label{position:absolute;left:5.8%;top:10%}
-.layout-timeline .content-title{position:absolute;left:5.8%;top:15%;width:88%}
-.layout-timeline .content-subtitle{position:absolute;left:5.8%;top:24%;width:80%}
-.layout-timeline .tl-wrap{position:absolute;left:5.8%;right:5.8%;top:34%;bottom:6%;display:flex;flex-direction:column;justify-content:center;gap:0.6em}
-.layout-timeline .tl-labels,.layout-timeline .tl-cards{display:flex}
-.layout-timeline .tl-labels{gap:0.7em}
-.layout-timeline .tl-cell{flex:1;display:flex;justify-content:center;align-items:center}
-.layout-timeline .tl-node-label{font-size:0.62em;font-weight:700;letter-spacing:0.04em}
-.layout-timeline .tl-dots{position:relative;display:flex;height:1em;align-items:center;margin-top:0.45em}
-.layout-timeline .tl-dots .tl-cell{flex:1}
-.layout-timeline .tl-line{position:absolute;top:50%;transform:translateY(-50%);height:2px;background:var(--bb-border,#CED2D7)}
-.layout-timeline .tl-dot{width:0.85em;height:0.85em;border-radius:50%;border:0.18em solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.08);z-index:1}
-.layout-timeline .tl-cards{gap:0.7em;margin-top:0.7em}
-.layout-timeline .tl-card{flex:1;border-radius:0.5em;padding:0.85em 0.95em;display:flex;flex-direction:column}
-.layout-timeline .tl-card-title{font-size:0.72em;font-weight:700;color:var(--bb-navy)}
-.layout-timeline .tl-card-body{font-size:0.58em;font-weight:300;line-height:1.5;color:var(--bb-navy);margin-top:0.45em;flex:1}
-.layout-timeline .tl-card-footer{font-size:0.55em;font-weight:700;margin-top:0.7em}
-.layout-timeline .tl-callout{background:var(--bb-navy);border-radius:0.5em;padding:0.7em 1em;margin-top:0.5em}
-.layout-timeline .tl-callout-lead{font-size:0.62em;font-weight:700;color:var(--bb-cyan)}
-.layout-timeline .tl-callout-body{font-size:0.62em;font-weight:300;color:#fff}
 
 /* ===== SLIDE PREVIEW (for overview & presenter clones) ===== */
 .thumb-render{width:1920px;height:1080px;position:absolute;top:0;left:0;transform-origin:top left;overflow:hidden}

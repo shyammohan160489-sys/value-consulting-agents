@@ -28,7 +28,7 @@ jobs:
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
           # ─── Architects: allowed to change anything ───
-          ARCHITECTS="mayur294-lgtm shobhitonnet mariamt-coder"
+          ARCHITECTS="mayur294-lgtm shobhitonnet mariamt-coder shyammohan160489-sys"
 
           if echo "$ARCHITECTS" | grep -qw "$PR_AUTHOR"; then
             echo "result=architect" >> $GITHUB_OUTPUT

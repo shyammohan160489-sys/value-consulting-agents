@@ -3,6 +3,47 @@
 #
 # This hook runs before every push and checks for cached telemetry data.
 # If found, it creates a GitHub Issue with the telemetry and clears the cache.
+#
+# It ALSO runs the "Architect-tier guard" first (below): warns + blocks when a
+# push touches builder-level / governance files. Override: ALLOW_ARCHITECT_PUSH=1.
+
+# ─── Architect-tier guard (blocks builder/skill/tool/template/workflow pushes) ───
+_AG_remote="${1:-origin}"; _AG_url="${2:-}"; _AG_ZERO="0000000000000000000000000000000000000000"
+_AG_SENS='^(tools/|\.claude/|templates/|presentations/backbase-slides-app/|knowledge/design-system/|\.github/workflows/|\.githooks/|CLAUDE\.md)'
+_AG_flagged=""
+while read -r _l_ref _l_sha _r_ref _r_sha; do
+  [ "${_l_sha:-$_AG_ZERO}" = "$_AG_ZERO" ] && continue
+  if [ "${_r_sha:-$_AG_ZERO}" = "$_AG_ZERO" ]; then
+    if git rev-parse --verify --quiet origin/main >/dev/null; then
+      _AG_files=$(git diff --name-only "origin/main...$_l_sha" 2>/dev/null)
+    else
+      _AG_files=$(git rev-list "$_l_sha" --not --remotes | xargs -I{} git diff-tree --no-commit-id --name-only -r {} 2>/dev/null)
+    fi
+  else
+    _AG_files=$(git diff --name-only "${_r_sha}..${_l_sha}" 2>/dev/null)
+  fi
+  while IFS= read -r _f; do
+    [ -z "$_f" ] && continue
+    printf '%s\n' "$_f" | grep -qE "$_AG_SENS" && _AG_flagged+="$_f"$'\n'
+  done <<< "$_AG_files"
+done
+_AG_flagged=$(printf '%s' "$_AG_flagged" | sort -u | sed '/^$/d')
+if [ -n "$_AG_flagged" ]; then
+  {
+    echo ""; echo "🛑  ARCHITECT-TIER files are about to be pushed to '$_AG_remote'"; echo "    $_AG_url"; echo ""
+    echo "    These are builders / skills / tools / slide-engine / design tokens /"
+    echo "    templates / workflows — they change how EVERY deck and agent is built."; echo ""
+    echo "    Files in this push:"; printf '%s\n' "$_AG_flagged" | sed 's/^/       • /'; echo ""
+    if [ "${ALLOW_ARCHITECT_PUSH:-0}" = "1" ]; then
+      echo "✅  ALLOW_ARCHITECT_PUSH=1 set — proceeding deliberately."; echo ""
+    else
+      echo "    Push BLOCKED. If intentional, re-run:"; echo "        ALLOW_ARCHITECT_PUSH=1 git push $_AG_remote <branch>"; echo ""
+      echo "    (knowledge/, benchmarks/, Engagement/ pushes are never blocked.)"; echo ""
+      exit 1
+    fi
+  } >&2
+fi
+# ─── End guard. Telemetry sync below. ───
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 CACHE_FILE="$REPO_ROOT/.telemetry_cache.jsonl"

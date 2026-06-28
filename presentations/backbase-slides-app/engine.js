@@ -98,7 +98,9 @@ function renderChapterStandard(d, i) {
 function renderContentStandard(d, i) {
   const theme = d.theme === 'dark' ? 'navy' : 'white';
   const hasHeader = d.label || d.title;
-  const bc = hasHeader ? 'content-body t-body' : 'content-body body-only t-body';
+  let bc = 'content-body t-body';
+  if (!hasHeader) bc += ' body-only';
+  else if (!d.subtitle) bc += ' no-subtitle';
   return `<div class="slide layout-content-standard" data-theme="${theme}" data-idx="${i}">
     ${gridLines('content', 5.15)}
     <div class="slide-motif">${motifSvg('#3367FF')}</div>
@@ -410,6 +412,35 @@ function renderRoadmap(d, i) {
   </div>`;
 }
 
+function renderTimeline(d, i) {
+  const ms = d.milestones || [];
+  const n = ms.length || 1;
+  const inset = (50 / n).toFixed(2);
+  const accent = { blue:'var(--bb-blue)', red:'var(--bb-red)', green:'#2ECC71',
+                   amber:'#D97706', navy:'var(--bb-navy)', cyan:'#0097A7' };
+  const toneBg = { off:'var(--bb-off-white)', blue:'var(--bb-light-blue)',
+                   red:'#FAE0DE', white:'#fff' };
+  const acc = m => accent[m.accent] || 'var(--bb-blue)';
+  const labels = ms.map(m => `<div class="tl-cell"><span class="tl-node-label" style="color:${acc(m)}">${m.node || ''}</span></div>`).join('');
+  const dots = ms.map(m => `<div class="tl-cell"><span class="tl-dot" style="background:${acc(m)}"></span></div>`).join('');
+  const cards = ms.map(m => `<div class="tl-card" style="background:${toneBg[m.tone] || 'var(--bb-off-white)'}"><div class="tl-card-title">${m.title || ''}</div><div class="tl-card-body">${m.body || ''}</div>${m.footer ? `<div class="tl-card-footer" style="color:${acc(m)}">${m.footer}</div>` : ''}</div>`).join('');
+  const callout = d.callout ? `<div class="tl-callout"><span class="tl-callout-lead">${d.callout.lead || ''}</span> <span class="tl-callout-body">${d.callout.body || ''}</span></div>` : '';
+  return `<div class="slide layout-timeline" data-theme="white" data-idx="${i}">
+    ${gridLines('content', 5.15)}
+    <div class="slide-motif">${motifSvg('#3367FF')}</div>
+    ${d.label ? `<div class="content-label t-label">${d.label}</div>` : ''}
+    ${d.title ? `<div class="content-title t-title">${d.title}</div>` : ''}
+    ${d.subtitle ? `<div class="content-subtitle t-subtitle">${d.subtitle}</div>` : ''}
+    <div class="tl-wrap">
+      <div class="tl-labels">${labels}</div>
+      <div class="tl-dots"><div class="tl-line" style="left:${inset}%;right:${inset}%"></div>${dots}</div>
+      <div class="tl-cards">${cards}</div>
+      ${callout}
+    </div>
+    ${footerChrome('white', i + 1)}
+  </div>`;
+}
+
 // ── Slide Data (complete demo deck — all template families) ──
 
 const TOTAL = SLIDES.length;
@@ -436,6 +467,7 @@ function buildSlides() {
       case 'team':               html += renderTeam(s, i); break;
       case 'agenda-table':       html += renderAgendaTable(s, i); break;
       case 'roadmap':            html += renderRoadmap(s, i); break;
+      case 'timeline':           html += renderTimeline(s, i); break;
       case 'thank-you':          html += renderThankYou(s, i); break;
       case 'image': default:     html += renderImage(i); break;
     }

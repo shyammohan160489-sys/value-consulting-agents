@@ -4,38 +4,146 @@
     {
       "name": "spard-preview",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "/Users/shyam/cortex/Engagement/Sparekassen Danmark/Output"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Sparekassen Danmark/Output"
+      ],
       "port": 8765
     },
     {
       "name": "emea-apac-retro",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8107", "--directory", "/Users/shyam/cortex/Engagement/internal/2026-05-05_emea_apac_retro"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8107",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/2026-05-05_emea_apac_retro"
+      ],
       "port": 8107
     },
     {
       "name": "circularise-design",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8231", "--directory", "/Users/shyam/cortex/circularize-design-system/build"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8231",
+        "--directory",
+        "/Users/shyam/cortex/circularize-design-system/build"
+      ],
       "port": 8231
     },
     {
       "name": "aib-prep",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8105", "--directory", "/Users/shyam/cortex/Engagement/AIB/output"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8105",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/AIB/output"
+      ],
       "port": 8105
     },
     {
       "name": "seb-jun5",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8766", "--directory", "/Users/shyam/cortex/Engagement/SEB/Output"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8766",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/SEB/Output"
+      ],
       "port": 8766
     },
     {
       "name": "pictet-qbr",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8767", "--directory", "/Users/shyam/cortex/Engagement/Pictet/Output"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8767",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Pictet/Output"
+      ],
       "port": 8767
+    },
+    {
+      "name": "coventry-deck",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8842",
+        "--directory",
+        "Engagement/Coventry BS/Output"
+      ],
+      "port": 8842
+    },
+    {
+      "name": "schroders-nba",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8771",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Schroders Group/Output/nba-analysis"
+      ],
+      "port": 8771
+    },
+    {
+      "name": "advisor-cockpit",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8775",
+        "--directory",
+        "/Users/shyam/cortex/presentations/advisor-cockpit-pov"
+      ],
+      "port": 8775
+    },
+    {
+      "name": "baas-dashboard",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8781",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Banking_OS_Sales_Narrative/Output"
+      ],
+      "port": 8781
+    },
+    {
+      "name": "proposal-builder",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8790",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/proposal-builder"
+      ],
+      "port": 8790
+    },
+    {
+      "name": "region-review",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8795",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/europe-southeast-region-review"
+      ],
+      "port": 8795
     }
   ]
 }

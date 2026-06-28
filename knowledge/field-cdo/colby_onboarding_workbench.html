@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colby Mangers — Field CDO Onboarding Workbench</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700;800;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#3366FF;--dark:#091C35;--purple:#7B2FFF;--cyan:#0891B2;
+  --green:#059669;--red:#DC2626;--amber:#D97706;--gold:#B45309;
+  --bg:#F5FAFF;--card:#FFFFFF;--border:#E2E8F0;--text:#091C35;
+  --sub:#64748B;--muted:#94A3B8;--light:#F0F4F8;
+}
+body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--text);padding:40px;line-height:1.6}
+h1{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+h2{font-size:20px;font-weight:800;letter-spacing:-0.5px;margin:32px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+h3{font-size:14px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;color:var(--blue);margin:24px 0 8px}
+p{font-size:12px;color:var(--sub);margin-bottom:12px;max-width:900px}
+.header-bar{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding:20px 24px;background:var(--dark);border-radius:16px;color:#fff}
+.header-bar h1{color:#fff;margin:0}
+.header-bar .sub{color:rgba(255,255,255,0.5);font-size:12px}
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:9px;font-weight:700;letter-spacing:0.5px}
+.pill-blue{background:rgba(51,102,255,0.1);color:var(--blue)}
+.pill-green{background:rgba(5,150,105,0.1);color:var(--green)}
+.pill-purple{background:rgba(123,47,255,0.1);color:var(--purple)}
+.pill-red{background:rgba(220,38,38,0.1);color:var(--red)}
+.pill-amber{background:rgba(217,119,6,0.1);color:var(--amber)}
+.pill-cyan{background:rgba(8,145,178,0.1);color:var(--cyan)}
+.pill-muted{background:var(--light);color:var(--muted)}
+.pill-self{background:rgba(5,150,105,0.08);color:var(--green);border:1px solid rgba(5,150,105,0.2)}
+.pill-assign{background:rgba(123,47,255,0.08);color:var(--purple);border:1px solid rgba(123,47,255,0.2)}
+.pill-buddy{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.2)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:16px}
+th{background:var(--light);padding:8px 12px;text-align:left;font-weight:700;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border)}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:rgba(51,102,255,0.02)}
+.resp-bar{display:flex;gap:4px;margin:16px 0;height:32px;border-radius:8px;overflow:hidden}
+.resp-bar div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800;letter-spacing:0.5px}
+.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.section-grid{grid-template-columns:1fr}}
+.tag-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.source-link{font-size:10px;color:var(--blue);text-decoration:none;font-weight:600}
+.source-link:hover{text-decoration:underline}
+.stakeholder{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--light);border-radius:8px;margin-bottom:6px}
+.stakeholder .name{font-size:11px;font-weight:700;color:var(--dark)}
+.stakeholder .role{font-size:9px;color:var(--muted)}
+.stakeholder .why{font-size:9px;color:var(--sub);margin-top:2px}
+.existing-card{padding:8px 12px;background:rgba(51,102,255,0.03);border:1px solid rgba(51,102,255,0.15);border-radius:8px;margin-bottom:6px}
+.existing-card .title{font-size:10px;font-weight:700;color:var(--blue)}
+.existing-card .desc{font-size:9px;color:var(--sub);margin-top:2px}
+.gap-flag{padding:6px 10px;background:rgba(220,38,38,0.04);border:1px solid rgba(220,38,38,0.15);border-radius:8px;margin-bottom:6px;font-size:10px;color:var(--red);font-weight:600}
+.nav-toc{position:fixed;top:20px;right:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);max-width:200px;z-index:100}
+.nav-toc a{display:block;font-size:9px;font-weight:600;color:var(--sub);text-decoration:none;padding:3px 0}
+.nav-toc a:hover{color:var(--blue)}
+.nav-toc .active{color:var(--blue);font-weight:800}
+</style>
+</head>
+<body>
+
+<div class="nav-toc">
+  <div style="font-size:10px;font-weight:800;color:var(--dark);margin-bottom:8px;letter-spacing:1px">SECTIONS</div>
+  <a href="#role">Role Overview</a>
+  <a href="#r1">1. Warm Account Activation</a>
+  <a href="#r2">2. Engagement Facilitation</a>
+  <a href="#r3">3. Thought Leadership</a>
+  <a href="#r4">4. Product &amp; AI Advisory</a>
+  <a href="#r5">5. EverBank SCP</a>
+  <a href="#ignites">Ignite Types</a>
+  <a href="#stakeholders">Stakeholder Map</a>
+  <a href="#elearning">E-Learning</a>
+  <a href="#sources">Content Sources</a>
+  <a href="#gaps">Gaps &amp; Decisions</a>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header-bar">
+  <div>
+    <h1>Colby Mangers &mdash; Field CDO Onboarding Workbench</h1>
+    <div class="sub">Role &amp; responsibility coverage &rarr; training needs &rarr; sources &rarr; stakeholders &rarr; Trello cards</div>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:8px">
+    <div class="pill" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">US Pilot</div>
+    <div class="pill" style="background:rgba(51,102,255,0.3);color:#fff">Started March 2026</div>
+  </div>
+</div>
+
+<!-- ═══ ROLE OVERVIEW ═══ -->
+<div id="role">
+<h2>Role Overview</h2>
+<p>Field Chief Digital Officer &mdash; bridges peer credibility (former banking CDO) with Backbase value consulting methodology. Generates pipeline AND runs engagements. Not just early-stage; real consulting work.</p>
+
+<div class="resp-bar">
+  <div style="width:35%;background:var(--green)">Warm Activation 35%</div>
+  <div style="width:35%;background:var(--purple)">Engagement 35%</div>
+  <div style="width:15%;background:var(--blue)">Thought Leadership 15%</div>
+  <div style="width:10%;background:var(--amber)">Product &amp; AI 10%</div>
+  <div style="width:5%;background:var(--cyan)">EverBank 5%</div>
+</div>
+
+<div class="card" style="border:2px solid rgba(51,102,255,0.15)">
+  <div style="font-size:11px;font-weight:800;color:var(--blue);margin-bottom:8px">DEAL CYCLE FLOW</div>
+  <div style="font-size:11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span class="pill pill-blue">Thought Leadership</span> <span style="color:var(--muted)">&rarr; creates awareness &rarr;</span>
+    <span class="pill pill-green">Warm Account Activation</span> <span style="color:var(--muted)">&rarr; qualified lead &rarr;</span>
+    <span class="pill pill-purple">Engagement (Ignite)</span> <span style="color:var(--muted)">&rarr; qualified opp &rarr;</span>
+    <span style="font-size:10px;color:var(--muted)">VC/Sales take deal advisory forward</span>
+  </div>
+  <div style="margin-top:8px;font-size:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span class="pill pill-amber">Product &amp; AI Advisory</span> <span style="color:var(--muted)">feeds back at every stage &middot; spots Ignite Ops opportunities</span>
+  </div>
+  <div style="margin-top:8px;font-size:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span class="pill pill-cyan">EverBank SCP</span> <span style="color:var(--muted)">reference stories loop back to Thought Leadership</span>
+  </div>
+  <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--red);font-weight:600">
+    Boundary: Deal advisory (pricing, scenario analysis, commercial structuring) is NOT Colby's responsibility today. Awareness only.
+  </div>
+</div>
+
+<div style="margin-top:12px;display:flex;gap:8px">
+  <div class="pill pill-self">Self-Study</div>
+  <div class="pill pill-assign">Assignment</div>
+  <div class="pill pill-buddy">Buddy Review (Shyam)</div>
+  <div class="pill pill-muted">He Brings This</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- RESPONSIBILITY 1: WARM ACCOUNT ACTIVATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="r1">
+<h2 style="border-color:var(--green)"><span style="color:var(--green)">1.</span> Warm Account Activation (35%)</h2>
+<p>Network outreach, account warming, first conversations, qualification. KPI: get leads to Ignite stage.</p>
+
+<table>
+<thead><tr><th>What He Needs to Know</th><th>Why</th><th>Source / Training</th><th>Type</th><th>Stakeholder</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Backbase value proposition</strong><br><span style="font-size:9px;color:var(--sub)">Outcome language, not features. 2-min elevator pitch.</span></td>
+  <td>Can't warm an account without explaining Backbase</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Backbase.io</span>
+      <span class="pill pill-blue" style="font-size:8px">Platform Lexicon</span>
+      <span class="pill pill-blue" style="font-size:8px">VC Onboarding Deck</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Prepare 3 value pitches (Retail, Commercial, Wealth)</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> (buddy review)</td>
+</tr>
+<tr>
+  <td><strong>Competitive positioning</strong><br><span style="font-size:9px;color:var(--sub)">FIS D1, Temenos, Fiserv, Microsoft Copilot — framed from buy side</span></td>
+  <td>Every prospect conversation surfaces a competitor</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">FIS D1 Battlecard (PDF)</span>
+      <span class="pill pill-blue" style="font-size:8px">PMM session</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-buddy">Buddy Review</span><br><span style="font-size:8px;color:var(--sub)">Can counter each competitor without slides</span></td>
+  <td style="font-size:10px"><strong>Product Marketing</strong><br><span style="color:var(--muted)">TBD — who runs competitive intel?</span></td>
+</tr>
+<tr>
+  <td><strong>US banking tech stack landscape</strong><br><span style="font-size:9px;color:var(--sub)">Cores, middleware, digital layers prospects are running</span></td>
+  <td>Credibility in first conversations</td>
+  <td><span class="pill pill-muted">He brings this</span></td>
+  <td><span class="pill pill-muted">N/A</span></td>
+  <td>—</td>
+</tr>
+<tr>
+  <td><strong>Discovery Question Bank</strong><br><span style="font-size:9px;color:var(--sub)">Conversational framework for qualification</span></td>
+  <td>Structured way to surface if the challenge fits Backbase</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: discovery_question_bank.md</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Mock discovery with a sample prospect scenario</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> (buddy review)</td>
+</tr>
+<tr>
+  <td><strong>Deal lifecycle &amp; when to involve VC/Sales</strong><br><span style="font-size:9px;color:var(--sub)">When does warm become qualified? When to bring AE? When to propose Ignite?</span></td>
+  <td>Knows when to transition from activation to engagement</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: engagement_types.md</span>
+      <span class="pill pill-blue" style="font-size:8px">AE partnership session</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-buddy">Buddy Review</span></td>
+  <td style="font-size:10px"><strong>Regional Sales Leader</strong><br><strong>Account Executives</strong></td>
+</tr>
+<tr>
+  <td><strong>CRM / Salesforce pipeline tracking</strong><br><span style="font-size:9px;color:var(--sub)">Log activity, track pipeline, attribution</span></td>
+  <td>Pipeline visibility and measurement</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Salesforce access</span>
+      <span class="pill pill-blue" style="font-size:8px">Walkthrough session</span>
+    </div>
+  </td>
+  <td><span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Log first 5 contacts from network list</span></td>
+  <td style="font-size:10px"><strong>Sales Ops / AE</strong><br><span style="color:var(--muted)">TBD — who does SF walkthrough?</span></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Existing VC Onboarding Cards That Apply</h3>
+<div class="existing-card"><div class="title">WK 1: Understand Backbase &amp; VC Role</div><div class="desc">10-min verbal walkthrough of VC role in a deal. Can articulate role without slides.</div></div>
+<div class="existing-card"><div class="title">WK 1: Understand Deal Lifecycle</div><div class="desc">Deal lifecycle map annotated from VC perspective. Can explain when to / when not to support a deal.</div></div>
+<div class="existing-card"><div class="title">WK 2: Core Value Proposition</div><div class="desc">3 value pitches (Retail, SME, Wealth). Uses outcome language only.</div></div>
+<div class="existing-card"><div class="title">WK 3: Construct a point of view analysis</div><div class="desc">20-min pitch based on sample client scenario. Confidently articulate view of industry.</div></div>
+
+<h3>Gaps / Decisions Needed</h3>
+<div class="gap-flag">Who in Product Marketing owns competitive intel sessions for new hires?</div>
+<div class="gap-flag">Who does the Salesforce pipeline walkthrough? Sales Ops?</div>
+<div class="gap-flag">Network contact list — does Colby use a personal CRM or Salesforce? Format?</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- RESPONSIBILITY 2: ENGAGEMENT FACILITATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="r2">
+<h2 style="border-color:var(--purple)"><span style="color:var(--purple)">2.</span> Engagement Facilitation (35%)</h2>
+<p>Run Ignite end-to-end: facilitate workshops, contribute to assessment, present output. All three types: Inspire, Assess, Ops. This is real consulting work — not just showing up.</p>
+
+<table>
+<thead><tr><th>What He Needs to Know</th><th>Why</th><th>Source / Training</th><th>Type</th><th>Stakeholder</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Ignite Inspire — full flow</strong><br><span style="font-size:9px;color:var(--sub)">Pre-work, 4 workshops (Strategy, CX, EX, Architecture), Innovation Day, output presentation</span></td>
+  <td>He needs to run these end-to-end</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: CONSULTANT_GUIDE.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Cortex: QUICK_REFERENCE.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Agents 1-6 (strategy, member, employee, architecture, usecase, presentation)</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Produce an Ignite Inspire deck for a sample client using Cortex</span></td>
+  <td style="font-size:10px"><strong>VC Lead / Shyam</strong> (methodology)<br><strong>VC Peers</strong> (shadow live engagement)</td>
+</tr>
+<tr>
+  <td><strong>Ignite Assess — full framework</strong><br><span style="font-size:9px;color:var(--sub)">Journey assessment, capability maturity, ROI modeling, roadmap, business case</span></td>
+  <td>He participates in the consulting — discovery, assessment, presentation</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: capability_taxonomy.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Cortex: agent-7-roi.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Templates: assessment_report.md, roi_report.md, roadmap.md</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Prepare end-to-end assessment for sample journeys using Cortex</span></td>
+  <td style="font-size:10px"><strong>VC Lead / Shyam</strong></td>
+</tr>
+<tr>
+  <td><strong>Ignite Ops — AI/APA use case discovery</strong><br><span style="font-size:9px;color:var(--sub)">Newer format. Where is the AI wedge? Which agents, which value, which entry point?</span></td>
+  <td>Natural extension of his AI advisory role. He helps shape this offering.</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">AI agent catalogs (retail, wealth, commercial)</span>
+      <span class="pill pill-blue" style="font-size:8px">AI pricing playbook</span>
+      <span class="pill pill-amber" style="font-size:8px">Still being refined — co-create</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Co-create</span><br><span style="font-size:8px;color:var(--sub)">Help define the Ignite Ops framework based on his AI experience</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> (co-create)<br><strong>Product</strong> (AI capabilities)</td>
+</tr>
+<tr>
+  <td><strong>Cortex / Agent System</strong><br><span style="font-size:9px;color:var(--sub)">AI-powered consulting platform. Generate POVs, assessments, presentations.</span></td>
+  <td>Uses Cortex to produce outputs — doesn't build agents</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex introduction session</span>
+      <span class="pill pill-blue" style="font-size:8px">Claude AI setup</span>
+      <span class="pill pill-blue" style="font-size:8px">Hands-on guided exercise</span>
+    </div>
+  </td>
+  <td><span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Generate a sample POV using Cortex independently</span></td>
+  <td style="font-size:10px"><strong>VC Peers</strong> (setup support)<br><strong>Shyam</strong> (guided exercise)</td>
+</tr>
+<tr>
+  <td><strong>Hypothesis-driven discovery</strong><br><span style="font-size:9px;color:var(--sub)">Evidence registers, capability maturity scoring, hypothesis trees</span></td>
+  <td>Structures discovery conversations in the Backbase way</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: discovery_question_bank.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Cortex: capability_taxonomy.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Templates: discovery_input_contract.md</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Recorded mock discovery session</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> (buddy review)</td>
+</tr>
+<tr>
+  <td><strong>ROI and value framework</strong><br><span style="font-size:9px;color:var(--sub)">Value levers, conservative modeling, sensitivity analysis</span></td>
+  <td>Present ROI credibly — doesn't build the model himself</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: agent-7-roi.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Templates: roi_report.md</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Prepare an ROI narrative for executives using Cortex output</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong></td>
+</tr>
+<tr>
+  <td><strong>Domain knowledge (retail, wealth, commercial)</strong><br><span style="font-size:9px;color:var(--sub)">Benchmarks, pain points, use cases, value propositions per domain</span></td>
+  <td>Grounds engagement conversations in data</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: knowledge/domains/retail/</span>
+      <span class="pill pill-blue" style="font-size:8px">Cortex: knowledge/domains/wealth/</span>
+      <span class="pill pill-blue" style="font-size:8px">Cortex: knowledge/domains/commercial/</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span><br><span style="font-size:8px;color:var(--sub)">Annotate with US practitioner perspective</span></td>
+  <td style="font-size:10px"><strong>Product stakeholders by domain</strong> (see below)</td>
+</tr>
+<tr>
+  <td><strong>Workshop facilitation (the Backbase way)</strong><br><span style="font-size:9px;color:var(--sub)">Miro boards, exercises, time management, executive pushback handling</span></td>
+  <td>Run workshops, not just attend them</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Shadow live engagement</span>
+      <span class="pill pill-blue" style="font-size:8px">Miro templates</span>
+      <span class="pill pill-blue" style="font-size:8px">Engagement examples (Google Drive)</span>
+    </div>
+  </td>
+  <td><span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Co-facilitate, then lead a component</span></td>
+  <td style="font-size:10px"><strong>VC Peers</strong> (shadow)<br><strong>Shyam</strong> (debrief)</td>
+</tr>
+<tr>
+  <td><strong>What happens AFTER Ignite (awareness)</strong><br><span style="font-size:9px;color:var(--sub)">Deal advisory, pricing, scenario analysis, proposal building</span></td>
+  <td>Knows the downstream — not his job today, may evolve</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Engagement examples: Schroders, CIH, SEB</span>
+      <span class="pill pill-blue" style="font-size:8px">Exposure to a live deal cycle</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span><br><span style="font-size:8px;color:var(--sub)">Review 1-2 completed engagement output packages</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> (context walkthrough)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Existing VC Onboarding Cards That Apply</h3>
+<div class="existing-card"><div class="title">WK 2: Platform Awareness</div><div class="desc">Explain platform components at conceptual level. Whiteboard explanation.</div></div>
+<div class="existing-card"><div class="title">WK 3: Articulate platform and product value levers</div><div class="desc">20-min review of value levers. Articulate how capabilities impact revenue, efficiency, cost.</div></div>
+<div class="existing-card"><div class="title">WK 3: Cortex Introduction</div><div class="desc">AI-powered Value Consulting platform. System of specialized AI agents for executive-ready deliverables.</div></div>
+<div class="existing-card"><div class="title">WK 4: Discovery Leadership</div><div class="desc">Lead a hypothesis-driven discovery session. Recorded mock. Controls conversation confidently.</div></div>
+<div class="existing-card"><div class="title">WK 4: Journey Analysis</div><div class="desc">Standard acquisition journey, workshop facilitation, data points, insights, business value.</div></div>
+<div class="existing-card"><div class="title">WK 5: ROI Framework</div><div class="desc">Establish financial value per journey. ROI deck for executives. Clear evidence and justification.</div></div>
+<div class="existing-card"><div class="title">WK 6: Ignite Assess Report</div><div class="desc">End-to-end deck: roadmap, prioritized journeys, cohesive business case.</div></div>
+<div class="existing-card"><div class="title">WK 6: Ignite Inspire Facilitation deck</div><div class="desc">Complete Ignite Day presentation with prototypes, prioritized use cases, phased roadmap.</div></div>
+
+<h3>Engagement Examples on Google Drive &amp; Cortex</h3>
+<table>
+<thead><tr><th>Engagement</th><th>What It Demonstrates</th><th>Relevant For</th></tr></thead>
+<tbody>
+<tr><td><strong>SEB</strong></td><td>AI-native front office, agentic SDLC, mortgage origination — full AI positioning</td><td>Ignite Ops framing, AI use case translation</td></tr>
+<tr><td><strong>Schroders</strong></td><td>Wealth management — commercial proposal, pricing, executive readout, ROI model</td><td>Ignite Assess end-to-end, deal advisory awareness</td></tr>
+<tr><td><strong>CIH Bank</strong></td><td>Executive proposal (HTML + PPTX), French localization</td><td>Ignite Inspire output format</td></tr>
+<tr><td><strong>Danske Bank</strong></td><td>AI pricing briefing, value-at-stake model</td><td>AI pricing conversation, build vs. buy framing</td></tr>
+<tr><td><strong>Nordea</strong></td><td>Transaction banking POV, frontline presentation</td><td>Commercial banking positioning</td></tr>
+<tr><td><strong>Absa</strong></td><td>Executive summary, scenario narrative</td><td>Assessment report structure</td></tr>
+<tr><td><strong>Banking OS Narrative</strong></td><td>AI-native Banking OS positioning, BaaS strategy</td><td>Product narrative, thought leadership framing</td></tr>
+</tbody>
+</table>
+
+<h3>Gaps / Decisions Needed</h3>
+<div class="gap-flag">Ignite Ops framework doesn't exist yet as a formal methodology — Colby helps co-create this. Who else is involved?</div>
+<div class="gap-flag">Which live engagement can Colby shadow in Weeks 3-4? Is there one scheduled?</div>
+<div class="gap-flag">Google Drive engagement folder — does Colby have access? Who grants it?</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- RESPONSIBILITY 3: THOUGHT LEADERSHIP -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="r3">
+<h2 style="border-color:var(--blue)"><span style="color:var(--blue)">3.</span> Thought Leadership (15%)</h2>
+<p>Published POVs, conference speaking, competitive positioning. Creates air cover for warm activation.</p>
+
+<table>
+<thead><tr><th>What He Needs to Know</th><th>Why</th><th>Source / Training</th><th>Type</th><th>Stakeholder</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Backbase market narrative</strong><br><span style="font-size:9px;color:var(--sub)">AI-native Banking OS story, surround-and-extend, platform economics</span></td>
+  <td>His thought leadership must connect to Backbase positioning</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: backbase_platform_lexicon.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Banking OS narrative (HTML)</span>
+      <span class="pill pill-blue" style="font-size:8px">SEB &amp; Schroders engagement examples</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Write first article outline connecting CDO experience to Backbase positioning</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> (editorial review)<br><strong>Product Marketing</strong> (amplification)</td>
+</tr>
+<tr>
+  <td><strong>Competitive landscape (deep)</strong><br><span style="font-size:9px;color:var(--sub)">Every published piece implicitly positions against competitors</span></td>
+  <td>Arguments must be accurate and resonant from buy side</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">FIS D1 Battlecard</span>
+      <span class="pill pill-blue" style="font-size:8px">PMM competitive updates</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-buddy">Buddy Review</span></td>
+  <td style="font-size:10px"><strong>Product Marketing</strong></td>
+</tr>
+<tr>
+  <td><strong>Content amplification channels</strong><br><span style="font-size:9px;color:var(--sub)">Where to publish, Backbase blog, LinkedIn strategy, PMM support</span></td>
+  <td>Maximize reach of published content</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">PMM onboarding session</span>
+    </div>
+  </td>
+  <td><span class="pill pill-assign">Session</span></td>
+  <td style="font-size:10px"><strong>Product Marketing</strong><br><strong>Marketing / Demand Gen</strong></td>
+</tr>
+<tr>
+  <td><strong>Industry events calendar</strong><br><span style="font-size:9px;color:var(--sub)">Which US banking conferences, speaking submission deadlines</span></td>
+  <td>Build speaking pipeline for Q2-Q3 2026</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Marketing events calendar</span>
+    </div>
+  </td>
+  <td><span class="pill pill-assign">Session</span></td>
+  <td style="font-size:10px"><strong>Marketing</strong><br><span style="color:var(--muted)">TBD — who manages events for US?</span></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Gaps / Decisions Needed</h3>
+<div class="gap-flag">Who in Marketing manages US events calendar and speaking submissions?</div>
+<div class="gap-flag">Does Backbase have a blog submission process? Or does Colby publish directly on LinkedIn?</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- RESPONSIBILITY 4: PRODUCT & AI ADVISORY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="r4">
+<h2 style="border-color:var(--amber)"><span style="color:var(--amber)">4.</span> Product &amp; AI Advisory (10%)</h2>
+<p>AI use case translation, build vs. buy framing, product-market gatekeeping. Spots Ignite Ops opportunities. Market-facing voice of Backbase's AI-native pivot.</p>
+
+<table>
+<thead><tr><th>What He Needs to Know</th><th>Why</th><th>Source / Training</th><th>Type</th><th>Stakeholder</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>AI-native Banking OS architecture</strong><br><span style="font-size:9px;color:var(--sub)">NEXUS, Agent Studio, Intelligence Fabric, three-pillar AI framework, APA</span></td>
+  <td>Foundation for all AI conversations</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: backbase_platform_lexicon.md (AI sections)</span>
+      <span class="pill pill-blue" style="font-size:8px">Product deep dive session</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Session</span></td>
+  <td style="font-size:10px"><strong>Chris Cheyenne</strong> (Customer Lifetime Orchestrator / GenTech Process)<br><strong>Robert Sutens</strong> (AI / platform perspective)</td>
+</tr>
+<tr>
+  <td><strong>AI agent catalogs by domain</strong><br><span style="font-size:9px;color:var(--sub)">Retail, wealth, commercial agents — what exists, value metrics</span></td>
+  <td>Must articulate specific AI use cases from buy-side experience</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: ai_agents/retail.json</span>
+      <span class="pill pill-blue" style="font-size:8px">Cortex: ai_agents/wealth.json</span>
+      <span class="pill pill-blue" style="font-size:8px">Cortex: ai_agents/commercial.json</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Annotate: which agents would he have bought? Which are noise? What's missing?</span></td>
+  <td style="font-size:10px"><strong>Product by domain:</strong><br>Retail: <strong>Vignesh</strong> or <strong>Thomas Silverberg</strong><br>Business Banking: <strong>Yarno</strong> or TBD<br>Wealth: <strong>Lennet</strong> or <strong>Jules</strong></td>
+</tr>
+<tr>
+  <td><strong>Build vs. buy economics</strong><br><span style="font-size:9px;color:var(--sub)">Three-layer transparency: $5-15K raw → $2-3M DIY → $300-500K Backbase</span></td>
+  <td>His most powerful AI conversation — only a former CDO can deliver it</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: ai_pricing_playbook.md</span>
+      <span class="pill pill-blue" style="font-size:8px">Danske Bank AI pricing example</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-buddy">Buddy Review</span><br><span style="font-size:8px;color:var(--sub)">Deliver the three-layer pitch conversationally</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> (buddy review)</td>
+</tr>
+<tr>
+  <td><strong>Competitive AI positioning</strong><br><span style="font-size:9px;color:var(--sub)">vs. Microsoft Copilot, vs. core vendors, vs. consultancies, vs. DIY</span></td>
+  <td>Counter every AI competitor in an executive conversation</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Cortex: ai_pricing_playbook.md (competitive section)</span>
+    </div>
+  </td>
+  <td><span class="pill pill-self">Self-Study</span> <span class="pill pill-buddy">Buddy Review</span></td>
+  <td style="font-size:10px"><strong>Product Marketing</strong></td>
+</tr>
+<tr>
+  <td><strong>Product feedback process</strong><br><span style="font-size:9px;color:var(--sub)">Who receives market signals? What format? How often?</span></td>
+  <td>Structured way to feed insights back to Product</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-blue" style="font-size:8px">Product Manager intro session</span>
+    </div>
+  </td>
+  <td><span class="pill pill-assign">Session</span></td>
+  <td style="font-size:10px"><strong>Product Manager(s)</strong><br><span style="color:var(--muted)">TBD — who is the Product feedback point of contact?</span></td>
+</tr>
+<tr>
+  <td><strong>Ignite Ops framework</strong><br><span style="font-size:9px;color:var(--sub)">How to identify AI/APA opportunities and structure an Ignite Ops engagement</span></td>
+  <td>He helps shape this — it's being refined</td>
+  <td>
+    <div class="tag-row">
+      <span class="pill pill-amber" style="font-size:8px">Co-create with Shyam</span>
+      <span class="pill pill-blue" style="font-size:8px">AI agent catalogs</span>
+    </div>
+  </td>
+  <td><span class="pill pill-assign">Co-create</span></td>
+  <td style="font-size:10px"><strong>Shyam</strong> + <strong>Product</strong></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Gaps / Decisions Needed</h3>
+<div class="gap-flag">Confirm: Chris Cheyenne for CLO/GenTech, Robert Sutens for AI platform — are these the right people?</div>
+<div class="gap-flag">Retail product stakeholder: Vignesh or Thomas Silverberg? Who's available?</div>
+<div class="gap-flag">Business Banking: Yarno or someone else?</div>
+<div class="gap-flag">Wealth: Lennet or Jules? Who's the primary contact?</div>
+<div class="gap-flag">Product feedback format — does a template exist or do we create one?</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- RESPONSIBILITY 5: EVERBANK SCP -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="r5">
+<h2 style="border-color:var(--cyan)"><span style="color:var(--cyan)">5.</span> EverBank SCP (5%)</h2>
+<p>Strategic relationship, QBRs, expansion identification, reference stories.</p>
+
+<table>
+<thead><tr><th>What He Needs to Know</th><th>Why</th><th>Source / Training</th><th>Type</th><th>Stakeholder</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>EverBank account history</strong><br><span style="font-size:9px;color:var(--sub)">Current implementation, journey, milestones</span></td>
+  <td>Can't be SCP without knowing the account</td>
+  <td><span class="pill pill-blue" style="font-size:8px">Account Team briefing</span></td>
+  <td><span class="pill pill-assign">Session</span></td>
+  <td style="font-size:10px"><strong>EverBank Account Team</strong><br><span style="color:var(--muted)">TBD — who is the current account lead?</span></td>
+</tr>
+<tr>
+  <td><strong>EverBank stakeholder map</strong><br><span style="font-size:9px;color:var(--sub)">Executives, priorities, decision makers</span></td>
+  <td>Know who to talk to and what they care about</td>
+  <td><span class="pill pill-blue" style="font-size:8px">Account Team + CRM</span></td>
+  <td><span class="pill pill-assign">Session</span></td>
+  <td style="font-size:10px"><strong>EverBank Account Team</strong></td>
+</tr>
+<tr>
+  <td><strong>EverBank technology landscape</strong><br><span style="font-size:9px;color:var(--sub)">What's implemented, what's planned, expansion opportunities</span></td>
+  <td>Spots expansion opportunities from a CDO perspective</td>
+  <td><span class="pill pill-blue" style="font-size:8px">Account Team + SE</span></td>
+  <td><span class="pill pill-assign">Session</span> <span class="pill pill-assign">Assignment</span><br><span style="font-size:8px;color:var(--sub)">Draft 3-5 expansion hypotheses</span></td>
+  <td style="font-size:10px"><strong>EverBank SE</strong><br><strong>Shyam</strong> (review hypotheses)</td>
+</tr>
+<tr>
+  <td><strong>QBR format and expectations</strong><br><span style="font-size:9px;color:var(--sub)">How Backbase runs QBRs, executive lens</span></td>
+  <td>Lead or co-lead QBRs with strategic perspective</td>
+  <td><span class="pill pill-blue" style="font-size:8px">Shadow or review past QBR materials</span></td>
+  <td><span class="pill pill-self">Self-Study</span></td>
+  <td style="font-size:10px"><strong>EverBank Account Team</strong></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Gaps / Decisions Needed</h3>
+<div class="gap-flag">Who is the current EverBank account lead? Colby needs intro in Week 1.</div>
+<div class="gap-flag">When is the next EverBank QBR? Can Colby observe before he leads one?</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- IGNITE TYPES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="ignites">
+<h2>The Three Ignite Types</h2>
+<p>Colby needs to understand all three and be capable of running Inspire and Assess. Ops is being co-created.</p>
+
+<div class="section-grid">
+  <div class="card" style="border-left:4px solid var(--green)">
+    <div style="font-size:10px;font-weight:800;color:var(--green);letter-spacing:1px;margin-bottom:6px">IGNITE INSPIRE</div>
+    <div style="font-size:11px;font-weight:700;margin-bottom:4px">Quick inspiration for qualified leads</div>
+    <div style="font-size:10px;color:var(--sub);margin-bottom:8px">Light pre-work, senior exec audience. "Let's inspire you with what's possible." Pre-work → 4 workshops → Innovation Day → output presentation.</div>
+    <div style="font-size:9px;font-weight:700;color:var(--dark);margin-bottom:4px">Colby's role: <span style="color:var(--green)">Primary KPI — generate these AND run them</span></div>
+    <div style="font-size:9px;color:var(--sub)">Cortex pipeline: Agents 0-6 (engagement plan → workshops → use cases → presentation)</div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--purple)">
+    <div style="font-size:10px;font-weight:800;color:var(--purple);letter-spacing:1px;margin-bottom:6px">IGNITE ASSESS</div>
+    <div style="font-size:11px;font-weight:700;margin-bottom:4px">Detailed value roadmap &amp; business case</div>
+    <div style="font-size:10px;color:var(--sub);margin-bottom:8px">Client invests more time. Journey assessment, capability maturity, ROI modeling, roadmap. Full VC framework.</div>
+    <div style="font-size:9px;font-weight:700;color:var(--dark);margin-bottom:4px">Colby's role: <span style="color:var(--purple)">Participates in discovery, assessment, presentation — not deal advisory</span></div>
+    <div style="font-size:9px;color:var(--sub)">Cortex pipeline: Discovery → Capability → ROI → Roadmap → Assembly agents</div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--amber)">
+    <div style="font-size:10px;font-weight:800;color:var(--amber);letter-spacing:1px;margin-bottom:6px">IGNITE OPS</div>
+    <div style="font-size:11px;font-weight:700;margin-bottom:4px">AI / Agentic Process Automation wedge</div>
+    <div style="font-size:10px;color:var(--sub);margin-bottom:8px">Where is the AI use case appetite? Explore AI agents, APA, and process automation opportunities for prospects or existing customers.</div>
+    <div style="font-size:9px;font-weight:700;color:var(--dark);margin-bottom:4px">Colby's role: <span style="color:var(--amber)">Spots opportunities during activation + helps co-create the framework</span></div>
+    <div style="font-size:9px;color:var(--sub)">Cortex pipeline: Being refined — AI agent catalogs + AI pricing playbook as foundation</div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--red);border-style:dashed;border-left-style:solid;opacity:0.7">
+    <div style="font-size:10px;font-weight:800;color:var(--red);letter-spacing:1px;margin-bottom:6px">DEAL ADVISORY (Awareness Only)</div>
+    <div style="font-size:11px;font-weight:700;margin-bottom:4px">Pricing, scenario analysis, commercial structuring</div>
+    <div style="font-size:10px;color:var(--sub);margin-bottom:8px">What happens after assessment. Colby should understand this exists but it's not his responsibility today. May evolve.</div>
+    <div style="font-size:9px;font-weight:700;color:var(--dark);margin-bottom:4px">Colby's role: <span style="color:var(--red)">Awareness only — review examples, understand the downstream</span></div>
+    <div style="font-size:9px;color:var(--sub)">Examples: Schroders commercial, CIH proposal, Danske pricing</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- STAKEHOLDER MAP -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="stakeholders">
+<h2>Stakeholder Map &amp; Introductions</h2>
+<p>Ordered by priority. Names in <strong>bold</strong> are confirmed; <span style="color:var(--red)">red</span> = needs confirmation.</p>
+
+<div class="section-grid">
+<div>
+<h3>Week 1 — Immediate</h3>
+<div class="stakeholder"><div><div class="name">Shyam Mohan</div><div class="role">Direct Manager / Buddy</div><div class="why">Primary coach, sets direction, buddy for all assignments, 60-day review owner</div></div></div>
+<div class="stakeholder"><div><div class="name">Head of Value Consulting</div><div class="role">VC Leadership</div><div class="why">Sets the bar for "great" VC. Success metrics, non-negotiables.</div></div></div>
+<div class="stakeholder"><div><div class="name">VC Peers</div><div class="role">Value Consulting</div><div class="why">Team rapport, shadow engagements, Cortex setup support</div></div></div>
+<div class="stakeholder"><div><div class="name" style="color:var(--red)">EverBank Account Team (TBD)</div><div class="role">Account Management</div><div class="why">Account history, stakeholder intros, project context — critical for SCP ramp</div></div></div>
+<div class="stakeholder"><div><div class="name">Regional Sales Leader</div><div class="role">Sales</div><div class="why">US market dynamics, deal patterns, pipeline coordination, where CDO time is best invested</div></div></div>
+
+<h3>Week 2 — Partnership</h3>
+<div class="stakeholder"><div><div class="name">Account Executives</div><div class="role">Sales</div><div class="why">Deal partners for warm activation. How AEs qualify, how to co-sell.</div></div></div>
+<div class="stakeholder"><div><div class="name" style="color:var(--red)">Product Marketing (TBD)</div><div class="role">PMM</div><div class="why">Competitive intel, content amplification, event coordination, blog process</div></div></div>
+<div class="stakeholder"><div><div class="name">Solution Engineers</div><div class="role">SE</div><div class="why">Technical credibility backup, platform architecture sessions</div></div></div>
+</div>
+
+<div>
+<h3>Week 2 — Product Domain Experts</h3>
+<div class="stakeholder"><div><div class="name">Chris Cheyenne</div><div class="role">Customer Lifetime Orchestrator / GenTech Process</div><div class="why">AI-native platform capabilities, CLO positioning</div></div></div>
+<div class="stakeholder"><div><div class="name">Robert Sutens</div><div class="role">AI / Platform</div><div class="why">AI architecture, NEXUS, Agent Studio, Intelligence Fabric</div></div></div>
+<div class="stakeholder"><div><div class="name" style="color:var(--red)">Vignesh or Thomas Silverberg</div><div class="role">Retail Banking Product</div><div class="why">Retail AI agents, digital banking capabilities, retail use cases</div></div></div>
+<div class="stakeholder"><div><div class="name" style="color:var(--red)">Yarno or TBD</div><div class="role">Business Banking Product</div><div class="why">Commercial/SME AI agents, business banking capabilities</div></div></div>
+<div class="stakeholder"><div><div class="name" style="color:var(--red)">Lennet or Jules</div><div class="role">Wealth Management Product</div><div class="why">Wealth AI agents (review prep copilot, NBA engine), wealth capabilities</div></div></div>
+
+<h3>Week 3-4 — Extended</h3>
+<div class="stakeholder"><div><div class="name" style="color:var(--red)">Product Manager(s) (TBD)</div><div class="role">Product</div><div class="why">Feedback loop. Receives market signals from Colby. Format and cadence to be defined.</div></div></div>
+<div class="stakeholder"><div><div class="name">Industry SME(s)</div><div class="role">Domain expertise</div><div class="why">US banking market expertise, peer perspective on positioning</div></div></div>
+<div class="stakeholder"><div><div class="name">Customer Operations</div><div class="role">Delivery</div><div class="why">What happens after the deal closes. Delivery reality check.</div></div></div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- E-LEARNING -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="elearning">
+<h2>E-Learning (Complete by End of Week 2)</h2>
+<p>Mandatory modules. Complete during downtime — not as dedicated training blocks.</p>
+
+<table>
+<thead><tr><th>Course</th><th>Duration</th><th>Priority for CDO</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><strong>Backbase Essentials</strong></td><td>24h</td><td><span class="pill pill-red" style="font-size:8px">High</span></td><td>Platform foundation — complete in Weeks 1-2</td></tr>
+<tr><td><strong>AI Foundations</strong></td><td>3h</td><td><span class="pill pill-red" style="font-size:8px">High</span></td><td>Critical for AI advisory role — understand Backbase AI architecture</td></tr>
+<tr><td><strong>AI Rebranding</strong></td><td>2h</td><td><span class="pill pill-red" style="font-size:8px">High</span></td><td>Understand the AI-native pivot narrative</td></tr>
+<tr><td><strong>Architecture Basics</strong></td><td>2h</td><td><span class="pill pill-amber" style="font-size:8px">Medium</span></td><td>Strategic understanding of three-plane model</td></tr>
+<tr><td><strong>Backbase Strategy</strong></td><td>1h</td><td><span class="pill pill-amber" style="font-size:8px">Medium</span></td><td>Company direction and market positioning</td></tr>
+<tr><td><strong>Product Basics</strong></td><td>1h</td><td><span class="pill pill-amber" style="font-size:8px">Medium</span></td><td>Product overview — strategic level for CDO</td></tr>
+<tr><td><strong>Security Awareness</strong></td><td>1h</td><td><span class="pill pill-muted" style="font-size:8px">Required</span></td><td>Compliance</td></tr>
+<tr><td><strong>Code of Conduct</strong></td><td>30min</td><td><span class="pill pill-muted" style="font-size:8px">Required</span></td><td>Compliance</td></tr>
+<tr><td><strong>Data Privacy</strong></td><td>20min</td><td><span class="pill pill-muted" style="font-size:8px">Required</span></td><td>Compliance</td></tr>
+<tr><td><strong>Way of Working 101</strong></td><td>1h</td><td><span class="pill pill-muted" style="font-size:8px">Low</span></td><td>Less relevant for CDO role — skim</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- CONTENT SOURCES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="sources">
+<h2>Content Sources Available</h2>
+
+<div class="section-grid">
+<div>
+<h3>Cortex Repository (Self-Study)</h3>
+<table>
+<thead><tr><th>Content</th><th>Used For</th></tr></thead>
+<tbody>
+<tr><td>Ignite Inspire Consultant Guide</td><td>Full Ignite methodology</td></tr>
+<tr><td>Quick Reference</td><td>One-page system overview</td></tr>
+<tr><td>Agents 1-7 (strategy, member, employee, architecture, usecase, presentation, ROI)</td><td>Workshop and engagement agent definitions</td></tr>
+<tr><td>Discovery Question Bank (300+ questions)</td><td>Conversation frameworks for qualification and discovery</td></tr>
+<tr><td>Capability Taxonomy (retail, wealth, commercial, SME, investing)</td><td>Maturity assessment frameworks</td></tr>
+<tr><td>Domain Knowledge (retail, wealth, commercial, SME, corporate, investing)</td><td>Benchmarks, pain points, use cases, value props per domain</td></tr>
+<tr><td>Engagement Types methodology</td><td>Ignite Light vs Detailed Assessment taxonomy</td></tr>
+<tr><td>Platform Lexicon (635 lines)</td><td>AI-native Banking OS architecture, NEXUS, terminology</td></tr>
+<tr><td>AI agent catalogs (retail, wealth, commercial JSON)</td><td>Domain-specific AI agents with value metrics</td></tr>
+<tr><td>AI pricing playbook</td><td>Three-pillar framework, build vs buy, competitive positioning</td></tr>
+<tr><td>FIS D1 vs Backbase Battlecard (PDF)</td><td>Primary competitive intelligence</td></tr>
+<tr><td>Templates (inputs): discovery_input_contract, engagement_intake, financial_data_schema</td><td>What data engagements need</td></tr>
+<tr><td>Templates (outputs): assessment_report, roi_report, roadmap, executive_summary</td><td>What VC produces — Colby should know, not produce from scratch</td></tr>
+</tbody>
+</table>
+</div>
+
+<div>
+<h3>Engagement Examples (Google Drive + Cortex)</h3>
+<table>
+<thead><tr><th>Engagement</th><th>Key Outputs</th><th>Shows</th></tr></thead>
+<tbody>
+<tr><td><strong>SEB</strong></td><td>AI-Native Front Office (v5), Agentic SDLC, Mortgage Origination</td><td>AI positioning, Ignite Ops-style</td></tr>
+<tr><td><strong>Schroders</strong></td><td>Executive Readout (v4), Commercial Refresh, Decision Papers, AUM Models</td><td>Full deal cycle, pricing, wealth</td></tr>
+<tr><td><strong>CIH Bank</strong></td><td>Executive Proposal (HTML, PPTX, PDF, French)</td><td>Ignite Inspire output format</td></tr>
+<tr><td><strong>Danske Bank</strong></td><td>AI Pricing Briefing, Value-at-Stake Model</td><td>AI pricing, build vs buy</td></tr>
+<tr><td><strong>Nordea</strong></td><td>TxB POV, Frontline presentation</td><td>Commercial banking positioning</td></tr>
+<tr><td><strong>Absa</strong></td><td>Executive Summary, Scenario Narrative</td><td>Assessment report structure</td></tr>
+<tr><td><strong>Banking OS</strong></td><td>AI-Native Banking OS Narrative, BaaS Strategy</td><td>Product narrative, thought leadership</td></tr>
+</tbody>
+</table>
+
+<h3>External Resources</h3>
+<table>
+<thead><tr><th>Resource</th><th>Used For</th></tr></thead>
+<tbody>
+<tr><td>VC Google Drive</td><td>Historical engagements, workshop recordings, client deliverables</td></tr>
+<tr><td>Backbase.io</td><td>Product capabilities reference</td></tr>
+<tr><td>Backbase Showcase</td><td>Demo starting point</td></tr>
+<tr><td>GlobalData</td><td>Market intelligence and research</td></tr>
+<tr><td>Salesforce</td><td>Pipeline tracking, opportunity logging</td></tr>
+<tr><td>Miro</td><td>Workshop support tool</td></tr>
+<tr><td>LinkedIn</td><td>Thought leadership, network activation</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- GAPS & DECISIONS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="gaps">
+<h2 style="border-color:var(--red)">Gaps &amp; Decisions Needed Before Trello</h2>
+<p>These need to be resolved before committing the onboarding to the Trello board.</p>
+
+<table>
+<thead><tr><th>#</th><th>Decision</th><th>Context</th><th>Who Decides</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><strong>Retail Product stakeholder</strong></td><td>Vignesh or Thomas Silverberg for retail banking product intro?</td><td>Shyam</td></tr>
+<tr><td>2</td><td><strong>Business Banking stakeholder</strong></td><td>Yarno or someone else for commercial/SME product intro?</td><td>Shyam</td></tr>
+<tr><td>3</td><td><strong>Wealth stakeholder</strong></td><td>Lennet or Jules for wealth management product intro?</td><td>Shyam</td></tr>
+<tr><td>4</td><td><strong>EverBank Account Team lead</strong></td><td>Who is the current account lead that briefs Colby in Week 1?</td><td>Shyam</td></tr>
+<tr><td>5</td><td><strong>Product Marketing contact</strong></td><td>Who runs competitive intel sessions and content amplification?</td><td>Shyam</td></tr>
+<tr><td>6</td><td><strong>US Marketing / Events</strong></td><td>Who manages US events calendar and speaking submissions?</td><td>Shyam</td></tr>
+<tr><td>7</td><td><strong>Product feedback point of contact</strong></td><td>Who receives Colby's market signals and in what format?</td><td>Shyam</td></tr>
+<tr><td>8</td><td><strong>Salesforce walkthrough owner</strong></td><td>Who does the pipeline tracking onboarding?</td><td>Shyam</td></tr>
+<tr><td>9</td><td><strong>Live engagement to shadow</strong></td><td>Is there an Ignite scheduled in Weeks 3-4 Colby can shadow?</td><td>Shyam</td></tr>
+<tr><td>10</td><td><strong>Google Drive access</strong></td><td>Does Colby have access to the VC engagement drive?</td><td>Shyam</td></tr>
+<tr><td>11</td><td><strong>Ignite Ops co-creation scope</strong></td><td>How involved is Colby in defining the Ignite Ops framework? Who else participates?</td><td>Shyam</td></tr>
+<tr><td>12</td><td><strong>Network contact list format</strong></td><td>Personal CRM, spreadsheet, or Salesforce for tracking outreach contacts?</td><td>Shyam + Colby</td></tr>
+</tbody>
+</table>
+</div>
+
+<div style="margin-top:40px;padding:20px;background:var(--light);border-radius:12px;text-align:center">
+  <div style="font-size:11px;color:var(--muted);font-weight:600">Field CDO Onboarding Workbench &middot; Colby Mangers &middot; April 2026</div>
+  <div style="font-size:10px;color:var(--muted);margin-top:4px">Resolve the 12 decisions above, then lock the Trello board.</div>
+</div>
+
+</body>
+</html>

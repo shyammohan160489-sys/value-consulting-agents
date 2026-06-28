@@ -291,15 +291,40 @@ Press `P` during presentation to see notes and a timer.
 4. **Custom HTML bodies are for rich UIs.** Use them for dashboards, comparison matrices, workflow diagrams — not for basic text (use the standard body for that)
 5. **Consistent labeling.** Use uppercase section labels throughout (e.g., "THE CHALLENGE", "THE SOLUTION", "THE IMPACT")
 6. **Title line breaks.** Use `\n` in title strings for intentional line breaks on cover and chapter slides
+7. **Roadmap bar labels — HARD RULE.** Roadmap bars are width-constrained by the bar's duration. Long labels get clipped at the right edge. Enforce:
+   - **Max 3-4 short words per bar label.** Examples that work: `'Workshops + readout'`, `'Pattern locked'`, `'Live demo + board pack'`.
+   - **Examples that BREAK:** `'Workshops · leadership readout · canvas ratified'`, `'Sidecar stood up · first onboarding journey wired through'` — both clip.
+   - **Row labels also short.** `'Strategy & scope'` → `'Scope'`. `'Demo & business case'` → `'Demo'`.
+   - **Bar labels are outcome words**, not description: `'Pattern locked'` not `'Architecture pattern selected'`.
+8. **Cover title discipline — HARD RULE.** Cover titles are fixed-position blocks. Long titles overflow into the date area and overlap. Enforce strictly:
+   - **Maximum 2 lines.** Use `\n` to control the break — never rely on auto-wrap.
+   - **Maximum 3-4 short words per line.** Examples that work: `'Reimagine onboarding.\nStart with the sidecar.'`, `'Buy for speed.\nBuild for differentiation.'`, `'Banking OS.\nA path.'`
+   - **Examples that BREAK:** `'Ignite + Mission Sprint.\nBusiness Banking onboarding.'` (line 1 too long, both lines wrap), any descriptive title with more than 5 words on a line.
+   - **Move context to subtitle/date.** "Business Banking onboarding · Ten weeks to value" belongs in the `date` field, not the title.
+   - **If the title doesn't fit cleanly in 2 short lines, the title is wrong — shorten it before doing anything else.**
+9. **Compose like a document, NOT a grid of stretched boxes — HARD RULE (content-standard custom bodies).** The fatal mistake is using `flex:1` to stretch a few tiles to fill the slide height — you get giant boxes with three words marooned in the dead centre. An exec reads that as "broken". NEVER stretch a tile taller than its content. Fill the slide with the *count and density* of compact elements, not by inflating each one. Use the proven two-column composition:
+   - **Left rail + right card-stack.** Put the key callout in a ~35% left column — a navy cost box (label→value rows), a coloured note/banner, or a compact borderless `label … value` list. Put the detail as a VERTICAL STACK of compact, content-sized cards in the right column (`flex:1`). Four-to-five stacked cards fill the height naturally.
+   - **Cards are compact and content-sized.** Horizontal card = a small dot / numbered blue circle / coloured left-border, then a bold title (`~0.62em`) and one line of description (`~0.5em`); padding `~0.7em 0.95em`, gap between cards `~0.5em`. The text fills the card. Do NOT add `flex:1`/`justify-content:center` to make a card taller than its text.
+   - **Left callout vertically centres** against the stack — the row is `display:flex;align-items:center;gap:~1.5em`.
+   - **Full-width table** for line-by-line numbers (`font-size ~0.56em`, row padding `~0.5em`). Tables fill width naturally.
+   - **Bottom note** (provenance / next step) as a thin `~0.46em` line above the footer.
+   - **Subtitles to ONE line** (≈70 chars). A 2-line subtitle crowds the body.
+   - **When adapting an existing good design, RENDER the source and match its density — do not reinvent the layout.** If the source stacks cards vertically, stack them; don't turn them into a stretched horizontal row.
+10. **One headline per slide — kill header redundancy.** The three header fields (eyebrow `label`, big `title`, blue `subtitle`) must NOT say the same thing three ways ("THE MVP" / "The MVP, and what it costs" / "What the MVP covers…" is noise). The big black `title` is the anchor — always present, always meaningful.
+   - **`label` (eyebrow) → omit it when it just echoes the title.** Include only when it carries a real section/category the title doesn't. When unsure, leave it out.
+   - **`subtitle` → include only when it adds something the title and body don't.** Drop it when it restates the title or repeats what the body shows. Good keep: a line that orients the reader to a complex element (e.g. "one-time change … and the recurring run" above a numbers table).
+   - Omitting the subtitle auto-lifts the body up under the title (engine adds `no-subtitle`), so a title-only slide reads as intentional, not gap-toothed. One strong headline beats three weak ones.
 
 ## Quality Checklist
 
 Before saving the output, verify:
 - [ ] First slide is a cover (cover-color-block or cover-photo)
+- [ ] **Cover title is max 2 lines, max 4 words per line.** Read it back — if it feels wordy, cut.
 - [ ] Last slide is thank-you
 - [ ] Theme distribution is roughly 60/25/15 (light/navy/cover)
 - [ ] No layout type is repeated more than 4x without variety
 - [ ] All `body` HTML uses `em` units, not `px`
+- [ ] **content-standard bodies use the two-column composition** (left rail + stacked compact cards), cards are content-sized NOT stretched, nothing is a giant box with marooned text (see guideline 9)
 - [ ] Speaker notes are included for key slides
 - [ ] The SLIDES `<script>` comes before the engine.js `<script>`
 - [ ] bg.jpg is base64-encoded inline (no external file references)

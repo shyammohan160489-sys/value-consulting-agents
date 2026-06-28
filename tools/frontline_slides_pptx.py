@@ -77,11 +77,146 @@ def html_to_text(html_str):
     return parser.get_text()
 
 
+class _HTMLBlocks(HTMLParser):
+    """Split body HTML into ordered (kind, inner_html) blocks where kind is
+    'header' (<div>/<p>) or 'bullet' (<li>). Inner HTML is preserved so inline
+    <b>/<span> emphasis can be re-parsed downstream. Tables are skipped."""
+    def __init__(self):
+        super().__init__(convert_charrefs=False)
+        self.blocks = []
+        self._buf = ''
+        self._kind = None
+        self._depth_skip = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ('table',):
+            self._depth_skip += 1
+            return
+        if self._depth_skip:
+            return
+        if tag == 'li':
+            self._flush(); self._kind = 'bullet'; self._buf = ''
+        elif tag in ('div', 'p'):
+            self._flush(); self._kind = 'header'; self._buf = ''
+        elif tag in ('b', 'strong', 'span', 'br'):
+            self._buf += self.get_starttag_text() or ''
+
+    def handle_endtag(self, tag):
+        if tag in ('table',):
+            if self._depth_skip:
+                self._depth_skip -= 1
+            return
+        if self._depth_skip:
+            return
+        if tag in ('li', 'div', 'p'):
+            self._flush()
+        elif tag in ('b', 'strong', 'span'):
+            self._buf += f'</{tag}>'
+
+    def handle_data(self, data):
+        if self._depth_skip:
+            return
+        self._buf += data
+
+    def handle_entityref(self, name):
+        if not self._depth_skip:
+            self._buf += f'&{name};'
+
+    def handle_charref(self, name):
+        if not self._depth_skip:
+            self._buf += f'&#{name};'
+
+    def _flush(self):
+        if self._kind and self._buf.strip():
+            self.blocks.append((self._kind, self._buf.strip()))
+        self._buf = ''
+        self._kind = None
+
+    def get_blocks(self):
+        self._flush()
+        return self.blocks
+
+
+def html_to_blocks(html_str):
+    """Parse body HTML into [(kind, inner_html), ...] for hierarchical rendering."""
+    if not html_str:
+        return []
+    p = _HTMLBlocks()
+    p.feed(str(html_str))
+    return p.get_blocks()
+
+
 def strip_html_tags(text):
     """Remove HTML tags, keeping text. Converts <span class="hl">X</span> to X."""
     if not text:
         return ''
     return re.sub(r'<[^>]+>', '', text)
+
+
+def _hex_to_rgb(hex_str):
+    """'#3367FF' / '#fff' -> RGBColor."""
+    h = hex_str.lstrip('#')
+    if len(h) == 3:
+        h = ''.join(c * 2 for c in h)
+    return RGBColor(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
+class _RichRuns(HTMLParser):
+    """Parse a short HTML snippet into styled runs: (text, bold, color|None).
+
+    Honours <b>/<strong>, <span class="hl"> (mapped to hl_color), and
+    <span style="color:#xxx">. Entities are converted automatically
+    (convert_charrefs defaults to True)."""
+    def __init__(self, hl_color=None):
+        super().__init__()
+        self.runs = []
+        self.bold = 0
+        self.color_stack = []
+        self.hl_color = hl_color
+
+    def handle_starttag(self, tag, attrs):
+        ad = dict(attrs)
+        if tag in ('b', 'strong'):
+            self.bold += 1
+        elif tag == 'span':
+            col = None
+            if 'hl' in ad.get('class', '').split():
+                col = self.hl_color
+            m = re.search(r'color:\s*(#[0-9A-Fa-f]{3,6})', ad.get('style', ''))
+            if m:
+                col = _hex_to_rgb(m.group(1))
+            self.color_stack.append(col)
+        elif tag == 'br':
+            self.runs.append(('\n', False, None))
+
+    def handle_endtag(self, tag):
+        if tag in ('b', 'strong') and self.bold > 0:
+            self.bold -= 1
+        elif tag == 'span' and self.color_stack:
+            self.color_stack.pop()
+
+    def handle_data(self, data):
+        text = re.sub(r'\s+', ' ', data)
+        if not text:
+            return
+        col = next((c for c in reversed(self.color_stack) if c is not None), None)
+        self.runs.append((text, self.bold > 0, col))
+
+
+def parse_rich_runs(html_str, hl_color=None):
+    """Convert an inline HTML string to a list of (text, bold, color) runs."""
+    if html_str is None:
+        return []
+    p = _RichRuns(hl_color=hl_color)
+    p.feed(str(html_str))
+    runs = p.runs
+    if runs:  # trim outer whitespace
+        t0, b0, c0 = runs[0]
+        runs[0] = (t0.lstrip(), b0, c0)
+        t1, b1, c1 = runs[-1]
+        runs[-1] = (t1.rstrip(), b1, c1)
+        runs = [(t, b, c) for (t, b, c) in runs if t]
+    return runs
 
 
 class BackbaseSlidesPresenter:
@@ -101,6 +236,9 @@ class BackbaseSlidesPresenter:
     OFF_WHITE  = RGBColor(0xF3, 0xF6, 0xF9)
     WHITE      = RGBColor(0xFF, 0xFF, 0xFF)
     BLACK      = RGBColor(0x00, 0x00, 0x00)
+    BORDER     = RGBColor(0xCE, 0xD2, 0xD7)
+    BLUE_DARK  = RGBColor(0x26, 0x4E, 0xC7)
+    GREEN      = RGBColor(0x2E, 0xCC, 0x71)
 
     # Text colors
     TEXT_DARK    = RGBColor(0x04, 0x13, 0x26)
@@ -219,15 +357,34 @@ class BackbaseSlidesPresenter:
                   size=Pt(14), color=color)
 
     def _body_text(self, slide, html_body, left, top, width=None, dark=False):
-        """Body text from HTML content — converts to plain text for PPTX."""
-        text = html_to_text(html_body)
-        if not text:
+        """Body text from HTML content, with visual hierarchy: <div>/<p> render
+        as bold group headers, <li> as indented arrow bullets. Inline <b> and
+        colored <span> emphasis is preserved."""
+        blocks = html_to_blocks(html_body)
+        if not blocks:
             return
         color = self.TEXT_WHITE if dark else self.TEXT_DARK
         w = width or self.CW
-        lines = text.split('\n')
-        self._multi_line_txt(slide, lines, left, top, w, Inches(3.5),
-                             size=Pt(11), color=color, spacing=Pt(6))
+        tb = slide.shapes.add_textbox(left, top, w, Inches(3.8))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.auto_size = MSO_AUTO_SIZE.NONE
+        first = True
+        for kind, raw in blocks:
+            p = tf.paragraphs[0] if first else tf.add_paragraph()
+            first = False
+            p.line_spacing = 1.2
+            if kind == 'header':
+                p.space_before = Pt(8)
+                p.space_after = Pt(3)
+                runs = parse_rich_runs(raw)
+                self._rich_paragraph(p, runs, Pt(12), color, bold=True)
+            else:  # bullet
+                p.space_after = Pt(4)
+                r0 = p.add_run(); r0.text = '→  '
+                r0.font.size = Pt(11); r0.font.name = self.FONT
+                r0.font.color.rgb = self.BLUE
+                self._rich_paragraph(p, parse_rich_runs(raw), Pt(11), color)
 
     def _footer(self, slide, dark=False):
         """Backbase wordmark + slide number at bottom-right."""
@@ -295,33 +452,24 @@ class BackbaseSlidesPresenter:
         s.line.fill.background()
         s.name = f"motif_{self._slide_num}"
 
+    # Exact clip-path polygon from deck-template.html (statement band).
+    _BAND_POLY = [(32.7, 25.13), (97.1, 25.13), (97.1, 65.9), (58, 65.9),
+                  (58, 73), (2.9, 73), (2.9, 32.23), (32.7, 32.23)]
+
     def _band_shape(self, slide, color):
-        """Colored band across the middle of the slide (for statement layouts).
-        The HTML uses a clip-path polygon (step shape). In PPTX we approximate
-        with two overlapping rectangles to create the stepped look."""
-        left = Emu(int(self.SLIDE_W.emu * 2.9 / 100))
-        width = Emu(int(self.SLIDE_W.emu * 94.2 / 100))
-        # Upper band: from 25.13% to 65.9% height, right portion (32.7% to 97.1% x)
-        upper_left = Emu(int(self.SLIDE_W.emu * 2.9 / 100))
-        upper_top = Emu(int(self.SLIDE_H.emu * 25.13 / 100))
-        upper_h = Emu(int(self.SLIDE_H.emu * (65.9 - 25.13) / 100))
-        s1 = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                                     upper_left, upper_top, width, upper_h)
-        s1.fill.solid()
-        s1.fill.fore_color.rgb = color
-        s1.line.fill.background()
-        s1.name = f"band_upper_{self._slide_num}"
-        # Lower step: from 65.9% to 73% height, left portion (2.9% to 58% x)
-        lower_left = Emu(int(self.SLIDE_W.emu * 2.9 / 100))
-        lower_top = Emu(int(self.SLIDE_H.emu * 65.9 / 100))
-        lower_w = Emu(int(self.SLIDE_W.emu * (58 - 2.9) / 100))
-        lower_h = Emu(int(self.SLIDE_H.emu * (73 - 65.9) / 100))
-        s2 = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                                     lower_left, lower_top, lower_w, lower_h)
-        s2.fill.solid()
-        s2.fill.fore_color.rgb = color
-        s2.line.fill.background()
-        s2.name = f"band_lower_{self._slide_num}"
+        """Stepped statement band — a single freeform polygon that matches the
+        HTML clip-path exactly (replaces the old two-rectangle approximation,
+        which produced a visible protruding step artifact)."""
+        pts = [(int(self.SLIDE_W.emu * px / 100), int(self.SLIDE_H.emu * py / 100))
+               for px, py in self._BAND_POLY]
+        fb = slide.shapes.build_freeform(pts[0][0], pts[0][1], scale=1.0)
+        fb.add_line_segments(pts[1:], close=True)
+        shape = fb.convert_to_shape()
+        shape.fill.solid()
+        shape.fill.fore_color.rgb = color
+        shape.line.fill.background()
+        shape.shadow.inherit = False
+        shape.name = f"band_{self._slide_num}"
 
     # ══════════════════════════════════════════════════════
     #  17 LAYOUT METHODS
@@ -724,12 +872,26 @@ class BackbaseSlidesPresenter:
         img_top = Emu(int(self.SLIDE_H.emu * 0.0515))
         img_w = Emu(int(self.SLIDE_W.emu * 0.471))
         img_h = Emu(int(self.SLIDE_H.emu * 0.897))
-        if image_bg:
-            bg_rect = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
+        if image_bg and not image_path:
+            bg_rect = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
                                               img_left, img_top, img_w, img_h)
+            try:
+                bg_rect.adjustments[0] = 0.03
+            except Exception:
+                pass
             bg_rect.fill.solid()
             bg_rect.fill.fore_color.rgb = self.LIGHT_BLUE
             bg_rect.line.fill.background()
+            bg_rect.shadow.inherit = False
+            tb = slide.shapes.add_textbox(
+                img_left, Emu(img_top + img_h // 2 - Inches(0.2).emu),
+                img_w, Inches(0.4))
+            tf = tb.text_frame; tf.word_wrap = True
+            tf.auto_size = MSO_AUTO_SIZE.NONE
+            p = tf.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
+            r = p.add_run(); r.text = 'PRODUCT SCREENSHOT'
+            r.font.size = Pt(9); r.font.name = self.FONT
+            r.font.bold = True; r.font.color.rgb = self.BLUE
         if image_path:
             try:
                 slide.shapes.add_picture(image_path, img_left + Inches(0.2),
@@ -764,13 +926,18 @@ class BackbaseSlidesPresenter:
         if label:
             self._label(slide, label, self.ML,
                         Emu(int(self.SLIDE_H.emu * 0.2727)), dark=dark)
-        # Text (strip HTML tags for PPTX)
-        clean_text = strip_html_tags(text)
+        # Text — preserve <span class="hl"> highlights (blue, or red on accent-red)
         text_color = self.TEXT_WHITE if dark else self.TEXT_DARK
-        self._txt(slide, clean_text, self.ML,
-                  Emu(int(self.SLIDE_H.emu * 0.37)),
-                  Emu(int(self.SLIDE_W.emu * 0.88)),
-                  Inches(2.5), size=Pt(18), color=text_color)
+        hl = self.RED if accent == 'red' else self.BLUE
+        tb = slide.shapes.add_textbox(self.ML, Emu(int(self.SLIDE_H.emu * 0.37)),
+                                      Emu(int(self.SLIDE_W.emu * 0.88)), Inches(2.5))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.auto_size = MSO_AUTO_SIZE.NONE
+        p = tf.paragraphs[0]
+        p.line_spacing = 1.4
+        self._rich_paragraph(p, parse_rich_runs(text, hl_color=hl),
+                             Pt(18), text_color)
         self._footer(slide, dark=dark)
 
     def add_statement_stat(self, accent='blue', label='', stat='70%',
@@ -796,12 +963,17 @@ class BackbaseSlidesPresenter:
                   Emu(int(self.SLIDE_H.emu * 0.35)),
                   Inches(4), Inches(1.5), size=Pt(60),
                   color=stat_color, bold=True)
-        # Description text (right of number)
-        clean_text = strip_html_tags(text)
-        self._txt(slide, clean_text,
-                  Inches(5.5), Emu(int(self.SLIDE_H.emu * 0.38)),
-                  Inches(6.5), Inches(1.5), size=Pt(13),
-                  color=self.TEXT_DARK)
+        # Description text (right of number) — preserve hl highlights
+        hl = self.RED if accent == 'red' else self.BLUE
+        tb = slide.shapes.add_textbox(Inches(5.5), Emu(int(self.SLIDE_H.emu * 0.38)),
+                                      Inches(6.5), Inches(1.5))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.auto_size = MSO_AUTO_SIZE.NONE
+        p = tf.paragraphs[0]
+        p.line_spacing = 1.3
+        self._rich_paragraph(p, parse_rich_runs(text, hl_color=hl),
+                             Pt(13), self.TEXT_DARK)
         # Source
         if source:
             self._txt(slide, f"Source: {source}",
@@ -1113,13 +1285,35 @@ class BackbaseSlidesPresenter:
     #  INTERNAL HELPERS (continued)
     # ══════════════════════════════════════════════════════
 
-    def _placeholder_rect(self, slide, left, top, w, h):
-        """Grey placeholder rectangle for missing images."""
-        s = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, w, h)
+    def _placeholder_rect(self, slide, left, top, w, h, caption='Screenshot'):
+        """Framed image placeholder — a soft rounded panel with a centered
+        muted caption, so a screenshot-less deck reads as intentional
+        (a labelled frame) rather than an empty grey box."""
+        s = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, w, h)
+        try:
+            s.adjustments[0] = 0.03
+        except Exception:
+            pass
         s.fill.solid()
         s.fill.fore_color.rgb = self.OFF_WHITE
-        s.line.fill.background()
+        s.line.color.rgb = self.BORDER
+        s.line.width = Pt(1)
+        s.shadow.inherit = False
         s.name = f"placeholder_{self._slide_num}"
+        if caption:
+            tb = slide.shapes.add_textbox(left, Emu(top + h // 2 - Inches(0.2).emu),
+                                          w, Inches(0.4))
+            tf = tb.text_frame
+            tf.word_wrap = True
+            tf.auto_size = MSO_AUTO_SIZE.NONE
+            p = tf.paragraphs[0]
+            p.alignment = PP_ALIGN.CENTER
+            r = p.add_run()
+            r.text = caption.upper()
+            r.font.size = Pt(9)
+            r.font.name = self.FONT
+            r.font.color.rgb = self.TEXT_MUTED
+            r.font.bold = True
 
     def _stats_row(self, slide, stats, left, top, width, height):
         """Row of stat items with value + label."""
@@ -1151,6 +1345,546 @@ class BackbaseSlidesPresenter:
                       x + Inches(0.15), top + Emu(int(height * 0.6)),
                       Emu(stat_w - Inches(0.3).emu), Inches(0.3),
                       size=Pt(9), color=self.TEXT_DARK)
+
+    # ══════════════════════════════════════════════════════
+    #  RICH PRIMITIVES (cards, chips, panels, comparison,
+    #  options, callout, freeform band) — added 2026-06 to
+    #  close the HTML↔PPTX component-vocabulary gap.
+    # ══════════════════════════════════════════════════════
+
+    # Tone presets: (fill, default eyebrow color)
+    TONE = {
+        'off':   (OFF_WHITE,  RGBColor(0x6B, 0x77, 0x86)),  # neutral / muted eyebrow
+        'blue':  (LIGHT_BLUE, RGBColor(0x33, 0x67, 0xFF)),  # platform / positive
+        'white': (WHITE,      RGBColor(0x33, 0x67, 0xFF)),
+        'navy':  (NAVY,       RGBColor(0x69, 0xFE, 0xFF)),  # dark callout, cyan eyebrow
+    }
+    ACCENT = {
+        'red':  RGBColor(0xFF, 0x50, 0x3C),
+        'blue': RGBColor(0x33, 0x67, 0xFF),
+        'navy': RGBColor(0x04, 0x13, 0x26),
+        'muted': RGBColor(0x6B, 0x77, 0x86),
+    }
+
+    def _round_rect(self, slide, left, top, w, h, fill, border=None,
+                    radius=0.06, line_w=Pt(0.75)):
+        """Rounded rectangle with a sane (small) corner radius."""
+        s = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, w, h)
+        try:
+            s.adjustments[0] = radius
+        except Exception:
+            pass
+        s.fill.solid()
+        s.fill.fore_color.rgb = fill
+        if border is not None:
+            s.line.color.rgb = border
+            s.line.width = line_w
+        else:
+            s.line.fill.background()
+        s.shadow.inherit = False
+        s.name = f"panel_{self._slide_num}"
+        return s
+
+    def _accent_bar(self, slide, left, top, h, color, w=Emu(38100)):
+        """Thin vertical accent bar on the left edge of a card (~3px)."""
+        s = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, w, h)
+        s.fill.solid()
+        s.fill.fore_color.rgb = color
+        s.line.fill.background()
+        s.shadow.inherit = False
+        return s
+
+    def _eyebrow(self, slide, text, left, top, w, color, size=Pt(8.5)):
+        """Uppercase bold eyebrow inside a card."""
+        tf = self._txt(slide, text.upper(), left, top, w, Inches(0.3),
+                       size=size, color=color, bold=True)
+        tf.paragraphs[0].font.bold = True
+        return tf
+
+    def _rich_paragraph(self, p, runs, size, default_color, bold=False):
+        """Write a list of (text, bold, color) runs into a paragraph."""
+        first = True
+        for text, run_bold, run_color in runs:
+            r = p.add_run()
+            r.text = text
+            r.font.size = size
+            r.font.name = self.FONT
+            r.font.bold = bool(run_bold) or bold
+            r.font.color.rgb = run_color or default_color
+            first = False
+        if first:  # no runs — keep an empty run so paragraph isn't blank
+            r = p.add_run()
+            r.text = ''
+            r.font.size = size
+
+    def _card(self, slide, x, y, w, h, tone='off', eyebrow=None,
+              eyebrow_color=None, body=None, bullets=None, chips=None,
+              accent=None, border=None, body_size=Pt(10), valign='middle'):
+        """A content card: rounded panel + uppercase eyebrow + body / bullets / chips.
+        valign='middle' vertically centres the content group so a card that is
+        taller than its content reads balanced, never marooned at the top."""
+        fill, default_eb = self.TONE.get(tone, self.TONE['off'])
+        self._round_rect(slide, x, y, w, h, fill, border=border)
+        if accent:
+            self._accent_bar(slide, x, y, h, self.ACCENT.get(accent, self.BLUE))
+        pad_l = x + Inches(0.18)
+        pad_w = Emu(w - Inches(0.36).emu)
+        # Vertically centre the content group within the card.
+        content_emu = int(self._content_h(eyebrow, body, bullets, chips, pad_w,
+                                          body_size.pt) * self._EMU_IN)
+        if valign == 'middle' and h > content_emu:
+            cy = Emu(y + max(Inches(0.16).emu, (h - content_emu) // 2))
+        else:
+            cy = y + Inches(0.16)
+        if eyebrow:
+            self._eyebrow(slide, eyebrow, pad_l, cy, pad_w,
+                          eyebrow_color or default_eb)
+            cy = cy + Inches(0.32)
+        if body:
+            tb = slide.shapes.add_textbox(pad_l, cy, pad_w,
+                                          Emu(h - (cy - y) - Inches(0.16).emu))
+            tf = tb.text_frame
+            tf.word_wrap = True
+            tf.auto_size = MSO_AUTO_SIZE.NONE
+            p = tf.paragraphs[0]
+            p.line_spacing = 1.2
+            self._rich_paragraph(p, parse_rich_runs(body), body_size,
+                                 self.TEXT_DARK)
+            cy = cy + Inches(0.5)
+        if bullets:
+            tb = slide.shapes.add_textbox(pad_l, cy, pad_w,
+                                          Emu(h - (cy - y) - Inches(0.16).emu))
+            tf = tb.text_frame
+            tf.word_wrap = True
+            tf.auto_size = MSO_AUTO_SIZE.NONE
+            for bi, bl in enumerate(bullets):
+                p = tf.paragraphs[0] if bi == 0 else tf.add_paragraph()
+                p.line_spacing = 1.15
+                p.space_after = Pt(3)
+                r0 = p.add_run(); r0.text = '→  '
+                r0.font.size = body_size; r0.font.name = self.FONT
+                r0.font.color.rgb = self.BLUE
+                self._rich_paragraph(p, parse_rich_runs(bl), body_size,
+                                     self.TEXT_DARK)
+            cy = cy + Inches(0.3) * len(bullets)
+        if chips:
+            self._chip_row(slide, chips, pad_l, cy, pad_w)
+
+    def _chip_row(self, slide, chips, left, top, max_w, size=Pt(8),
+                  fill=None, border=None):
+        """A wrapping row of pill chips."""
+        fill = fill or self.WHITE
+        border = border if border is not None else self.BORDER
+        x = left
+        y = top
+        chip_h = Inches(0.26)
+        gap = Inches(0.08)
+        char_w = Inches(0.062)   # rough per-character advance at 8pt
+        pad = Inches(0.26)
+        for chip in chips:
+            cw = Emu(int(pad.emu + len(chip) * char_w.emu))
+            if x + cw > left + max_w:        # wrap
+                x = left
+                y = y + chip_h + Inches(0.06)
+            s = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, y, cw, chip_h)
+            try:
+                s.adjustments[0] = 0.5
+            except Exception:
+                pass
+            s.fill.solid(); s.fill.fore_color.rgb = fill
+            s.line.color.rgb = border; s.line.width = Pt(0.5)
+            s.shadow.inherit = False
+            tf = s.text_frame
+            tf.word_wrap = False
+            tf.margin_left = Inches(0.05); tf.margin_right = Inches(0.05)
+            tf.margin_top = 0; tf.margin_bottom = 0
+            p = tf.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
+            r = p.add_run(); r.text = chip
+            r.font.size = size; r.font.name = self.FONT; r.font.bold = True
+            r.font.color.rgb = self.NAVY
+            x = x + cw + gap
+
+    def _callout_strip(self, slide, left, top, w, lead, body, lead_color=None):
+        """Full-width navy callout strip: cyan lead phrase + white body."""
+        h = Inches(0.75)
+        self._round_rect(slide, left, top, w, h, self.NAVY)
+        tb = slide.shapes.add_textbox(left + Inches(0.25), top + Inches(0.12),
+                                      Emu(w - Inches(0.5).emu),
+                                      Emu(h - Inches(0.24).emu))
+        tf = tb.text_frame; tf.word_wrap = True; tf.auto_size = MSO_AUTO_SIZE.NONE
+        tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        p = tf.paragraphs[0]; p.line_spacing = 1.2
+        r1 = p.add_run(); r1.text = lead + ' '
+        r1.font.size = Pt(11); r1.font.bold = True; r1.font.name = self.FONT
+        r1.font.color.rgb = lead_color or self.CYAN
+        r2 = p.add_run(); r2.text = body
+        r2.font.size = Pt(11); r2.font.name = self.FONT
+        r2.font.color.rgb = self.WHITE
+
+    # ── New rich layout methods ───────────────────────────
+
+    def _content_header(self, slide, label, title, subtitle, dark=False):
+        """Shared header chrome for content slides (label + title + subtitle)."""
+        self._grid_line_v(slide, 2.9, dark=dark)
+        self._grid_line_v(slide, 97.1, dark=dark)
+        self._grid_line_h(slide, 5.15, dark=dark)
+        self._grid_line_h(slide, 94.85, dark=dark)
+        self._motif(slide, Emu(int(self.SLIDE_W.emu * 0.029)),
+                    Emu(int(self.SLIDE_H.emu * 0.0515)))
+        if label:
+            self._label(slide, label, self.ML,
+                        Emu(int(self.SLIDE_H.emu * 0.10)), dark=dark)
+        if title:
+            self._title(slide, title, self.ML,
+                        Emu(int(self.SLIDE_H.emu * 0.15)), dark=dark)
+        if subtitle:
+            self._subtitle_text(slide, subtitle, self.ML,
+                                Emu(int(self.SLIDE_H.emu * 0.255)), dark=dark)
+
+    # ── Content sizing (engine discipline: size cards to content, never stretch) ──
+    _EMU_IN = 914400
+
+    def _text_block_h(self, text, width_in, pt):
+        """Estimate rendered height (inches) of wrapped text at the given pt size."""
+        plain = re.sub(r'<[^>]+>', '', str(text or ''))
+        if not plain.strip():
+            return 0.0
+        char_w = pt * 0.0072          # ~Libre Franklin advance per char, inches (conservative)
+        cpl = max(8, int(width_in / char_w))
+        n = len(plain)
+        lines = (n + cpl - 1) // cpl   # ceil
+        return max(1, lines) * (pt * 1.3 / 72.0)
+
+    def _chips_block_h(self, chips, width_in):
+        """Estimate height (inches) of a wrapping chip row."""
+        if not chips:
+            return 0.0
+        x, rows = 0.0, 1
+        for c in chips:
+            cw = 0.26 + len(str(c)) * 0.062
+            if x + cw > width_in and x > 0:
+                rows += 1
+                x = cw + 0.08
+            else:
+                x += cw + 0.08
+        return rows * 0.32
+
+    def _content_h(self, eyebrow, body, bullets, chips, inner_w_emu, body_pt=10):
+        """Height (inches) of a card's CONTENT group, excluding outer padding."""
+        inner_in = inner_w_emu / self._EMU_IN
+        h = 0.0
+        if eyebrow:
+            h += 0.32
+        if body:
+            h += self._text_block_h(body, inner_in, body_pt) + 0.04
+        for b in (bullets or []):
+            h += self._text_block_h(b, inner_in - 0.25, max(body_pt, 11)) + 0.06
+        if chips:
+            h += self._chips_block_h(chips, inner_in) + 0.06
+        return h
+
+    def _estimate_card_h(self, card, inner_w_emu):
+        """Content-sized card height (inches) = content + outer padding."""
+        ch = self._content_h(card.get('eyebrow'), card.get('body'),
+                             card.get('bullets'), card.get('chips'), inner_w_emu)
+        return max(ch + 0.34, 1.0)
+
+    # ── Composition rule: anchor + balanced fill (engine discipline) ──────────
+    # Content top sits on the engine's body line (32% of slide height) — a fixed,
+    # moderate gap under the headline. The content band runs to the footer line.
+    BODY_TOP_FRAC = 0.33      # headline→content gap, constant (was drifting 0.34–0.40)
+    BAND_BOTTOM_FRAC = 0.90   # bottom of the content band (above footer)
+    CARD_COMFORT_IN = 0.85    # breathing room added to content (proportionate, not fill)
+    CARD_MIN_IN = 1.5         # a card is never a thin strip
+
+    def _band(self):
+        """(top_emu, available_height_emu) for the content band."""
+        top = int(self.SLIDE_H.emu * self.BODY_TOP_FRAC)
+        avail = int(self.SLIDE_H.emu * self.BAND_BOTTOM_FRAC) - top
+        return top, avail
+
+    def _row_card_h(self, cards, widths_emu, avail_emu):
+        """Row height = tallest card's CONTENT + comfortable padding (proportionate
+        to content, never a fixed fill — so cards breathe without internal float),
+        floored to a sensible minimum and capped at the band. Text is centred."""
+        content = max(
+            self._content_h(c.get('eyebrow'), c.get('body'), c.get('bullets'),
+                            c.get('chips'), w)
+            for c, w in zip(cards, widths_emu))
+        h_emu = int((content + self.CARD_COMFORT_IN) * self._EMU_IN)
+        return Emu(min(max(h_emu, int(self.CARD_MIN_IN * self._EMU_IN)), avail_emu))
+
+    def add_content_cards(self, label='', title='', subtitle='', cards=None,
+                          callout=None):
+        """Content slide whose body is a row of equal cards.
+        card = {eyebrow, body|bullets, chips, tone, accent, eyebrow_color}."""
+        cards = cards or []
+        slide = self._new_slide(self.WHITE)
+        self._content_header(slide, label, title, subtitle)
+        n = len(cards)
+        if n == 0:
+            self._footer(slide); return
+        area_l = self.ML
+        area_w = Emu(int(self.SLIDE_W.emu * 0.942) - (self.ML.emu - int(self.SLIDE_W.emu * 0.029)))
+        area_w = Emu(int(self.SLIDE_W.emu * 0.88))
+        band_top, band_avail = self._band()
+        top = Emu(band_top)
+        avail = band_avail - (Inches(1.05).emu if callout else 0)
+        gap = Inches(0.2)
+        weights = [c.get('weight', 1.0) for c in cards]
+        wsum = sum(weights)
+        usable = Emu(area_w - gap.emu * (n - 1))
+        widths = [Emu(int(usable * wt / wsum)) for wt in weights]
+        # Content-sized row height — never stretch a short card to fill.
+        h = self._row_card_h(cards, widths, avail)
+        x = area_l
+        for c, cw in zip(cards, widths):
+            self._card(slide, x, top, cw, h,
+                       tone=c.get('tone', 'off'),
+                       eyebrow=c.get('eyebrow'),
+                       eyebrow_color=c.get('eyebrow_color'),
+                       body=c.get('body'),
+                       bullets=c.get('bullets'),
+                       chips=c.get('chips'),
+                       accent=c.get('accent'),
+                       border=self.BORDER if c.get('border') else None)
+            x = Emu(x + cw + gap.emu)
+        if callout:
+            # Sit the callout just below the cards, not at a fixed low anchor.
+            self._callout_strip(slide, area_l,
+                                Emu(top + h.emu + Inches(0.25).emu), area_w,
+                                callout.get('lead', ''), callout.get('body', ''))
+        self._footer(slide)
+
+    def add_comparison(self, label='', title='', subtitle='', left=None,
+                       right=None, chips=None, arrow=True, callout=None):
+        """Before→after two-tone comparison: red-accented 'from' card, arrow,
+        blue-accented 'to' card. Optional chip row + navy callout below.
+        left/right = {eyebrow, body|bullets, tone, accent, eyebrow_color, weight}."""
+        slide = self._new_slide(self.WHITE)
+        self._content_header(slide, label, title, subtitle)
+        area_l = self.ML
+        area_w = Emu(int(self.SLIDE_W.emu * 0.88))
+        band_top, band_avail = self._band()
+        top = Emu(band_top)
+        if chips and callout:
+            avail = band_avail - Inches(1.45).emu
+        elif chips or callout:
+            avail = band_avail - Inches(0.95).emu
+        else:
+            avail = band_avail
+        arrow_w = Inches(0.45) if arrow else Inches(0.0)
+        gap = Inches(0.12)
+        lw = left.get('weight', 1.0) if left else 1.0
+        rw = right.get('weight', 1.0) if right else 1.0
+        usable = Emu(area_w - arrow_w.emu - gap.emu * 2)
+        lcw = Emu(int(usable * lw / (lw + rw)))
+        rcw = Emu(usable - lcw)
+        # Content-sized height — tallest of the two cards, capped.
+        present = [(c, w) for c, w in ((left, lcw), (right, rcw)) if c]
+        h = self._row_card_h([c for c, _ in present], [w for _, w in present], avail)
+        x = area_l
+        if left:
+            self._card(slide, x, top, lcw, h, tone=left.get('tone', 'off'),
+                       eyebrow=left.get('eyebrow'),
+                       eyebrow_color=left.get('eyebrow_color', self.RED),
+                       body=left.get('body'), bullets=left.get('bullets'),
+                       accent=left.get('accent', 'red'))
+        x = Emu(x + lcw + gap.emu)
+        if arrow:
+            ar = self._txt(slide, '→', x, Emu(top + h.emu // 2 - Inches(0.3).emu),
+                           arrow_w, Inches(0.6), size=Pt(22),
+                           color=self.TEXT_MUTED, align=PP_ALIGN.CENTER)
+        x = Emu(x + arrow_w.emu + gap.emu)
+        if right:
+            self._card(slide, x, top, rcw, h, tone=right.get('tone', 'blue'),
+                       eyebrow=right.get('eyebrow'),
+                       eyebrow_color=right.get('eyebrow_color', self.BLUE),
+                       body=right.get('body'), bullets=right.get('bullets'),
+                       accent=right.get('accent', 'blue'))
+        cy = Emu(top + h.emu + Inches(0.25).emu)   # follow the cards, don't float low
+        if chips:
+            self._chip_row(slide, chips, area_l, cy, area_w)
+            cy = Emu(cy + Inches(0.4).emu)
+        if callout:
+            self._callout_strip(slide, area_l, cy, area_w,
+                                callout.get('lead', ''), callout.get('body', ''))
+        self._footer(slide)
+
+    def add_options(self, label='', title='', subtitle='', options=None):
+        """Option cards (2–4). option = {tag, title, body, led_by, led_by_color,
+        recommended}. The recommended card gets a blue border + RECOMMENDED badge."""
+        options = options or []
+        slide = self._new_slide(self.WHITE)
+        self._content_header(slide, label, title, subtitle)
+        n = len(options)
+        if n == 0:
+            self._footer(slide); return
+        area_l = self.ML
+        area_w = Emu(int(self.SLIDE_W.emu * 0.88))
+        band_top, band_avail = self._band()
+        top = Emu(band_top)
+        avail = band_avail
+        gap = Inches(0.2)
+        cw = Emu((area_w - gap.emu * (n - 1)) // n)
+        inner_in = (cw.emu - Inches(0.36).emu) / self._EMU_IN
+
+        def _opt_h(opt):
+            hh = 0.18 + 0.30 + 0.62 + 0.18          # pad + tag + title + bottom pad
+            hh += self._text_block_h(opt.get('body', ''), inner_in, 9.5) + 0.05
+            if opt.get('led_by'):
+                hh += 0.25 + 0.70                    # gap + led-by footer block
+            return max(hh, 1.6)
+
+        # Option cards carry top (tag/title/body) + bottom (led-by) content, so a
+        # little comfort makes them read fleshed-out without internal float.
+        est_emu = int((max(_opt_h(o) for o in options) + 0.40) * self._EMU_IN)
+        h = Emu(min(max(est_emu, int(self.CARD_MIN_IN * self._EMU_IN)), avail))
+        x = area_l
+        for opt in options:
+            rec = opt.get('recommended')
+            tone_fill = self.LIGHT_BLUE if rec else self.OFF_WHITE
+            border = self.BLUE if rec else self.BORDER
+            self._round_rect(slide, x, top, cw, h, tone_fill, border=border,
+                             line_w=Pt(1.5) if rec else Pt(0.75))
+            pad_l = x + Inches(0.18)
+            pad_w = Emu(cw - Inches(0.36).emu)
+            cy = top + Inches(0.18)
+            # tag (Option N)
+            self._eyebrow(slide, opt.get('tag', ''), pad_l, cy, pad_w,
+                          self.BLUE if rec else self.TEXT_MUTED)
+            cy = cy + Inches(0.3)
+            # title
+            self._txt(slide, opt.get('title', ''), pad_l, cy, pad_w, Inches(0.6),
+                      size=Pt(12), color=self.NAVY, bold=True)
+            cy = cy + Inches(0.62)
+            # body
+            tb = slide.shapes.add_textbox(pad_l, cy, pad_w, Inches(2.0))
+            tf = tb.text_frame; tf.word_wrap = True
+            tf.auto_size = MSO_AUTO_SIZE.NONE
+            p = tf.paragraphs[0]; p.line_spacing = 1.25
+            self._rich_paragraph(p, parse_rich_runs(opt.get('body', '')),
+                                 Pt(9.5), self.TEXT_DARK)
+            # led-by footer
+            led = opt.get('led_by')
+            if led:
+                fy = Emu(top + h.emu - Inches(0.70).emu)   # anchored to card bottom
+                divc = self.BLUE if rec else self.BORDER
+                d = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, pad_l, fy,
+                                           pad_w, Pt(0.75))
+                d.fill.solid(); d.fill.fore_color.rgb = divc
+                d.line.fill.background(); d.shadow.inherit = False
+                self._eyebrow(slide, 'Upgrade led by', pad_l,
+                              fy + Inches(0.08), pad_w,
+                              self.BLUE if rec else self.TEXT_MUTED, size=Pt(7))
+                self._txt(slide, led, pad_l, fy + Inches(0.34), pad_w,
+                          Inches(0.3), size=Pt(11),
+                          color=opt.get('led_by_color', self.NAVY), bold=True)
+            # RECOMMENDED badge
+            if rec:
+                bw = Inches(1.5)
+                badge = slide.shapes.add_shape(
+                    MSO_SHAPE.ROUNDED_RECTANGLE,
+                    Emu(x + cw - bw.emu - Inches(0.15).emu),
+                    Emu(top - Inches(0.14).emu), bw, Inches(0.32))
+                try:
+                    badge.adjustments[0] = 0.5
+                except Exception:
+                    pass
+                badge.fill.solid(); badge.fill.fore_color.rgb = self.BLUE
+                badge.line.fill.background(); badge.shadow.inherit = False
+                btf = badge.text_frame; btf.word_wrap = False
+                btf.margin_top = 0; btf.margin_bottom = 0
+                bp = btf.paragraphs[0]; bp.alignment = PP_ALIGN.CENTER
+                br = bp.add_run(); br.text = 'RECOMMENDED'
+                br.font.size = Pt(8); br.font.bold = True
+                br.font.name = self.FONT; br.font.color.rgb = self.WHITE
+            x = Emu(x + cw + gap.emu)
+        self._footer(slide)
+
+    def add_timeline(self, label='', title='', subtitle='', milestones=None,
+                     callout=None):
+        """Horizontal milestone timeline — a connector line with coloured nodes
+        and a card under each (title · body · coloured footer). Cleaner than a
+        Gantt for a 'journey'/sequence story.
+        milestone = {node, title, body, footer, accent ('blue'|'red'|'green'|
+                     'amber'|'navy'), tone ('off'|'blue'|'red')}."""
+        milestones = milestones or []
+        slide = self._new_slide(self.WHITE)
+        self._content_header(slide, label, title, subtitle)
+        n = len(milestones)
+        if n == 0:
+            self._footer(slide); return
+        red_tint = RGBColor(0xFA, 0xE0, 0xDE)
+        area_l = self.ML.emu
+        area_w = int(self.SLIDE_W.emu * 0.88)
+        gap = Inches(0.2).emu
+        cw = (area_w - gap * (n - 1)) // n
+        centers = [area_l + cw // 2 + i * (cw + gap) for i in range(n)]
+
+        # Connector line between first and last node
+        line_y = int(self.SLIDE_H.emu * 0.47)
+        ln = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Emu(centers[0]),
+                                    Emu(line_y), Emu(centers[-1] - centers[0]), Pt(2.5))
+        ln.fill.solid(); ln.fill.fore_color.rgb = self.BORDER
+        ln.line.fill.background(); ln.shadow.inherit = False
+
+        # Node labels + dots
+        for i, m in enumerate(milestones):
+            acc = self.ACCENT.get(m.get('accent', 'blue'), self.BLUE)
+            cx = centers[i]
+            self._txt(slide, m.get('node', ''), Emu(cx - cw // 2),
+                      Emu(line_y - Inches(0.42).emu), Emu(cw), Inches(0.3),
+                      size=Pt(10), color=acc, bold=True, align=PP_ALIGN.CENTER)
+            dd = Inches(0.2).emu
+            dot = slide.shapes.add_shape(MSO_SHAPE.OVAL, Emu(cx - dd // 2),
+                                         Emu(line_y - dd // 2 + Pt(1).emu), Emu(dd), Emu(dd))
+            dot.fill.solid(); dot.fill.fore_color.rgb = acc
+            dot.line.color.rgb = self.WHITE; dot.line.width = Pt(2.5)
+            dot.shadow.inherit = False
+
+        # Cards below — content-sized + comfortable (same discipline as cards)
+        card_top = int(self.SLIDE_H.emu * 0.55)
+        band_bottom = int(self.SLIDE_H.emu * (0.79 if callout else 0.90))
+        inner_in = (cw - Inches(0.36).emu) / self._EMU_IN
+
+        def _mile_h(m):
+            hh = 0.18 + 0.42 + 0.18
+            hh += self._text_block_h(m.get('body', ''), inner_in, 9.5) + 0.05
+            if m.get('footer'):
+                hh += 0.46
+            return hh
+        est_emu = int((max(_mile_h(m) for m in milestones) + 0.25) * self._EMU_IN)
+        card_h = min(est_emu, band_bottom - card_top)
+
+        for i, m in enumerate(milestones):
+            x = area_l + i * (cw + gap)
+            acc = self.ACCENT.get(m.get('accent', 'blue'), self.BLUE)
+            tone = m.get('tone')
+            fill = (red_tint if tone == 'red' else
+                    self.LIGHT_BLUE if tone == 'blue' else self.OFF_WHITE)
+            self._round_rect(slide, Emu(x), Emu(card_top), Emu(cw), Emu(card_h), fill)
+            pad_l = Emu(x + Inches(0.18).emu)
+            pad_w = Emu(cw - Inches(0.36).emu)
+            cy = card_top + Inches(0.18).emu
+            self._txt(slide, m.get('title', ''), pad_l, Emu(cy), pad_w, Inches(0.4),
+                      size=Pt(12), color=self.NAVY, bold=True)
+            cy += Inches(0.46).emu
+            tb = slide.shapes.add_textbox(pad_l, Emu(cy), pad_w, Inches(1.6))
+            tf = tb.text_frame; tf.word_wrap = True; tf.auto_size = MSO_AUTO_SIZE.NONE
+            p = tf.paragraphs[0]; p.line_spacing = 1.2
+            self._rich_paragraph(p, parse_rich_runs(m.get('body', '')), Pt(9.5),
+                                 self.TEXT_DARK)
+            if m.get('footer'):
+                self._txt(slide, m['footer'], pad_l,
+                          Emu(card_top + card_h - Inches(0.40).emu), pad_w,
+                          Inches(0.3), size=Pt(9), color=acc, bold=True)
+
+        if callout:
+            self._callout_strip(slide, self.ML, Emu(int(self.SLIDE_H.emu * 0.83)),
+                                Emu(area_w), callout.get('lead', ''),
+                                callout.get('body', ''))
+        self._footer(slide)
 
     # ══════════════════════════════════════════════════════
     #  OUTPUT
