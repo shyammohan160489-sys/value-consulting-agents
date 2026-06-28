@@ -1,103 +1,81 @@
-# ShyamOS — Architecture & Roadmap (v2)
+# ShyamOS — Architecture (v3, simplified)
 
 **Generated:** 2026-06-28
-**What it is:** the reference architecture + phased roadmap for ShyamOS — the digital twin of Shyam: a multi-modal, complementary intelligence that extends the human, creates value *for* him (incl. capabilities he lacks today, e.g. investing), and value *in the world* (consulting + IP).
-**Naming:** contemporary, with a light thread of character. The medieval "small council" was a useful sketch; this is it in working clothes. **Adversary** and **Governor** kept — they were right.
+**What it is:** the digital twin of Shyam — a complementary intelligence that extends the human across every facet (work, finance, marketing, ops, ethics, leadership), creates value *for* him and *in the world*.
+
+> **Naming is a skin, not the structure.** The structure below is stable. The names are a light identity layer you can re-skin anytime (sci-fi, fantasy, Marvel, whatever) without changing a thing. Only the **key faculties** are named; smaller functions **nest inside** them.
 
 ---
 
 ## Principles
 
-1. **MVP-first — never break what works.** The current setup (your judgement + Cortex craft + knowledge) already functions. Every layer below is *additive*. None replaces the MVP.
-2. **The twin extends, never replaces.** All authority flows from Shyam (the Principal). The system advises and acts *within mandate*; he keeps taste, intent, and final say.
-3. **One responsibility per component** (MECE). If two want the same job, the design is wrong.
-4. **Governance is the floor, not a feature** — especially for money and outward action. Autonomy is granted per component, never assumed.
-5. **Memory is the keystone.** Most of the intelligence depends on it. Build it early.
+1. **MVP-first — never break what works.** Today's setup already functions; everything is an additive layer.
+2. **Six faculties, not thirteen.** Group by job. If two want the same job, merge them.
+3. **The twin extends, never replaces.** Authority flows from Shyam; the twin acts within mandate.
+4. **Governance is the floor** — especially for money and outward action.
+5. **No silent regressions.** Every change to a faculty passes the Foil's eval-gate before it ships (see Build discipline).
 
 ---
 
-## The components (contemporary)
+## The six faculties (+ you)
 
-| Component | Function | Autonomy (A1–A5) | (court sketch) |
+| Faculty | What it is | Nests | Autonomy |
 |---|---|---|---|
-| **Shyam — the Principal** | intent, mandate, taste, final say | — | Sovereign |
-| **Chief of Staff** | orchestration — route a request to the right components, sequence, synthesise one answer | A4 | the Hand |
-| **the Vault** | memory — identity, every engagement, decision, correction, the corpus of work | A4 recall · A2 write | Chronicler |
-| **the Persona** | the model of *you* — taste, voice, values, red lines, decision-style. What makes it a *twin* | reference (read by all) | (new — was a gap) |
-| **the Playbook** | canon — methods, design system, narrative spine, pricing methodology, domain knowledge | A4 | Loremaster |
-| **the Studio** | production — forge the artifacts (decks, docs, models, prototypes). **Cortex lives here** | A4 | Artificer |
-| **the Foil** | critique — **Adversary** generates the challenge, **Governor** gates when it earns the interruption; dispatches to rigour on an evidence gap | A2 | (kept) |
-| **the Scout** | intelligence — outside-in market/client/competitor signal, verification, stakeholder map | A3 | Whisperer |
-| **the Forecaster** | foresight — scenarios, prediction, timing. Most bias-prone; never speaks without the Foil | A1–A2 | Oracle |
-| **the Modeler** | quantification — ROI, value math, pricing | A3 | Master of Coin (deals) |
-| **the Treasurer** | personal capital — investing, "make money work" (your Privy Purse) | A1 → earns up | Master of Coin (money) |
-| **the Operator** | action — send, schedule, deploy, trade, within mandate | A3 | Steward |
-| **the Warden** | governance — the mandate, the autonomy dial, the audit trail, hard guardrails on money & outward action | sets everyone's level | Justiciar |
+| **You — the Principal** | intent, taste, final say | — | — |
+| **the Mind** | what ShyamOS knows and *is* | **Persona** (model of you) · **Memory** (what happened) · **Playbook** (your methods + design system) | A4 recall / A2 write |
+| **the Studio** | where work gets made — **Cortex lives here** | design system · skills · tools · **Modeler** (ROI/value math) | A4 |
+| **the Foil** | the critic + quality gate | **Adversary** (challenges) · **Governor** (gates when it's worth it) · routes to rigour | A2 |
+| **the Watch** | eyes outward & forward | **Scout** (senses now) · **Forecaster** (sees ahead) | A3 |
+| **the Hands** | does things in the world | **Operator** (send/deploy/publish) · **Treasurer** (moves money) | A3 (A1 for money) |
+| **the Warden** | the law (cross-cutting) | mandate · the A1–A5 autonomy dial · audit | sets the others' levels |
 
----
-
-## Layers
+**Infrastructure (not faculties — just how it runs):**
+- **the Console** — the interface where you command and get briefed (the MVP is Claude Code; graduate to a chat/voice/morning-brief later). Must do four things: **brief · command · approve · review.**
+- **the runtime** — routes a request to the right faculties. (No "character" needed; it's the OS.)
 
 ```
-  Principal      Shyam — intent, mandate, taste, final say
-      │
-  Command        Chief of Staff — orchestration
-      │
-  Cognition      Vault · Persona · Playbook · Scout · Forecaster · Modeler · the Foil
-      │
-  Production     the Studio — the forge   ◄── Cortex resides here
-      │
-  Action         the Operator — execution into the world
-      │
-  ──────────────────────────────────────────────────
-  Governance     the Warden — mandate · autonomy (A1–A5) · audit   (wraps Command→Action)
+  You ─ the Console (interface) ─ the runtime (routing)
+        │
+        Mind · Studio · Foil · Watch · Hands
+        │
+        the Warden  (governance wraps all of it)
 ```
 
-Cortex is **not** ShyamOS — it's the Studio *inside* it. You keep its craft; it sits as one layer under a twin that also remembers, knows *you*, senses, foresees, critiques, governs, and acts.
+That's it. Six faculties, one of which (the Studio) is where your current Cortex craft lives — so the MVP already runs faculties 1–3 in basic form today.
 
 ---
 
-## The roadmap — MVP-first, additive, phased
+## Life-domains × faculties (one grid, not a system per domain)
 
-**Phase 0 — the MVP (already works · DO NOT TOUCH).**
-= the Principal + the Studio (Cortex) + the Playbook (your knowledge) + a basic Vault (your memory files & engagement folders). This is how you work today, and it functions. Everything below is an additive layer.
+Faculties are horizontal; your life-domains are vertical. The same six serve all of them:
 
-**Phase 0.5 — Stabilise the base (the backlog · do first).**
-Tidy the workshop before adding wings — and this does **not** change how output is produced: repo clean-up (commit the working tree, keep Frontline 2026, adopt the additive upstream bits — question bank, Pictet ref deck, Banking OS v4.0 as *reference*), skip the dev/eval layer. This is the decided-but-unexecuted backlog. Foundation, not enhancement.
+| Domain | Served by |
+|---|---|
+| Finance (personal) | Treasurer + Modeler + Watch, under the Warden's risk limits |
+| Marketing | Studio (content) + Mind/Persona (voice) + Watch (trends) + Hands (publish) |
+| Operations / execution | Hands + runtime + Warden |
+| Ethics | Mind/Persona (values, red lines) + Warden (guardrails) + Foil |
+| Leadership | Mind/Persona + Mind/Playbook (methods) + Foil (pressure-test) |
 
-**Phase 1 — Judgement + memory + self (now, low barrier).**
-- the **Foil L1** (Adversary + Governor, pure text, runnable this week)
-- the **Vault** proper (memory spine / second-brain — the keystone)
-- the **Persona** v0 (start capturing your taste/voice/red-lines — build it *with* the Vault)
-- the **Warden** v0 (write the mandate + autonomy dial before anything can act)
-- **your-canon evals** (the deep-mechanic backlog item — the Studio's quality bar + the Foil's standards)
-
-**Phase 2 — Sensing + orchestration (needs the Vault).**
-- the **Foil L2** (independent, verifying, memory-backed)
-- the **Scout** (wire in research/profile tools)
-- the **Chief of Staff** (real routing across components)
-- the **Modeler** (deliberately adopt Cortex's ROI/pricing tools)
-
-**Phase 3 — The new powers (highest value + governance, born under the Warden).**
-- the **Forecaster** (foresight)
-- the **Treasurer** (personal investing — the "make my money work" ambition; starts A1)
-- the **Operator** (action/execution; outward actions gated A3)
-
-Trust is earned **per component, over time** — graduate A2→A3 on track record, never by default. Exactly how you'd advise a bank to roll out agents, applied to yourself.
+**Ethics and leadership aren't components — they're encoded in the Persona and enforced by the Warden + Foil.** That's why the Persona is the must-have: it's where your character lives.
 
 ---
 
-## What you're missing (the architect's gap pass)
+## Build discipline (the dev/eval principle, adopted — not the hooks)
 
-1. **The Console — where you actually command the council.** Lots of faculties, no defined *interface*. Today it's Claude Code in a terminal; that's fine as MVP, but ShyamOS needs one consistent surface (chat / voice / a morning dashboard) — the throne room. Biggest practical gap; decide the surface before you scale the components.
-2. **The Persona — the model of *you*** (now added above). The Vault stores *what happened*; nothing yet encodes *how you think* — your taste, voice, values, red lines. Without it, it's a sharp assistant, not a twin. This is the defining piece; build it alongside the Vault in Phase 1.
-3. **The learning loop.** How does it get *better at being you*? Corrections must flow back into the Persona + Playbook — your own flywheel (the thing Cortex's evals do for the team). Otherwise it plateaus.
-4. **Security & privacy boundary.** It will hold your life, clients' confidential data, and your money. The Warden owns this — flag now: data isolation, and the impersonation line (it *amplifies* you; it never *poses* as you outward without approval).
+The team made their bb-* harness + evals *mandatory* for a real reason: a document factory has no compiler, so **the eval suite IS the compiler** — a change to an agent/skill can silently regress quality and nothing catches it. That principle is worth keeping; the *hooks* that enforce it in the team repo hamper how you work, so we don't adopt those.
+
+- **In the team repo:** skip the gating hooks. (Reminder: *"skip all"* = none of bb-*/evals in your repo; *"files only"* = the files present but hooks off. We're doing files-off-hooks, keeping only the eval **rubrics** as reference.)
+- **In ShyamOS:** adopt the *principle* as law — **no faculty change ships without passing the Foil's eval-gate.** The gate lives in the Foil; the Warden enforces it. Upstream's "final-check rubric — before any output goes out" (see `knowledge/reference/banking-os-v4-DELTA.md`) is a ready seed for that rubric.
 
 ---
 
-## A day in the twin's service
+## Roadmap (MVP-first, additive)
 
-> Morning: the **Scout** has read overnight — a competitor move at Pictet, an org change at AIB, two market shifts touching your Privy Purse. The **Forecaster** flags one deal trending to slip and one position drifting past its risk band. The **Chief of Staff** convenes: the **Playbook** supplies the method, the **Persona** keeps it sounding like *you*, the **Studio** drafts the response on-brand, the **Foil** red-teams it before coffee and routes one number to the **Modeler** because it was asserted, not evidenced. The **Treasurer** proposes a rebalance; the **Warden** holds it at "recommend" — it's money — so it waits for your nod. You glance, approve two, kill one. The **Operator** sends and schedules. The **Vault** logs all of it — so tomorrow the twin is sharper, and in six months the Foil catches the mistake you were about to repeat.
+- **Phase 0 — MVP (works, don't touch):** You + the Studio (Cortex) + the Mind (basic — your knowledge + memory files).
+- **Phase 0.5 — Stabilise (DONE):** repo clean + backed up, additive bits adopted, junk ignored.
+- **Phase 1 — now:** Foil L1 (runnable today) · the Mind proper (Persona v0 + Memory spine) · Warden v0 · your-canon evals.
+- **Phase 2 — needs the Mind:** Foil L2 (independent, verifying) · the Watch · the runtime (real routing) · the Modeler.
+- **Phase 3 — new powers, under the Warden:** Forecaster · Treasurer (money, A1) · the Hands (action).
 
-Not a faster typist — a council that lets one person operate like ten, without losing the one thing that's yours: your judgement.
+**Still open / to decide later:** the Console surface (which interface), and the learning loop (corrections flow back into Persona + Playbook — your own flywheel).
