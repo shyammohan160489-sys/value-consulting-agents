@@ -7,8 +7,7 @@
     "verified_against": "ppt/theme/theme1.xml (primary) and ppt/theme/theme2.xml (secondary/dark variant)",
     "supersedes": [
       "presentations/frontline-2026/design-tokens.json (drifted: #001C3D / #1A5AFF — present in NEITHER master theme; appears to have been hand-typed from a screenshot)",
-      "presentations/backbase-slides-app/engine.js prior values (used Theme 2 values #091C35 / #3366FF — visually identical but secondary palette)",
-      "Sparekassen Danmark DSD template original (was actually correct — matched Theme 1)"
+      "presentations/backbase-slides-app/engine.js prior values (used Theme 2 values #091C35 / #3366FF — visually identical but secondary palette)"
     ],
     "note_two_palettes": "The Master Template ships TWO palettes. Theme 1 is canonical (primary). Theme 2 is a documented secondary variant — its navy/blue are one digit off and visually imperceptible. Use Theme 1 unless you have a specific reason for Theme 2."
   },

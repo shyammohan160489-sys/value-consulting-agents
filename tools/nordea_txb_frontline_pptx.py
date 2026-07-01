@@ -293,11 +293,11 @@ p.add_tiles_slide(
     ]
 )
 
-# ── 12. Handoff to Micha ──
+# ── 12. Handoff to live demo ──
 p.add_section_divider(
     "Product Showcase",
     "What this looks like\nin practice",
-    "Micha Kroes \u2014 Principal Solutions Engineer"
+    "Principal Solutions Engineer"
 )
 
 # ── Save ──

@@ -326,11 +326,11 @@ h.add_tiles(
     ]
 )
 
-# ── 12. Handoff to Micha ──
+# ── 12. Handoff to live demo ──
 h.add_section_divider(
     "Product Showcase",
     "What this looks like |in practice",
-    "Micha Kroes — Principal Solutions Engineer"
+    "Principal Solutions Engineer"
 )
 
 # ── Save ──

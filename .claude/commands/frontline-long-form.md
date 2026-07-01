@@ -109,6 +109,3 @@ Use these `.val` color classes in `.hero__stat` to signal sentiment:
 - `.purple` — financial value (€, $)
 - `.amber` — risk or caution figures
 
-## Lineage
-
-This skill is the long-form sibling of the Frontline 2026 slides system. It originated as the Sparekassen Danmark DSD (Micha Kroes, Apr 2026) and was integrated into the Frontline family with reconciled tokens on 2026-04-29.

@@ -98,12 +98,12 @@ p.add_process_rows_slide(
 )
 
 # ═══ 9. DEMO HANDOFF ═══
-p.add_section_divider("Live Platform Demo", "Let's see it\nin action.", "The Unified Frontline — customer + employee on one platform. Micha Kroes, Principal Solutions Engineer.")
+p.add_section_divider("Live Platform Demo", "Let's see it\nin action.", "The Unified Frontline — customer + employee on one platform. Presented live by Solutions Engineering.")
 
 # ═══ 10. 5-LAYER CONTROL PLANE ═══
 p.add_architecture_stack_slide(
     title="Where each capability lives in the Banking OS",
-    subtitle="Five layers. What Micha just showed you operates across them.",
+    subtitle="Five layers. What you just saw in the demo operates across them.",
     section_label="The Control Plane",
     layers=[
         {"label": "Interaction — Customers + Employees", "items": [{"name": "Customer Assist (CSR)"}, {"name": "RM/Advisor Workspace"}, {"name": "Customer Apps"}, {"name": "Conversational AI"}], "bg_hex": "#EBF0FF", "accent_hex": "#1A5AFF"},

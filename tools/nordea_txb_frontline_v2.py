@@ -1018,7 +1018,7 @@ NOTES[11] = (
     "banking, compliance databases, document management, regulatory reporting. "
     "We don\'t replace any of them. We orchestrate across them.'\n\n"
     "TRANSITION: 'Let me zoom out one more level to show you the full picture — "
-    "and then hand over to Micha who can show you what this looks like live.'"
+    "and then hand over to our Solutions Engineer who can show you what this looks like live.'"
 )
 
 # ── Slide C: Full Banking OS Macro View ──
@@ -1104,7 +1104,7 @@ h.scenes.append('''
       </div>
     </section>''')
 NOTES[12] = (
-    "This is the full Banking OS view. 60 seconds max \u2014 then hand to Micha.\n\n"
+    "This is the full Banking OS view. 60 seconds max \u2014 then hand to the live demo.\n\n"
     "PITCH: 'And this is the full picture. Three actors \u2014 customers, employees, "
     "and AI agents \u2014 all operating through one unified frontline.\n\n"
     "Underneath, the Banking OS does three things. It understands the frontline \u2014 "
@@ -1116,7 +1116,7 @@ NOTES[12] = (
     "This is what you just saw applied to trade finance. But it works the same way "
     "for payments operations, cash management, entity onboarding \u2014 any domain "
     "where the work breaks in the handoffs between systems.\n\n"
-    "Micha can show you what this looks like live.'"
+    "Our Solutions Engineer can show you what this looks like live.'"
 )
 
 # ── 10. Danske Bank — in production ──
@@ -1203,15 +1203,15 @@ NOTES[15] = (
     "What feels like the right next step for you?'"
 )
 
-# ── 14. Handoff to Micha ──
+# ── 14. Handoff to live demo ──
 h.add_section_divider(
     "Product Showcase",
     "What this looks like |in practice",
-    "Micha Kroes \u2014 Principal Solutions Engineer"
+    "Principal Solutions Engineer"
 )
 NOTES[16] = (
-    "Handoff to Micha.\n\n"
-    "PITCH: 'Let me hand over to Micha, who can show you what some of this "
+    "Handoff to live demo.\n\n"
+    "PITCH: 'Let me hand over to our Solutions Engineer, who can show you what some of this "
     "looks like in practice \u2014 particularly the operations workspace and "
     "how agentic workflows work in a real banking context.'"
 )
@@ -1570,7 +1570,7 @@ p.add_tiles_slide(
 )
 
 # 14. Handoff
-p.add_section_divider("Product Showcase", "What this looks like\nin practice", "Micha Kroes \u2014 Principal Solutions Engineer")
+p.add_section_divider("Product Showcase", "What this looks like\nin practice", "Principal Solutions Engineer")
 
 # Add speaker notes to PPTX slides
 for idx, note in sorted(NOTES.items()):

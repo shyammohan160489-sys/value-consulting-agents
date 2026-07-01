@@ -384,8 +384,6 @@ The **default format for long-form scrolling documents** — value cases, ROI su
 - `templates/long-form/document-template.html` — CSS + class library
 - `.claude/commands/frontline-long-form.md` — skill prompt
 
-**Lineage:** Originated as the Sparekassen Danmark DSD (Micha Kroes, Apr 2026) and was integrated into the Frontline family with reconciled tokens on 2026-04-29.
-
 ### /executive-briefing — Bespoke HTML Presentation Builder
 
 For **hand-authored, pixel-perfect presentations** where every scene is individually crafted. Use when the standard 17 layouts aren't enough and you need custom SVG charts, journey maps, or architecture diagrams.
