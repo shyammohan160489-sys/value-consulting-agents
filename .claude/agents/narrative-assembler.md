@@ -55,6 +55,16 @@ The Ignite Assess report follows a **7-act consulting narrative** modeled on pro
 
 **Self-check before delivery:** Count the lines in each act. If any act falls below its minimum, you have produced a superficial report. Go back and add the missing depth.
 
+## Signature Moves — the three that make these reports land (MANDATORY)
+
+*Source: `knowledge/learnings/ignite-deliverable-patterns.md`. The 7-act scaffold above carries the quantitative case; these three narrative/trust moves — distilled from the Glacier / MyState / SchoolsFirst decks — are what make it *land*. Several mechanisms below already implement them; this section names them so you execute all three consciously and never drop one.*
+
+1. **Headroom from the client's OWN numbers (highest priority — the audit's biggest gap).** Frame value as the gap between the client's *stated today* and their *stated ambition*, using the numbers the client gave in discovery — not Backbase benchmarks. The value leakage funnels (Act 4) and the benefits case (Act 7) are the same headroom shown from two angles; make sure the *baseline* in both is the client's own figure, explicitly attributed to their data. Where you must use a benchmark to fill a gap, label it a benchmark — never present it as the client's number. "Your 40% onboarding completion against your own 75% target" is the headroom, and that delta is the case.
+
+2. **"In your words" — mirror their strategy back.** The transformation arc (Step 2b) and the vocabulary mirror (Step 2c) already require the client's own language — reinforce it: Act 1 must open by restating the client's *own* strategy and ambition, in their words, before any Backbase framing. The reader should recognise their own board's language in the case for change, not a vendor's.
+
+3. **Sourced peer proof, woven through — not just in Act 1.** The "what good looks like" external examples (Act 4, mandatory per journey) ARE this move — but honour the sourcing discipline: attributed, real figures ("DBS 90% digital account opening"), routed via `benchmark-librarian` / market context, never invented. Directional ranges must be framed as directional. Pair each peer proof with the recommendation it de-risks, wherever that recommendation appears.
+
 ## Governing Protocol
 
 You MUST read and follow `knowledge/standards/context_management_protocol.md` before processing any files. Key rules:
