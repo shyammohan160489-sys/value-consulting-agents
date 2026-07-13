@@ -3,7 +3,7 @@
 This registry tracks all knowledge extracted from past engagements into the agent system.
 
 ## Last Updated
-2026-02-06
+2026-06-04
 
 ## Extraction Statistics
 
@@ -17,6 +17,18 @@ This registry tracks all knowledge extracted from past engagements into the agen
 | Capability Framework Files | 0 |
 | Competitor Analysis Files | 0 |
 | Engagement Pattern Files | 1 |
+| Pipeline Gap Files | 1 |
+
+---
+
+## Pipeline Gaps (capability learnings)
+
+Structural gaps in the agent pipeline surfaced by live engagements — recurring deliverable archetypes
+built bespoke because no skill/agent covers them. See `pipeline_gaps/`.
+
+| Gap | Surfaced by | Phase-1 specs | Status |
+|-----|-------------|---------------|--------|
+| Commercial / Deal-Desk track (Cortex proves *value*, can't structure *price*) | Enterprise wealth deal, EMEA, AUM-priced, 2026-Q2 | `/deal-notes`, `/pricing-model` | Specs drafted · awaiting Architect pickup |
 
 ---
 

@@ -4,6 +4,8 @@
 # Version: 1.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
+> **⚠️ CANONICAL PRODUCT MODEL — read first (applies to the whole Ignite pack).** The current Backbase product model is the **AI-Native Banking OS** defined in [`knowledge/product/banking-os.md`](../product/banking-os.md) (**product substance**) and [`knowledge/design-system/narrative-spine.md`](../design-system/narrative-spine.md) (**voice**). Banking OS = the **control plane** of the Unified Frontline · **Nexus** (shared truth) + **Sentinel** (governed execution) · 2 domains (Customer Engagement · Banking Operations) → **4 solutions** (Digital Banking · Conversational Banking · Relationship Intelligence · Customer Operations) · **Resolution Loops** · **three value pools** ($150–300M+). Throughout this pack and its agent files, any **"Engagement Banking Platform / omnichannel / digital experience / three-plane / 6-product-suite / Grand Central / Digital Assist / Digital Engage"** framing is **superseded** — treat it as legacy vocabulary and re-base on banking-os.md. Lead every deliverable on the operating-model **From→To** story, not "better channels / better experience." For AI/agentic and operations use-cases, tap the **APA Domain Matrix** (`knowledge/domains/apa-matrix/`).
+
 ## 📚 Documentation
 
 | Document | Purpose |

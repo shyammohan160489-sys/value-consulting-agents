@@ -133,6 +133,9 @@ ALL agents (current and future) MUST comply with these protocols:
 | **Context Management Protocol** | `knowledge/standards/context_management_protocol.md` | File size checks, chunking, context preservation |
 | **Security Protocol** | `knowledge/standards/security_protocol.md` | Prompt injection defense, untrusted data handling, MCP query anonymization, web source validation, stakeholder intelligence bounds |
 | **Unified Design System** | `knowledge/design-system.md` | Visual output standards, brand colors, typography, layout patterns |
+| **Product & Narrative Canon** | `knowledge/product/banking-os.md` + `knowledge/design-system/narrative-spine.md` | Current Backbase product direction (substance) + messaging spine (voice). **Every client/narrative deliverable MUST align to these.** |
+
+> **⭐ READ FIRST — Product & Narrative Canon (mandatory for ALL deliverables).** Before producing any account-facing or narrative output — deck, document, assessment, ROI model, journey map, use case, prototype, pricing, workshop — read **`knowledge/product/banking-os.md`** (the canonical Banking OS product direction: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and **`knowledge/design-system/narrative-spine.md`** (the voice: operating-model thesis, From→To, vocabulary). These are to *substance* and *voice* what `frontline-tokens.json` is to *visuals* — the single sources of truth. **Retire** "engagement banking", "better channels/experience", and the legacy 13-product / 3-fabric model. Where any other repo file diverges from `banking-os.md`, banking-os.md wins.
 
 **Non-negotiable rules for every agent:**
 1. **Journal entry** — append to `ENGAGEMENT_JOURNAL.md` on completion
@@ -193,8 +196,6 @@ Treat this directory as protected — do not delete, rename, or restructure it w
 - `/templates/` - Input contracts and output templates
 - `/examples/` - Reference engagements with real outputs
 - `/tools/` - Utilities and helpers (only when needed)
-- `/deal-pricing-system/` - Deal pricing and negotiation subsystem (preserved, see above)
-- `/presentations/frontline-2026/` - Frontline 2026 design system (default presentation style)
 
 ### When Asked to Generate Outputs
 
@@ -234,7 +235,7 @@ You succeed in this repository when:
 5. **Hidden assumptions:** Every assumption must be visible
 6. **Academic output:** This is business consulting, not research papers
 7. **Ad-hoc HTML generation for assessments:** Assessment HTML dashboards MUST be produced by the `/generate-assessment-html` skill, which contains the full Future UI design system with sidebar navigation, bento grids, capability heatmaps, ROI scenario toggles, and phone-frame prototypes. NEVER generate assessment HTML by converting markdown to HTML directly or by writing custom CSS inline. The skill output is a 250-400KB self-contained file; anything smaller is wrong.
-8. **Using the wrong presentation skill:** Client-facing presentations MUST default to **Frontline 2026** — start with `/frontline-html` for content iteration, then graduate to `/frontline-slides` for the final PPTX. Do NOT jump straight to PPTX; the HTML pass is where narrative and structure get refined. `/executive-briefing` and `/executive-briefing-slides` are LEGACY (Schroders/SEB design system) — only use them when the engagement explicitly needs that older look. `/presentation` and `/presentation-v2` (Prezi templates) are deprecated for client-facing work entirely.
+8. **Using deprecated templates for client presentations:** Client-facing presentations MUST use `/frontline-slides-html` (HTML) or `/frontline-slides-pptx` (PPTX) as the default. For long-form scrolling documents, use `/frontline-long-form`. For bespoke hand-authored scenes, use `/executive-briefing` (HTML) or `/executive-briefing-slides` (PPTX). The old `/presentation`, `/presentation-v2` (Prezi), `/backbase-slides*`, and Python-builder `/frontline-html`, `/frontline-slides` skills are retired — they live in `.claude/commands/deprecated/` and are not registered. All Frontline skills read tokens from `knowledge/design-system/frontline-tokens.json` (single source of truth).
 
 ## Remember
 
@@ -296,134 +297,177 @@ When resolving merge conflicts:
 
 ## Custom Skills Available
 
-## Presentation Workflow (DEFAULT)
+### The Frontline 2026 Family (decision tree)
 
-For all client-facing presentations, the **default path is Frontline 2026**, in two stages:
+All client-facing visual deliverables share one design language: **Frontline 2026**, sourced from `Backbase Master Template _ 2026.pptx` (theme1). Canonical tokens live in [`knowledge/design-system/frontline-tokens.json`](knowledge/design-system/frontline-tokens.json) — every Frontline skill reads from there. Do not invent or override hex values, fonts, or geometry.
 
-1. **Stage 1 — `/frontline-html`** (always start here): Draft the deck as a self-contained HTML preview. Use this to iterate on narrative, structure, headlines, and component choices with the consultant. Expect multiple refinement passes — that's the point of this stage.
-2. **Stage 2 — `/frontline-slides`** (only after HTML is signed off): Convert the agreed HTML structure into a Google Slides-compatible PPTX for collaborative team editing and final delivery.
+| What you're building | Skill | Output |
+|----------------------|-------|--------|
+| **Slide deck (HTML preview)** — default for HTML decks | `/frontline-slides-html` | Single self-contained HTML, 17 layouts, presenter mode |
+| **Slide deck (PPTX, Google Slides editable)** — default for PPTX | `/frontline-slides-pptx` | Google Slides-compatible `.pptx`, same 17 layouts |
+| **Long-form scrolling document (HTML, PDF-printable)** | `/frontline-long-form` | Sidebar-navigated business case / value case / exec briefing |
+| **Bespoke hand-authored HTML scene deck** | `/executive-briefing` | Pixel-perfect custom scenes (SVG charts, journey maps) |
+| **Bespoke hand-authored PPTX scene deck** | `/executive-briefing-slides` | Same as above, in PPTX |
 
-**Do NOT skip Stage 1.** Even if the user asks for "a PPTX", default to producing the HTML preview first and confirm before generating the PPTX. The HTML pass is where the narrative gets crystallised — going straight to PPTX wastes the iteration cycle.
+**How to choose:**
+1. **Deck or document?** If it's read async, use `/frontline-long-form`. If it's presented, use a slides skill.
+2. **HTML or PPTX?** HTML for self-running demos and quick previews; PPTX when the team will edit in Google Slides before delivery.
+3. **Standard or bespoke?** Standard (Frontline) handles 95% of decks. Only use `/executive-briefing*` when standard layouts genuinely can't carry the message — and you're prepared to hand-author every scene.
 
-`/executive-briefing` and `/executive-briefing-slides` (Schroders/SEB style) are **legacy** — only invoke when the engagement explicitly calls for that older design system.
+**Retired skills** (moved to `.claude/commands/deprecated/` on 2026-04-29 and no longer registered as slash commands): `/backbase-slides`, `/backbase-slides-pptx` (renamed to `/frontline-slides-html` and `/frontline-slides-pptx`), the old Python-builder `/frontline-html` and `/frontline-slides` (replaced by the engine-driven versions), and `/presentation` / `/presentation-v2` (Prezi templates, off-brand).
 
----
+### /frontline-slides-html — Frontline 2026 Slide Engine (HTML) ⭐ DEFAULT
 
-### /frontline-html — Frontline 2026 HTML Preview ⭐ PRIMARY (Stage 1)
-
-Interactive HTML presentation in the **Backbase Unified Frontline 2026** design system. **This is the default starting point for any client-facing deck.** Use it to draft, iterate, and refine the narrative before generating the PPTX.
+The **default format for all HTML presentations**. Uses the Frontline 2026 Slide Engine — a shared rendering engine with 17 pixel-perfect layouts, presenter mode (P), overview grid (O), and smooth keyboard navigation.
 
 **When to Use:**
-- **Default for any client-facing presentation** — start here every time
-- Drafting and iterating on content, headlines, and structure
-- Sharing a quick visual preview (self-contained HTML, zero dependencies)
-- Internal review and consultant sign-off before PPTX generation
+- Standard client-facing presentations (commercial, assessment readout, strategy)
+- Any deck that needs to be generated quickly with consistent Backbase branding
+- Demos and walkthroughs (e.g., "A day in the life of an RM")
+- When you want data-driven slide generation (define slides as objects, engine renders)
 
 **Key Features:**
-- Single-file HTML with Libre Franklin font, navy/blue palette
-- Keyboard navigation (← → Space Home End) + dot nav + click nav
-- 17+ component types: cover, divider, agenda, content, split comparison, showcase, architecture, stat cards, case study, statement, tiles, process rows, pillar rows, financial table, alert cards, architecture stack, context stats
-- Design tokens from `presentations/frontline-2026/design-tokens.json`
-- 15-120KB output size
+- 17 layout types: covers, chapters, content, columns, statements, stats, testimonials, teams, roadmaps, agenda tables, products
+- Single self-contained HTML file (zero dependencies)
+- Presenter mode with speaker notes and timer (press P)
+- Overview grid for slide navigation (press O)
+- Fullscreen mode (press F), go-to-slide (press G)
+- Custom HTML body support for rich dashboard/UI mockups
+- Tokens: read `knowledge/design-system/frontline-tokens.json` (navy `#041326`, blue `#3367FF`, Libre Franklin)
 
 **Usage:**
 ```
-/frontline-html
+/frontline-slides-html
 ```
 Then provide your content (transcript, data, bullet points, or upstream agent outputs).
 
-**Technical Files:**
-- `tools/frontline_2026_html.py` — HTML builder class
-- `presentations/frontline-2026/` — Design system files
+**Engine Files:**
+- `presentations/backbase-slides-app/engine.js` — Rendering engine (17 layouts)
+- `presentations/backbase-slides-app/deck-template.html` — HTML shell + CSS
+- `presentations/backbase-slides-app/README.md` — Layout catalog with examples
 
----
+(The directory is named `backbase-slides-app/` for historical reasons — it is the Frontline 2026 engine.)
 
-### /frontline-slides — Frontline 2026 Google Slides PPTX ⭐ PRIMARY (Stage 2)
+### /frontline-slides-pptx — Frontline 2026 Slide Engine (PPTX) ⭐ DEFAULT
 
-PPTX builder optimized for **Google Slides import**. Uses the Backbase Unified Frontline 2026 design system at 20"x11.25" canvas with all Google Slides compatibility rules enforced. **Only run after the `/frontline-html` preview has been refined and approved.**
+The **default format for all PPTX presentations**. Same 17 layout types as `/frontline-slides-html` but rendered to Google Slides-compatible `.pptx` files.
 
 **When to Use:**
-- After Stage 1 (`/frontline-html`) has been signed off by the consultant
-- Building decks for collaborative editing in Google Slides
-- Final presentation output for client delivery
-- Any deck that needs to survive PPTX → Google Slides import without formatting issues
+- Decks that need collaborative editing in Google Slides
+- When the team needs to tweak numbers, scope, or pricing before delivery
+- Any deck that lives in Google Drive
 
 **Key Features:**
-- 20"x11.25" canvas (Google Slides native resolution)
-- 15% text width buffer prevents text wrapping on import
-- Autofit disabled, no gradients/shadows/rotated text
-- Libre Franklin font (Inter fallback)
-- Slide layouts mirroring the `/frontline-html` components
+- Same 17 layouts as the HTML skill — identical schema
+- Google Slides compatible (13.333" × 7.5", no autofit, no gradients)
+- Libre Franklin typography
+- `BackbaseSlidesPresenter` Python class with 17 `add_*` methods
+- Tokens: aligned to `knowledge/design-system/frontline-tokens.json` (Master Template theme1)
 
 **Usage:**
 ```
-/frontline-slides
+/frontline-slides-pptx
 ```
 
 **Technical Files:**
-- `tools/frontline_2026_presenter.py` — PPTX builder class
-- `presentations/frontline-2026/` — Design system files
+- `tools/frontline_slides_pptx.py` — PPTX builder class
 
----
+### /frontline-long-form — Frontline 2026 Long-Form Document (HTML) ⭐ DEFAULT
 
-### /executive-briefing — Bespoke HTML Presentation Builder (LEGACY)
+The **default format for long-form scrolling documents** — value cases, ROI summaries, executive briefings (read-async), proposal support documents. Same Frontline brand as the slides skills, different deliverable.
 
-> **Legacy — Schroders/SEB design system.** Default to `/frontline-html` instead. Only use this skill when the engagement explicitly calls for the Schroders/SEB look (e.g., extending an existing deck in that style).
+**When to Use:**
+- Standalone business documents that get emailed and PDF-printed
+- Value cases and business cases
+- ROI summaries with detailed assumption registers
+- Long-form executive briefings (read async, not presented)
 
-Hand-crafted, individually-authored HTML scenes. Every scene is bespoke — no template engine, no JSON intermediary.
+**Key Features:**
+- Single self-contained HTML file with sidebar nav + top nav
+- Hero section with up-to-4 glassmorphism stat boxes
+- 20+ class-based components: lever cards, scenario cards (conservative/base/upside), value tables, assumption tables, callouts, timelines, dark CTA, doc footer
+- A4 landscape PDF print rules with `.page-break` controls
+- Tokens aligned to `knowledge/design-system/frontline-tokens.json`
+
+**Usage:**
+```
+/frontline-long-form
+```
+
+**Technical Files:**
+- `templates/long-form/document-template.html` — CSS + class library
+- `.claude/commands/frontline-long-form.md` — skill prompt
+
+### /executive-briefing — Bespoke HTML Presentation Builder
+
+For **hand-authored, pixel-perfect presentations** where every scene is individually crafted. Use when the standard 17 layouts aren't enough and you need custom SVG charts, journey maps, or architecture diagrams.
+
+> Use `/frontline-slides-html` for standard presentations. Use this only when you need bespoke scene-by-scene control.
+
+**When to Use:**
+- Client-facing executive briefings and commercial presentations
+- Assessment readouts and value assessments
+- Strategy decks and roadmaps
+- Any content going to C-level stakeholders
+
+**Why This Over Prezi:**
+- **Smaller files**: ~70-120KB vs ~300KB (no template overhead)
+- **Richer components**: SVG charts, data tables, journey maps, architecture diagrams, maturity pyramids
+- **More polished**: Hand-crafted scenes with pixel-perfect control
+- **Proven**: Used on Schroders commercial (v7) and SEB front-office (v5)
 
 **Key Features:**
 - Single-file HTML with all CSS/JS inline (zero dependencies)
 - 20+ component types: stat cards, feature cards, vs-columns, timelines, pyramids, journey maps, case studies, architecture stacks, tables, SVG charts
 - Smooth scale+opacity transitions with staggered `.ai` animations
+- Dark hero scenes for covers and section dividers
 - Libre Franklin typography, Backbase color system
+- Keyboard navigation (→/←/Space/Home/End) + click + dot nav
 
 **Usage:**
 ```
 /executive-briefing
 ```
+Then provide your content (transcript, data, bullet points, or upstream agent outputs).
 
 **Reference Files:**
-- `Engagement/Schroders Group/Output/schroders_commercial_v7.html` — Design system reference
-- `Engagement/SEB/Output/SEB_AI_Native_Front_Office_v5.html` — Latest example (26 scenes)
+- `Engagement/Schroders Group/Output/schroders_commercial_v7.html` — Design system reference (CSS, components, charts)
+- `Engagement/SEB/Output/SEB_AI_Native_Front_Office_v5.html` — Latest example (26 scenes, custom components)
 
----
+### /executive-briefing-slides — PPTX Presentation Builder (Collaborative)
 
-### /executive-briefing-slides — PPTX Presentation Builder (LEGACY)
+Generates `.pptx` files with Backbase branding that open in Google Slides for collaborative editing. Same narrative quality as `/executive-briefing` HTML, but editable by anyone on the team.
 
-> **Legacy — Schroders/SEB design system.** Default to `/frontline-slides` instead. Only use this skill when paired with `/executive-briefing` for the Schroders/SEB look.
+**When to Use:**
+- Decks that need last-minute edits by team members (license numbers, pricing, scope)
+- Content with numbers/scope that change frequently before client delivery
+- Anything that lives in Google Drive for collaboration
+- When the team uses Google Slides as the delivery format
 
-Generates `.pptx` files with Backbase branding that open in Google Slides for collaborative editing.
+**When to Use HTML Instead (`/executive-briefing`):**
+- Standalone demos with animations and interactivity
+- Self-running presentations (no presenter needed)
+- When pixel-perfect control matters more than editability
 
 **Key Features:**
 - Google Slides compatible (13.333" x 7.5" widescreen)
-- Backbase brand colors baked into theme
+- Backbase brand colors baked into theme (validated against Master Template)
+- Libre Franklin typography
 - Reusable `PptxPresenter` base class with 15+ helper methods
+- Same component types: stat cards, feature cards, comparison columns, timelines, tables, architecture stacks
+- Speaker notes support for talking points
+- 50-150KB output size
 
 **Usage:**
 ```
 /executive-briefing-slides
 ```
+Then provide your content (transcript, data, bullet points, or upstream agent outputs).
 
 **Technical Files:**
-- `tools/pptx_presenter.py` — Reusable base class
+- `tools/pptx_presenter.py` — Reusable base class with Backbase brand and helpers
 - `templates/presentations/backbase_slides.pptx` — Lightweight branded template
-
----
-
-### /presentation — Prezi-Style Presentation (DEPRECATED)
-
-> **⚠️ Deprecated for client-facing work.** Use `/frontline-html` instead.
-> Retained only for internal-only presentations or quick drafts.
-
-Prezi-style zoom/fade HTML presentations using a template engine.
-
-**Usage:**
-```
-/presentation
-```
-
-**Templates:** `/templates/presentations/`
+- `tools/schroders_commercial_v2_pptx.py` — Full 15-slide reference implementation
 
 ### /generate-roi-questionnaire - ROI Questionnaire Generator
 
@@ -448,3 +492,12 @@ Then provide the engagement directory path. The skill reads ENGAGEMENT_CONTEXT.m
 **Output:** `[CLIENT]_Business_Case_Questionnaire.xlsx` — feeds into `roi-financial-modeler` agent as input 7b.
 
 **Knowledge Reference:** `knowledge/Ignite Inspire/agent-7-roi.md` — value lever framework, calculation methodology, ROI examples.
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"` to keep the graph current

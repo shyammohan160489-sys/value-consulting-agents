@@ -23,6 +23,17 @@
 
 ---
 
+> **CANONICAL POSITIONING — anchor every section here.** Product substance: [`knowledge/product/banking-os.md`](../../knowledge/product/banking-os.md). Voice: [`knowledge/design-system/narrative-spine.md`](../../knowledge/design-system/narrative-spine.md).
+>
+> **Open on From→To, anchor on the operating model, not channels:**
+> - **FROM — frontline fragmentation** (a losing formula): 6–12 systems per journey · 30–60% manual work · high cost-to-serve · slow cycles · AI stuck in pilots · **~60% of the bank's work in the whitespace *between* systems**.
+> - **TO — a Unified Frontline that runs the bank as one:** customers, employees, and AI agents on **one shared truth and one execution engine**, governed and auditable.
+> - **Backbase = the AI-Native Banking OS — the *control plane* of the Unified Frontline.** Name **Nexus** (shared source of customer truth) and **Sentinel** (governed, auditable execution) where credible.
+> - **Map every opportunity to the 4 solutions:** Digital Banking · Conversational Banking (Assist · Transact · Resolve · Grow) · Relationship Intelligence · Customer Operations. **Do NOT use the deprecated names** Grand Central, Digital Engage, Digital Assist, Data Foundations, "AI & Agentic" as products — they are superseded.
+> - **Recast value-leakage funnels as Customer Resolution Loops** (capture intent → coordinate fulfilment → return outcome) and **quantify against the three value pools:** cost-to-serve ↓20–40% · conversion/cross-sell/retention ↑10–25% · AI approval-to-production 3–5× → $150–300M+. For AI/agentic and operations sizing, tap the APA Domain Matrix (`knowledge/domains/apa-matrix/`).
+
+---
+
 ## Table of Contents
 
 | # | Section | Purpose |
@@ -155,17 +166,28 @@
 
 ---
 
-## 02. The Unified Banking Platform — Long-Term Transformation
+## 02. The Unified Frontline on the Banking OS — Long-Term Transformation
 
-### [Client] Tomorrow
+### [Client] Tomorrow — The Unified Frontline
 
-[Describe the target state vision. Use the "unified frontline" narrative: one intelligent frontline that runs end-to-end servicing and sales journeys across all segments, replacing today's multiple customer and staff apps.]
+[Describe the **TO** state. The bank runs **as one**: customers, employees, and AI agents collaborating on **one shared truth and one execution engine, with explicit authorization for every action**. Backbase is the **AI-Native Banking OS — the control plane** that coordinates and governs the work across the frontline and hundreds of downstream systems. Add-on-top, no rip-and-replace.]
+
+**The control plane (name the layers where credible):**
+- **Nexus — the shared source of customer truth** (UNDERSTAND): one real-time truth across core, CRM, LMS, credit — so customers, employees and agents share context. The system of *truth*, not a data lake.
+- **Sentinel — governed, auditable execution** (AUTHORIZE): authority · policies · entitlements; humans *and* agents stay within guardrails; immutable audit.
+- **Orchestration · Connectivity/Integration · Intelligence** layers coordinate, connect, and optimize the work.
+
+**The product surface — 2 domains → 4 solutions** (map this client's opportunities to these):
+- **Digital Banking** — modernize the digital foundation (Retail · SME · Commercial · Wealth)
+- **Conversational Banking** — natural-language interface for customers *and* employees: **Assist · Transact · Resolve · Grow**
+- **Relationship Intelligence** — bank-owned AI for financial progress & growth (Financial Wellness + Share of Wallet)
+- **Customer Operations** — close the loop from trigger to resolved outcome via **Resolution Loops**
 
 **Key principles:**
-- **Journey-based:** Organize around customer journeys, not products or channels
-- **Front-to-back:** Every journey orchestrated end-to-end (experience → capability → integration)
-- **Incremental:** Progressive modernization, not big-bang replacement
-- **Platform-first:** Build once, reuse across segments and journeys
+- **Operating model, not channels:** the bank runs as one on shared truth + one execution engine
+- **Governed agentic execution:** explicit authorization for every action (Sentinel)
+- **Add-on-top:** progressive, no big-bang rip-and-replace
+- **Land fast, prove value, expand:** one use case live in 6–12 weeks (Factory Missions), then light up the next solution on the same Banking OS
 
 ### Progressive Modernization Approach
 
@@ -226,16 +248,16 @@
 | [e.g., "Self-Service Portal"] | [e.g., "Digital Banking App"] | [e.g., "Top 20 servicing transactions, card controls, statement download"] | OOTB + Configure | P2 |
 | [e.g., "Channel Orchestration"] | [e.g., "Engagement Orchestrator"] | [e.g., "Proactive deflection, in-app guidance, smart search, context passing"] | Extend | P2 |
 
-### Core Value Proposition Across the Lifecycle
+### Core Value Proposition — Mapped to the 4 Solutions
 
-[Map value proposition across the customer lifecycle. For EACH stage: (1) define what the stage covers for this client's domain, (2) name specific Backbase product lines AND solution components, (3) describe the concrete change, and (4) quantify the business outcome. Reference `knowledge/backbase_platform_lexicon.md` → "Lifecycle Stage → Product Lines & Solution Components" for the authoritative product mapping per stage and domain.]
+[Map the value proposition to the **4 Banking OS solutions** (and Conversational Banking's Assist/Transact/Resolve/Grow). For EACH lifecycle stage: (1) define what the stage covers for this client's domain, (2) name the **solution(s)** that apply — Digital Banking · Conversational Banking · Relationship Intelligence · Customer Operations — and the **control-plane layers** they rely on (Nexus truth, Sentinel governance), (3) describe the concrete change as a **Customer Resolution Loop** where relevant, and (4) quantify against the **three value pools**. Authoritative product mapping: `knowledge/product/banking-os.md` §3–4. The lifecycle stages below are a *narrative aid* — the canonical taxonomy is the three value pools.]
 
-| Lifecycle Stage | Definition (for this domain) | Backbase Products & Solution Components | What Changes | Business Outcome |
-|----------------|------------------------------|----------------------------------------|-------------|------------------|
-| **Acquire** | [Define for domain — e.g., Retail: "Attract prospects, convert them into customers, complete digital onboarding" / Wealth: "Prospect through events & referrals, qualify leads, complete hybrid onboarding"] | [Name product lines + specific components — e.g., "**Digital Onboarding** (Guided Application Flow, eIDV, Decision Engine), **Digital Assist** (Lead Management, Pipeline Visibility, Event Manager), **Digital Lending** (Loan Application Flow), **Grand Central** (Core Banking + KYC Connectors)"] | [e.g., "Digital prospect pipeline replaces Excel; events auto-capture leads with scoring; STP onboarding for low-risk; e-KYC replaces manual verification"] | [e.g., "Pipeline visibility, +20% lead conversion, 7 days→<48hrs onboarding, $X revenue uplift + $Y cost avoidance"] |
-| **Activate** | [Define for domain — e.g., Retail: "Get customers transacting on digital channels — first payment, card activation, daily banking" / Wealth: "First investment, portfolio setup, initial advisory engagement"] | [Name product lines + specific components — e.g., "**Digital Banking** (Account Dashboard, Payments, Card Activation, Notifications), **Platform Identity** (Biometric Login, Device Management), **Digital Engage** (Welcome Journey, Feature Discovery Nudges)"] | [e.g., "Mobile-first daily banking replaces branch visits; guided activation journey drives adoption; instant card activation in-app"] | [e.g., "Digital adoption 30%→65%, active users +40%, first-transaction time 5 days→same-day, $X cost avoidance"] |
-| **Expand** | [Define for domain — e.g., Retail: "Cross-sell new products based on behavior and life events" / Wealth: "Grow AUM through advisory, new asset classes, and family wealth"] | [Name product lines + specific components — e.g., "**Digital Lending** (Pre-Approved Offers, Cross-Lending Origination), **Digital Engage** (NBA Engine, Life-Event Triggers, Engagement Scoring), **Data Foundations** (Propensity Models, Behavioral Analytics), **Digital Assist** (Client 360, Opportunity Pipeline)"] | [e.g., "Proactive cross-sell replaces reactive; pre-approved offers at moment of need; RM sees client opportunities in unified view"] | [e.g., "Products/customer 1.8→2.5, cross-sell conversion +30%, $X revenue uplift"] |
-| **Retain** | [Define for domain — e.g., Retail: "Self-service digital operations, efficient issue resolution, proactive churn prevention" / Wealth: "Shift RM time from admin to advice, automate portfolio reporting, predict churn"] | [Name product lines + specific components — e.g., "**Digital Banking** (Self-Service Hub, In-App Support), **Digital Assist** (CSR Workspace, Case Management, Customer 360), **Digital Engage** (Churn Risk Alerts, Win-Back Offers), **AI & Agentic** (Conversational AI, Intelligent Routing)"] | [e.g., "Top 20 servicing tasks go digital; CSR gets full context in one screen; churn prediction triggers proactive outreach"] | [e.g., "20%→60% digital containment, cost-to-serve -30%, churn -1.5pp, $X cost avoidance"] |
+| Lifecycle Stage | Definition (for this domain) | Banking OS Solution(s) | What Changes | Business Outcome → Value Pool |
+|----------------|------------------------------|------------------------|-------------|------------------|
+| **Acquire** | [Define for domain — e.g., Retail: "Attract prospects, convert them, complete digital onboarding"] | [e.g., "**Digital Banking** (digital onboarding, lending origination); **Customer Operations** (KYC Resolution Loop); grounded in **Nexus** truth, governed by **Sentinel**"] | [e.g., "Onboarding becomes a governed Resolution Loop: capture intent → coordinate KYC/funding across systems → return an opened account; STP for low-risk, human handoff where needed"] | [e.g., "+20% conversion, 7 days→<48hrs → **conversion/cross-sell/retention pool**"] |
+| **Activate** | [Define for domain — e.g., Retail: "Get customers transacting — first payment, card activation, daily banking"] | [e.g., "**Digital Banking** (daily banking, card activation); **Conversational Banking — Assist/Transact** (\"Just Ask\": activate card, check status)"] | [e.g., "Mobile-first daily banking; customers self-serve routine actions conversationally instead of calling/branch"] | [e.g., "Digital adoption 30%→65% → **cost-to-serve pool**"] |
+| **Expand** | [Define for domain — e.g., Retail: "Cross-sell on behavior & life events" / Wealth: "Grow AUM via advisory"] | [e.g., "**Relationship Intelligence** (Financial Wellness + Share of Wallet, pre-built Plays); **Conversational Banking — Grow** (timely next-best-action moments)"] | [e.g., "Proactive, bank-owned nudges at financial-progress moments replace generic campaigns; RM sees opportunities on one shared truth"] | [e.g., "Products/customer 1.8→2.5 → **conversion/cross-sell/retention pool**"] |
+| **Retain** | [Define for domain — e.g., Retail: "Self-service ops, efficient resolution, churn prevention"] | [e.g., "**Customer Operations** (dispute/payment/servicing Resolution Loops); **Conversational Banking — Resolve** (turn needs into governed resolution); all governed & auditable by **Sentinel**"] | [e.g., "Top servicing tasks become governed Resolution Loops: capture intent → coordinate fulfilment → return outcome; agents and humans share full context"] | [e.g., "20%→60% digital containment, cost-to-serve −30% → **cost-to-serve pool**"] |
 
 ### Bird's-Eye Benefits View
 
@@ -283,6 +305,8 @@
 
 [For EACH lifecycle stage, provide a two-page spread: Challenges & Impact, then Recommendations & Value. This is the core of the assessment.]
 
+> **Method — read the funnels as Customer Resolution Loops.** Each "value leakage funnel" below is a **broken customer-intent loop** where **time · contact · evidence · ownership** leak across the bank's ~60% whitespace between systems (`banking-os.md` §9). For each stage: capture the customer intent → map where the resolution leaks → size the leak → frame the fix as a governed **Customer Resolution Loop** (capture intent → coordinate fulfilment → return outcome) on the Banking OS. Tie every recommendation to a **solution** (Digital Banking · Conversational Banking · Relationship Intelligence · Customer Operations) and a **value pool** — not to a deprecated product name. For AI/agentic and operations sizing, use the APA Domain Matrix value-bleed engine (`knowledge/domains/apa-matrix/`).
+
 ---
 
 ### Acquire — Challenges & Impact
@@ -322,8 +346,8 @@
 
 | # | Recommendation | Backbase Solution Component | Expected Impact | Effort |
 |---|---------------|----------------------------|----------------|--------|
-| 1 | [e.g., "Deploy digital prospect pipeline replacing Excel-based tracking"] | [e.g., "Digital Assist — Lead Management, Pipeline Visibility, Event Manager"] | [e.g., "$[X]K annual revenue uplift"] | [S/M/L] |
-| 2 | [e.g., "Implement STP digital onboarding with eKYC"] | [e.g., "Digital Onboarding — Guided Application Flow, eIDV, Decision Engine, eSignature"] | [e.g., "$[Y]K cost avoidance"] | [S/M/L] |
+| 1 | [e.g., "Give RMs one shared view of prospects on Nexus truth"] | [e.g., "**Relationship Intelligence** + **Digital Banking** (front office), grounded in **Nexus**"] | [e.g., "$[X]K annual revenue uplift → conversion pool"] | [S/M/L] |
+| 2 | [e.g., "Run STP onboarding as a governed KYC Resolution Loop with eKYC"] | [e.g., "**Customer Operations** (KYC Resolution Loop) + **Digital Banking** (onboarding), governed by **Sentinel**"] | [e.g., "$[Y]K cost avoidance → cost-to-serve pool"] | [S/M/L] |
 
 **How Benefits Are Calculated:**
 [Show the math transparently. Scenario: Moderate. Annual run-rate benefit.]
@@ -366,7 +390,7 @@
 
 | # | Recommendation | Backbase Solution Component | Expected Impact | Effort |
 |---|---------------|----------------------------|----------------|--------|
-| 1 | [e.g., "Launch mobile-first daily banking with guided activation"] | [e.g., "Digital Banking — Account Dashboard, Payments, Card Activation; Digital Engage — Welcome Journey"] | | |
+| 1 | [e.g., "Launch mobile-first daily banking + conversational self-service for routine actions"] | [e.g., "**Digital Banking** (daily banking, card activation) + **Conversational Banking — Assist/Transact**"] | | |
 | 2 | | | | |
 
 **How Benefits Are Calculated:**
@@ -408,7 +432,7 @@
 
 | # | Recommendation | Backbase Solution Component | Expected Impact | Effort |
 |---|---------------|----------------------------|----------------|--------|
-| 1 | [e.g., "Deploy cross-lending origination with pre-approved offers"] | [e.g., "Digital Lending — CLO, Pre-Approved Offers; Digital Engage — NBA Engine, Engagement Scoring; Data Foundations — Propensity Models"] | | |
+| 1 | [e.g., "Deliver proactive, bank-owned financial-progress nudges and pre-approved offers"] | [e.g., "**Relationship Intelligence** (Financial Wellness + Share of Wallet Plays) + **Conversational Banking — Grow**; grounded in **Nexus**"] | | |
 | 2 | | | | |
 
 ---
@@ -444,8 +468,8 @@
 
 | # | Recommendation | Backbase Solution Component | Expected Impact | Effort |
 |---|---------------|----------------------------|----------------|--------|
-| 1 | [e.g., "Enable self-service for top 20 servicing transactions"] | [e.g., "Digital Banking — Self-Service Hub, Card Controls, Statements; AI & Agentic — Conversational AI, Intelligent Routing"] | | |
-| 2 | [e.g., "Deploy proactive churn prediction and win-back"] | [e.g., "Digital Engage — Churn Risk Alerts, Win-Back Offers; Data Foundations — Churn Prediction Models, Engagement Analytics"] | | |
+| 1 | [e.g., "Turn top servicing requests into governed Resolution Loops + conversational self-service"] | [e.g., "**Customer Operations** (Resolution Loops) + **Conversational Banking — Assist/Resolve**, governed by **Sentinel**"] | | |
+| 2 | [e.g., "Deliver proactive retention via bank-owned nudges and win-back"] | [e.g., "**Relationship Intelligence** (retention Plays) + **Customer Operations** (win-back loop); grounded in **Nexus**"] | | |
 
 ---
 

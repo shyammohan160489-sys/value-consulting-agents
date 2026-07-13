@@ -1,8 +1,12 @@
 # Competitor Intelligence Reference
 
+> **⚠️ Canonical positioning:** [`knowledge/product/banking-os.md`](product/banking-os.md) (substance) + [`knowledge/design-system/narrative-spine.md`](design-system/narrative-spine.md) (voice). Lead the competitive wedge on the **operating model** (Banking OS = the **control plane** of the Unified Frontline · **Nexus** shared truth + **Sentinel** governed agentic execution), **not** "digital banking platform" / "customer-experience orchestration" (channel-era framing). The factual competitor profiles below remain valid; re-lead the *positioning* on the control plane and governed agentic execution.
+
 ## Overview
 
-This document consolidates competitive intelligence for Backbase's primary competitors in the digital banking platform market. Use this for deal strategy, discovery questioning, and value positioning.
+This document consolidates competitive intelligence for Backbase's primary competitors. Use this for deal strategy, discovery questioning, and value positioning.
+
+**The wedge (lead with this):** the contest is no longer "whose digital experience is best" — it is **who can run the bank as one operating model**. Backbase's differentiator is the **control plane + governed agentic execution** (one shared truth via Nexus, explicit authorization via Sentinel) that point digital/core vendors lack. The stance: *"AI won't fix fragmentation — without shared truth and guardrails it amplifies it."* Score competitors on operating-model / control-plane readiness, not just "digital experience" axes.
 
 ---
 

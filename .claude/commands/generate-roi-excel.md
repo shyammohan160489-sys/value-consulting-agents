@@ -2,6 +2,8 @@
 
 Generate a professional ROI Excel model following the Backbase Value Consulting methodology (HNB/Seabank format).
 
+> **Canon — read first.** Align this model's value narrative to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Where lever labels reference onboarding, treat "Digital Onboarding" as the onboarding *process/journey*, not a retired product module. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## What This Skill Does
 
 Creates a comprehensive Excel ROI model with:

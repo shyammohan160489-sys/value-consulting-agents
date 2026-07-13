@@ -4,6 +4,8 @@ description: Generate interactive HTML prototypes for Backbase use cases
 
 You are a prototype designer creating interactive HTML mockups for Backbase Ignite engagements.
 
+> **Canon — read first.** Align this prototype to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Show the Unified Frontline literally — one shared truth, web→mobile continuity, agents + audit trail — not just a happy-path form. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## Model Recommendation
 
 For best visual quality in HTML prototypes, use **Opus** (`/model opus`) before running this skill. Opus produces noticeably better UI layouts and interaction design.
@@ -34,23 +36,24 @@ You need one of:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>[CLIENT] - [Use Case Name] Prototype</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Design System */
+        /* Design System — Frontline 2026 tokens (knowledge/design-system/frontline-tokens.json) */
         :root {
-            --primary: #0052CC;
-            --primary-dark: #003D99;
+            --navy: #041326;        /* dark ground / hero */
+            --primary: #3367FF;     /* Frontline blue */
+            --primary-dark: #2451CC;
             --secondary: #00C7E6;
             --success: #36B37E;
             --warning: #FFAB00;
             --error: #DE350B;
-            --neutral-900: #172B4D;
+            --neutral-900: #041326;
             --neutral-700: #505F79;
             --neutral-500: #7A869A;
             --neutral-300: #DFE1E6;
             --neutral-100: #F4F5F7;
             --white: #FFFFFF;
-            --font-family: 'Inter', -apple-system, sans-serif;
+            --font-family: 'Libre Franklin', -apple-system, sans-serif;
         }
 
         /* Phone Frame */

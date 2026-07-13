@@ -1,5 +1,7 @@
 # Wealth Management Personas
 
+> **⭐ Canonical archetypes now live in [`wealth-os-narrative.md`](wealth-os-narrative.md) §4** — the populated, reusable 5-archetype set (Rising/Next-gen · Core HNW · UHNW/Family Office · Alternatives · the RM/Advisor) used across prototypes and decks. The stubs below are legacy scaffolding; prefer the module.
+
 ## Client Personas
 
 ### Digital-Native Affluent (Millennial/Gen X)

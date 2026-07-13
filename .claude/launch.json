@@ -2,70 +2,148 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "schroders-presentation",
+      "name": "spard-preview",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8091", "--directory", "Engagement/Schroders Group/Output"],
-      "port": 8091
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Sparekassen Danmark/Output"
+      ],
+      "port": 8765
     },
     {
-      "name": "moneycorp-presentation",
+      "name": "emea-apac-retro",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8092", "--directory", "Engagement/Moneycorp"],
-      "port": 8092
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8107",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/2026-05-05_emea_apac_retro"
+      ],
+      "port": 8107
     },
     {
-      "name": "schroders-commercial",
+      "name": "circularise-design",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8093", "--directory", "Engagement/Schroders Group/Output"],
-      "port": 8093
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8231",
+        "--directory",
+        "/Users/shyam/cortex/circularize-design-system/build"
+      ],
+      "port": 8231
     },
     {
-      "name": "bbva-presentation",
+      "name": "aib-prep",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8094", "--directory", "engagements/bbva_spain/2026-02_wealth_ignite/outputs"],
-      "port": 8094
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8105",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/AIB/output"
+      ],
+      "port": 8105
     },
     {
-      "name": "seb-presentation",
+      "name": "seb-jun5",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8095", "--directory", "Engagement/SEB/Output"],
-      "port": 8095
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8766",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/SEB/Output"
+      ],
+      "port": 8766
     },
     {
-      "name": "danske-presentation",
+      "name": "pictet-qbr",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8096", "--directory", "Engagement/Danske Bank/Output"],
-      "port": 8096
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8767",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Pictet/Output"
+      ],
+      "port": 8767
     },
     {
-      "name": "tfbank-pov",
+      "name": "coventry-deck",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8097", "--directory", "engagements/tf_bank_avarda/outputs"],
-      "port": 8097
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8842",
+        "--directory",
+        "Engagement/Coventry BS/Output"
+      ],
+      "port": 8842
     },
     {
-      "name": "banking-os-narrative",
+      "name": "schroders-nba",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8098", "--directory", "Engagement/Banking_OS_Sales_Narrative/Output"],
-      "port": 8098
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8771",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Schroders Group/Output/nba-analysis"
+      ],
+      "port": 8771
     },
     {
-      "name": "cih-proposal",
+      "name": "advisor-cockpit",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8099", "--directory", "Engagement/CIH Bank/Output"],
-      "port": 8099
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8775",
+        "--directory",
+        "/Users/shyam/cortex/presentations/advisor-cockpit-pov"
+      ],
+      "port": 8775
     },
     {
-      "name": "absa-briefing",
+      "name": "baas-dashboard",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8100", "--directory", "Engagement/Absa/Output"],
-      "port": 8100
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8781",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Banking_OS_Sales_Narrative/Output"
+      ],
+      "port": 8781
     },
     {
-      "name": "frontline-2026-preview",
+      "name": "proposal-builder",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8101", "--directory", "Engagement/Schroders Group/Output"],
-      "port": 8101
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8790",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/proposal-builder"
+      ],
+      "port": 8790
+    },
+    {
+      "name": "region-review",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8795",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/europe-southeast-region-review"
+      ],
+      "port": 8795
     }
   ]
 }

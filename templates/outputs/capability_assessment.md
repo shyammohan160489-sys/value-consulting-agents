@@ -491,14 +491,15 @@ Problems the organization has not raised but evidence suggests they exist. These
 | Term | Definition |
 |------|-----------|
 | BIAN | Banking Industry Architecture Network — industry standard for banking service domains |
-| Front Layer | Experience Plane — what customers and employees see and interact with |
-| Middle Layer | Capability Plane — orchestration, business logic, AI/ML, workflow |
-| Back Layer | Integration Plane + Systems of Record — connectivity, data, core systems |
+| Front Layer | What customers and employees see and interact with (the Unified Frontline) |
+| Middle Layer | Orchestration, business logic, AI/ML, workflow — the control-plane orchestration & intelligence layers |
+| Back Layer | Connectivity / Integration + Systems of Record — core systems and data |
 | STP | Straight-Through Processing — end-to-end automation without manual intervention |
 | RAG | Red-Amber-Green heatmap indicator |
-| HELIX | Backbase Customer Brain — unified frontline control plane |
-| Grand Central | Backbase Integration Platform (iPaaS) |
-| Flow Foundation | Backbase low-code journey orchestration engine |
+| Banking OS | The **AI-Native Banking OS** — the **control plane** of the Unified Frontline; coordinates & governs work across customers, employees, agents and downstream systems (add-on-top, no rip-and-replace) |
+| Nexus | The **semantic / shared-truth layer** of Banking OS — the shared source of customer truth (banking ontology; system of *truth*, not system of record) |
+| Sentinel | The **authority / governed-execution layer** of Banking OS — authority, policies, entitlements; keeps humans *and* agents within guardrails, fully auditable |
+| Resolution Loop | Capture customer intent → coordinate fulfilment across the unified frontline → return the outcome (Customer Operations) |
 
 ---
 

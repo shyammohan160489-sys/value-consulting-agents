@@ -2,6 +2,8 @@
 
 Generate a customized Business Case Questionnaire for client data collection. The questionnaire arrives **pre-populated** with everything already known from upstream agents — transforming it from a blank data-collection exercise into a validation exercise.
 
+> **Canon — read first.** Align this questionnaire's framing to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Scope data requests to the 4 solutions and the value-leakage/resolution-loop method. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 **This is Phase A of the ROI workflow.** Phase B (calculation) is handled by the `roi-financial-modeler` agent when the filled questionnaire returns.
 
 ## When to Invoke

@@ -7,8 +7,10 @@ This document provides decomposition patterns for ROI exercises that start from 
 These components are 2-3 hops removed from a customer outcome. The methodology traces the value chain FROM the capability UP TO business outcomes, then switches to the problem-driven patterns to decompose and size.
 
 **Companion documents:**
-- `value_lever_framework.md` — defines the four-link chain (Root Driver → Operational Change → Volume/Rate Impact → Financial Impact)
+- `value_lever_framework.md` — defines the four-link chain (Root Driver → Operational Change → Volume/Rate Impact → Financial Impact) **and the three value pools / resolution-loop method** (the primary value taxonomy)
 - `hypothesis_tree_decomposition.md` — problem-driven (top-down) patterns used once the outcome is identified
+
+> **⚠️ Canonical product model:** [`knowledge/product/banking-os.md`](../product/banking-os.md) (substance) + [`knowledge/design-system/narrative-spine.md`](../design-system/narrative-spine.md) (voice). The component names used as section headers below (**Grand Central, Flow Foundation, Data Foundations, "AI & Agentic"**) are **legacy** — they now map onto the Banking OS **control plane** (Nexus + Sentinel) and the **2 domains → 4 solutions**. See "Mapping these patterns onto the Banking OS" at the end before sizing. The decomposition mechanics (value-chain tracing, four-link levers) are unchanged.
 
 ---
 
@@ -200,9 +202,11 @@ Data Foundations value is primarily a **multiplier on other levers** — better 
 
 ---
 
-## Pattern 5: AI & Agentic (Conversational Banking, Intelligence Layer)
+## Pattern 5: Conversational Banking + Customer Operations (the agentic solutions)
 
-**What it does:** Conversational AI for customer self-service, agent assist for call center/branch staff, automated insights generation, next-best-action recommendations.
+> In the Banking OS, this is not a generic "AI & Agentic" component — it is two named **solutions**: **Conversational Banking** (Assist · Transact · Resolve · Grow — a natural-language interface for customers *and* employees) and **Customer Operations** (Resolution Loops: capture intent → coordinate fulfilment → return outcome), both governed by **Sentinel** and grounded in **Nexus** truth. The levers below still hold; frame them as Resolution Loops and tie to the three value pools.
+
+**What it does:** Conversational AI for customer self-service (Assist/Transact), governed resolution of customer intent (Resolve → Customer Operations), proactive financial-progress nudges (Grow → Relationship Intelligence), agent assist for call center/branch staff, automated insights, next-best-action recommendations.
 
 ### Business Functions → Outcomes
 
@@ -257,6 +261,24 @@ When the `roi-hypothesis-builder` agent receives a capability-driven exercise:
 5. Build levers using the four-link chain as normal
 
 The output format is the same `lever_candidates.md` — the financial modeler doesn't need to know whether the exercise was problem-driven or capability-driven.
+
+---
+
+## Mapping these patterns onto the Banking OS
+
+The five legacy patterns map onto the current control plane and solution surface (canonical: [`banking-os.md`](../product/banking-os.md) §2–4). Use this to re-base positioning and to aggregate value into the **three value pools**:
+
+| Legacy pattern | Banking OS layer / solution | Primary value pool |
+|---|---|---|
+| Pattern 1 — Grand Central | **Connectivity/Integration layer** (INTEGRATE) of the control plane | Cost-to-serve (IT) + enabler |
+| Pattern 2 — Flow Foundation / APA | **Orchestration layer** (ORCHESTRATE) + Customer Operations Resolution Loops | Cost-to-serve |
+| Pattern 3 — Managed Hosting | Run/operate the control plane | Cost-to-serve |
+| Pattern 4 — Data Foundations | **Semantic layer — Nexus** (UNDERSTAND): the shared source of customer truth | Enabler across all pools |
+| Pattern 5 — AI & Agentic | **Conversational Banking** + **Customer Operations** solutions, governed by **Sentinel** | Cost-to-serve + conversion/cross-sell/retention + AI approval-to-production |
+
+**Value aggregation:** roll every lever up into one of the three value pools — **cost-to-serve ↓20–40% · conversion/cross-sell/retention ↑10–25% · AI approval-to-production 3–5×** → **$150–300M+** (banking-os.md §8) — not the old Problem-Type buckets, which remain a *decomposition* aid only.
+
+**Resolution-loop / value-leakage method:** for AI/agentic and operations exercises, discover levers by mapping broken **customer-intent loops** where **time · contact · evidence · ownership** leak across systems (banking-os.md §9). The **APA Domain Matrix** ([`knowledge/domains/apa-matrix/`](../domains/apa-matrix/)) is the data-backed catalog + per-process engine that operationalises this — use it as the default lens for Pattern 5 sizing, and map its Growth/Efficiency/Control outputs onto the three pools.
 
 ---
 

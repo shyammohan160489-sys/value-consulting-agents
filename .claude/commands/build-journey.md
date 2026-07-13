@@ -2,6 +2,8 @@
 
 Build evidence-based customer-to-employee journey maps with quantified value leakage, friction callouts, and Backbase-enabled future states.
 
+> **Canon — read first.** Align these journeys to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools · the value-leakage/resolution-loop method) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Frame the As-Is as the FROM (fragmentation, handoffs, exceptions) and the future state as the TO (resolution loops on the Unified Frontline). Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## Usage
 `/build-journey [domain] [journeys...]`
 

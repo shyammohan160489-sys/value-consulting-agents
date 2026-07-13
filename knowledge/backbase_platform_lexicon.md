@@ -1,6 +1,8 @@
 # Backbase Platform Lexicon & Architecture Reference
 
-A comprehensive reference guide for Backbase terminology, platform architecture, and product capabilities. This document serves as the authoritative source for Value Consulting engagements.
+A comprehensive reference guide for Backbase terminology, platform architecture, and product capabilities.
+
+> **⚠️ CANONICAL SOURCE — read this first.** The authoritative, current product direction is **[`knowledge/product/banking-os.md`](product/banking-os.md)** (June 2026): Banking OS = the **Control Plane** of the unified frontline · layers **Nexus** (shared source of truth) + **Sentinel** (governed, auditable execution) + Orchestration + Connectivity + Intelligence · **2 domains** (Customer Engagement · Banking Operations) → **4 solutions** (Digital Banking · Conversational Banking [Assist/Transact/Resolve/Grow] · Relationship Intelligence · Customer Operations / Resolution Loops) · **Factory / Mission Sprints** delivery (6–12 wks) · three value pools (cost −20-40% · uplift +10-25% · AI-to-prod 3–5×). Voice lives in [`narrative-spine.md`](design-system/narrative-spine.md). **Where this lexicon describes an older model (13 product lines, 3-fabric / 3-plane architecture, Acquire/Activate/Expand/Retain flywheel), `banking-os.md` supersedes it.** Treat the sections below as background detail, re-based on the canonical model above.
 
 ---
 

@@ -2,6 +2,8 @@
 
 Retrieve common pain points and challenges for a specific banking domain to support discovery and solutioning.
 
+> **Canon — read first.** Align this query's output to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Map fragmentation pain to the Unified Frontline / resolution loops, not "omnichannel platform". Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## Usage
 `/domain-pain-points [domain] [perspective]`
 
@@ -55,7 +57,7 @@ Assistant: Loading Retail Banking customer pain points...
 
 | Pain Point | Impact | Backbase Solution |
 |------------|--------|-------------------|
-| Fragmented experience across channels | Frustration, low NPS | Omnichannel platform |
+| Fragmented experience across channels | Frustration, low NPS | Unified Frontline (Digital Banking) |
 | Limited self-service options | High call center volume | Self-service features |
 | Poor mobile app experience | Low engagement, churn | Mobile banking app |
 

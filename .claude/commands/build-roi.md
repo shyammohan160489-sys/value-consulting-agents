@@ -4,6 +4,8 @@ Standalone ROI pipeline — orchestrates the hypothesis builder and financial mo
 
 Use this when you need an ROI model without running the full orchestrator (e.g., solution-specific pitch, quick business case, standalone value assessment).
 
+> **Canon — read first.** Align this ROI story to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · the three value pools [§8] and the value-leakage/resolution-loop method [§9]) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Tie value levers to one-execution-engine efficiency and lifecycle ownership. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
+
 ## Steps
 
 ### 1. Gather Context
