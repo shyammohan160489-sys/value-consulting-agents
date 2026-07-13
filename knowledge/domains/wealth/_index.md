@@ -23,6 +23,9 @@ Wealth management serves high-net-worth individuals (HNWI) and affluent clients 
 - Ultra High Net Worth: $30M+ AUM
 
 ## Related Files
+- [APA Processes (V3, canon-aligned)](apa-processes.md) - 20 wealth agentic-automation processes mapped to Customer Operations / Bank Operations; the wealth lens onto the master [APA Domain Matrix V3](../apa-matrix/README.md)
+- [Wealth OS narrative](wealth-os-narrative.md) - Canonical wealth module narrative
+- [Next-Best-Action method](next-best-action-method.md) - Reusable NBA / smart-signals method
 - [Benchmarks](benchmarks.md) - Industry KPIs and metrics
 - [Journey Maps](journey_maps.md) - Client journeys
 - [Process Maps](process_maps.md) - Operational processes
