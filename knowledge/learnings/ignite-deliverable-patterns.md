@@ -72,4 +72,9 @@ Grepped 30 agent/prompt files. **Verdict: the pipeline is strong on the *quantit
 
 **Priority fix:** fold moves **3 → 1 → 2** into `narrative-assembler` + `agent-6-presentation` + `ignite-workshop-synthesizer` (sourcing peer proof via `benchmark-librarian`). The quant agents (`capability-assessment`, `roi-*`) need no change — they already do the hard maths; they just don't *tell the story* the way these decks do.
 
+**Fix applied (2026-07-01):** all three agents now carry a named **"Signature Moves"** section (headroom / in-your-words / peer-proof), each adapted to that agent's role, plus concrete reinforcements:
+- `ignite-workshop-synthesizer` — Signature Moves block + Step 3 pain-point register reworked to **headroom columns** (client baseline → client target → gap), with a `(benchmark)` labelling rule.
+- `agent-6-presentation` — Signature Moves block (opportunity-card discipline: heard → move → how-others-did-it → staged) + S15/S19 use-case card rules now require *what we heard* / headroom framing / *how others did it* peer proof.
+- `narrative-assembler` — Signature Moves block naming the three moves and wiring them to existing machinery (value-leakage funnels + benefits case = headroom; transformation arc + vocabulary mirror = in-your-words; Act 4 "what good looks like" = peer proof), with the sourcing discipline made explicit.
+
 Raw extracts: `Engagement/{Glacier,SchoolsFirst,MyState}/*_text_extract.txt`.

@@ -10,6 +10,13 @@ Read `knowledge/design-system/frontline-tokens.json` before generating. All hex 
 
 > **Canon — read first.** The token file above is the *visual* source of truth; align the *substance and voice* to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Open the deck on From→To. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
 
+## Composition rules (canonical — read first)
+
+Follow `knowledge/design-system/composition-rules.md`; it is enforced in BOTH renderers. Most relevant here:
+- **Rule 2 — flex, don't stretch.** Cards/content are content-proportionate and top-anchored; a sparse slide keeps a clean bottom margin (correct). Never size a card to *fill* the band.
+- **Rule 5 — subtitle & strap line are flex levers.** Eyebrow + title are the constants; the subtitle and callout are optional. Drop the subtitle on a dense slide (and sharpen the title to carry it); drop any subtitle that just narrates what the eyebrow + title + tiles already say. Client copy is directional and impact-led, never the pitch spelled out — if a good line won't come, drop it, don't force it.
+- (Rule 4's `em(px)` law is HTML-only; PPTX sizes in pt via the 4-level type system.)
+
 ## How This Skill Works
 
 You use `BackbaseSlidesPresenter` from `tools/frontline_slides_pptx.py` to generate a `.pptx` file. Write a Python script that imports the class, calls layout methods for each slide, and saves the output.

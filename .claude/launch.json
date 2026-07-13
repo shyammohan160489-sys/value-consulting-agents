@@ -2,6 +2,18 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "bacb-pov",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8811",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/BACB/Output"
+      ],
+      "port": 8811
+    },
+    {
       "name": "spard-preview",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
@@ -134,6 +146,18 @@
       "port": 8790
     },
     {
+      "name": "vc-cockpit",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8798",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal"
+      ],
+      "port": 8798
+    },
+    {
       "name": "region-review",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
@@ -144,6 +168,66 @@
         "/Users/shyam/cortex/Engagement/internal/europe-southeast-region-review"
       ],
       "port": 8795
+    },
+    {
+      "name": "operating-model",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8796",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/operating-model-service"
+      ],
+      "port": 8796
+    },
+    {
+      "name": "exhibit-kit",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8817",
+        "--directory",
+        "/Users/shyam/cortex/knowledge/design-system/claude-design-exhibit-kit"
+      ],
+      "port": 8817
+    },
+    {
+      "name": "spard-talk",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8794",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Sparekassen Danmark/Output/proposal-best-practices-talk"
+      ],
+      "port": 8794
+    },
+    {
+      "name": "bos-prototypes",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8801",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Bank of Singapore/prototype-site"
+      ],
+      "port": 8801
+    },
+    {
+      "name": "cb-matrix",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8823",
+        "--directory",
+        "/Users/shyam/cortex/knowledge/domains/conversational-banking"
+      ],
+      "port": 8823
     }
   ]
 }

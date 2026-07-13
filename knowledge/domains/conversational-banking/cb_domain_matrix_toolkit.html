@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversational Banking — Value at Stake Across the Customer Lifecycle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#041326; --blue:#3367FF; --blue-dark:#264EC7; --blue-light:#E5EBFF;
+  --cyan:#69FEFF; --red:#FF503C; --red-light:#FAE0DE; --green:#2ECC71; --amber:#B45309;
+  --white:#FFFFFF; --off:#F3F6F9; --border:#CED2D7; --ink:#041326; --muted:#6B7786;
+  --d0:#EDF2FF; --d1:#D6E0FF; --d2:#AFC2FF; --d3:#3367FF; --d4:#264EC7; --d5:#041326;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Libre Franklin',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--off);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+/* ── Hero ─────────────────────────────── */
+.hero{background:var(--navy);color:#fff;padding:44px 0 0}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:600}
+.hero h1{font-size:clamp(30px,4.2vw,46px);font-weight:800;line-height:1.08;margin:10px 0 8px}
+.hero .sub{font-size:16px;color:#B9C4D4;max-width:760px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 0}
+.hstat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:16px 18px}
+.hstat .n{font-size:38px;font-weight:800;color:var(--cyan);line-height:1.05}
+.hstat .l{font-size:12px;color:#B9C4D4;margin-top:4px}
+.tabs{display:flex;gap:4px;margin-top:28px;flex-wrap:wrap}
+.tab{background:transparent;border:none;color:#B9C4D4;font:inherit;font-size:14px;font-weight:600;padding:12px 16px;cursor:pointer;border-radius:12px 12px 0 0}
+.tab:hover{color:#fff}
+.tab.on{background:var(--off);color:var(--navy)}
+
+/* ── Common ───────────────────────────── */
+main{padding:30px 0 10px}
+.view{display:none}.view.on{display:block}
+h2{font-size:24px;font-weight:800;margin:6px 0 4px}
+.lede{color:var(--muted);max-width:860px;margin-bottom:18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:.02em;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--ink);background:#fff;white-space:nowrap}
+.tag.dep{color:#fff;border:none}
+.tag.dep.t0,.tag.dep.t1,.tag.dep.t2{color:var(--navy)}
+.tag.pool{background:var(--off)}
+.tag.lvl{background:var(--navy);color:#fff;border:none;font-weight:700}
+.badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px}
+.badge.anchor{background:var(--blue);color:#fff}
+.badge.support{background:#fff;color:var(--blue-dark);border:1.5px solid var(--blue)}
+.badge.coverage{background:var(--off);color:var(--muted);border:1px solid var(--border)}
+.src{font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:1px 6px;border-radius:4px;vertical-align:1px}
+.src.b{background:var(--blue-light);color:var(--blue-dark)}
+.src.a{background:#E8F8EF;color:#1B7A44}
+.src.v{background:#FFF3E4;color:var(--amber)}
+.adjtag{border:1px solid var(--amber);color:var(--amber);border-radius:4px;padding:0 5px;font-size:10px;font-weight:700}
+.btn{font:inherit;font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:20px;border:1.5px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--navy)}
+.btn:hover{opacity:.88}
+
+/* ── Decide strip ─────────────────────── */
+.decide{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin:0 0 20px}
+.dc{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 14px}
+.dc .t{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue-dark)}
+.dc p{font-size:12px;color:var(--muted);margin-top:3px}
+.dc b{color:var(--ink)}
+
+/* ── Matrix ───────────────────────────── */
+.filters{display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px 16px;margin-bottom:22px}
+.fgroup{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.fgroup .fl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-right:2px}
+.pill{font:inherit;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--ink);cursor:pointer}
+.pill.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.count{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.stage{margin:26px 0 30px}
+.stage-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.stage-num{font-size:13px;font-weight:800;color:var(--blue)}
+.stage-head h3{font-size:20px;font-weight:800}
+.stage-head .ulens{font-size:13.5px;color:var(--muted);font-style:italic}
+.vas{margin:8px 0 14px;padding:10px 14px;background:var(--blue-light);border-radius:12px;font-size:13px;color:var(--navy)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.uc{padding:16px 16px 12px;display:flex;flex-direction:column;gap:9px;position:relative;cursor:pointer;transition:box-shadow .15s,transform .15s}
+.uc:hover{box-shadow:0 6px 24px rgba(4,19,38,.12);transform:translateY(-2px)}
+.uc .q{font-size:15.5px;font-weight:700;line-height:1.3;padding-right:86px}
+.uc .q.bank::before{content:"BANK-INITIATED";display:block;font-size:9.5px;letter-spacing:.1em;color:var(--blue-dark);margin-bottom:3px}
+.uc .nm{font-size:12.5px;color:var(--muted);margin-top:-5px}
+.uc .badge{position:absolute;top:14px;right:14px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.uc .roi{font-size:12.5px;background:var(--off);border-radius:10px;padding:7px 10px}
+.uc .proof{font-size:12px;color:var(--muted);line-height:1.45}
+.uc .proof b{color:var(--ink);font-weight:600}
+.uc .open{font-size:11.5px;font-weight:700;color:var(--blue-dark);margin-top:2px}
+.emp{margin-top:6px;background:var(--navy);color:#fff;border-radius:16px;padding:18px 20px}
+.emp h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.emp p{font-size:13px;color:#B9C4D4}
+.emp b{color:var(--cyan)}
+
+/* ── Ladder ───────────────────────────── */
+.standalone{background:var(--navy);color:#fff;border-radius:16px;padding:22px 24px;margin-bottom:18px}
+.standalone h3{font-size:19px;font-weight:800;color:var(--cyan)}
+.standalone p{font-size:13.5px;color:#D7DEE9;margin-top:6px;max-width:960px}
+.standalone .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:14px}
+.standalone h5{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
+.standalone .cols p{font-size:12px;margin-top:0}
+.level{margin:18px 0;padding:20px 22px}
+.level-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.level-head .ln{font-size:26px;font-weight:800;color:var(--blue)}
+.level-head h3{font-size:20px;font-weight:800}
+.level-head .dep-state{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
+.dep-state.none{background:#E8F8EF;color:#1B7A44}
+.dep-state.one{background:var(--blue-light);color:var(--blue-dark)}
+.dep-state.opt{background:#FFF3E4;color:var(--amber)}
+.level .unlock{font-size:13.5px;margin:8px 0 4px}
+.level .unlock b{color:var(--blue-dark)}
+.level .why{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.lcases{display:flex;flex-wrap:wrap;gap:7px}
+.lcase{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--off);cursor:pointer}
+.lcase:hover{background:var(--blue-light);border-color:var(--blue)}
+.lcase .v-a{color:var(--blue-dark);font-weight:800}
+
+/* ── Econ (unchanged core) ────────────── */
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}
+@media(max-width:900px){.split{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr}}
+.panel{padding:20px 22px}
+.panel h3{font-size:17px;font-weight:800;margin-bottom:6px}
+.panel .note{font-size:12.5px;color:var(--muted)}
+.principle{background:var(--navy);color:#fff;border-radius:16px;padding:22px 24px;margin-bottom:18px}
+.principle h3{font-size:19px;font-weight:800;color:var(--cyan)}
+.principle p{font-size:14px;color:#D7DEE9;max-width:900px;margin-top:6px}
+.chart-wrap{margin-top:14px}
+.bar-row{display:grid;grid-template-columns:150px 1fr 64px;align-items:center;gap:10px;margin:7px 0}
+.bar-row .bl{font-size:12.5px;font-weight:600;text-align:right}
+.bar-track{height:22px;position:relative}
+.bar{height:100%;border-radius:0 4px 4px 0;background:var(--blue);min-width:6px;transition:opacity .15s}
+.bar.top{background:var(--blue-dark)}
+.bar.rest{background:repeating-linear-gradient(135deg,var(--blue-light),var(--blue-light) 5px,#c9d6ff 5px,#c9d6ff 10px)}
+.bar-row .bv{font-size:12.5px;font-weight:700}
+.bar-row:hover .bar{opacity:.82}
+.chart-cap{font-size:11.5px;color:var(--muted);margin-top:10px}
+.pools{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0 4px}
+.pool-card{padding:14px 15px}
+.pool-card .pc{font-size:12px;font-weight:800;color:var(--blue-dark)}
+.pool-card h4{font-size:14.5px;font-weight:700;margin:2px 0 6px}
+.pool-card p{font-size:12px;color:var(--muted)}
+.pool-card .counts{font-size:11.5px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
+.pool-card .counts b{color:#1B7A44}.pool-card .counts i{color:var(--red);font-style:normal;font-weight:700}
+.price-lines{display:grid;gap:10px;margin-top:12px}
+.pl{display:flex;gap:12px;align-items:baseline;background:var(--off);border-radius:12px;padding:11px 14px}
+.pl .plt{font-size:13.5px;font-weight:700;min-width:190px}
+.pl .pld{font-size:12.5px;color:var(--muted)}
+.calc{margin-top:18px}
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin:14px 0}
+.field{background:var(--off);border-radius:12px;padding:10px 12px}
+.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.field input{width:100%;font:inherit;font-size:16px;font-weight:700;border:none;background:transparent;color:var(--ink);outline:none}
+.field .hint{font-size:10.5px;color:var(--muted);margin-top:2px}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:6px}
+.ostat{background:var(--navy);border-radius:14px;padding:15px 16px;color:#fff}
+.ostat .n{font-size:36px;font-weight:800;color:var(--cyan);line-height:1.05}
+.ostat .l{font-size:11px;color:#B9C4D4;margin-top:4px}
+.ostat.lite{background:#fff;border:1px solid var(--border)}
+.ostat.lite .n{color:var(--navy)}.ostat.lite .l{color:var(--muted)}
+.verdict{margin-top:12px;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:600}
+.verdict.pos{background:#E8F8EF;color:#14532D}
+.verdict.neg{background:var(--red-light);color:#7F1D1D}
+.formula{font-size:11.5px;color:var(--muted);margin-top:10px}
+
+/* ── Proof ────────────────────────────── */
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin:12px 0 24px}
+.pf{padding:15px 16px}
+.pf .who{font-size:14.5px;font-weight:800}
+.pf .metric{font-size:21px;font-weight:800;color:var(--blue-dark);margin:5px 0 3px;line-height:1.15}
+.pf .det{font-size:12.5px;color:var(--muted)}
+.pf .yr{font-size:11px;color:var(--muted);margin-top:7px}
+.pgroup-h{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-dark);margin:20px 0 2px}
+
+/* ── Conversations ────────────────────── */
+.convs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:16px 0}
+.conv{padding:18px}
+.conv .cn{font-size:12px;font-weight:800;color:var(--blue)}
+.conv h4{font-size:17px;font-weight:800;margin:3px 0 8px}
+.conv h6{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--blue-dark);margin:10px 0 4px}
+.conv ul{list-style:none}
+.conv li{font-size:12.5px;padding:2px 0 2px 15px;position:relative}
+.conv li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:2px;background:var(--blue)}
+.conv .leave{margin-top:10px;padding:9px 12px;background:var(--blue-light);border-radius:10px;font-size:12.5px}
+.conv .leave b{color:var(--blue-dark)}
+.plays{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px;margin:14px 0}
+.play{padding:15px 16px}
+.play h5{font-size:14.5px;font-weight:800}
+.play .pw{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.play p{font-size:12.5px;color:var(--muted);margin-top:5px}
+.guard{background:var(--navy);color:#fff;border-radius:16px;padding:22px 24px;margin:18px 0}
+.guard h3{font-size:18px;font-weight:800;color:var(--cyan);margin-bottom:10px}
+.guard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.gitem h5{font-size:13.5px;font-weight:700;margin-bottom:3px}
+.gitem p{font-size:12px;color:#B9C4D4}
+.lesson{margin-top:14px;border-top:1px solid rgba(255,255,255,.15);padding-top:12px;font-size:12.5px;color:#D7DEE9}
+.lesson b{color:#fff}
+
+/* ── Handout modal ────────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(4,19,38,.55);display:none;z-index:90;overflow-y:auto;padding:30px 16px}
+.modal-bg.on{display:block}
+.handout{max-width:860px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden}
+.ho-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;background:var(--off);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.ho-head{background:var(--navy);color:#fff;padding:24px 28px}
+.ho-head .eyebrow{color:var(--cyan)}
+.ho-head .hq{font-size:26px;font-weight:800;line-height:1.15;margin:8px 0 4px}
+.ho-head .hn{font-size:14px;color:#B9C4D4}
+.ho-head .chips{margin-top:12px}
+.ho-head .tag{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff}
+.ho-body{padding:22px 28px 26px}
+.ho-sec{margin-bottom:16px}
+.ho-sec h5{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-dark);margin-bottom:5px}
+.ho-sec p,.ho-sec li{font-size:13px}
+.ho-sec ul{list-style:none}
+.ho-sec li{padding:3px 0 3px 16px;position:relative}
+.ho-sec li::before{content:"";position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:2px;background:var(--blue)}
+.ho-2col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:700px){.ho-2col{grid-template-columns:1fr}}
+.ho-note{background:var(--off);border-radius:10px;padding:9px 12px;font-size:12px;color:var(--muted)}
+.ho-falsifier{background:var(--red-light);border-radius:10px;padding:10px 13px;font-size:12.5px}
+.ho-falsifier b{color:#7F1D1D}
+.ho-foot{padding:12px 28px;border-top:1px solid var(--border);font-size:10.5px;color:var(--muted)}
+@media print{
+  body.printing-handout>*{display:none!important}
+  body.printing-handout .modal-bg{display:block!important;position:static;background:#fff;padding:0}
+  body.printing-handout .ho-actions{display:none!important}
+  body.printing-handout .handout{border-radius:0;max-width:none}
+}
+footer{margin-top:34px;padding:20px 0 34px;border-top:1px solid var(--border);font-size:11.5px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.tooltip{position:fixed;pointer-events:none;background:var(--navy);color:#fff;font-size:12px;padding:7px 10px;border-radius:8px;opacity:0;transition:opacity .12s;z-index:99;max-width:260px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:24px;opacity:0;transition:opacity .2s;z-index:99}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Conversational Banking · Domain Matrix</div>
+    <h1>Where conversation pays —<br>across the customer lifecycle</h1>
+    <p class="sub">Every use case a banking assistant can carry, seen from the customer's side of the glass — with the integration it really needs, the value genuinely at stake, live proof, and a ready-to-use handout for the conversation you're walking into.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="n">3B+</div><div class="l">interactions on a single bank assistant — ~60% now start with the bank speaking first (Bank of America Erica, 2025)</div></div>
+      <div class="hstat"><div class="n">48%</div><div class="l">of inbound bank calls concern tasks digital channels could already handle (McKinsey · Finalta)</div></div>
+      <div class="hstat"><div class="n">96%</div><div class="l">containment on a well-scoped intent set — at a community bank, not a megabank (BankSouth, 2022)</div></div>
+    </div>
+    <nav class="tabs">
+      <button class="tab on" data-v="matrix">The Matrix</button>
+      <button class="tab" data-v="ladder">Value Ladder</button>
+      <button class="tab" data-v="econ">Value &amp; Economics</button>
+      <button class="tab" data-v="proof">Proof Library</button>
+      <button class="tab" data-v="convs">First 3 Conversations</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ════════ MATRIX ════════ -->
+<section class="view on" id="v-matrix">
+  <h2>The use-case matrix</h2>
+  <p class="lede"><b>Click any card for its handout</b> — discovery questions, the engagement play, dependencies, proof — ready to print, download, or paste into slides. Chips: capability (<b>A</b>ssist·<b>T</b>ransact·<b>R</b>esolve·<b>G</b>row), integration depth (D0–D5), value pool, and level (L1–L3, the Value Ladder).</p>
+  <div class="decide">
+    <div class="dc"><div class="t">Test 1 · Volume</div><p>Does it appear in the client's <b>call log</b> with volume × unit cost? Anchors are found in data, not demos.</p></div>
+    <div class="dc"><div class="t">Test 2 · Dependency</div><p>How deep must it integrate (D0–D5)? <b>D0–D3 runs on APIs the bank's own app already uses.</b></p></div>
+    <div class="dc"><div class="t">Test 3 · Economics</div><p>Which value pool pays — deflection, completion, revenue, risk? <b>One primary pool per case.</b></p></div>
+    <div class="dc"><div class="t">Test 4 · Wedge</div><p>Does it open the next conversation? Disputes opens resolution; nudges open growth. <b>Anchors should expand.</b></p></div>
+  </div>
+  <div class="filters">
+    <div class="fgroup" id="f-verdict"><span class="fl">Role</span>
+      <button class="pill on" data-f="all">All</button><button class="pill" data-f="anchor">Anchor</button><button class="pill" data-f="support">Support</button><button class="pill" data-f="coverage">Coverage</button>
+    </div>
+    <div class="fgroup" id="f-lvl"><span class="fl">Level</span>
+      <button class="pill on" data-f="all">All</button><button class="pill" data-f="1">L1</button><button class="pill" data-f="2">L2</button><button class="pill" data-f="3">L3</button>
+    </div>
+    <div class="fgroup" id="f-dep"><span class="fl">Depth</span>
+      <button class="pill on" data-f="all">All</button><button class="pill" data-f="shallow">D0–D1</button><button class="pill" data-f="mid">D2–D3</button><button class="pill" data-f="deep">D4–D5</button>
+    </div>
+    <span class="count" id="count"></span>
+  </div>
+  <div id="stages"></div>
+  <div class="emp">
+    <h4>The same platform serves your employees</h4>
+    <p>Every intent the assistant can't finish lands on an employee <b>with full context</b> — and the employee side compounds the case: DBS cut call-handling <b>−20%</b> with a copilot for 500+ agents; Nedbank's assistant absorbed <b>&gt;70%</b> of live-chat volume; Morgan Stanley reached <b>98%</b> advisor adoption. Deflection and assist are one system, not two projects.</p>
+  </div>
+</section>
+
+<!-- ════════ LADDER ════════ -->
+<section class="view" id="v-ladder">
+  <h2>The Value Ladder — L1 → L3 across the value chain</h2>
+  <p class="lede">The selection logic, made visible: each level is defined by <b>what unlocks economically</b> and <b>what it depends on</b>. Start where the money already leaks; each level funds the next. Click any use case for its handout.</p>
+
+  <div class="standalone">
+    <h3>Can Conversational Banking be sold standalone? Yes — here is the honest boundary.</h3>
+    <p>It does <b>not</b> require the Digital Banking platform or our domain services. The conversational layer consumes whatever the bank already runs — the proof is a decade of deployments on entirely non-Backbase stacks (J.P. Morgan, TD, Standard Chartered, DBS all ran the same conversational core we now own). What it needs from the bank is what the bank's own mobile app already has: content, identity, and APIs.</p>
+    <div class="cols">
+      <div><h5>No dependency (L1)</h5><p>D0–D3: content export, SSO/session, the read &amp; write APIs behind the existing app, step-up auth. Nothing new is built — we plug into what serves the app today.</p></div>
+      <div><h5>One data dependency (L2)</h5><p>Spending-intelligence use cases need <b>categorised transactions</b> — the bank's existing PFM/enrichment source or a provider. We consume it; we don't require ours. Named prerequisite, never a blocker.</p></div>
+      <div><h5>Optional platform expansion (L3)</h5><p>End-to-end resolution needs <b>some</b> workflow/case capability, and growth plays need <b>some</b> decisioning — the bank's own (we integrate) or ours (Customer Operations / Relationship Intelligence). That is the expand conversation, never the entry ticket.</p></div>
+    </div>
+  </div>
+
+  <div id="levels"></div>
+</section>
+
+<!-- ════════ ECONOMICS ════════ -->
+<section class="view" id="v-econ">
+  <div class="principle">
+    <h3>Price the call log, not the feature list.</h3>
+    <p>A use case earns its place in the business case by appearing in your contact-intent distribution with volume and unit cost — not by demoing well. Customers still phone about things the app already does: industry-wide, only <b>14%</b> of self-service attempts fully resolve, and even "very simple" issues resolve just <b>36%</b> of the time (Gartner, 2024). The assistant's first job is capturing that failed demand.</p>
+  </div>
+  <div class="split">
+    <div class="card panel">
+      <h3>What two weeks of calls actually cost</h3>
+      <p class="note">Two-week sample at a large North American card portfolio — 51,000 calls answered by people, classified from transcripts. Bar length = cost of answering each intent by phone (US$M).</p>
+      <div class="chart-wrap" id="intent-chart"></div>
+      <p class="chart-cap">Every intent maps to a matrix card — the top five are all Anchor-grade. This table is the current-state assessment, the shortlist and the ROI baseline in one artifact; we build it from a two-week sample of your call data.</p>
+    </div>
+    <div class="card panel">
+      <h3>The five value pools</h3>
+      <p class="note">Every use case is priced on exactly one primary pool — mixing pools is how business cases lose credibility.</p>
+      <div class="pools">
+        <div class="card pool-card"><div class="pc">V1</div><h4>Deflection</h4><p>A human contact avoided.</p><div class="counts"><b>Counts:</b> intents handled by phone/branch/chat today. <i>Doesn't:</i> tasks already self-served in-app.</div></div>
+        <div class="card pool-card"><div class="pc">V2</div><h4>Completion</h4><p>Failed self-service rescued.</p><div class="counts"><b>Counts:</b> proven drop-off. <i>Doesn't:</i> assumed delight.</div></div>
+        <div class="card pool-card"><div class="pc">V3</div><h4>Revenue</h4><p>Conversion, deepening, primacy.</p><div class="counts"><b>Counts:</b> measured uplift vs control.</div></div>
+        <div class="card pool-card"><div class="pc">V4</div><h4>Risk &amp; loss</h4><p>Scams, fraud speed, disputes, arrears.</p><div class="counts"><b>Counts:</b> loss lines finance already tracks.</div></div>
+        <div class="card pool-card"><div class="pc">V5</div><h4>Experience</h4><p>CSAT / NPS / accessibility / 24×7.</p><div class="counts"><b>Counts:</b> strategically. <i>Doesn't:</i> as the headline.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card panel" style="margin-top:18px">
+    <h3>How the commercial model meets the value</h3>
+    <div class="price-lines">
+      <div class="pl"><span class="plt">Platform — per domain, annual</span><span class="pld">A committed base for the governed platform (guardrails, audit, orchestration, employee workspace). Fixed and predictable.</span></div>
+      <div class="pl"><span class="plt">Usage — per interaction</span><span class="pld">Cents per conversation turn, declining with volume. Hygiene intents cost pennies; the meter follows real activity, not seats.</span></div>
+      <div class="pl"><span class="plt">AI compute — pass-through at cost</span><span class="pld">Model costs are transparent, not marked up — and shrink with reserved capacity at scale.</span></div>
+    </div>
+    <p class="note" style="margin-top:10px"><b>Pay for outcomes, not infrastructure.</b> Consumption typically begins after a ~4-month implementation ramp — the platform proves itself before the meter matters.</p>
+  </div>
+  <div class="card panel calc">
+    <h3>When does it pay? — run your own numbers</h3>
+    <p class="note">Illustrative model, editable assumptions (benchmark defaults, deliberately conservative). Replace with client data in a value workshop; the commercial proposal governs actual fees.</p>
+    <div class="calc-grid">
+      <div class="field"><label>Active customers</label><input id="c-cust" type="number" value="500000" step="50000"><div class="hint">retail base in scope</div></div>
+      <div class="field"><label>Human contacts / customer / yr</label><input id="c-rate" type="number" value="1.5" step="0.1"><div class="hint">benchmark 2–4 calls, skewed (Bain)</div></div>
+      <div class="field"><label>Cost per human contact €</label><input id="c-cost" type="number" value="5" step="0.5"><div class="hint">UK median £4.18–£5.58 mean (ContactBabel '24)</div></div>
+      <div class="field"><label>% intents addressable</label><input id="c-addr" type="number" value="60" step="5"><div class="hint">~48–70% digitally addressable</div></div>
+      <div class="field"><label>Containment on addressable %</label><input id="c-cont" type="number" value="45" step="5"><div class="hint">start at 45%, not best-in-class 80–96%</div></div>
+      <div class="field"><label>Bot conversations per deflected contact</label><input id="c-mult" type="number" value="2" step="0.25"><div class="hint">the assistant also absorbs traffic that saves nothing</div></div>
+      <div class="field"><label>All-in cost / automated conversation €</label><input id="c-conv" type="number" value="0.30" step="0.05"><div class="hint">usage + AI compute, illustrative</div></div>
+      <div class="field"><label>Platform fee / yr €</label><input id="c-fee" type="number" value="700000" step="50000"><div class="hint">illustrative placeholder — proposal governs</div></div>
+    </div>
+    <div class="out">
+      <div class="ostat lite"><div class="n" id="o-contacts">—</div><div class="l">Human contacts / yr in scope</div></div>
+      <div class="ostat lite"><div class="n" id="o-defl">—</div><div class="l">Contacts deflected / yr</div></div>
+      <div class="ostat"><div class="n" id="o-value">—</div><div class="l">Value at stake (deflection alone)</div></div>
+      <div class="ostat lite"><div class="n" id="o-run">—</div><div class="l">Assistant run cost (usage + compute)</div></div>
+      <div class="ostat"><div class="n" id="o-net">—</div><div class="l">Net annual value after all fees</div></div>
+      <div class="ostat"><div class="n" id="o-roi">—</div><div class="l">Value multiple on total spend</div></div>
+    </div>
+    <div class="verdict" id="o-verdict"></div>
+    <p class="formula" id="o-formula"></p>
+    <p class="formula">Deflection is only pool V1 — revenue (V3), risk (V4) and completion (V2) stack on top. A bank that clears break-even on deflection alone buys everything else at zero incremental platform cost.</p>
+  </div>
+</section>
+
+<!-- ════════ PROOF ════════ -->
+<section class="view" id="v-proof">
+  <h2>Proof library — who runs this today</h2>
+  <p class="lede">Live deployments, categorized to the matrix. <span class="src b">BANK</span> bank-published / filing · <span class="src a">ANALYST</span> independent analyst or press · <span class="src v">VENDOR</span> vendor-published, directional · <span class="adjtag">ADJACENT</span> outside banking — the pattern to borrow.</p>
+  <div id="proofs"></div>
+</section>
+
+<!-- ════════ CONVERSATIONS ════════ -->
+<section class="view" id="v-convs">
+  <h2>The first three conversations</h2>
+  <p class="lede">Where this tool earns its keep. Each conversation has a job, a set of questions, and one thing to leave with. Keep a <b>KNOWN / ASSUMED / ASK</b> register from day one — every number is one of the three, and the client always knows which.</p>
+  <div class="convs">
+    <div class="card conv"><div class="cn">CONVERSATION 1</div><h4>Qualify &amp; hook</h4>
+      <h6>Bring</h6><ul><li>The matrix (this tool) + two proof points matched to their market</li><li>The pair: only ~20% of calls automate without process rewiring — 25–40% reduction when properly integrated (McKinsey 2026)</li></ul>
+      <h6>Business questions</h6><ul><li>Is there a live cost-income or efficiency target this year? Who owns it?</li><li>What runs today — IVR, bot, neither? Bought when, renews when?</li><li>Gut-size it: how many calls a month, and what does a call cost you?</li><li>Which pain is loudest — cost, waiting times, complaints, scam losses?</li></ul>
+      <div class="leave"><b>Leave with:</b> agreement to share a 2-week call-intent sample — "we'll show you what your calls cost, intent by intent."</div></div>
+    <div class="card conv"><div class="cn">CONVERSATION 2</div><h4>Evidence &amp; readiness</h4>
+      <h6>Bring</h6><ul><li>The data request (right column of every handout)</li><li>The dependency staircase — "here's how little we need to start"</li></ul>
+      <h6>Architecture questions (with their EA in the room)</h6><ul><li>Which read/write APIs already serve your mobile app? Are they internally consumable?</li><li>How does step-up auth work today — can a conversation reuse it?</li><li>Is there a transaction-categorisation source (PFM vendor, in-house, schemes)?</li><li>Where do disputes/cases live — which system would a conversation open a case in?</li><li>Any decisioning/eligibility APIs (pre-approval, offers)?</li></ul>
+      <div class="leave"><b>Leave with:</b> the intent sample in hand + a D0–D5 readiness map of their estate.</div></div>
+    <div class="card conv"><div class="cn">CONVERSATION 3</div><h4>The number &amp; the wedge</h4>
+      <h6>Bring</h6><ul><li>THEIR intent-cost table (built from the sample)</li><li>The calculator, live, with their numbers</li><li>A 3+1+1 slate: three deflection anchors + one revenue play + one resolution loop</li></ul>
+      <h6>Economics questions</h6><ul><li>What threshold makes this "meaningful" for the budget owner?</li><li>Committed-plus-consumption pricing: comfortable paying for activity, not seats?</li><li>What would kill this internally — and who needs to see the number first?</li><li>Agree the falsifiers: "if the sample shows &lt;X human contacts on addressable intents, the deflection case fails and we pivot to revenue/risk anchors."</li></ul>
+      <div class="leave"><b>Leave with:</b> a named sponsor + a scoped 90-day proof (L1 slate) + success metrics agreed.</div></div>
+  </div>
+
+  <h2 style="margin-top:26px">The engagement plays</h2>
+  <p class="lede">Four repeatable motions — every handout names which one fits that use case.</p>
+  <div class="plays">
+    <div class="card play"><h5>Intent-Cost Sprint</h5><div class="pw">1–2 weeks · data-led</div><p>Two-week call sample (or transcripts) → classify → the intent-cost table. The single artifact that is current-state, shortlist and baseline at once. Run it before any workshop if you can.</p></div>
+    <div class="card play"><h5>Value-Wedge Workshop</h5><div class="pw">Half day · decision-led</div><p>Their call drivers overlaid on the matrix; pick the 3+1+1 slate; calculator live with their numbers; KNOWN/ASSUMED/ASK register out the door.</p></div>
+    <div class="card play"><h5>Architecture Readiness Whiteboard</h5><div class="pw">2 hours · EA-led</div><p>D0–D5 checklist against their API estate. Output: dependency map, the 90-day scope, and the named prerequisite (if any — usually enrichment).</p></div>
+    <div class="card play"><h5>Commercial Sense-Check</h5><div class="pw">1 week · deal-desk governed</div><p>Their volumes through the pricing shape → a budget band the sponsor can carry internally. Never invent price points; the proposal governs.</p></div>
+  </div>
+
+  <div class="guard">
+    <h3>Why this is safe to put in front of customers</h3>
+    <div class="guard-grid">
+      <div class="gitem"><h5>Guardrails on every turn</h5><p>Financial-services-specific checks per conversational turn — no false promises, no tipping-off, vulnerable-customer handling built in.</p></div>
+      <div class="gitem"><h5>Every action is authorised</h5><p>Nothing executes without a policy check; actor, policy and outcome land in an immutable audit trail. Governance is an artifact, not a slogan.</p></div>
+      <div class="gitem"><h5>Humans by design</h5><p>Autonomy is tiered per use case. The assistant owns the routine; people own the exceptions — with full context handed over.</p></div>
+      <div class="gitem"><h5>Deterministic where it matters</h5><p>The biggest assistants run payments on deterministic rails with AI understanding the request — generative where it helps, governed where it counts.</p></div>
+    </div>
+    <div class="lesson"><b>The industry lesson baked in:</b> in 2024 a major fintech's AI assistant absorbed the workload of ~700 agents in month one — then in 2025 publicly restored guaranteed human access after quality slipped on disputes and emotionally-loaded cases. The design above is that lesson applied in advance: automate the transaction, guarantee the human for the exception.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Conversational Banking Domain Matrix · Backbase Value Consulting · Benchmarks are published industry figures, sources inline; vendor figures flagged and directional.</span>
+    <span>Illustrative — all client-specific figures re-based on client data. Not a commercial offer.</span>
+  </div>
+</footer>
+
+<!-- Handout modal -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeHandout()">
+  <div class="handout">
+    <div class="ho-actions">
+      <button class="btn ghost" onclick="copySlide()">Copy for slides</button>
+      <button class="btn ghost" onclick="downloadHandout()">Download .html</button>
+      <button class="btn" onclick="printHandout()">Print / Save PDF</button>
+      <button class="btn ghost" onclick="closeHandout()">Close</button>
+    </div>
+    <div id="ho-content"></div>
+  </div>
+</div>
+<div class="tooltip" id="tt"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ───────────────────────── data ───────────────────────── */
+const STAGES=[
+ {id:"onboard",num:"01",title:"Acquire & Onboard",ulens:"“I'm not your customer yet — make this easy.”",
+  vas:"<b>Value at stake:</b> only 14% of self-service attempts fully resolve (Gartner 2024) — guided conversation captures the drop-off that becomes abandonment or a branch visit. Conversational account-opening is live in inclusion-led markets; insurance's benchmark is 98% of policies sold by an assistant."},
+ {id:"service",num:"02",title:"Everyday Servicing",ulens:"“Just sort it — without a phone queue.”",
+  vas:"<b>Value at stake:</b> ~48% of inbound bank calls concern tasks digital could already do (McKinsey·Finalta) at £4–6 per call (ContactBabel 2024). Properly integrated assistants cut call volumes 25–40% (McKinsey 2026). This stage is the deflection engine — anchor territory."},
+ {id:"transact",num:"03",title:"Pay & Move Money",ulens:"“Do it for me — I'll just say it.”",
+  vas:"<b>Value at stake:</b> conversation replaces the most expensive channel (phone/IVR), not the app. Deflection concentrates where phone share is high; elsewhere the win is completion, speed, accessibility."},
+ {id:"engage",num:"04",title:"Engage & Grow",ulens:"“Tell me something about my money I didn't know.”",
+  vas:"<b>Value at stake:</b> ~60% of interactions at the best-run assistant start with the bank speaking first (BofA Erica) — proactive insight is the flywheel that keeps the front door busy and feeds every revenue play."},
+ {id:"sell",num:"05",title:"Sell & Deepen",ulens:"“If it's genuinely for me — show me.”",
+  vas:"<b>Value at stake:</b> assistants that sell are proven: +27% product sales at a community bank; 55% better lead conversion on an agentic concierge. Revenue makes small-bank cases work where deflection alone can't."},
+ {id:"protect",num:"06",title:"Protect",ulens:"“Something's wrong — help me now.”",
+  vas:"<b>Value at stake:</b> trust moments decide relationships. Mid-payment scam intervention halved scam losses at CBA; disputes are typically the #1 phone intent by cost — and the natural first end-to-end resolution loop."},
+ {id:"retain",num:"07",title:"Collect & Retain",ulens:"“Don't make this harder than it already is.”",
+  vas:"<b>Value at stake:</b> the underrated edge — 96–98% of digital-first collections resolve without an agent; digital-first cuts collections cost ≥15%, payments +12% (McKinsey). People in hardship prefer the bot: no shame, no pressure, 2am works."}
+];
+/* q=user quote · nm=name · cap=capabilities · dep=tier · pool · v=verdict · lvl=ladder level · play=engagement play id · roi=why/when it pays · sz=how to size it · qx=case-specific questions · fal=falsifier · proof=[[text,src,adj?]] */
+const CASES=[
+ {s:"onboard",q:"“Which account is right for me?”",nm:"Product discovery & eligibility Q&A",cap:["A"],dep:0,pool:"V3",v:"support",lvl:1,play:2,
+  roi:"Pre-sales questions answered 24×7; warm leads handed to the right journey. Knowledge-only — zero core integration.",
+  sz:"Track assisted product-page → application starts vs control; value = incremental starts × completion rate × unit margin.",
+  qx:["Where do prospects drop today between product pages and application start?"],
+  fal:"If prospect traffic is negligible (branch-led acquisition), park this — it's an app-market play.",
+  proof:[["Mature banking assistants ship 200+ intents out of the box; unauthenticated mode is standard","v"]]},
+ {s:"onboard",q:"“What documents do I need? How far is my application?”",nm:"Application guidance & status",cap:["A","R"],dep:4,pool:"V2",v:"support",lvl:2,play:1,
+  roi:"Status-chasing calls and onboarding drop-off are measurable today; conversation carries the applicant over the gaps. Status-answers work at D1; full guidance needs the case system (D4).",
+  sz:"Onboarding NIGO/abandonment rate × volume × recovery value; status calls × unit cost.",
+  qx:["What share of applications go NIGO or stall? Where exactly?","How many 'where is my application' calls per month?"],
+  fal:"If onboarding is already >90% STP with low drop-off, don't anchor here.",
+  proof:[["Onboarding status is a classic top-10 call driver — priced from your intent sample","a"]]},
+ {s:"onboard",q:"“Open my account right here.”",nm:"Conversational account opening",cap:["R"],dep:4,pool:"V3",v:"coverage",lvl:3,play:3,
+  roi:"Anchor-grade only in messaging-first markets today; elsewhere a roadmap item, not the case.",
+  sz:"Only with a WhatsApp-first segment strategy: incremental accounts × activation rate × CLV.",
+  qx:["Is there a messaging-first or underbanked segment where app-store friction is the real barrier?"],
+  fal:"If the target segment banks happily in-app, this adds a channel, not customers.",
+  proof:[["AU Small Finance Bank (IN): savings account opened fully in WhatsApp in <5 min","b"],["Absa ChatWallet (ZA): wallet opened & used entirely in WhatsApp","b"],["Lemonade “Maya”: 98% of policies sold by the assistant — ~90s to bind","b","adj"]]},
+ {s:"onboard",q:"“Help me get set up.”",nm:"Activation nudges — card, first payment, direct deposit",cap:["T","G"],dep:3,pool:"V3",v:"support",lvl:2,play:2,
+  roi:"Activation is the cheapest primacy lever; each nudge is actionable in-thread.",
+  sz:"Activation-rate uplift × cohort size × value of an activated vs dormant account.",
+  qx:["What % of new accounts are dormant at 90 days? What's an activated account worth?"],
+  fal:"Without a measured dormancy problem, fold into L1 servicing scope instead.",
+  proof:[["CommBank “Ceba”: 200 banking tasks including card activation","b"]]},
+ // SERVICE
+ {s:"service",q:"“Where did my money go?”",nm:"Balance & transaction answers",cap:["A"],dep:1,pool:"V1",v:"anchor",lvl:1,play:1,
+  roi:"Highest-volume intent family in every call log; read-only APIs your app already has.",
+  sz:"(Account-info intent volume from the sample) × containment benchmark × cost/contact.",
+  qx:["What share of calls are balance/transaction questions? (Their IVR data usually knows.)"],
+  fal:"If account-info calls are <5% of volume AND app adoption >80%, demote to Support.",
+  proof:[["BofA “Erica”: 3B+ interactions, ~58M/month","b"],["Wells Fargo “Fargo”: 1B+ interactions in <3 years","b"],["Balance-check containment: 94.8% (400-FI benchmark)","v"]]},
+ {s:"service",q:"“What's this charge?”",nm:"Unrecognised-transaction triage",cap:["A"],dep:2,pool:"V4",v:"anchor",lvl:1,play:1,
+  roi:"Merchant enrichment resolves most “unknown charge” worries before they become disputes — deflection plus dispute-avoidance in one. Works at D1 with raw strings; enrichment (D2) roughly doubles resolve rate.",
+  sz:"Unrecognised-charge contacts × cost/contact + avoided disputes × cost per dispute case.",
+  qx:["What % of dispute intakes close as 'recognised after clarification'? (Often 30–50%.)"],
+  fal:"If dispute volumes are tiny, this rides along with balance Q&A anyway.",
+  proof:[["BofA Erica & Capital One Eno: duplicate-charge and merchant-clarity alerts at scale","b"]]},
+ {s:"service",q:"“Freeze my card. Send a new one.”",nm:"Card lifecycle end-to-end",cap:["T"],dep:3,pool:"V1",v:"anchor",lvl:1,play:1,
+  roi:"Card intents are reliably top-5 by phone cost; fully API-executable under step-up auth.",
+  sz:"Card-intent call volume × containment × cost/contact (the sample gives all three).",
+  qx:["Can the assistant reuse the app's card-control APIs and step-up auth as-is?"],
+  fal:"If risk vetoes bot-initiated card actions, containment halves — get the sign-off path in writing early.",
+  proof:[["BankSouth “Rita”: 96% containment, ~30% call-volume cut in 6 months","a"],["Card replacement: $1.9M of phone cost in a 2-week sample at a NA card portfolio","a"]]},
+ {s:"service",q:"“I can't log in.”",nm:"Digital access & password reset",cap:["T"],dep:3,pool:"V1",v:"anchor",lvl:1,play:1,
+  roi:"The chronically under-scoped top-3 call driver; IAM-level integration only.",
+  sz:"Access-related call volume × containment × cost/contact.",
+  qx:["How many password/login calls per month? Who owns IAM and can a bot trigger reset flows?"],
+  fal:"If resets require in-branch ID by policy, scope to triage + appointment instead.",
+  proof:[["Truist Assist: 5.5M conversations in 2025, >80% resolved in-bot","b"]]},
+ {s:"service",q:"“My payment didn't go through.”",nm:"Payment status & fixes",cap:["A","T"],dep:3,pool:"V1",v:"anchor",lvl:1,play:1,
+  roi:"High-anxiety, high-volume, fully answerable from payment-status APIs plus retry actions.",
+  sz:"Payment-intent call volume × containment × cost/contact.",
+  qx:["Top payment failure reasons? Are status + retry exposed as APIs?"],
+  fal:"If payment rails give no status API, downgrade to explain-and-route until they do.",
+  proof:[["“Make a payment”: $3.0M of phone cost in a 2-week sample at a NA card portfolio","a"]]},
+ {s:"service",q:"“Update my address.”",nm:"Profile & detail changes",cap:["T"],dep:3,pool:"V5",v:"coverage",lvl:1,play:2,
+  roi:"The canonical hygiene case: if it's already an app tap, conversationalising it deflects nothing. Included for breadth — priced never. Exception: your call log proves people still phone for it.",
+  sz:"Only if the sample shows profile-change calls: that volume × containment × cost/contact. Otherwise €0 in the case.",
+  qx:["Does the call log actually show profile-change volume? (Check before dismissing OR pricing.)"],
+  fal:"This card is the discipline: it ships in scope, it never carries the number.",
+  proof:[["Even “very simple” issues resolve in self-service only 36% of the time — capture the failure, don't claim the channel (Gartner 2024)","a"]]},
+ {s:"service",q:"“Send me my statement / tax form.”",nm:"Documents on demand",cap:["A"],dep:1,pool:"V1",v:"support",lvl:1,play:2,
+  roi:"Seasonal call spikes (tax season) flatten cheaply.",
+  sz:"Seasonal document-request calls × containment × cost/contact.",
+  fal:"Rarely a standalone anchor — bundle into the L1 slate.",
+  proof:[["Standard scope in mature deployments","v"]]},
+ {s:"service",q:"“What's the fee for…? Where's the nearest ATM?”",nm:"Everyday questions",cap:["A"],dep:0,pool:"V2",v:"coverage",lvl:1,play:2,
+  roi:"Breadth drives adoption and overall containment — the meter costs pennies here.",
+  sz:"Not priced separately; shows up as higher overall containment.",
+  fal:"Coverage by definition — never in the headline.",
+  proof:[["Long-tail Q&A is where gen-AI answers lift containment beyond scripted bots","a"]]},
+ // TRANSACT
+ {s:"transact",q:"“Send €50 to João.”",nm:"Payments by chat & voice",cap:["T"],dep:3,pool:"V2",v:"support",lvl:2,play:3,
+  roi:"Anchor only where phone/IVR still carries payment volume; otherwise completion, speed and accessibility.",
+  sz:"Phone-banking payment volume × migration % × (cost/call − cost/conversation).",
+  qx:["What share of payments still happen by phone or IVR? Voice-biometric auth available?"],
+  fal:"In app-native markets this is experience, not economics — say so out loud.",
+  proof:[["Nubank: Pix payment by chat, voice or photo — executed in <10s","b"],["T-Bank “Oleg”: voice transfers under voice-biometric auth","b"],["BBVA “Blue”: GPT-powered assistant executing account & card transactions (Spain+Mexico, 2025)","b"]]},
+ {s:"transact",q:"“Pay my card bill. Move €200 to savings.”",nm:"Self-transfers & bill pay",cap:["T"],dep:3,pool:"V2",v:"support",lvl:2,play:3,
+  roi:"Same rails as P2P; value follows the current phone share of these tasks.",
+  sz:"As P2P: phone-share migration × unit-cost delta.",
+  fal:"Bundle with P2P — one risk sign-off, one auth pattern.",
+  proof:[["Wells Fargo Fargo & BofA Erica execute transfers/bill-pay at population scale","b"]]},
+ {s:"transact",q:"“Move my balance to a cheaper rate.”",nm:"Balance transfer & card offers",cap:["T","G"],dep:5,pool:"V3",v:"anchor",lvl:3,play:2,
+  roi:"Revenue-adjacent servicing: a top-5 phone intent by cost — and a conversion moment when eligibility is in the thread.",
+  sz:"BT intent volume × conversion uplift × balance × margin; plus deflected call cost.",
+  qx:["Is BT eligibility exposed as a real-time decision? Who owns the cards P&L?"],
+  fal:"Without decisioning APIs this is an expensive brochure — route to RM instead.",
+  proof:[["Balance transfer: $1.7M of phone cost in a 2-week sample at a NA card portfolio","a"]]},
+ // ENGAGE
+ {s:"engage",q:"“You were charged twice — want it fixed?”",nm:"Proactive money insights → act in-thread",cap:["G"],dep:2,pool:"V5",v:"anchor",lvl:2,play:2,bank:true,
+  roi:"The engagement flywheel: proactive starts the conversation, the customer acts inside it. Requires transaction enrichment (yours or a provider's).",
+  sz:"Engagement lift (sessions, MAU) → feeds every V3 play; track insight→action rate.",
+  qx:["Is there an enrichment source today (PFM vendor, in-house, scheme data)? Coverage %?"],
+  fal:"No enrichment source and no appetite to add one → defer the PFM class, keep the rest.",
+  proof:[["BofA Erica: 1.7B proactive insights; ~60% of interactions start proactively","b"],["Personetics: 150M monthly users across 130+ banks","v"]]},
+ {s:"engage",q:"“How much did I spend on groceries?”",nm:"Spending & budget answers",cap:["A"],dep:2,pool:"V5",v:"support",lvl:2,play:3,
+  roi:"The PFM classic — depends on categorised transactions (the one genuinely new data dependency in this matrix).",
+  sz:"Engagement metric, not €: sessions with money-insight queries; retention correlation.",
+  fal:"Never lead with this in a cost-led room; lead with it in an engagement-led room.",
+  proof:[["Standard Chartered “Stacy”: spend analysis in-app (2019→)","b"],["Cleo: 7M users pay for exactly this conversation","v","adj"]]},
+ {s:"engage",q:"“Your salary went up — set 5% aside?”",nm:"Financial-progress nudges → next product",cap:["G"],dep:5,pool:"V3",v:"anchor",lvl:3,play:2,bank:true,
+  roi:"Where engagement becomes measurable revenue: savings activation, deposit growth, primacy.",
+  sz:"Nudge volume × accept rate × balance moved × margin — with a control group, always.",
+  qx:["Can we run a holdout/control group? Who signs off offer governance?"],
+  fal:"If measurement-by-control is refused, don't book V3 — you'll never defend it.",
+  proof:[["First Financial “Gabby”: +27% new CDs, +10% new accounts; users log in 46% more","v"],["BankSouth “Rita”: $1M in new deposits attributed","a"]]},
+ {s:"engage",q:"“Your deposit matures Friday — roll or move?”",nm:"Renewal & maturity moments",cap:["G"],dep:5,pool:"V3",v:"support",lvl:3,play:2,bank:true,
+  roi:"Retention at rate-decision moments — high per-event value in deposit-competition markets.",
+  sz:"Maturing balances × at-risk % × retention uplift × margin.",
+  fal:"Only fires in rate-competitive markets — check deposit-flight data first.",
+  proof:[["Deposit-rollover nudges are the proven first Grow play in US deployments","v"]]},
+ // SELL
+ {s:"sell",q:"“Am I eligible for a better card?”",nm:"Pre-qualified offers in-thread",cap:["G","T"],dep:5,pool:"V3",v:"anchor",lvl:3,play:2,
+  roi:"Anchor where eligibility/decisioning APIs exist; offer, check and acceptance stay in one conversation.",
+  sz:"Offer volume × conversion vs channel baseline × unit margin (control-grouped).",
+  qx:["Which products have real-time pre-approval today? What's the current channel conversion?"],
+  fal:"No decisioning APIs → sell the integration roadmap, don't book the revenue yet.",
+  proof:[["Capital One agentic concierge: 55% better lead-to-buyer conversion (live 2025)","a"]]},
+ {s:"sell",q:"“Help me finish this application.”",nm:"Application rescue",cap:["R"],dep:4,pool:"V3",v:"support",lvl:2,play:1,
+  roi:"45% of self-service abandonment is “it didn't understand what I was trying to do” (Gartner) — conversation is the fix.",
+  sz:"Abandoned applications × rescue rate × completion value.",
+  fal:"Needs funnel analytics; without drop-off data it's an assumption, label it so.",
+  proof:[["Onboarding/lending assist packs address measured drop-off points","v"]]},
+ {s:"sell",q:"“What's my cash position across accounts?”",nm:"Business & SME copilot",cap:["A"],dep:2,pool:"V3",v:"support",lvl:2,play:2,
+  roi:"SME/corporate conversation is the differentiation frontier — most bank bots are retail-only.",
+  sz:"SME servicing cost/relationship + RM time released; retention on digital-first SMEs.",
+  qx:["What does SME servicing cost per relationship today? Where do SMEs call vs self-serve?"],
+  fal:"If SME base is small, keep retail-first and note this as the differentiation card.",
+  proof:[["DBS “Joy”: gen-AI assistant for corporate clients — 120k+ chats since Feb 2025","b"],["BofA Erica for Business: >40% of CashPro chat inquiries","b"],["Business-banking VAs were co-designed with J.P. Morgan treasury (2018–19)","a"]]},
+ // PROTECT
+ {s:"protect",q:"“Was this you?” — and you answer in the thread",nm:"Two-way fraud confirmation",cap:["T","R"],dep:3,pool:"V4",v:"anchor",lvl:1,play:1,bank:true,
+  roi:"Faster confirm/deny = lower loss AND a fraud line you don't staff. Standard at every major deployment.",
+  sz:"Fraud-alert volume × response-time improvement × loss-per-hour curve + fraud-line call deflection.",
+  qx:["Current fraud-alert response rates and channel? What does an hour of delay cost?"],
+  fal:"If two-way alerts already run well, this is parity — move the anchor elsewhere.",
+  proof:[["Two-way fraud alerts are table stakes across US majors (Eno, Erica-class)","b"]]},
+ {s:"protect",q:"“I think I'm being scammed.”",nm:"Scam intervention in the moment",cap:["G"],dep:5,pool:"V4",v:"anchor",lvl:3,play:2,bank:true,
+  roi:"Interdiction at the payment moment — anchor-grade wherever APP-scam liability bites (UK, AU, NL).",
+  sz:"Scam-loss line × interdiction rate; reimbursement liability avoided (PSR-style regimes).",
+  qx:["Last year's APP-scam losses and reimbursement exposure? Where does payment friction sit today?"],
+  fal:"Outside liability regimes the case is brand/trust — still real, but V5, not V4.",
+  proof:[["CommBank: scam losses −50%, reported fraud −30%, proactive alerts scaled to 35k/day","b"]]},
+ {s:"protect",q:"“I want my money back.”",nm:"Dispute intake → status → resolution",cap:["R"],dep:4,pool:"V1",v:"anchor",lvl:3,play:1,
+  roi:"Typically the #1 phone intent by cost — and the natural first end-to-end resolution loop: intake, evidence, policy, refund, customer updated. This card is the expansion door.",
+  sz:"Dispute contacts × cost/contact + case-handling cost × STP rate + write-off reduction.",
+  qx:["Dispute volume, cost per case, and current cycle time? Which system owns the case?","What % could close same-day with evidence auto-gathered?"],
+  fal:"Intake/status works standalone (L1-adjacent); END-TO-END needs the workflow layer — price the two separately.",
+  proof:[["Disputes: $3.0M of phone cost in a 2-week sample at a NA card portfolio","a"],["NatWest “Cora”: 11.2M conversations/yr, 49% resolved with no human","b"]]},
+ // RETAIN
+ {s:"retain",q:"“You've missed a payment — set up a plan?”",nm:"Early-arrears self-service",cap:["G","R"],dep:5,pool:"V4",v:"anchor",lvl:3,play:2,bank:true,
+  roi:"Roll-rate and recovery economics that finance already tracks — and customers genuinely prefer the bot at 2am.",
+  sz:"Early-arrears book × roll-rate improvement × balance + collections cost/contact saved.",
+  qx:["Current roll rates by bucket? Cost per collections contact? Any digital collections today?"],
+  fal:"If collections is outsourced flat-fee, the saving lands with the agency — restructure or skip.",
+  proof:[["Digital-first collections: 96–98% of resolving debtors never speak to an agent","v"],["AI-written collections messages convert +33% vs human-authored","v"],["Digital-first cuts collections cost ≥15%, payments +12%","a"]]},
+ {s:"retain",q:"“I'm struggling this month.”",nm:"Hardship conversations",cap:["R"],dep:4,pool:"V5",v:"support",lvl:3,play:2,
+  roi:"Shame-free, 24×7, conduct-safe by script — regulatory goodwill plus real recovery.",
+  sz:"Hardship-case handling cost + conduct-risk avoidance (qualitative unless fines exist).",
+  fal:"Regulator-sensitive: co-design scripts with conduct/compliance or don't ship it.",
+  proof:[["Hardship self-serve is the fastest-growing collections pattern (AU/UK)","a"]]},
+ {s:"retain",q:"“I want to close my account.”",nm:"Retention & save conversations",cap:["G"],dep:5,pool:"V3",v:"support",lvl:3,play:2,
+  roi:"Exit signals become save conversations — deliberately low containment (a human should hear these), high value per save.",
+  sz:"Closure intents × save rate × CLV retained.",
+  fal:"Design for handoff, not containment — a bot that blocks leaving is a complaint machine.",
+  proof:[["Account closures are deliberately the LOWEST-containment intent (41%) in FI benchmarks — by design","v"]]}
+];
+const PROOFS=[
+ {g:"Everyday servicing at population scale",items:[
+  ["Bank of America — “Erica”","3B+ interactions","~58M interactions/month; executes bill pay, transfers, card lock; ~60% of engagements start from a proactive insight.","2025","b"],
+  ["Wells Fargo — “Fargo”","1B+ in <3 yrs","21M ('23) → 245M ('24) → 1B+ cumulative; Zelle, bill pay, card controls by voice & text.","2026","b"],
+  ["NatWest — “Cora / Cora+”","49% no human","11.2M conversations/yr; gen-AI upgrade lifted satisfaction sharply.","2024–25","b"],
+  ["Truist — “Truist Assist”","80%+ in-bot","5.5M client conversations in 2025.","2026","b"],
+  ["CommBank (AU)","50k enquiries/day","Gen-AI messaging; call-centre waits −40%; 35k proactive alerts/day.","2024","b"],
+  ["Bradesco — “BIA”","74M customers","2B+ cumulative interactions; >2M requests/day after gen-AI rebuild.","2025","b"],
+  ["Nubank","55% of Tier-1 chats","GPT-4o assistant, 2M+ chats/month, response time −70%.","2025","b"],
+  ["BankSouth — “Rita”","96% containment","~30% call-volume cut in 6 months at a community bank; $1M new deposits.","2022","a"],
+  ["Nedbank — “Enbi”",">70% chat absorbed","Contact-centre assistant; higher CSAT.","2021","v"],
+  ["DBS / POSB","82% containment","The original KAI deployment family (India 2016 →); now joined by gen-AI employee copilots.","2016→","v"]]},
+ {g:"Money movement by conversation",items:[
+  ["Nubank — Pix on WhatsApp","<10 seconds","Send money by chat, voice or photo; AI executes the transfer.","2025","b"],
+  ["BBVA — “Blue”","executes transactions","First GPT-powered assistant in Spain executing account & card transactions.","2025","b"],
+  ["T-Bank — “Oleg”","voice-biometric transfers","Voice assistant pays bills, moves money, books tables.","2020→","b"]]},
+ {g:"Proactive engagement & growth",items:[
+  ["BofA Erica — insights","1.7B insights","Duplicate charges, subscription price rises, FICO changes — acted on in-thread.","2025","b"],
+  ["Personetics (platform)","150M users/month","1.2B insights/month across 130+ banks.","2024","v"],
+  ["First Financial — “Gabby”","+27% new CDs","+10% total new accounts; Gabby users log in 46% more; 90% containment.","2024","v"],
+  ["Standard Chartered — “Stacy”","spend analysis","Cantonese + English money management in-app.","2019","b"],
+  ["Cleo","7M users","~$280M ARR built on a personality-led money conversation.","2025","v","adj"]]},
+ {g:"Selling & business banking",items:[
+  ["Capital One — agentic concierge","+55% lead conversion","First customer-facing agentic AI from a major US bank — compares, books, pre-qualifies.","2025","a"],
+  ["DBS — “Joy”","120k+ corporate chats","Gen-AI assistant for all corporate clients since Feb 2025.","2025","b"],
+  ["BofA — Erica for Business",">40% of CashPro chat","Business servicing at scale.","2025","b"]]},
+ {g:"Protection & trust moments",items:[
+  ["CommBank — scam interdiction","scam losses −50%","Reported fraud −30%; proactive alerts at 35k/day.","2024","b"],
+  ["US majors — two-way fraud alerts","standard","Confirm/deny in the thread; faster resolution, lower loss.","2024–25","b"]]},
+ {g:"Collections & hardship (the underrated edge)",items:[
+  ["TrueAccord","96–98% no-agent","20M+ consumers served; 25% pay outside business hours.","2024","v","adj"],
+  ["InDebted","+33% conversion","AI-written messages beat human-authored; 80% resolution in AI conversations.","2025","v","adj"],
+  ["India — WhatsApp collections","SMA 8% → 3%","Early-delinquency ratio at a public-sector bank after conversational collections.","2025","v"],
+  ["McKinsey (analyst)","cost −15% · payments +12%","Digital-first collections economics.","2019–23","a"]]},
+ {g:"Adjacent industries — the patterns to borrow",items:[
+  ["Lemonade — “Maya” & “Jim”","98% of policies sold by bot","~90s quote-to-bind; 55% of claims fully automated.","2025","b","adj"],
+  ["Vodafone — “SuperTOBi”","~60M interactions/month","First-time resolution 15% → 60% after gen-AI rebuild.","2025","b","adj"],
+  ["Octopus Energy","45% of emails by AI","AI-drafted answers scored HIGHER CSAT than human-written (80% vs 65%).","2023–24","b","adj"],
+  ["Klarna","~700 agents' workload","…then publicly restored guaranteed human access in 2025 — the design lesson, not a counterexample.","2024–25","a","adj"]]}
+];
+const DEPS={0:"D0 · Knowledge",1:"D1 · Read",2:"D2 · Enriched data",3:"D3 · Execute",4:"D4 · Workflow",5:"D5 · Decisioning"};
+const CAPN={A:"Assist",T:"Transact",R:"Resolve",G:"Grow"};
+const SRC={b:"BANK",a:"ANALYST",v:"VENDOR"};
+const INTENTS=[["Dispute a charge",3.0],["Make a payment",3.0],["Account information",2.1],["Card replacement",1.9],["Balance transfer",1.7],["Ten more intents (each)",1.1,"range"]];
+/* what we need from the bank, by depth tier */
+const NEEDS={
+ 0:["Product/fees/policy content export (or a URL crawl allow-list)","A content owner who signs off AI answers","Brand voice & disclosure rules"],
+ 1:["SSO/session handoff from app & web","Read APIs: accounts, transactions, statuses (the ones the app already uses)","PII residency & logging constraints"],
+ 2:["A transaction-categorisation source: existing PFM vendor, scheme enrichment, or a provider we integrate","Category coverage/quality check on a sample","Clear treatment: bank-side dependency or pass-through — never hidden in our fee"],
+ 3:["Write APIs for the target actions (card controls, transfers, profile)","Step-up authentication the conversation can reuse (biometric/OTP)","Risk & fraud sign-off for bot-initiated actions + audit requirements"],
+ 4:["The case/workflow system a conversation opens cases in (theirs or ours)","Policy pack for the loop (e.g. dispute rules, thresholds)","A case owner with SLA accountability"],
+ 5:["Eligibility / pre-approval / propensity APIs","Offer governance & suppression rules","A control-group measurement agreement"]};
+/* architecture questions by depth tier */
+const ARCHQ={
+ 0:["Where does product & policy content live, and who owns keeping it current?","What's the approval flow for AI-generated answers?"],
+ 1:["Which read APIs already serve your mobile app — and are they consumable by an internal platform?","How would a conversation inherit an authenticated session?"],
+ 2:["Do you categorise transactions today (PFM vendor / in-house / scheme data)? What coverage and quality?","If none: would you license a provider, or should we scope around the PFM class?"],
+ 3:["Which write APIs exist for these actions, and what step-up auth do they demand?","Who signs off bot-initiated transactions — and what's their evidence bar?","What audit trail do your regulators expect per action?"],
+ 4:["Which system owns this case type today? Does it expose create/track APIs?","Where are the policy rules encoded — document, code, or people's heads?"],
+ 5:["Are eligibility/pre-approval decisions exposed as real-time APIs?","Who governs offers — and can we agree a holdout group for measurement?"]};
+/* business questions by value pool */
+const BIZQ={
+ V1:["What are your top 10 call drivers by volume — and what does a call cost fully loaded?","What's today's containment (IVR/bot), and where does it fail?","If call volume fell 25%, what would you actually do with the capacity?"],
+ V2:["Where do customers abandon digital journeys today — do you have funnel data?","What share of calls follow a failed digital attempt?"],
+ V3:["Which product targets does this journey feed (deposits, cards, loans)? Who owns that P&L?","What's the current conversion baseline — and will you allow a control group?"],
+ V4:["Which loss lines does finance track here (fraud, scams, disputes, roll rates)? Last year's numbers?","What would a 10% improvement be worth — and who would claim it?"],
+ V5:["Which journeys drive your NPS/complaints today?","Any regulatory obligations (vulnerable customers, accessibility) this must serve?"]};
+/* economics questions — shared */
+const ECONQ=["Who owns the budget — cost-income target, transformation office, or the business line?","What annual number makes this 'meaningful' rather than a pilot?","Committed-base-plus-consumption pricing: comfortable paying for activity rather than seats?","What's the internal kill-criterion — and who needs to see the number first?"];
+const PLAYS={1:"Intent-Cost Sprint (1–2 wks): get the 2-week call sample, classify, price the intents — evidence before opinions.",
+ 2:"Value-Wedge Workshop (half day): overlay their call drivers on the matrix, pick the 3+1+1 slate, run the calculator live.",
+ 3:"Architecture Readiness Whiteboard (2 hrs with their EA): D0–D5 checklist against the API estate → dependency map + 90-day scope."};
+const LVLDEF=[
+ {n:1,t:"First proof — efficiency + a revenue quick-win",dep:"none",depLabel:"NO PLATFORM DEPENDENCY — runs on the APIs behind their existing app",
+  unlock:"<b>Unlock:</b> 25–40% call reduction on addressable intents when properly integrated (McKinsey 2026) · €4–9 saved per deflected contact · proof in 90 days.",
+  why:"Day-one economic sense: high-volume call-log intents at D0–D3, plus product-discovery leads. This slate carries meeting-one credibility and the first business case — standalone, no Digital Banking platform, no domain services."},
+ {n:2,t:"Act & enrich — completion, engagement, voice",dep:"one",depLabel:"ONE DATA DEPENDENCY — transaction categorisation (theirs or a provider's)",
+  unlock:"<b>Unlock:</b> containment ceiling rises (full transact + long-tail gen-AI answers) · proactive flywheel starts (~60% of interactions bank-initiated at the benchmark) · voice replaces the costliest channel.",
+  why:"The assistant graduates from answering to acting: full transaction set, enriched money answers, proactive insights, application rescue, SME copilot. One named prerequisite (enrichment) — never a blocker, always a line item."},
+ {n:3,t:"Resolve & grow — the whole value chain",dep:"opt",depLabel:"OPTIONAL PLATFORM EXPANSION — their workflow/decisioning or ours (CustOps / RI)",
+  unlock:"<b>Unlock:</b> risk & loss pools (disputes, scams −50% at the benchmark, arrears roll-rates) + measured revenue plays (+27% product sales at the benchmark) · the expand motion.",
+  why:"End-to-end resolution loops and decisioning-led growth. Needs SOME workflow/case and decisioning capability — the bank's own (we integrate) or ours (the natural second-domain conversation). This is where the account grows; it is never the entry ticket."}];
+
+/* ─────────────────────── render matrix ─────────────────────── */
+const stagesEl=document.getElementById("stages");
+CASES.forEach((c,i)=>c.id=i);
+STAGES.forEach(st=>{
+  const cases=CASES.filter(c=>c.s===st.id);
+  const sec=document.createElement("div");sec.className="stage";
+  sec.innerHTML=`<div class="stage-head"><span class="stage-num">${st.num}</span><h3>${st.title}</h3><span class="ulens">${st.ulens}</span></div>
+  <div class="vas">${st.vas}</div><div class="grid"></div>`;
+  const grid=sec.querySelector(".grid");
+  cases.forEach(c=>{
+    const card=document.createElement("div");
+    card.className="card uc";
+    card.dataset.v=c.v;card.dataset.lvl=c.lvl;card.dataset.dep=c.dep<=1?"shallow":(c.dep<=3?"mid":"deep");
+    card.innerHTML=`<div class="q ${c.bank?'bank':''}">${c.q}</div><div class="nm">${c.nm}</div>
+    <span class="badge ${c.v}">${c.v}</span>
+    <div class="chips">${c.cap.map(k=>`<span class="tag">${k} · ${CAPN[k]}</span>`).join("")}
+      <span class="tag dep t${c.dep}" style="background:var(--d${c.dep})">${DEPS[c.dep]}</span>
+      <span class="tag pool">${c.pool}</span><span class="tag lvl">L${c.lvl}</span></div>
+    <div class="roi">${c.roi}</div>
+    <div class="proof">${c.proof.map(p=>`<div>▸ <b>${p[0]}</b> <span class="src ${p[1]}">${SRC[p[1]]}</span>${p[2]==="adj"?' <span class="adjtag">ADJACENT</span>':''}</div>`).join("")}</div>
+    <div class="open">Open handout — questions · play · dependencies →</div>`;
+    card.addEventListener("click",()=>openHandout(c.id));
+    grid.appendChild(card);
+  });
+  stagesEl.appendChild(sec);
+});
+
+/* filters */
+const state={verdict:"all",lvl:"all",dep:"all"};
+[["f-verdict","verdict"],["f-lvl","lvl"],["f-dep","dep"]].forEach(([id,key])=>{
+  document.getElementById(id).addEventListener("click",e=>{
+    if(!e.target.classList.contains("pill"))return;
+    document.querySelectorAll(`#${id} .pill`).forEach(p=>p.classList.remove("on"));
+    e.target.classList.add("on");state[key]=e.target.dataset.f;applyFilters();
+  });
+});
+function applyFilters(){
+  let n=0;
+  document.querySelectorAll(".uc").forEach(c=>{
+    const ok=(state.verdict==="all"||c.dataset.v===state.verdict)
+      &&(state.lvl==="all"||c.dataset.lvl===state.lvl)
+      &&(state.dep==="all"||c.dataset.dep===state.dep);
+    c.style.display=ok?"":"none";if(ok)n++;
+  });
+  document.querySelectorAll(".stage").forEach(s=>{
+    s.style.display=[...s.querySelectorAll(".uc")].some(c=>c.style.display!=="none")?"":"none";
+  });
+  document.getElementById("count").textContent=`${n} of ${CASES.length} use cases`;
+}
+applyFilters();
+
+/* ─────────────────────── ladder ─────────────────────── */
+const levelsEl=document.getElementById("levels");
+LVLDEF.forEach(L=>{
+  const cases=CASES.filter(c=>c.lvl===L.n);
+  const div=document.createElement("div");div.className="card level";
+  div.innerHTML=`<div class="level-head"><span class="ln">L${L.n}</span><h3>${L.t}</h3><span class="dep-state ${L.dep}">${L.depLabel}</span></div>
+  <p class="unlock">${L.unlock}</p><p class="why">${L.why}</p>
+  <div class="lcases">${cases.map(c=>`<span class="lcase" data-id="${c.id}">${c.v==="anchor"?'<span class="v-a">★</span> ':""}${c.nm}</span>`).join("")}</div>`;
+  div.querySelectorAll(".lcase").forEach(el=>el.addEventListener("click",()=>openHandout(+el.dataset.id)));
+  levelsEl.appendChild(div);
+});
+
+/* ─────────────────────── intent chart ─────────────────────── */
+const chartEl=document.getElementById("intent-chart");
+INTENTS.forEach(([label,v,kind],i)=>{
+  const row=document.createElement("div");row.className="bar-row";
+  row.innerHTML=`<div class="bl">${label}</div><div class="bar-track"><div class="bar ${i===0?"top":""} ${kind==="range"?"rest":""}" style="width:${(v/3.0)*100}%"></div></div><div class="bv">${kind==="range"?"$0.6–1.6M":"$"+v.toFixed(1)+"M"}</div>`;
+  row.querySelector(".bar-track").addEventListener("mousemove",e=>tip(e,`<b>${label}</b><br>${kind==="range"?"$0.6–1.6M each — the long tail matters":"$"+v.toFixed(1)+"M phone-answering cost in 2 weeks"}`));
+  row.querySelector(".bar-track").addEventListener("mouseleave",hideTip);
+  chartEl.appendChild(row);
+});
+const tt=document.getElementById("tt");
+function tip(e,html){tt.innerHTML=html;tt.style.opacity=1;tt.style.left=Math.min(e.clientX+14,window.innerWidth-260)+"px";tt.style.top=(e.clientY+14)+"px"}
+function hideTip(){tt.style.opacity=0}
+
+/* ─────────────────────── proofs ─────────────────────── */
+const proofsEl=document.getElementById("proofs");
+PROOFS.forEach(gr=>{
+  const h=document.createElement("div");h.className="pgroup-h";h.textContent=gr.g;proofsEl.appendChild(h);
+  const grid=document.createElement("div");grid.className="proof-grid";
+  gr.items.forEach(([who,metric,det,yr,src,adj])=>{
+    const c=document.createElement("div");c.className="card pf";
+    c.innerHTML=`<div class="who">${who}${adj?' <span class="adjtag">ADJACENT</span>':""}</div>
+    <div class="metric">${metric}</div><div class="det">${det}</div>
+    <div class="yr">${yr} · <span class="src ${src}">${SRC[src]}</span></div>`;
+    grid.appendChild(c);
+  });
+  proofsEl.appendChild(grid);
+});
+
+/* ─────────────────────── calculator ─────────────────────── */
+const $=id=>document.getElementById(id);
+const fmt=n=>n>=1e6?"€"+(n/1e6).toFixed(2)+"M":(n>=1e3?"€"+Math.round(n/1e3)+"K":"€"+Math.round(n));
+const fmtN=n=>n>=1e6?(n/1e6).toFixed(2)+"M":(n>=1e3?Math.round(n/1e3)+"K":Math.round(n));
+function calc(){
+  const cust=+$("c-cust").value||0, rate=+$("c-rate").value||0, cost=+$("c-cost").value||0,
+        addr=(+$("c-addr").value||0)/100, cont=(+$("c-cont").value||0)/100,
+        mult=+$("c-mult").value||1, cpc=+$("c-conv").value||0, fee=+$("c-fee").value||0;
+  const contacts=cust*rate, defl=contacts*addr*cont, gross=defl*cost,
+        convs=defl*mult, run=convs*cpc, net=gross-run-fee, roi=(run+fee)>0?gross/(run+fee):0,
+        be=(cost-cpc*mult)>0?fee/(cost-cpc*mult):0;
+  $("o-contacts").textContent=fmtN(contacts);
+  $("o-defl").textContent=fmtN(defl);
+  $("o-value").textContent=fmt(gross);
+  $("o-run").textContent=fmt(run);
+  $("o-net").textContent=(net<0?"−":"")+fmt(Math.abs(net));
+  $("o-roi").textContent=roi.toFixed(1)+"×";
+  const v=$("o-verdict");
+  if(net>0){v.className="verdict pos";v.innerHTML=`<b>Deflection alone carries the platform at these volumes.</b> Revenue, risk and completion pools are pure upside — break-even was ~${fmtN(be)} deflected contacts/yr.`;}
+  else{v.className="verdict neg";v.innerHTML=`<b>At these volumes, deflection alone doesn't clear the fee line</b> (break-even ≈ ${fmtN(be)} deflected contacts/yr). The case still works — anchored on revenue (V3) and risk (V4) plays, a smaller entry scope, or voice where phone cost concentrates.`;}
+  $("o-formula").textContent=`Math shown: ${fmtN(cust)} customers × ${rate}/yr = ${fmtN(contacts)} human contacts · × ${Math.round(addr*100)}% addressable × ${Math.round(cont*100)}% contained = ${fmtN(defl)} deflected · × €${cost.toFixed(2)} = ${fmt(gross)} gross · minus run cost ${fmt(run)} (${fmtN(convs)} conversations × €${cpc.toFixed(2)}) and platform ${fmt(fee)}.`;
+}
+document.querySelectorAll(".calc input").forEach(i=>i.addEventListener("input",calc));
+calc();
+
+/* ─────────────────────── handout ─────────────────────── */
+let CURRENT=null;
+function handoutHTML(c){
+  const st=STAGES.find(s=>s.id===c.s);
+  const needs=NEEDS[c.dep], qa=ARCHQ[c.dep], qb=[...BIZQ[c.pool],...(c.qx||[])];
+  return `<div class="ho-head"><div class="eyebrow">Conversational Banking · Use-Case Handout · ${st.title}</div>
+    <div class="hq">${c.q}</div><div class="hn">${c.nm} — Level L${c.lvl} · ${c.v.toUpperCase()}</div>
+    <div class="chips">${c.cap.map(k=>`<span class="tag">${k} · ${CAPN[k]}</span>`).join("")}<span class="tag">${DEPS[c.dep]}</span><span class="tag">Pool ${c.pool}</span></div></div>
+  <div class="ho-body">
+    <div class="ho-sec"><h5>Why / when it pays</h5><p>${c.roi}</p></div>
+    <div class="ho-sec"><h5>How to size it</h5><p>${c.sz||"Volume × unit economics from the client's own data — never benchmark-only."}</p><div class="ho-note" style="margin-top:6px">Value pool ${c.pool} only — one primary pool per case; everything else is upside, not headline.</div></div>
+    <div class="ho-2col">
+      <div class="ho-sec"><h5>Business questions</h5><ul>${qb.map(q=>`<li>${q}</li>`).join("")}</ul></div>
+      <div class="ho-sec"><h5>Architecture readiness (D${c.dep})</h5><ul>${qa.map(q=>`<li>${q}</li>`).join("")}</ul>
+        <h5 style="margin-top:12px">What we need from the bank</h5><ul>${needs.map(q=>`<li>${q}</li>`).join("")}</ul></div>
+    </div>
+    <div class="ho-sec"><h5>Economics questions</h5><ul>${ECONQ.map(q=>`<li>${q}</li>`).join("")}</ul></div>
+    <div class="ho-2col">
+      <div class="ho-sec"><h5>The engagement play</h5><p>${PLAYS[c.play||2]}</p></div>
+      <div class="ho-sec"><h5>Falsifier — what kills this use case</h5><div class="ho-falsifier"><b>It dies if:</b> ${c.fal||"the client's own data doesn't show the volume — then move the anchor, don't defend the slide."}</div></div>
+    </div>
+    <div class="ho-sec"><h5>Proof to quote</h5><ul>${c.proof.map(p=>`<li>${p[0]} <span class="src ${p[1]}">${SRC[p[1]]}</span>${p[2]==="adj"?' <span class="adjtag">ADJACENT</span>':""}</li>`).join("")}</ul></div>
+  </div>
+  <div class="ho-foot">Backbase Value Consulting · Benchmarks are published figures (vendor figures directional) · All client-specific numbers must be re-based on client data · Illustrative, not a commercial offer.</div>`;
+}
+function openHandout(id){CURRENT=CASES[id];document.getElementById("ho-content").innerHTML=handoutHTML(CURRENT);document.getElementById("modal").classList.add("on");document.body.style.overflow="hidden"}
+function closeHandout(){document.getElementById("modal").classList.remove("on");document.body.style.overflow=""}
+function printHandout(){document.body.classList.add("printing-handout");window.print();setTimeout(()=>document.body.classList.remove("printing-handout"),400)}
+function downloadHandout(){
+  if(!CURRENT)return;
+  const css=document.querySelector("style").innerHTML;
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${CURRENT.nm} — Conversational Banking Handout</title><link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>${css} body{background:#fff}</style></head><body><div class="handout" style="max-width:860px;margin:20px auto;border:1px solid #CED2D7">${handoutHTML(CURRENT)}</div></body></html>`;
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));
+  a.download=CURRENT.nm.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-handout.html";
+  a.click();URL.revokeObjectURL(a.href);toast("Handout downloaded — open it and Print → Save as PDF for the deck");
+}
+function copySlide(){
+  if(!CURRENT)return;const c=CURRENT;
+  const txt=`${c.q}\n${c.nm} — L${c.lvl} · ${c.v.toUpperCase()} · ${DEPS[c.dep]} · Pool ${c.pool}\n\nWHY IT PAYS\n• ${c.roi}\n\nHOW TO SIZE IT\n• ${c.sz||""}\n\nASK THE BUSINESS\n${[...BIZQ[c.pool],...(c.qx||[])].map(q=>"• "+q).join("\n")}\n\nASK ARCHITECTURE (D${c.dep})\n${ARCHQ[c.dep].map(q=>"• "+q).join("\n")}\n\nWE NEED FROM THE BANK\n${NEEDS[c.dep].map(q=>"• "+q).join("\n")}\n\nENGAGEMENT PLAY\n• ${PLAYS[c.play||2]}\n\nIT DIES IF\n• ${c.fal||""}\n\nPROOF\n${c.proof.map(p=>"• "+p[0]+" ["+SRC[p[1]]+(p[2]==="adj"?", adjacent":"")+"]").join("\n")}`;
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("Copied — paste straight into a slide or doc"))
+  .catch(()=>{const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast("Copied — paste straight into a slide or doc")});
+}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,2600)}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeHandout()});
+
+/* ─────────────────────── tabs ─────────────────────── */
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));t.classList.add("on");
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  document.getElementById("v-"+t.dataset.v).classList.add("on");
+  window.scrollTo({top:0});
+}));
+</script>
+</body>
+</html>

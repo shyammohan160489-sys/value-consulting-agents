@@ -667,7 +667,7 @@ Extract and present:
 - **Personas/Segments**: 3-5 persona cards with demographics, motivations, pain points. Present in S12 as a card grid (2-3 columns).
 - **Proposition Architecture**: Journey stages from the prop arch. Present in S13 as connected horizontal stage blocks (like Agent 2's clickable prop arch but simplified for the deck).
 - **Tablestake Use Cases**: Grid of baseline capabilities. Present in S14 as a table with capability name, status (Harvey balls or badges), and Backbase module.
-- **Differentiating Use Cases**: Per-segment use case cards. Present in S15 with: UC name, persona, current state, future state, and embedded prototype (if P1 from Agent 5). For P2, show summary cards without prototypes.
+- **Differentiating Use Cases**: Per-segment use case cards, built as opportunity cards (Signature Move 1). Present in S15 with: UC name, persona, **what we heard** (client quote from the workshops), current state → future state (framed as headroom against the client's own numbers), **how others did it** (sourced, attributed peer proof via `benchmark-librarian`), and embedded prototype (if P1 from Agent 5). For P2, show summary cards without prototypes.
 - **Combined UC Grid**: Full inventory table. Present in S16 with columns: UC ID, Name, Priority, Segment, Module, Approach.
 
 ### From Agent 3 (Employee Experience)
@@ -675,7 +675,7 @@ Extract and present:
 Extract and present:
 - **Employee Personas**: 2-4 role cards with role, location, systems used, pain points. Present in S17 as a card grid.
 - **Switching Tax**: The dollar figure + breakdown. Present in S18 as a headline stat card + supporting challenge cards (red left-border).
-- **Employee Use Cases**: Per-persona use case cards. Present in S19 with: UC name, persona, current state, future state, and embedded prototype (if P1 from Agent 5).
+- **Employee Use Cases**: Per-persona use case cards, built as opportunity cards (Signature Move 1). Present in S19 with: UC name, persona, **what we heard** (employee quote from the workshops), current state → future state (framed as headroom against the client's own numbers, e.g. the switching tax), **how others did it** (sourced, attributed peer proof via `benchmark-librarian`), and embedded prototype (if P1 from Agent 5).
 - **Combined Employee UC Grid**: Full inventory table. Present in S20 with columns: UC ID, Name, Priority, Persona, Module, Approach.
 
 ### From Agent 4 (Architecture)
@@ -985,6 +985,16 @@ The Ignite Day presentation tells a story across 4 acts embedded within the 9 se
 3. **"Specific beats generic"** — Use client's actual data, personas, systems, numbers. Never use placeholder content.
 4. **"Connect the dots"** — Every section should reference what came before. Strategy → CX → EX → Architecture → Prioritization.
 5. **"End with momentum"** — The closing should create urgency. Clear next steps, decision points, and timeline.
+
+### Signature Moves (MANDATORY — from the Ignite deliverable playbook)
+
+*Source: `../learnings/ignite-deliverable-patterns.md`. MyState (playback) and SchoolsFirst (roadmap workshop) are the reference decks. Three moves separate a polished Ignite Day deck from a data dump — apply all three. Note principle #1 above ("You told us, we validated") already IS move 2; these three make it concrete.*
+
+1. **Opportunity-card discipline (heard → move → how-others-did-it → staged).** Every differentiating use case (S15, S19) and every roadmap item is framed as a four-beat card: **what we heard** (their words, from the workshops) → **the move** (the Backbase change) → **how others did it** (sourced, attributed peer proof) → **where it lands** (which phase). Never present a capability without the "heard" that motivates it or the peer proof that de-risks it.
+
+2. **Headroom from the client's own numbers.** Frame value as the gap between the client's *today* and their *ambition*, using the numbers THEY gave in the workshops. S18's switching tax is one instance — extend the discipline to every value claim. "Today you convert X%; you told us you want Y%" beats any Backbase benchmark. If a figure is a benchmark, not theirs, say so — never launder a benchmark as their number.
+
+3. **Peer proof on every value claim.** Pair each "with Backbase" future state with a "how others did it" proof — sourced and attributed (e.g. "US Bank 26%", "Canadian bank 81% containment"), routed through `benchmark-librarian`. Real, attributed figures only; directional ranges must be framed as directional. This is Backbase's credibility, made specific.
 
 ---
 

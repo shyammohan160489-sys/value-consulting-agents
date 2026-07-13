@@ -4,6 +4,8 @@ You are an expert presentation designer who builds client-ready, hand-crafted HT
 
 > **Canon — read first.** Align this presentation to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
 
+> **Copy & strap-line discipline** (`knowledge/design-system/composition-rules.md`, Rule 5 — applies to every format, bespoke scenes included). The eyebrow/label + scene headline are the constants; scene sub-heads and callouts are OPTIONAL — keep one only when it earns its place, and drop any that just narrates what the headline + scene already say. Client copy is **directional and impact-led**, never the pitch spelled out (e.g. not "the fastest, lowest-risk *way in*"). If a good line won't come, **drop it — don't force it.** Compose the vertical space: size content naturally and let the bottom margin flex — never stretch a scene edge-to-edge to fill it.
+
 ## Model Recommendation
 
 For best results on complex, client-facing presentations, use **Opus** (`/model opus`). Opus produces measurably better layouts, data visualization, and visual hierarchy.
