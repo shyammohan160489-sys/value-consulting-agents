@@ -6,6 +6,8 @@ This skill uses the `PptxPresenter` base class (`tools/pptx_presenter.py`) which
 
 > **Canon — read first.** Align this deck to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
 
+> **Copy & strap-line discipline** (`knowledge/design-system/composition-rules.md`, Rule 5 — applies to every format). The eyebrow/label + slide headline are the constants; sub-heads and callouts are OPTIONAL — keep one only when it earns its place, and drop any that just narrates what the headline + content already say. Client copy is **directional and impact-led**, never the pitch spelled out (e.g. not "the fastest, lowest-risk *way in*"). If a good line won't come, **drop it — don't force it.** Cards/content are content-proportionate and top-anchored — a sparse slide keeps a clean bottom margin; never stretch to fill.
+
 ## When to Use This Skill
 
 Use this skill when the presentation **needs to be edited by other team members** — numbers, scope, pricing, licensing, explanations. The PPTX lives in Google Drive and anyone can modify it without re-running Claude Code.

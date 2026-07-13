@@ -101,6 +101,7 @@ function renderContentStandard(d, i) {
   let bc = 'content-body t-body';
   if (!hasHeader) bc += ' body-only';
   else if (!d.subtitle) bc += ' no-subtitle';
+  if (d.structured) bc += ' content-body--structured';
   return `<div class="slide layout-content-standard" data-theme="${theme}" data-idx="${i}">
     ${gridLines('content', 5.15)}
     <div class="slide-motif">${motifSvg('#3367FF')}</div>

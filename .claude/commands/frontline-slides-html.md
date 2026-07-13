@@ -145,6 +145,11 @@ General-purpose content slide. Best for: text, bullets, custom HTML.
 // theme: 'light' (white bg) | 'dark' (navy bg)
 ```
 
+**MUST FOLLOW — composition rules** (`knowledge/design-system/composition-rules.md`, canonical). For any custom / structured body:
+- **Flex, don't stretch (Rule 2/4).** Content flows at NATURAL height, top-anchored; the bottom margin varies with content (some slides reach ~90%, some leave whitespace — both correct). NEVER `flex:1` / `grid-auto-rows:1fr` / `height:100%` / vertical-center to fill the slide. Set `structured: true` on the slide (resets the body to `font-size:1em`).
+- **Size in em, never fixed px (Rule 4).** Fixed px break the title:body ratio on the scaled frame. Use `em(px)=px/21.376`: body/bullets `em(14)`, tile heading `em(17)`, pyramid name `em(20)`, callout head `em(15)`, badge `em(10)`, mini-label `em(11)`, table cell `em(14)`; padding via em() too. Put font-size on leaf text only.
+- **Subtitle & strap line are FLEX LEVERS (Rule 5).** Eyebrow + title are the constants. Drop the `subtitle` on dense slides (rebases body to `top:30%`) and sharpen the title to carry it; keep it on light slides. Drop any subtitle that just narrates what the eyebrow + title + tiles already say. Client copy is directional/impact-led, never the pitch spelled out — if a good line won't come, drop it.
+
 **Power Feature — Custom HTML Body:**
 The `body` field accepts arbitrary HTML. Use this for rich layouts like dashboards, KPI cards, workflow UIs, matrices, and data tables. Use inline styles with Frontline 2026 design tokens (read `knowledge/design-system/frontline-tokens.json` for the full palette):
 - Navy: `#041326`
@@ -302,14 +307,20 @@ Press `P` during presentation to see notes and a timer.
    - **Examples that BREAK:** `'Ignite + Mission Sprint.\nBusiness Banking onboarding.'` (line 1 too long, both lines wrap), any descriptive title with more than 5 words on a line.
    - **Move context to subtitle/date.** "Business Banking onboarding · Ten weeks to value" belongs in the `date` field, not the title.
    - **If the title doesn't fit cleanly in 2 short lines, the title is wrong — shorten it before doing anything else.**
-9. **Compose like a document, NOT a grid of stretched boxes — HARD RULE (content-standard custom bodies).** The fatal mistake is using `flex:1` to stretch a few tiles to fill the slide height — you get giant boxes with three words marooned in the dead centre. An exec reads that as "broken". NEVER stretch a tile taller than its content. Fill the slide with the *count and density* of compact elements, not by inflating each one. Use the proven two-column composition:
-   - **Left rail + right card-stack.** Put the key callout in a ~35% left column — a navy cost box (label→value rows), a coloured note/banner, or a compact borderless `label … value` list. Put the detail as a VERTICAL STACK of compact, content-sized cards in the right column (`flex:1`). Four-to-five stacked cards fill the height naturally.
-   - **Cards are compact and content-sized.** Horizontal card = a small dot / numbered blue circle / coloured left-border, then a bold title (`~0.62em`) and one line of description (`~0.5em`); padding `~0.7em 0.95em`, gap between cards `~0.5em`. The text fills the card. Do NOT add `flex:1`/`justify-content:center` to make a card taller than its text.
-   - **Left callout vertically centres** against the stack — the row is `display:flex;align-items:center;gap:~1.5em`.
-   - **Full-width table** for line-by-line numbers (`font-size ~0.56em`, row padding `~0.5em`). Tables fill width naturally.
-   - **Bottom note** (provenance / next step) as a thin `~0.46em` line above the footer.
-   - **Subtitles to ONE line** (≈70 chars). A 2-line subtitle crowds the body.
-   - **When adapting an existing good design, RENDER the source and match its density — do not reinvent the layout.** If the source stacks cards vertically, stack them; don't turn them into a stretched horizontal row.
+9. **Pick the RIGHT layout first — content-standard is the last resort, not the default — HARD RULE.** Most "the slide looks broken / too much whitespace / fonts too small" problems are really *wrong-layout* problems: cramming parallel ideas, stats, a sequence, or a quote into a `content-standard` custom body and then fighting its whitespace. Map the content to a purpose-built layout BEFORE hand-authoring a body:
+   - **3 (or 2–5) parallel things** (pillars, options, comparison) → `content-columns`. This is the default Backbase 3-pillar pattern (e.g. "Prove value / Find growth / Benchmark"). It auto-fills the band evenly.
+   - **A few headline numbers** → `overview-stats` or `statement-stat`.
+   - **One punchy idea / thesis / quote** → `statement` (or `testimonial`).
+   - **A sequence / journey / phases** → `timeline` (milestone line). A genuine multi-track schedule → `roadmap` (Gantt).
+   - **Feature + screenshot** → `product`. **Agenda / dividers / cover** → `toc` / `chapter-*` / `cover-*`.
+   - Only reach for a **`content-standard` custom body** when it's a genuine dashboard or a rail+detail composition that no purpose-built layout covers.
+   **When you DO author a content-standard body — top-anchored, legible, never centered (this is the rule the 29-Jun-2026 regression broke):**
+   - **Top-anchored, content-height.** The body flows DOWN from the body line (engine handles the headline gap). Do **NOT** wrap content in `height:100%` and do **NOT** add `justify-content:center` to the body — that maroons content in the middle and forces fonts smaller. A sparse slide keeps a clean bottom margin; that is CORRECT and reads as intentional.
+   - **Legible default sizes** (relative to the `t-body` 0.85em base): card title `~0.8em`, card description `~0.62em`, navy-rail label `~0.5em`, rail body `~0.8em`, table text `~0.6em`. If content won't fit at these sizes, the slide has too much on it — SPLIT it or switch layout; do not shrink to fit.
+   - **Left rail + right card-stack** (the workhorse two-column): key callout in a ~35% navy left column; detail as a vertical stack of compact, content-sized cards (coloured left-border or numbered circle, bold title, one-line description; padding `~0.85em 1.15em`, gap `~0.7em`). Row is `display:flex;align-items:center;gap:~1.6em` with **no height set** — the columns centre against each other, the row sits at the top.
+   - **Cards are content-sized, never stretched.** Never use `flex:1` to inflate a tile taller than its text.
+   - **Full-width table** for line-by-line numbers (text `~0.6em`). **Subtitles to ONE line** (≈70 chars).
+   - **When adapting an existing good design, RENDER the source and match its density** — don't reinvent the layout.
 10. **One headline per slide — kill header redundancy.** The three header fields (eyebrow `label`, big `title`, blue `subtitle`) must NOT say the same thing three ways ("THE MVP" / "The MVP, and what it costs" / "What the MVP covers…" is noise). The big black `title` is the anchor — always present, always meaningful.
    - **`label` (eyebrow) → omit it when it just echoes the title.** Include only when it carries a real section/category the title doesn't. When unsure, leave it out.
    - **`subtitle` → include only when it adds something the title and body don't.** Drop it when it restates the title or repeats what the body shows. Good keep: a line that orients the reader to a complex element (e.g. "one-time change … and the recurring run" above a numbers table).
@@ -324,7 +335,8 @@ Before saving the output, verify:
 - [ ] Theme distribution is roughly 60/25/15 (light/navy/cover)
 - [ ] No layout type is repeated more than 4x without variety
 - [ ] All `body` HTML uses `em` units, not `px`
-- [ ] **content-standard bodies use the two-column composition** (left rail + stacked compact cards), cards are content-sized NOT stretched, nothing is a giant box with marooned text (see guideline 9)
+- [ ] **Right layout chosen for the content** (columns for pillars, stats for numbers, timeline for sequences) — content-standard only as last resort (see guideline 9)
+- [ ] **content-standard bodies are top-anchored & legible** — no `height:100%`/centering, card title `~0.8em` / body `~0.62em`, cards content-sized NOT stretched, sparse slides keep a clean bottom margin
 - [ ] Speaker notes are included for key slides
 - [ ] The SLIDES `<script>` comes before the engine.js `<script>`
 - [ ] bg.jpg is base64-encoded inline (no external file references)

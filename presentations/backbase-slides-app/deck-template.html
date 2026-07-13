@@ -114,13 +114,22 @@ html,body{width:100%;height:100%;background:#000;font-family:'Libre Franklin',Ar
 .layout-content-standard .content-label{position:absolute;left:5.8%;top:10%}
 .layout-content-standard .content-title{position:absolute;left:5.8%;top:15%;width:88%}
 .layout-content-standard .content-subtitle{position:absolute;left:5.8%;top:24%;width:70%}
-.layout-content-standard .content-body{position:absolute;left:5.8%;top:34%;width:88%;bottom:7.5%;display:flex;flex-direction:column;justify-content:flex-start;gap:0.9em}
-.layout-content-standard .content-body.body-only{justify-content:center}
-.layout-content-standard .content-body.body-only{top:15%}
-.layout-content-standard .content-body.no-subtitle{top:26%}
-/* Body fills the region from below the subtitle to just above the footer, and
-   centres its blocks vertically — content is never top-anchored with dead space
-   below. Author bodies should size tiles/text to occupy this space, not hug the top. */
+.layout-content-standard .content-body{position:absolute;left:5.8%;top:33%;width:88%;display:flex;flex-direction:column;gap:0.9em}
+.layout-content-standard .content-body.no-subtitle{top:30%}
+.layout-content-standard .content-body.body-only{top:15%;bottom:7.5%;justify-content:center}
+/* Header bodies are TOP-ANCHORED from the constant body line (33%; 30% with no subtitle)
+   and flow DOWNWARD at the content's NATURAL height. The bottom margin then FLEXES with
+   content volume — a fuller slide reaches near the footer, a lighter one keeps clean bottom
+   whitespace. Both are CORRECT. Do NOT stretch content to the bottom edge (everything then
+   reads oversized/stretched) and do NOT vertically-centre a prose/bullet body (that maroons
+   it mid-slide — the 29-Jun regression). Only .body-only (no headline) is centred.
+
+   STRUCTURED MODE — opt-in, for card grids / layer stacks / pyramids / tables. Set
+   `structured:true`. It ONLY resets the body font to 1em (root scale) so authored em sizes
+   read directly off the slide root — it does NOT stretch. Content stays natural height and
+   top-anchored; size it with em() (see slides.js: em(px)=px/21.376 reproduces the
+   hand-authored measurements). Let the bottom flex with content — never force fill. */
+.layout-content-standard .content-body--structured{font-size:1em;gap:1.05em}
 
 /* ===================================================================
    TEMPLATE: THANK YOU

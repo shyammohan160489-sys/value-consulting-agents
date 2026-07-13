@@ -15,6 +15,8 @@ Read the canonical token file and the template before writing a single line of H
 
 Do not rewrite, simplify, or replace the CSS. The classes are the contract.
 
+> **Copy & strap-line discipline** (`knowledge/design-system/composition-rules.md`, Rule 5 — applies to every Frontline format). The eyebrow/label + section heading are the constants; sub-heads, section intros and callouts are OPTIONAL — keep one only when it earns its place, and drop any that just narrates what the heading + body already say. Client copy is **directional and impact-led**, never the pitch spelled out (e.g. not "the fastest, lowest-risk *way in*"). If a good line won't come, **drop it — don't force it.**
+
 > **Canon — read first.** This is the most positioning-sensitive long document. Open on From→To, anchor on the AI-Native Banking OS, and use the **three value pools** (cost-to-serve ↓ 20–40% · conversion/cross-sell/retention ↑ 10–25% · AI approval-to-production 3–5× faster) as the hero-stat vocabulary.
 
 ## When to Use This Skill

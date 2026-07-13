@@ -102,9 +102,49 @@ Table of contents with numbered or plain rows. Best for: agenda.
 ### 6. content-standard
 General-purpose content slide. Best for: text, bullets, custom HTML.
 ```js
-{ layout: 'content-standard', theme: 'light|dark', label: 'TOPIC', title: 'Title', subtitle: 'Subtitle', body: '<ul><li>Point 1</li></ul>', bodyFull: false }
+{ layout: 'content-standard', theme: 'light|dark', label: 'TOPIC', title: 'Title', subtitle: 'Subtitle', body: '<ul><li>Point 1</li></ul>' }
 ```
-Set `bodyFull: true` for full-bleed custom HTML layouts.
+
+**Default behavior:** plain text / bullet bodies are TOP-ANCHORED and flow downward. A
+sparse text slide keeps a clean bottom margin — that is correct. Never vertically-center
+or stretch a prose body (that re-creates the "marooned middle").
+
+**Structured mode — `structured: true`** (for card grids, layer stacks, pyramids, tables).
+It does NOT stretch. It only resets the body font to `1em` (root scale) so authored `em`
+sizes read directly off the slide root. Content stays NATURAL height and top-anchored, and
+the bottom margin FLEXES with content volume — a light slide leaves clean bottom whitespace,
+a heavy one reaches near the footer. This mirrors the hand-authored reference (content ends
+anywhere from ~72% to ~93% depending on volume — do NOT force them all to the same line).
+```js
+{ layout: 'content-standard', structured: true, label: 'TOPIC', title: 'Title', subtitle: '…',
+  body: `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:${em(20)}">
+           <div>card</div><div>card</div><div>card</div></div>${calloutHtml}` }
+```
+Never stretch (`flex:1`, `grid-auto-rows:1fr`, `height:100%`) or vertically-centre content
+to fill the slide — that reads oversized and was the exact regression the user rejected.
+
+**The subtitle is a FLEX LEVER, not a fixed slot — decide it per slide.** Omitting `subtitle`
+rebases the body higher (`no-subtitle` → `top:30%` vs `33%`), buying the content room. So on a
+content-DENSE slide, drop the blue subtitle and let the black title carry it (sharpen the title
+to stand alone); on a LIGHT slide, keep the subtitle. Also drop it when the subtitle just
+narrates what the eyebrow + title + tiles already say (redundant prose reads as filler and,
+in client decks, as on-the-nose sell). Same judgement applies to the callout/strap line — it's
+optional. Decide actively: eyebrow (label) + title (sharp thesis) are the constants; subtitle
+and callout are levers you spend only when they earn their place.
+
+**Type sizing — use em, never fixed px.** Fixed px don't scale with the frame, so the
+(em-based) title balloons while px body stays tiny and the title:body ratio breaks. Size
+body content in em off the slide root: `em(px) = px / 21.376` reproduces a hand-authored
+measurement (its 1280-frame px) at the same proportion here (root is `1.67vw`; 1em ≈ 1.67%
+of frame width; 1.67%·1280 = 21.376). Proven values matching the reference hand-authored
+deck: body/bullets `em(14)`, tile heading `em(17)`, pyramid name / big tile head `em(20)`,
+callout heading `em(15)`, badge `em(10)`, uppercase mini-label `em(11)`, table cell `em(14)` /
+header `em(11)`, arch item `em(13)`; container paddings via `em()` too (card `em(24) em(26)`,
+callout `em(16) em(20)`). Put `em()` font-sizes on LEAF text only (avoid compounding). Because
+the engine's header zone starts the body lower (30–33%) than a hand-authored deck (~24%),
+content-HEAVY structured slides (5-layer arch, 4-bar pyramid) need slightly tighter internal
+vertical padding (e.g. arch layer `em(11)`, pyramid bar `em(13)`) so they still leave a bottom
+margin. Keep the title to ONE line (a 2-line title collides with the subtitle).
 
 ### 7. content-columns
 2-5 equal columns below a title. Best for: comparisons, pillars.
