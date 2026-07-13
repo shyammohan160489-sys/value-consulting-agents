@@ -172,6 +172,20 @@ This project is connected to the **Backbase Infobank** via MCP (Model Context Pr
 
 **For agent builders:** See [knowledge/platforms/backbase-mcp-integration.md](knowledge/platforms/backbase-mcp-integration.md) for full integration guide, including copy-paste prompt snippets for agent prompts.
 
+## Deal Pricing System
+
+The `deal-pricing-system/` directory is a **first-class subsystem** of this repo and must be preserved. It contains the deal pricing and negotiation tooling used to model commercial outcomes alongside Value Consulting deliverables.
+
+- **Location:** `/deal-pricing-system/`
+- **Structure:**
+  - `src/deal_pricing/` — pricing engine source
+  - `deals/` — engagement-specific deal models
+  - `knowledge_base/` — pricing best practices and reference docs
+  - `examples/`, `tests/`, `tools/`, `pyproject.toml`
+- **When to use:** Whenever a consulting engagement needs commercial pricing, ROI-to-price reconciliation, or deal negotiation modelling.
+
+Treat this directory as protected — do not delete, rename, or restructure it without explicit user direction. Edits to its source/tools follow the same Architect-tier rules as `/tools/`.
+
 ## Working in This Repository
 
 ### File Organization
