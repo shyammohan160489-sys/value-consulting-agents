@@ -147,3 +147,17 @@ git diff backup/20260623-local-snapshot upstream/main -- <path>
 # just upstream's change since the split:
 git diff 385f280 upstream/main -- <path>
 ```
+
+
+---
+
+## 13 Jul 2026 — full upstream comparison (post one-brain reconcile)
+
+**State:** fork main 39 ahead / 41 behind upstream/main. Verdict: **missing nothing of substance.** The 41 upstream commits decode as:
+- **Your own work round-tripped** — Mariam's PR#71 "verified Frontline 2026 (Shyam_2)" imported YOUR design system + Pictet QBR as upstream's reference; their engine/template additions are snapshots of your source (yours is newer).
+- **Already absorbed** — Banking OS v4.0 narrative (knowledge/reference/banking-os-v4-UPSTREAM.md + DELTA), question bank, worktree hygiene.
+- **Deliberately not merged (blueprint stance)** — bb-* dev harness + 24 eval commits (Langfuse judges, tracing, CI). Mining candidate for ShyamOS Foil: the 11 per-agent judge prompts (6852a61).
+- **Declined as regression** — upstream's roi_excel_generator change removed _validate_and_cap_impacts() and made the scenario fallback silent 1.0 (was flagged 30%) — violates conservative-bias doctrine. Keep ours.
+- **Taken (1 char × 2)** — #3366FF → #3367FF hex fix in roi-financial-modeler.md, aligning to canonical frontline-tokens blue.
+
+Stance unchanged: never merge upstream/main; cherry-pick additive bits only.
