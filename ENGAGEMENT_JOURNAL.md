@@ -41,3 +41,20 @@ checkpoints: 2
 modification_source: consultant feedback (stepped squares missing, margins off, hardcoded page numbers)
 generated: 2026-07-27
 TELEMETRY_END -->
+
+## 2026-07-27 — Product Factory deck v3: full execution content + critique (41 slides)
+
+**Change:** Extended from 20 to 41 slides on consultant direction. Added: ladder↔lifecycle bridge slide (resolves the rung-to-stage mapping); artifact chain with 4 account-level decision gates; "one wedge, four lenses" (answer to "why would a bank buy one layer"); Engine A + Engine B two-engines slide with the sequencing rule (Engine B never sells cold — runs on Engine A evidence); per-product deep-dives (activities/entails/outcomes/adds-up) and illustrative sample-output exhibits for all four products (leakage heatmap, integration landscape map, Mission card, ontology coverage map, truth-gap report, Nexus blueprint, authority map, guardrail rule card, Sentinel readiness score, cost-per-outcome tiles, waste register, ROI re-proof); Engine B block (AI Maturity, Workforce Optimization, AI-Native Org Design flagship — deep-dive, pyramid→inverted-T exhibit, new-roles card, plan); buying-criteria slide; Early Access Program as the pre-RFP vehicle; pre-RFP mechanics (product SKU, sponsor's pen, credit-forward, specimen pack, ownership + value floor); honest-critique chapter (capacity math revision: year one = proof year of 3-4 installs; five open decisions with owners).
+
+**Assumptions added:** EAP eligibility (new logos vs existing customers) UNCONFIRMED — flagged on 3 slides for validation with program owner; Engine B ticket €80-150K to validate; all sample-output figures marked as illustrative specimens.
+
+<!-- TELEMETRY_START
+agent: frontline-slides-pptx (bespoke exhibit renderer v3)
+engagement: internal-pdp-product-factory
+deliverable: Product_Factory_Execution_Plan_Exhibit.pptx (v3, 41 slides)
+slides: 41
+checkpoints: 2
+assumptions_documented: 8
+modification_source: consultant feedback (ladder-lifecycle confusion, content depth, buying criteria, EAP, Engine B)
+generated: 2026-07-27
+TELEMETRY_END -->
