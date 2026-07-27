@@ -46,8 +46,8 @@ T25 = RGBColor(0xCC, 0xD9, 0xFF)
 
 FONT = 'Libre Franklin'
 HERE = os.path.dirname(os.path.abspath(__file__))
-LOGO_DARK = os.path.join(HERE, '../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-dark.png')
-LOGO_WHITE = os.path.join(HERE, '../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-white.png')
+LOGO_DARK = os.path.join(HERE, '../../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-dark.png')
+LOGO_WHITE = os.path.join(HERE, '../../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-white.png')
 
 # Master-template chrome geometry (px on 1280×720)
 ML = 54            # content left margin (master 0.84in)

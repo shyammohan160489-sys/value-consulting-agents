@@ -31,6 +31,7 @@ engagements/
 Engagement/*
 # Exceptions: non-client content that lives under Engagement/ (events, talks, internal)
 !Engagement/events/
+!Engagement/Internal/
 
 # Environment files (may contain secrets)
 .env
