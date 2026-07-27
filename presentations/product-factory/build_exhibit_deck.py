@@ -1,17 +1,28 @@
 #!/usr/bin/env python3
 """Product Factory execution plan — exhibit-style PPTX (internal, PDP).
 
-Style: McKinsey-exhibit patterns from the claude-design-exhibit-kit
-(action-title sentences, one exhibit per slide, hairline chrome, source
-footnotes), rendered in Frontline 2026 tokens per the July 2026 adoption
-decision (patterns adopted, kit palette / L·E·C chrome deliberately not).
+Style: McKinsey-exhibit content rules (action-title sentences, one exhibit
+per slide, source footnotes) on the Backbase Master Template 2026 chrome —
+hairline grid, stepped-square brand mark at line crossings, master margins —
+rendered in Frontline 2026 tokens per the July 2026 adoption decision.
+
+Chrome geometry extracted from `Backbase Master Template _ 2026.pptx`
+(20×11.25in canvas, scaled ×64 to this file's 1280×720 px design space):
+  content: rails x=37/1243 · top line y=37 · footer line y=684 · mark @ (37,37)
+  cover:   rails x=53/1227 · lines y=155/499 · vertical x=829 · mark @ (829,155)
+  chapter: rails x=53/1227 · lines y=155/467 · mark @ (53,155)
+
+Page numbers are real `slidenum` fields, so PowerPoint and Google Slides
+auto-renumber on insert/reorder (co-creation safe).
 """
+import copy
 import os
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR, MSO_AUTO_SIZE
 from pptx.enum.shapes import MSO_SHAPE
+from pptx.oxml.ns import qn
 
 # ── Frontline tokens ─────────────────────────────────────────
 NAVY = RGBColor(0x04, 0x13, 0x26)
@@ -27,25 +38,32 @@ RED = RGBColor(0xFF, 0x50, 0x3C)
 AMBER = RGBColor(0xB4, 0x53, 0x09)
 GREEN = RGBColor(0x2E, 0xCC, 0x71)
 LIGHT_ON_NAVY = RGBColor(0xC5, 0xCF, 0xDE)
+RAIL_DARK = RGBColor(0x2E, 0x3D, 0x52)   # hairline on navy surfaces
 # Blue intensity ramp (alpha steps of token blue on white)
 T75 = RGBColor(0x66, 0x8D, 0xFF)
 T50 = RGBColor(0x99, 0xB3, 0xFF)
 T25 = RGBColor(0xCC, 0xD9, 0xFF)
 
 FONT = 'Libre Franklin'
-KIT = os.path.dirname(os.path.abspath(__file__))
-LOGO_DARK = os.path.join(KIT, '../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-dark.png')
-LOGO_WHITE = os.path.join(KIT, '../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-white.png')
+HERE = os.path.dirname(os.path.abspath(__file__))
+LOGO_DARK = os.path.join(HERE, '../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-dark.png')
+LOGO_WHITE = os.path.join(HERE, '../../knowledge/design-system/claude-design-exhibit-kit/assets/logo/backbase-wordmark-white.png')
+
+# Master-template chrome geometry (px on 1280×720)
+ML = 54            # content left margin (master 0.84in)
+MR = 1226          # content right edge
+AW = MR - ML       # 1172 content width
+RAIL_L, RAIL_R = 37, 1243      # content rails
+TOP_Y, FOOT_Y = 37, 684        # content top + footer lines
+CV_RAIL_L, CV_RAIL_R = 53, 1227  # cover/chapter rails
 
 prs = Presentation()
 prs.slide_width = Inches(13.333)
 prs.slide_height = Inches(7.5)
 BLANK = prs.slide_layouts[6]
-PAGE = [0]
 
 
 def px(v):
-    """Design px (1280×720 canvas) → EMU."""
     return Emu(int(v / 96.0 * 914400))
 
 
@@ -57,7 +75,6 @@ def new_slide(bg=WHITE):
     sl = prs.slides.add_slide(BLANK)
     sl.background.fill.solid()
     sl.background.fill.fore_color.rgb = bg
-    PAGE[0] += 1
     return sl
 
 
@@ -105,8 +122,20 @@ def rect(sl, x, y, w, h, fill=None, line=None, line_w=1.0, round_=False):
     return sp
 
 
-def hairline(sl, x, y, w, h=1.6, color=BORDER):
+def hairline(sl, x, y, w, h=1.4, color=BORDER):
     return rect(sl, x, y, w, h, fill=color)
+
+
+def step_mark(sl, cross_x, cross_y, s=16, color=BLUE, orient='above'):
+    """The Backbase stepped-square mark, nested at a hairline crossing.
+    orient 'above': sits up-left of the crossing (content, chapter).
+    orient 'below': sits down-left of the crossing (cover)."""
+    if orient == 'above':
+        rect(sl, cross_x - s / 2, cross_y - s, s / 2, s, fill=color)          # right column
+        rect(sl, cross_x - s, cross_y - s / 2, s / 2, s / 2, fill=color)      # left step
+    else:
+        rect(sl, cross_x - s / 2, cross_y, s / 2, s, fill=color)
+        rect(sl, cross_x - s, cross_y, s / 2, s / 2, fill=color)
 
 
 def diamond(sl, cx, cy, size, fill):
@@ -133,27 +162,86 @@ def dot(sl, cx, cy, d, fill, line=None):
     return sp
 
 
-def logo(sl, dark_bg=False, x=1128, y=684, w=72):
+def logo(sl, dark_bg=False, x=1128, y=690, w=72):
     path = LOGO_WHITE if dark_bg else LOGO_DARK
     if os.path.exists(path):
         sl.shapes.add_picture(path, px(x), px(y), width=px(w))
 
 
-def chrome(sl, kicker, title, footnote=None, notes=None, title_w=980):
-    hairline(sl, 55, 55, 1280 - 55 - 60)
-    hairline(sl, 55, 55, 1.6, h=720 - 55 - 64)
-    txt(sl, kicker.upper(), 96, 64, 900, 26, size=13, color=BLUE, bold=True)
-    txt(sl, title, 96, 94, title_w, 110, size=29, bold=True, sp=1.08)
-    # footer
-    hairline(sl, 55, 720 - 44, 1280 - 55 - 60)
-    txt(sl, str(PAGE[0]), 96, 720 - 36, 60, 22, size=12, color=MUTED)
+def page_field(sl, color=MUTED, x=1216, y=692, w=48, h=22, size=12):
+    """Auto-updating slide number (a real `slidenum` field — PowerPoint and
+    Google Slides renumber it automatically on insert/reorder)."""
+    tb = sl.shapes.add_textbox(px(x), px(y), px(w), px(h))
+    tf = tb.text_frame
+    tf.word_wrap = False
+    tf.auto_size = MSO_AUTO_SIZE.NONE
+    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.RIGHT
+    r = p.add_run()
+    r.text = '1'
+    r.font.name = FONT
+    r.font.size = pt_of(size)
+    r.font.color.rgb = color
+    rPr = r._r.find(qn('a:rPr'))
+    fld = r._r.makeelement(qn('a:fld'), {
+        'id': '{1F4E2DE4-8ADA-4D4E-9951-90A1D26586E7}', 'type': 'slidenum'})
+    if rPr is not None:
+        fld.append(copy.deepcopy(rPr))
+    t = fld.makeelement(qn('a:t'), {})
+    t.text = '1'
+    fld.append(t)
+    r._r.getparent().replace(r._r, fld)
+    return tb
+
+
+def chrome(sl, kicker, title, footnote=None, notes=None, title_w=1040):
+    """Master-template content chrome: full-height rails, top + footer lines,
+    stepped mark at the top-left crossing, wordmark + auto page number."""
+    hairline(sl, 0, TOP_Y, 1280)
+    hairline(sl, RAIL_L, 0, 1.4, h=FOOT_Y)
+    hairline(sl, RAIL_R, 0, 1.4, h=FOOT_Y)
+    hairline(sl, 0, FOOT_Y, 1280)
+    step_mark(sl, RAIL_L, TOP_Y, 16, BLUE, 'above')
+    txt(sl, kicker.upper(), ML, 54, 900, 24, size=12.5, color=BLUE, bold=True)
+    txt(sl, title, ML, 82, title_w, 110, size=29, bold=True, sp=1.08)
     logo(sl, dark_bg=False)
+    page_field(sl)
     if footnote:
-        hairline(sl, 96, 720 - 44 - 34, 1280 - 96 - 60)
-        txt(sl, footnote, 96, 720 - 44 - 27, 1280 - 96 - 60, 26, size=11.5,
-            color=MUTED, sp=1.05)
+        hairline(sl, ML, FOOT_Y - 36, MR - ML)
+        txt(sl, footnote, ML, FOOT_Y - 29, MR - ML, 26, size=11.5, color=MUTED, sp=1.05)
     if notes:
         sl.notes_slide.notes_text_frame.text = notes
+
+
+def cover_chrome(sl):
+    """Master cover grid: rails, cross lines, white stepped mark at crossing."""
+    hairline(sl, CV_RAIL_L, 0, 1.4, h=720, color=RAIL_DARK)
+    hairline(sl, CV_RAIL_R, 0, 1.4, h=720, color=RAIL_DARK)
+    hairline(sl, CV_RAIL_L, 155, CV_RAIL_R - CV_RAIL_L, color=RAIL_DARK)
+    hairline(sl, 829, 0, 1.4, h=720, color=RAIL_DARK)
+    hairline(sl, CV_RAIL_L, 499, 829 - CV_RAIL_L, color=RAIL_DARK)
+    step_mark(sl, 829, 155, 16, WHITE, 'below')
+
+
+def chapter_chrome(sl):
+    """Master chapter grid: full-width line, rails, lower line, white mark."""
+    hairline(sl, 0, 155, 1280, color=RAIL_DARK)
+    hairline(sl, CV_RAIL_L, 0, 1.4, h=720, color=RAIL_DARK)
+    hairline(sl, CV_RAIL_R, 0, 1.4, h=720, color=RAIL_DARK)
+    hairline(sl, CV_RAIL_L, 467, CV_RAIL_R - CV_RAIL_L, color=RAIL_DARK)
+    step_mark(sl, CV_RAIL_L, 155, 16, WHITE, 'above')
+    logo(sl, dark_bg=True)
+    page_field(sl, color=RGBColor(0x5A, 0x6B, 0x80))
+
+
+def chapter(number, title, subtitle):
+    sl = new_slide(NAVY)
+    chapter_chrome(sl)
+    txt(sl, f'{number} · CHAPTER', 107, 212, 700, 24, size=12.5, color=CYAN, bold=True)
+    txt(sl, title, 105, 250, 960, 80, size=40, color=WHITE, bold=True)
+    txt(sl, subtitle, 107, 350, 940, 60, size=15, color=LIGHT_ON_NAVY, sp=1.25)
+    return sl
 
 
 def chip(sl, x, y, w, h, head, body, fill=OFF, head_color=NAVY, body_color=None,
@@ -174,30 +262,29 @@ def hero_card(sl, x, y, w, h, eyebrow, big, body):
 
 
 # ═════════════════════════════════════════════════════════════
-# S1 — Cover
+# S1 — Cover (master cover grid)
 # ═════════════════════════════════════════════════════════════
 sl = new_slide(NAVY)
+cover_chrome(sl)
 logo(sl, dark_bg=True, x=96, y=64, w=120)
-rect(sl, 96, 250, 56, 5, fill=BLUE)
-txt(sl, 'VALUE CONSULTING · PDP · INTERNAL', 96, 276, 800, 26, size=13, color=CYAN, bold=True)
-txt(sl, 'Product Factory:\nfrom concept to revenue', 92, 312, 1050, 170, size=52,
-    color=WHITE, bold=True, sp=1.02)
+txt(sl, 'VALUE CONSULTING · PDP · INTERNAL', 105, 220, 700, 24, size=12.5, color=CYAN, bold=True)
+txt(sl, 'Product Factory:\nfrom concept to revenue', 102, 262, 720, 170, size=44,
+    color=WHITE, bold=True, sp=1.04)
 txt(sl, 'The execution plan for four paid product wedges that pre-install Banking OS,\n'
         'make the function cost neutral inside a year, and open a recurring revenue line.',
-    96, 500, 980, 70, size=16, color=LIGHT_ON_NAVY, sp=1.3)
+    102, 528, 700, 80, size=14.5, color=LIGHT_ON_NAVY, sp=1.3)
 txt(sl, 'Shyam · July 2026 · prepared for the talent programme (Tim Ruttner) and the PDP track (Mayur)',
-    96, 640, 1000, 26, size=12, color=MUTED)
+    102, 645, 700, 26, size=11.5, color=MUTED)
+txt(sl, 'One product in market\nby January 2027.', 880, 220, 320, 90, size=18,
+    color=WHITE, bold=True, sp=1.2)
+txt(sl, 'Four sellable SKUs and a recurring\nline by mid 2027.', 880, 320, 320, 60,
+    size=13, color=LIGHT_ON_NAVY, sp=1.25)
 
 # ═════════════════════════════════════════════════════════════
 # S2 — Chapter 01
 # ═════════════════════════════════════════════════════════════
-sl = new_slide(NAVY)
-txt(sl, '01', 96, 170, 400, 170, size=110, color=T50, bold=False)
-txt(sl, 'The frameworks', 96, 348, 900, 70, size=40, color=WHITE, bold=True)
-txt(sl, 'The thesis, the product filter, the economics, the lifecycle, and the pod that runs it.',
-    96, 430, 860, 56, size=15, color=LIGHT_ON_NAVY, sp=1.25)
-logo(sl, dark_bg=True)
-txt(sl, str(PAGE[0]), 96, 720 - 36, 60, 22, size=12, color=RGBColor(0x5A, 0x6B, 0x80))
+chapter('01', 'The frameworks',
+        'The thesis, the product filter, the economics, the lifecycle, and the pod that runs it.')
 
 # ═════════════════════════════════════════════════════════════
 # S3 — Thesis (chips + hero split)
@@ -210,14 +297,14 @@ chrome(sl, 'Frameworks · the thesis',
                 'and stays out of the product line. Aligned to the Banking OS canon (knowledge/product/banking-os.md).',
        notes='The three-part design filter from the 29 Jun PDP session. Product-proximate = moat; '
              'customer-proximate = competitive space we lose. Every SKU must pass all three tests.')
-chips_y = 232
+chips_y = 222
 for i, (h_, b_) in enumerate([
     ('Test 1 · It earns a fee', 'Each install is paid work at €15-100K, priced as a product with a fixed scope and a delivery kit.'),
     ('Test 2 · It harvests proprietary data', 'The engagement captures the bank’s real processes, data structures and policies. Evidence only Backbase holds.'),
     ('Test 3 · It pre-binds a Banking OS layer', 'The output is a working component: Nexus, Sentinel or a Mission candidate, already present in the account.'),
 ]):
-    chip(sl, 96, chips_y + i * 122, 560, 108, h_, b_, accent=BLUE)
-hero_card(sl, 692, 232, 528, 348, 'The one-liner',
+    chip(sl, ML, chips_y + i * 122, 560, 108, h_, b_, accent=BLUE)
+hero_card(sl, 650, 222, 576, 348, 'The one-liner',
           'Paid discovery that leaves the platform installed.',
           'Each engagement ends with a live Banking OS component in the account, a quantified '
           'expansion case for the AE, and account intelligence competitors and SIs never see.')
@@ -232,19 +319,19 @@ chrome(sl, 'Frameworks · the economics',
                 'working figure and is to be validated with finance. Year-two target of 14-16 installs is a planning range.',
        notes='Cost-neutrality is the floor, revenue generation is the objective. 10 × €120K ≈ €1.2M. '
              'Year two adds recurring Value Telemetry revenue on top of installs.')
-gx, gy, d, gap = 140, 300, 42, 30
+gx, gy, d, gap = 100, 290, 42, 30
 for i in range(16):
     row, col = divmod(i, 8)
     fill = BLUE if i < 10 else T25
     dot(sl, gx + col * (d + gap) + d / 2, gy + row * (d + gap) + d / 2, d, fill)
-dot(sl, 140 + 10, 490, 16, BLUE)
-txt(sl, 'Installs to cost neutrality (10)', 168, 480, 300, 24, size=12, color=MUTED)
-dot(sl, 500 + 10, 490, 16, T25)
-txt(sl, 'Year-two expansion range (14-16)', 528, 480, 320, 24, size=12, color=MUTED)
-rect(sl, 760, 250, 460, 260, fill=OFF, round_=True)
-txt(sl, '10', 800, 278, 180, 90, size=64, color=BLUE, bold=True)
+dot(sl, gx + 10, 480, 16, BLUE)
+txt(sl, 'Installs to cost neutrality (10)', gx + 28, 470, 300, 24, size=12, color=MUTED)
+dot(sl, gx + 370, 480, 16, T25)
+txt(sl, 'Year-two expansion range (14-16)', gx + 388, 470, 320, 24, size=12, color=MUTED)
+rect(sl, 766, 240, 460, 260, fill=OFF, round_=True)
+txt(sl, '10', 806, 268, 180, 90, size=64, color=BLUE, bold=True)
 txt(sl, 'installs a year at an average package of €120K cover the ~€1.2M annual team cost.',
-    800, 380, 380, 100, size=14.5, sp=1.25)
+    806, 370, 380, 100, size=14.5, sp=1.25)
 
 # ═════════════════════════════════════════════════════════════
 # S5 — Package ladder (segmented to-scale bar)
@@ -256,24 +343,23 @@ chrome(sl, 'Frameworks · the ladder',
                 'licence value, and on FinOps gain-share market practice (15-35% of realised savings).',
        notes='Rung 0 free = funnel. Rungs 1+2 = the €120K SKVC package = cost neutrality. '
              'Rung 3 = the growth flywheel (Value Telemetry + gain-share).')
-y0 = 300
-chip(sl, 96, y0 - 34, 240, 130, 'Rung 0 · free wedge',
+y0 = 290
+chip(sl, ML, y0 - 34, 240, 130, 'Rung 0 · free wedge',
      'Ignite Inspire\n~4 meetings, benchmark and use-case shortlist. Grows the funnel.', fill=OFF)
-txt(sl, '→', 348, y0 + 10, 30, 40, size=20, color=MUTED, align=PP_ALIGN.CENTER)
-# to-scale €120K bar
-bar_x, bar_w = 392, 560
+txt(sl, '→', 306, y0 + 10, 30, 40, size=20, color=MUTED, align=PP_ALIGN.CENTER)
+bar_x, bar_w = 350, 560
 rect(sl, bar_x, y0, int(bar_w / 2), 76, fill=BLUE)
 txt(sl, 'Assess & Solution\n€60K', bar_x + 18, y0 + 12, 240, 56, size=13, color=WHITE, bold=True, sp=1.1)
 rect(sl, bar_x + int(bar_w / 2), y0, int(bar_w / 2), 76, fill=BLUE_DARK)
 txt(sl, 'Mission POC\n€60K', bar_x + int(bar_w / 2) + 18, y0 + 12, 240, 56, size=13, color=WHITE, bold=True, sp=1.1)
 txt(sl, 'Rungs 1 + 2 · the €120K package (to scale)', bar_x, y0 - 32, 560, 24, size=12.5, color=MUTED, bold=True)
-txt(sl, '→', 964, y0 + 10, 30, 40, size=20, color=MUTED, align=PP_ALIGN.CENTER)
-rect(sl, 1006, y0 - 34, 214, 130, fill=NAVY, round_=True)
-txt(sl, 'Rung 3 · recurring', 1026, y0 - 22, 180, 24, size=12, color=CYAN, bold=True)
-txt(sl, 'Value Assurance\n€30-50K a year\n+ gain share', 1026, y0 + 4, 180, 84, size=13, color=WHITE, bold=True, sp=1.15)
-chip(sl, 96, 470, 548, 92, 'The free wedge feeds the funnel',
+txt(sl, '→', 922, y0 + 10, 30, 40, size=20, color=MUTED, align=PP_ALIGN.CENTER)
+rect(sl, 964, y0 - 34, 262, 130, fill=NAVY, round_=True)
+txt(sl, 'Rung 3 · recurring', 986, y0 - 22, 220, 24, size=12, color=CYAN, bold=True)
+txt(sl, 'Value Assurance\n€30-50K a year + gain share', 986, y0 + 4, 220, 84, size=13, color=WHITE, bold=True, sp=1.15)
+chip(sl, ML, 460, 572, 92, 'The free wedge feeds the funnel',
      'Four meetings surface the leakage evidence that qualifies the paid wedge. Zero friction to start.', accent=BLUE)
-chip(sl, 672, 470, 548, 92, 'Recurrence is the growth flywheel',
+chip(sl, 654, 460, 572, 92, 'Recurrence is the growth flywheel',
      'Telemetry converts every live deployment into quarterly revenue that compounds with AI consumption.', accent=BLUE)
 
 # ═════════════════════════════════════════════════════════════
@@ -297,7 +383,7 @@ steps = [
     ('06', 'Signature', 'AE + VC · 2-4 wks'),
     ('07', 'Install', 'FDE + SE · 6-12 wks'),
 ]
-sw, sgap, sx, sy = 148, 12, 96, 268
+sw, sgap, sx, sy = 156, 13, ML, 258
 for i, (n, name, who) in enumerate(steps):
     x = sx + i * (sw + sgap)
     rect(sl, x, sy, sw, 150, fill=OFF, line=BORDER, line_w=0.75, round_=True)
@@ -306,12 +392,12 @@ for i, (n, name, who) in enumerate(steps):
     txt(sl, name, x + 16, sy + 62, sw - 30, 26, size=14, bold=True)
     txt(sl, who, x + 16, sy + 92, sw - 30, 46, size=10.5, color=MUTED, sp=1.15)
     if i < 6:
-        txt(sl, '→', x + sw - 3, sy + 58, 20, 30, size=14, color=MUTED)
-rect(sl, 96, 470, 1124, 84, fill=BLUE_LIGHT, round_=True)
-txt(sl, 'The lifecycle runs twice over.', 120, 486, 300, 52, size=13.5, bold=True, color=BLUE_DARK, sp=1.1)
+        txt(sl, '→', x + sw - 2, sy + 58, 20, 30, size=14, color=MUTED)
+rect(sl, ML, 460, AW, 84, fill=BLUE_LIGHT, round_=True)
+txt(sl, 'The lifecycle runs twice over.', ML + 24, 476, 300, 52, size=13.5, bold=True, color=BLUE_DARK, sp=1.1)
 txt(sl, 'The first pass through stages 1-4 builds the product itself. From the second account onward, '
         'the same motion runs as a 4-8 week sales-and-delivery cycle per install.',
-    430, 482, 766, 64, size=12.5, sp=1.2)
+    ML + 336, 472, AW - 360, 64, size=12.5, sp=1.2)
 
 # ═════════════════════════════════════════════════════════════
 # S7 — The pod
@@ -330,8 +416,8 @@ pods = [
     ('SME · on call', 'Risk and compliance review for Guardrail Studio; R&D liaison for the Cartographer.'),
 ]
 for i, (h_, b_) in enumerate(pods):
-    chip(sl, 96, 226 + i * 92, 560, 80, h_, b_, accent=BLUE)
-hero_card(sl, 692, 226, 528, 356, 'Why the solution engineer matters',
+    chip(sl, ML, 216 + i * 92, 560, 80, h_, b_, accent=BLUE)
+hero_card(sl, 650, 216, 576, 356, 'Why the solution engineer matters',
           'One named SE across all four products, so skill compounds.',
           'Every product runs on the same Factory tools: Connector Studio, Semantic Modeler, '
           'Simulation & Testing. Each install makes the next one cheaper and faster to deliver.')
@@ -357,23 +443,18 @@ qa = [
      'The wedge is the land motion of land-and-expand.'),
 ]
 for i, (c, a) in enumerate(qa):
-    y = 232 + i * 122
-    rect(sl, 96, y, 420, 108, fill=NAVY, round_=True)
-    txt(sl, c, 120, y + 18, 372, 76, size=14, color=WHITE, bold=True, sp=1.15)
-    rect(sl, 536, y, 684, 108, fill=OFF, round_=True)
-    rect(sl, 536, y + 8, 4, 92, fill=BLUE)
-    txt(sl, a, 560, y + 14, 636, 84, size=12.5, sp=1.18)
+    y = 222 + i * 122
+    rect(sl, ML, y, 420, 108, fill=NAVY, round_=True)
+    txt(sl, c, ML + 24, y + 18, 372, 76, size=14, color=WHITE, bold=True, sp=1.15)
+    rect(sl, 494, y, 732, 108, fill=OFF, round_=True)
+    rect(sl, 494, y + 8, 4, 92, fill=BLUE)
+    txt(sl, a, 518, y + 14, 684, 84, size=12.5, sp=1.18)
 
 # ═════════════════════════════════════════════════════════════
 # S9 — Chapter 02
 # ═════════════════════════════════════════════════════════════
-sl = new_slide(NAVY)
-txt(sl, '02', 96, 170, 400, 170, size=110, color=T50)
-txt(sl, 'Four execution plans', 96, 348, 900, 70, size=40, color=WHITE, bold=True)
-txt(sl, 'Product by product: milestones, effort, pod, ticket, and the gate that unlocks each one.',
-    96, 430, 900, 56, size=15, color=LIGHT_ON_NAVY, sp=1.25)
-logo(sl, dark_bg=True)
-txt(sl, str(PAGE[0]), 96, 720 - 36, 60, 22, size=12, color=RGBColor(0x5A, 0x6B, 0x80))
+chapter('02', 'Four execution plans',
+        'Product by product: milestones, effort, pod, ticket, and the gate that unlocks each one.')
 
 
 def product_plan(kicker, title, milestones, stats, footnote, notes=None):
@@ -382,8 +463,8 @@ def product_plan(kicker, title, milestones, stats, footnote, notes=None):
     sl = new_slide()
     chrome(sl, kicker, title, footnote=footnote, notes=notes)
     n = len(milestones)
-    line_y = 300
-    x0, x1 = 230, 1090
+    line_y = 290
+    x0, x1 = 190, 1090
     hairline(sl, x0, line_y, x1 - x0, 2.4, color=BORDER)
     span = (x1 - x0) / (n - 1)
     for i, (date, label, body, gate) in enumerate(milestones):
@@ -400,11 +481,11 @@ def product_plan(kicker, title, milestones, stats, footnote, notes=None):
             align=PP_ALIGN.CENTER)
         txt(sl, body, cx - 100, line_y + 54, 200, 100, size=10.5, color=MUTED,
             align=PP_ALIGN.CENTER, sp=1.12)
-    band_y = 470
-    rect(sl, 96, band_y, 1124, 96, fill=NAVY, round_=True)
-    cw = 1124 / len(stats)
+    band_y = 462
+    rect(sl, ML, band_y, AW, 96, fill=NAVY, round_=True)
+    cw = AW / len(stats)
     for i, (lab, val) in enumerate(stats):
-        bx = 96 + i * cw
+        bx = ML + i * cw
         txt(sl, lab.upper(), bx + 28, band_y + 16, cw - 40, 22, size=10.5, color=CYAN, bold=True)
         txt(sl, val, bx + 28, band_y + 42, cw - 40, 46, size=14.5, color=WHITE, bold=True, sp=1.05)
     return sl
@@ -486,7 +567,7 @@ chrome(sl, 'Execution plans · the register',
                 'client install once productized. All efforts carry a ±30% planning tolerance.',
        notes='Total build load Aug 2026 - Jul 2027: 32-40 person-weeks across four products, sequenced so the pod '
              'never carries two builds at once.')
-cols = [('Product', 300), ('One-time build', 190), ('Delivery per install', 230),
+cols = [('Product', 350), ('One-time build', 190), ('Delivery per install', 230),
         ('Pod', 250), ('First revenue', 150)]
 rows = [
     ('Process X-Ray', '8-10 pw', '4-6 wks · 12-14 pw', 'VC 1.0 + SE 0.5', 'Jan 2027'),
@@ -494,7 +575,7 @@ rows = [
     ('Guardrail Studio', '8-10 pw', '5-6 wks · 8-10 pw', 'VC 1.0 + SE 0.5 + SME', 'Jun 2027'),
     ('Ontology Cartographer', '10-12 pw', '6-8 wks · 12-16 pw', 'SE 1.0 + VC 0.5', 'Aug 2027'),
 ]
-tx, ty, rh = 96, 240, 66
+tx, ty, rh = ML, 230, 66
 x = tx
 for name, w in cols:
     txt(sl, name.upper(), x, ty, w - 16, 24, size=11.5, color=MUTED, bold=True)
@@ -503,7 +584,7 @@ hairline(sl, tx, ty + 30, sum(w for _, w in cols), 2.2, color=NAVY)
 for r, row in enumerate(rows):
     y = ty + 44 + r * rh
     x = tx
-    for c, (val) in enumerate(row):
+    for c, val in enumerate(row):
         w = cols[c][1]
         txt(sl, val, x, y + 12, w - 16, 40, size=13.5, bold=(c == 0),
             color=NAVY if c == 0 else RGBColor(0x2A, 0x38, 0x4A))
@@ -513,13 +594,8 @@ for r, row in enumerate(rows):
 # ═════════════════════════════════════════════════════════════
 # S15 — Chapter 03
 # ═════════════════════════════════════════════════════════════
-sl = new_slide(NAVY)
-txt(sl, '03', 96, 170, 400, 170, size=110, color=T50)
-txt(sl, 'Mobilization and the ask', 96, 348, 900, 70, size=40, color=WHITE, bold=True)
-txt(sl, 'The twelve-month sequence, how the Delivery Factory carries it, and the four decisions that unlock it.',
-    96, 430, 940, 56, size=15, color=LIGHT_ON_NAVY, sp=1.25)
-logo(sl, dark_bg=True)
-txt(sl, str(PAGE[0]), 96, 720 - 36, 60, 22, size=12, color=RGBColor(0x5A, 0x6B, 0x80))
+chapter('03', 'Mobilization and the ask',
+        'The twelve-month sequence, how the Delivery Factory carries it, and the four decisions that unlock it.')
 
 # ═════════════════════════════════════════════════════════════
 # S16 — Portfolio wave roadmap
@@ -532,13 +608,13 @@ chrome(sl, 'Mobilization · the sequence',
        notes='Sequencing logic: X-Ray first (lowest build risk, front-door product), Telemetry parallel (shares the '
              'keystone cost model work), Guardrail rides the Conversational pipeline, Cartographer lands on X-Ray demand.')
 months = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
-gx0, gy0, colw, rowh = 300, 252, 76, 62
+gx0, gy0, colw, rowh = 260, 242, 80, 62
 for i, m in enumerate(months):
     txt(sl, m, gx0 + i * colw, gy0 - 30, colw, 22, size=10.5, color=MUTED, bold=True,
         align=PP_ALIGN.CENTER)
     hairline(sl, gx0 + i * colw, gy0 - 6, 1, h=5 * rowh, color=RGBColor(0xE4, 0xE8, 0xEE))
-txt(sl, "2026", gx0, gy0 - 52, 200, 20, size=10, color=MUTED)
-txt(sl, "2027", gx0 + 5 * colw, gy0 - 52, 200, 20, size=10, color=MUTED)
+txt(sl, '2026', gx0, gy0 - 52, 200, 20, size=10, color=MUTED)
+txt(sl, '2027', gx0 + 5 * colw, gy0 - 52, 200, 20, size=10, color=MUTED)
 grows = [
     ('Keystone study', [(1, 2, BLUE_DARK, 'With Deepak')], [(1.0, RED)]),
     ('Process X-Ray', [(0, 1, T50, 'Design'), (1, 2, BLUE, 'Prototype'), (3, 2, BLUE_DARK, 'Proof'), (5, 7, NAVY, 'Sell + install')], [(2.0, RED), (5.0, BLUE)]),
@@ -548,7 +624,7 @@ grows = [
 ]
 for r, (label, bars, gates) in enumerate(grows):
     y = gy0 + r * rowh
-    txt(sl, label, 96, y + 10, 196, 44, size=12, bold=True, sp=1.05)
+    txt(sl, label, ML, y + 10, 190, 44, size=12, bold=True, sp=1.05)
     for (start, dur, color, blabel) in bars:
         bx = gx0 + start * colw + 2
         bw = dur * colw - 4
@@ -575,16 +651,16 @@ stages = [
     ('Install', 'Mission Contract with\nNexus + Sentinel binding', 'The Banking OS layer live in 6-12 weeks, via the agentic SDLC.'),
     ('Run', 'Deployment &\nOps Control', 'Live telemetry that feeds Value Telemetry and the expansion case.'),
 ]
-cw, cgap = 262, 24
+cw, cgap = 275, 24
 for i, (stage, tools, out) in enumerate(stages):
-    x = 96 + i * (cw + cgap)
-    rect(sl, x, 240, cw, 280, fill=OFF, line=BORDER, line_w=0.75, round_=True)
-    txt(sl, stage.upper(), x + 22, 262, cw - 40, 24, size=11.5, color=BLUE, bold=True)
-    txt(sl, tools, x + 22, 292, cw - 40, 70, size=14.5, bold=True, sp=1.12)
-    hairline(sl, x + 22, 378, cw - 44)
-    txt(sl, out, x + 22, 392, cw - 40, 110, size=12, color=RGBColor(0x2A, 0x38, 0x4A), sp=1.2)
+    x = ML + i * (cw + cgap)
+    rect(sl, x, 230, cw, 280, fill=OFF, line=BORDER, line_w=0.75, round_=True)
+    txt(sl, stage.upper(), x + 22, 252, cw - 40, 24, size=11.5, color=BLUE, bold=True)
+    txt(sl, tools, x + 22, 282, cw - 40, 70, size=14.5, bold=True, sp=1.12)
+    hairline(sl, x + 22, 368, cw - 44)
+    txt(sl, out, x + 22, 382, cw - 40, 110, size=12, color=RGBColor(0x2A, 0x38, 0x4A), sp=1.2)
     if i < 3:
-        txt(sl, '→', x + cw + 1, 360, 22, 30, size=15, color=MUTED)
+        txt(sl, '→', x + cw + 2, 350, 20, 30, size=15, color=MUTED)
 
 # ═════════════════════════════════════════════════════════════
 # S18 — The asks + €5K seed
@@ -603,8 +679,8 @@ asks = [
     ('4 · Agree the commercial treatment', 'Quota recognition of ~€200K so the line carries a real target from day one.'),
 ]
 for i, (h_, b_) in enumerate(asks):
-    chip(sl, 96, 226 + i * 92, 560, 80, h_, b_, accent=BLUE)
-hero_card(sl, 692, 226, 528, 356, 'The €5,000 seed',
+    chip(sl, ML, 216 + i * 92, 560, 80, h_, b_, accent=BLUE)
+hero_card(sl, 650, 216, 576, 356, 'The €5,000 seed',
           'The talent budget launches product number one.',
           'Packaging and delivery kit for Process X-Ray, a demo built on the APA V3 catalog, launch '
           'collateral produced with marketing, and pricing pressure-tests with three friendly accounts.')
@@ -628,35 +704,36 @@ assumps = [
 ]
 conf_color = {'Low': RED, 'Medium': AMBER, 'High': GREEN}
 for i, (a, basis, conf, owner) in enumerate(assumps):
-    y = 232 + i * 72
-    rect(sl, 96, y, 1124, 62, fill=OFF, round_=True)
-    txt(sl, a, 120, y + 10, 400, 44, size=13, bold=True, sp=1.05)
-    txt(sl, basis, 536, y + 10, 420, 44, size=11.5, color=RGBColor(0x2A, 0x38, 0x4A), sp=1.1)
-    dot(sl, 986, y + 31, 12, conf_color[conf])
-    txt(sl, conf, 1000, y + 20, 80, 24, size=11.5, color=MUTED, bold=True)
-    txt(sl, 'Validate: ' + owner, 1078, y + 20, 140, 40, size=10.5, color=BLUE, bold=True, sp=1.0)
+    y = 222 + i * 72
+    rect(sl, ML, y, AW, 62, fill=OFF, round_=True)
+    txt(sl, a, ML + 24, y + 10, 400, 44, size=13, bold=True, sp=1.05)
+    txt(sl, basis, 494, y + 10, 430, 44, size=11.5, color=RGBColor(0x2A, 0x38, 0x4A), sp=1.1)
+    dot(sl, 1000, y + 31, 12, conf_color[conf])
+    txt(sl, conf, 1014, y + 20, 76, 24, size=11.5, color=MUTED, bold=True)
+    txt(sl, 'Validate: ' + owner, 1092, y + 14, 128, 44, size=10.5, color=BLUE, bold=True, sp=1.05)
 
 # ═════════════════════════════════════════════════════════════
-# S20 — Close
+# S20 — Close (cover-grid chrome)
 # ═════════════════════════════════════════════════════════════
 sl = new_slide(NAVY)
-rect(sl, 96, 170, 56, 5, fill=BLUE)
-txt(sl, 'Land fast. Prove value. Expand.', 96, 200, 1000, 80, size=42, color=WHITE, bold=True)
+cover_chrome(sl)
+txt(sl, 'THE MOTION', 105, 220, 700, 24, size=12.5, color=CYAN, bold=True)
+txt(sl, 'Land fast. Prove value.\nExpand.', 102, 262, 720, 160, size=42, color=WHITE, bold=True, sp=1.05)
 txt(sl, 'One product in market by January. Cost neutral inside year one.\n'
         'Four installed-platform wedges and a recurring line by mid 2027.',
-    96, 300, 980, 80, size=17, color=LIGHT_ON_NAVY, sp=1.35)
+    102, 528, 700, 80, size=14.5, color=LIGHT_ON_NAVY, sp=1.3)
 steps_now = [
     'This week · book the Mayur 1:1: quota treatment, pilot green-light, SE allocation.',
     'This week · follow up with Tim: category story, launch collateral, talent-budget plan.',
     'September · scope the keystone cost-per-outcome study with Deepak.',
 ]
 for i, s_ in enumerate(steps_now):
-    dot(sl, 106, 436 + i * 52, 10, CYAN)
-    txt(sl, s_, 130, 424 + i * 52, 1000, 36, size=14, color=WHITE, sp=1.1)
+    dot(sl, 890, 232 + i * 64, 10, CYAN)
+    txt(sl, s_, 912, 220 + i * 64, 310, 56, size=11.5, color=WHITE, sp=1.2)
 logo(sl, dark_bg=True)
-txt(sl, str(PAGE[0]), 96, 720 - 36, 60, 22, size=12, color=RGBColor(0x5A, 0x6B, 0x80))
+page_field(sl, color=RGBColor(0x5A, 0x6B, 0x80))
 
-out = os.path.join(KIT, 'Product_Factory_Execution_Plan_Exhibit.pptx')
+out = os.path.join(HERE, 'Product_Factory_Execution_Plan_Exhibit.pptx')
 prs.save(out)
 import pathlib
-print(f'Saved {out} ({pathlib.Path(out).stat().st_size // 1024} KB, {len(prs.slides.slides._sldIdLst) if hasattr(prs.slides, "slides") else len(prs.slides._sldIdLst)} slides)')
+print(f'Saved {out} ({pathlib.Path(out).stat().st_size // 1024} KB, {len(prs.slides._sldIdLst)} slides)')

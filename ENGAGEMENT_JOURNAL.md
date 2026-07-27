@@ -27,3 +27,17 @@ assumptions_documented: 5
 evidence_sources: PDP_BACKLOG.md, banking-os.md, narrative-spine.md, apa-matrix/README.md, claude-design-exhibit-kit/SKILL.md
 generated: 2026-07-27
 TELEMETRY_END -->
+
+## 2026-07-27 — Product Factory deck v2: Master Template chrome (SNB-format redo)
+
+**Change:** Rebuilt the deck chrome to match the Backbase Master Template 2026 (the format of the latest SNB deck): stepped-square brand mark at hairline crossings (geometry extracted from the master's layout XML — custGeom, 0.25in, `#3367FF` light / white dark), full-height rails at master positions (0.58"/19.42" content, 0.83"/19.17" cover), master margins (content x=54px vs 96px before), cover/chapter grid with crossing lines. Logo size unchanged (validated by consultant). Page numbers converted from hardcoded text to real `slidenum` fields — auto-renumber in PowerPoint and Google Slides on insert/reorder, making the deck co-creation safe.
+
+<!-- TELEMETRY_START
+agent: frontline-slides-pptx (bespoke exhibit renderer v2)
+engagement: internal-pdp-product-factory
+deliverable: Product_Factory_Execution_Plan_Exhibit.pptx (v2, master chrome)
+slides: 20
+checkpoints: 2
+modification_source: consultant feedback (stepped squares missing, margins off, hardcoded page numbers)
+generated: 2026-07-27
+TELEMETRY_END -->
