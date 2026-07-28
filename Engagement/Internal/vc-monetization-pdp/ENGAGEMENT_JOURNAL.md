@@ -163,3 +163,18 @@ evidence_sources: Talent_Program_2026_PreMidYear_F2F_Update.pdf (consultant uplo
 modification_source: consultant direction (translate via Win the Room; mentor usage; make the case)
 generated: 2026-07-28
 TELEMETRY_END -->
+
+## 2026-07-28 — Tim Rutten 1:1 held: transcript ingested, direction absorbed
+
+**Input:** Full meeting transcript (55 min, consultant-supplied). Digest banked at `Input/2026-07-28_tim-rutten-1to1_digest.md` per the pursuit-loop same-day-ingest discipline.
+
+**Headline direction:** Org-design angle validated enthusiastically, with a pivot: productize it as the self-serve **Org Chart Builder** (awareness, free, instant — third in the series after the per-bank demo generator and the LLM visibility tracker), with the paid org-design engagement converting mid-funnel. Backbase's own 2024→2026 org mapped as the blueprint (green-lit; Tim doing the marketing slice himself). Outcome-based pricing expected market-wide in 3-6 months — the wedge ladder needs an outcome variant. First market: agentic banking GTM at weekly cadence; the next-Friday speed test. Personal: Tim invites Shyam to champion the AI-native operating model with him; blank-slate mandate framing.
+
+<!-- TELEMETRY_START
+agent: manual ingest (consultant transcript)
+engagement: internal-pdp-vc-monetization
+deliverable: Input/2026-07-28_tim-rutten-1to1_digest.md
+checkpoints: 1
+modification_source: Tim Rutten 1:1 direction
+generated: 2026-07-28
+TELEMETRY_END -->
