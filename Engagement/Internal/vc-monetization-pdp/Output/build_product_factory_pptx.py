@@ -13,7 +13,7 @@ import sys
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(
-    _HERE, '..', '..', '..', '.claude', 'skills', 'exhibit-slides-pptx', 'scripts')))
+    _HERE, '..', '..', '..', '..', '.claude', 'skills', 'exhibit-slides-pptx', 'scripts')))
 from exhibit_pptx import (ExhibitDeck, NAVY, BLUE, BLUE2, BLUE3, BLUE4, TINT, TINT2,
                           CYAN, CORAL, WHITE, MUT, FN, HAIR, HAIR_ROW, SUB_D, W, H)
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR

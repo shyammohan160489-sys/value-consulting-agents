@@ -1,4 +1,9 @@
-# Engagement Journal
+# Engagement Journal — VC Monetization PDP (internal)
+
+**Engagement:** VC function monetization · Product Factory (Engine A) + AI-Native Services (Engine B)
+**Type:** Internal — PDP track (Mayur) + talent programme (Tim Ruttner). Not client-facing.
+**Folder:** `Engagement/Internal/vc-monetization-pdp/` · deliverables in `Output/`
+**Related sources:** `PDP_BACKLOG.md` (repo root) · `knowledge/product/banking-os.md` · `knowledge/domains/apa-matrix/` · `.claude/skills/exhibit-slides-pptx/`
 
 ## 2026-07-27 — Product Factory execution plan deck (internal, PDP)
 
