@@ -116,7 +116,7 @@ d.txt(s, 1.0, 2.45, 11.0, 1.9, [[('Product Factory:', 44, WHITE, False)],
 d.txt(s, 1.0, 4.35, 9.4, 0.9, 'Four paid product wedges that pre-install Banking OS: prove the model in '
                               'year one, reach cost neutrality in year two, open a recurring line.',
       size=15, color=SUB_D, line_sp=1.25)
-d.txt(s, 1.0, 6.35, 10.0, 0.3, 'Shyam · July 2026 · for the talent programme (Tim Ruttner) and the PDP track (Mayur)',
+d.txt(s, 1.0, 6.35, 10.0, 0.3, 'Shyam · July 2026 · for the talent programme (Tim Rutten) and the PDP track (Mayur)',
       size=11, color=MUT)
 d.txt(s, 11.7, 7.05, 1.06, 0.3, 'Backbase', size=11, color=WHITE, bold=True, align=PP_ALIGN.RIGHT)
 d.notes(s, 'COVER. One line and move: the function stops being a cost centre; here is the twelve-month execution.')

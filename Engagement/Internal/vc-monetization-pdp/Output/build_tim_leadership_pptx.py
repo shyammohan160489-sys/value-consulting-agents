@@ -44,7 +44,7 @@ def shape(s, kind, x, y, w, h, fill, line=None, line_w=0.75):
 # ═════════ S1 · COVER (dark) ═════════
 s = d.slide(dark=True)
 d.step_glyph(s, 0.406, 0.406, 0.167, 0.166, CYAN)
-d.txt(s, 1.0, 2.0, 11.0, 0.35, 'TALENT PROGRAMME · SHYAM × TIM RUTTNER · ONE HOUR', size=12.5, color=CYAN, bold=True)
+d.txt(s, 1.0, 2.0, 11.0, 0.35, 'TALENT PROGRAMME · SHYAM × TIM RUTTEN · ONE HOUR', size=12.5, color=CYAN, bold=True)
 d.txt(s, 1.0, 2.45, 11.4, 1.9, [[('The operator behind', 44, WHITE, False)],
                                 [('the playbook.', 44, WHITE, True)]], line_sp=1.05)
 d.txt(s, 1.0, 4.35, 9.4, 0.9, 'Seven questions, one exhibit each: the strategy, the why, the arsenal, the '
@@ -310,7 +310,7 @@ d.txt(s, 8.18, 2.76, 4.3, 0.9, '“Pick a Strategic Initiative of interest and d
 d.txt(s, 8.18, 3.95, 4.3, 1.0, 'The Product Factory line is that initiative. The playbook is the intake '
                                'artifact; Mayur is the manager conversation; this hour is the MT one.',
       size=10.5, color=SUB_D, line_sp=1.25)
-d.txt(s, 8.18, 5.20, 4.3, 0.5, '→ and the mentor pairing I want from the mid-year round: a commercial one.',
+d.txt(s, 8.18, 5.20, 4.3, 0.5, '→ my mid-year pairing: Jeroen Bruseker (EVP Services). My mentor agenda: the services P&L craft.',
       size=10, color=CYAN, bold=True, line_sp=1.15)
 d.footnote(s, 'Themes and the next-step quote: Talent Program 2026, Q1 wrap-up (Emerging Development Themes; Development Next Steps).')
 d.notes(s, 'PROGRAMME FIT. Every phrase on the left is the programme’s own vocabulary; the initiative operationalises '
@@ -354,7 +354,80 @@ d.footnote(s, 'Programme record: 9 Q1 activities, 72% participation, NPS 88; mid
 d.notes(s, 'THE CLOCK. H1 is spent on formation (theirs); H2 is the delivery runway (mine). The coral diamond is the one '
            'decision that gates the runway: the pilot green-light in October.')
 
-# ═════════ S11 · THE ASK ═════════
+# ═════════ S11 · WIN THE ROOM: THE STAKEHOLDER MAP ═════════
+s = d.slide()
+d.chrome(s, 'Win the room · the stakeholder map', 'The room to win: five stakeholders, five different yeses')
+heads = [('WHAT DRIVES THEM', 3.20), ('WHAT I ASK', 6.45), ('THE YES I AM AFTER', 9.65)]
+for h_, hx in heads:
+    d.txt(s, hx, 1.90, 3.0, 0.2, h_, size=8.5, color=BLUE, bold=True)
+stake = [
+    ('Tim Rutten', 'CMO · this hour', 'Category creation, marketable proof, launches that land', 'Sponsorship, launch collateral, the €5K as seed', 'The talent budget becomes a launch'),
+    ('Mayur', 'my manager', 'Function economics: protected team, defensible quota logic', 'Pilot green-light, the named SE, quota treatment', 'The function earns its keep'),
+    ('Jeroen Bruseker', 'EVP Services · my mentor', 'Services revenue and delivery capacity that scales', 'Mentor agenda: P&L craft; FDE capacity at install', 'Services revenue that pre-installs product'),
+    ('Deepak', 'platform costing', 'Cost-model integrity, supply-side truth', 'Co-build the keystone cost-per-outcome study', 'A demand-side twin for his model'),
+    ('Programme owner', 'EAP + talent', 'Proof the programme creates business impact', 'EAP eligibility; the initiative as case study', 'A Strategic Initiative with receipts'),
+]
+for i, (name, role, drives, ask, yes) in enumerate(stake):
+    y = 2.14 + i * 0.82
+    d.rect(s, 1.0, y, 11.708, 0.74, fill=TINT if name == 'Tim Rutten' else TINT2, round_=True)
+    d.rect(s, 1.0, y + 0.06, 0.045, 0.62, fill=BLUE)
+    d.txt(s, 1.20, y + 0.08, 1.95, 0.3, name, size=10, color=NAVY, bold=True)
+    d.txt(s, 1.20, y + 0.40, 1.95, 0.26, role, size=7.5, color=BLUE2, bold=True)
+    d.txt(s, 3.20, y + 0.10, 3.05, 0.6, drives, size=8.5, color=NAVY, line_sp=1.12)
+    d.txt(s, 6.45, y + 0.10, 3.00, 0.6, ask, size=8.5, color=NAVY, line_sp=1.12)
+    d.txt(s, 9.65, y + 0.10, 2.95, 0.6, yes, size=8.5, color=BLUE2, bold=True, line_sp=1.12)
+d.footnote(s, 'Structured per the mid-year Win the Room training (YouLead): identify what drives the stakeholders whose buy-in you need. Mentor pairing per the mid-year F2F.')
+d.notes(s, 'STAKEHOLDER MAP. Nobody in this room is asked for the same thing: Tim gets a launch, Mayur gets economics, '
+           'Jeroen gets services revenue, Deepak gets a better model, the programme gets its case study.')
+
+# ═════════ S12 · WIN THE ROOM: THE CASE IN OSCAR ═════════
+s = d.slide()
+d.chrome(s, 'Win the room · the recommendation', 'The case in OSCAR: outcome, situation, choices, actions, review')
+oscar = [
+    ('O', 'Outcome', 'A product-led value line: first revenue in January, cost-neutral in year two, recurring assurance after.'),
+    ('S', 'Situation', 'Value consulting runs free in a market shifting to operating models; the function must earn its protection.'),
+    ('C', 'Choices', 'Stay free (funnel, no leverage) · generic consulting (fights MBB, no moat) · product wedges that install the platform. I choose the third.'),
+    ('A', 'Actions', 'Name the SE · green-light the pilot · confirm EAP eligibility · seed the launch with the €5,000. The H2 runway carries the dates.'),
+    ('R', 'Review', 'The programme’s own cadence: revenue and an installed component reported at the next wrap-up; telemetry quarterly after that.'),
+]
+for i, (ltr, name, body) in enumerate(oscar):
+    y = 2.00 + i * 0.86
+    d.oval(s, 1.0, y + 0.10, 0.52, 0.52, BLUE if i in (0, 4) else NAVY, label=ltr, fs=15)
+    d.rect(s, 1.75, y, 10.95, 0.74, fill=TINT if i in (0, 4) else TINT2, round_=True)
+    d.txt(s, 1.98, y + 0.08, 1.6, 0.26, name, size=11.5, color=NAVY, bold=True)
+    d.txt(s, 3.65, y + 0.10, 8.9, 0.6, body, size=9.5, color=NAVY, line_sp=1.15)
+    if i < 4:
+        d.hline(s, 1.26, y + 0.62, 1.26, y + 0.96, color=HAIR, wpt=1.2)
+d.footnote(s, 'OSCAR per the Win the Room training: structuring a recommendation that lands. Outcome and Review are highlighted: start at the end, commit to the check.')
+d.notes(s, 'THE RECOMMENDATION. If the hour compresses, this one slide is the meeting: outcome first, review last, '
+           'the three actions in the middle are the asks.')
+
+# ═════════ S13 · WIN THE ROOM: THE OBJECTION ROUND ═════════
+s = d.slide()
+d.chrome(s, 'Win the room · the objection round', 'The objection round: pushback I expect, positions I hold')
+objs = [
+    ('“This distracts from your pre-sales day job.”',
+     'The wedge IS pre-sales, paid: every install hands an AE a qualified, evidenced platform deal. Watch the wedge-to-Mission attach rate; kill it if it stalls.'),
+    ('“You are a consultant, not a product manager.”',
+     'Cortex, the kits and the exhibit engine are shipped, team-adopted artifacts. The gap that remains is exactly the development goal this programme exists to close.'),
+    ('“The €5,000 is meant for training.”',
+     'The programme’s own resources page says short courses fit narrow gaps, and deep transformation needs more. A live launch is the deeper curriculum.'),
+    ('“Why now, before the platform matures?”',
+     'The EAP window and the operating-model shift are both now. The wedges sell evidence, and evidence compounds earliest; waiting hands the diagnostic layer to the SIs.'),
+]
+for i, (c, a) in enumerate(objs):
+    y = 2.00 + i * 1.06
+    d.rect(s, 1.0, y, 4.35, 0.94, fill=NAVY, round_=True)
+    d.txt(s, 1.22, y + 0.13, 3.95, 0.7, c, size=10.5, color=WHITE, bold=True, line_sp=1.15)
+    d.rect(s, 5.55, y, 7.15, 0.94, fill=TINT2, round_=True)
+    d.rect(s, 5.55, y + 0.07, 0.045, 0.80, fill=BLUE)
+    d.txt(s, 5.80, y + 0.11, 6.72, 0.76, a, size=9.5, color=NAVY, line_sp=1.16)
+d.footnote(s, 'Per the Win the Room objection round: hold the position without losing the relationship. Each answer concedes the risk and names the control.')
+d.notes(s, 'OBJECTIONS. Note the pattern in every answer: agree the concern is real, show the control that manages it, '
+           'never argue the concern away. The attach-rate kill-switch in answer one is deliberate: it shows I will '
+           'stop it myself if the data says so.')
+
+# ═════════ S14 · THE ASK ═════════
 s = d.slide()
 d.chrome(s, 'The ask · where this goes', 'I am asking for ownership, sponsorship and a seed, in order')
 d.txt(s, 1.0, 1.95, 5.0, 0.24, 'THE MOVE I AM MAKING', size=10, color=MUT, bold=True, track='100')

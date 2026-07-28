@@ -146,3 +146,20 @@ evidence_sources: Talent_Program_CheckIn_Q1_Wrap_Up.pdf (consultant upload)
 modification_source: consultant-supplied programme deck (timelines, themes, strategic-initiative hook)
 generated: 2026-07-28
 TELEMETRY_END -->
+
+## 2026-07-28 — Tim package v4: translated through Win the Room (14 slides) + name fix
+
+**Input:** Consultant-supplied Pre-Mid-Year F2F update deck. Mined: the Win the Room training (YouLead — stakeholder mapping, OSCAR recommendation structure, presenting your initiative, objection round), the mid-year agenda, and the coaching pairings — including Shyam's actual mentor pairing: Jeroen Bruseker (EVP Services), with Osseily Hanna. Also corrected the CMO's name deck-wide: Tim Rutten (was misspelled Ruttner in both decks).
+
+**Change:** Three Win-the-Room slides inserted before the ask (11 → 14): (1) the stakeholder map — five stakeholders × what drives them × what I ask × the yes I am after (Tim Rutten, Mayur, Jeroen Bruseker as mentor, Deepak, programme owner); (2) the case in OSCAR form — Outcome, Situation, Choices, Actions, Review, with outcome-first/review-last highlighted; (3) the objection round — four expected pushbacks with positions held (each answer concedes the risk and names the control, incl. a self-imposed attach-rate kill-switch). Programme-fit slide updated with the real mentor pairing and the services-P&L mentor agenda.
+
+<!-- TELEMETRY_START
+agent: exhibit-slides-pptx (locked engine v3.1)
+engagement: internal-pdp-vc-monetization
+deliverable: Shyam_Talent_Programme_Tim.pptx (v4, 14 slides)
+slides: 14
+checkpoints: 2
+evidence_sources: Talent_Program_2026_PreMidYear_F2F_Update.pdf (consultant upload)
+modification_source: consultant direction (translate via Win the Room; mentor usage; make the case)
+generated: 2026-07-28
+TELEMETRY_END -->
