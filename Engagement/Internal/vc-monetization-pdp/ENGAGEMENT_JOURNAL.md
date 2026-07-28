@@ -99,3 +99,19 @@ checkpoints: 2
 modification_source: consultant feedback (rungs horizontal, what/why/outcome + feasibility in short version)
 generated: 2026-07-28
 TELEMETRY_END -->
+
+## 2026-07-28 — Tim package: the leadership case behind the playbook (5 slides)
+
+**New deliverable:** `Output/Shyam_Talent_Programme_Tim.pptx` — a separate 5-slide personal package for the one-hour talent-programme session with Tim Ruttner. Cover + four slides: (1) the three-altitude record — accounts & pursuits (SNB Capital, BACB, ABSA ×5, HSBC, Schroders, SEB, NFIS cohort), market & category (Nordic FinTech Forum 2026 POV, Advisor Cockpit POV, exhibit design language ratified), the machine (Cortex AgenticOS, the Flywheel, the Pursuit Loop, peer enablement); (2) the philosophy the 57-slide playbook is written in (ship installations, codify everything, evidence over enthusiasm, diverge-then-converge); (3) three future theses with a named move each (cost per outcome, orgs follow the autonomy curve, vendors win by installing); (4) the ask ladder (P&L ownership path, ExCo sponsorship, €5K as seed) closing on "judge me on January."
+
+**Evidence basis:** every claim traces to a repo artifact (engagement outputs, learnings/pursuit-loop-method.md, FLYWHEEL.md, docs/cortex-launch-presentation.html, exhibit-kit ratification records). Session-transcript history outside this repo was not available; the record used is the repo itself, stated as such to the consultant.
+
+<!-- TELEMETRY_START
+agent: exhibit-slides-pptx (locked engine v3.1)
+engagement: internal-pdp-vc-monetization
+deliverable: Shyam_Talent_Programme_Tim.pptx (5 slides)
+slides: 5
+checkpoints: 2
+modification_source: consultant request (personal leadership package for Tim hour)
+generated: 2026-07-28
+TELEMETRY_END -->
