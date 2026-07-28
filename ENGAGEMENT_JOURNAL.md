@@ -58,3 +58,25 @@ assumptions_documented: 8
 modification_source: consultant feedback (ladder-lifecycle confusion, content depth, buying criteria, EAP, Engine B)
 generated: 2026-07-27
 TELEMETRY_END -->
+
+## 2026-07-28 — Product Factory deck v4: rebuilt on the exhibit-slides-pptx engine + playbook expansion (57 slides)
+
+**Change 1 — engine migration:** Installed the `exhibit-slides-pptx` skill drop (consultant-supplied zip) at `.claude/skills/exhibit-slides-pptx/` — the locked v3.1 engine extracted from the SNB Capital and BACB production builders, ratified as THE DEFAULT for all PPTX (Shyam, 28 Jul 2026). Rebuilt the deck on it verbatim: exhibit palette (#071224/#4066F5), chrome v3.1 with right rail, one-line ≤63-char action titles, one-line footnotes, takeaway bands, coral open badges, live slidenum page fields (mechanism the engine itself credits to this deck). Retired the bespoke master-template builder (`build_exhibit_deck.py`); new source: `build_product_factory_pptx.py`.
+
+**Change 2 — playbook expansion (41 → 57 slides), per consultant direction:**
+- **Chapter 00 "The short version"** — 6 exec slides for the Tim meeting (play on a page, line-up, numbers via the ratified stat-card row, route to yes, must-have quadrant, three asks).
+- **Chapter 03 "The AI-native operating model"** — Engine B expanded to 8 slides: loop postures (in/on/above the loop + not-delegated zone; Citi three-case reference footnoted), permission map (possible now / preconditioned / not permitted), maturity path (Early A1-A3 / Mid A4 / Late A5), workforce shift (augmented / autonomous / new roles + skills to build), six-workshop execution anatomy, plus the existing deep-dive, sample outputs and plan.
+- **Chapter 04 "The business connection"** — ambition → objective → value pool → Mission POC → measured proof bridge; must-have vs good-to-have account archetypes with 5-year-strategy signals to read.
+
+**Verification:** Libre Franklin installed in the render container; all 57 slides rendered and eyeballed; QA checklist run (titles one line, footnotes one line, one table, coral badges on open items, DEFENSE notes on number slides).
+
+<!-- TELEMETRY_START
+agent: exhibit-slides-pptx (locked engine v3.1)
+engagement: internal-pdp-product-factory
+deliverable: Product_Factory_Execution_Plan_Exhibit.pptx (v4, 57 slides, playbook + exec version)
+slides: 57
+checkpoints: 2
+assumptions_documented: 8
+modification_source: consultant direction (skill drop as default; operating-model depth; business connection; exec version for Tim)
+generated: 2026-07-28
+TELEMETRY_END -->
