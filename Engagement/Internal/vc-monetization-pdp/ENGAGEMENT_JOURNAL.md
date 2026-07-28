@@ -115,3 +115,17 @@ checkpoints: 2
 modification_source: consultant request (personal leadership package for Tim hour)
 generated: 2026-07-28
 TELEMETRY_END -->
+
+## 2026-07-28 — Tim package v2: visual / infographic edition (9 slides)
+
+**Change:** Rebuilt the Tim package as one exhibit per question, per consultant direction ("proper McKinsey style, more infographic"): strategy house (ambition roof, two-engine pillars, wedge-ladder beam, Cortex foundation, success-metrics rail) · why-now convergence (three pentagon currents → the join) · the arsenal (65 processes / 24h loop / 10 accounts, three big-number columns) · the ammunition belt (five feasibility-shaded chevrons firing at the POC + propellant row: EAP slots, specimen packs, credit-forward) · the Backbase leverage stack (six given tiles below, four added tiles above) · the skills from→to ladder (five rows, today-dot vs target-dot; category building flagged as the CMO-mentorship row) · the flywheel (six-node cycle around a compounding hub + revenue payout rail with an unsized licence-pull badge) · the ask ladder unchanged. 5 → 9 slides.
+
+<!-- TELEMETRY_START
+agent: exhibit-slides-pptx (locked engine v3.1 + flat autoshape composition)
+engagement: internal-pdp-vc-monetization
+deliverable: Shyam_Talent_Programme_Tim.pptx (v2, 9 slides, infographic)
+slides: 9
+checkpoints: 2
+modification_source: consultant feedback (more visual, seven-question structure, flywheel)
+generated: 2026-07-28
+TELEMETRY_END -->
