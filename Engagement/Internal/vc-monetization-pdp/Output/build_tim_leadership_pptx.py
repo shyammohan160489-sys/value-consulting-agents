@@ -285,7 +285,76 @@ d.footnote(s, 'The wheel’s discipline: node 3 is the moat (evidence nobody els
 d.notes(s, 'THE FLYWHEEL. Walk it once clockwise, then point right: the wheel is the mechanism, the rail is the money. '
            'DEFENSE: year figures are the playbook’s capacity-checked numbers, not aspirations.')
 
-# ═════════ S9 · THE ASK ═════════
+# ═════════ S9 · ANCHORED IN THE PROGRAMME ═════════
+s = d.slide()
+d.chrome(s, 'The programme fit · in its own words', 'This is the Strategic Initiative the programme asked me to pick')
+themes = [
+    ('Take the pain, don’t delay', 'Acting on evidence and moving: pilot gate in October, paid proof by December.'),
+    ('Executive Influence', 'This meeting is the exercise: shaping ExCo decisions with the playbook and the quota case.'),
+    ('Scaling Leadership', 'The pod and the delivery kits: others deliver from what I build; hiring follows revenue.'),
+    ('Strategic Leadership & Execution', 'Function connected to business impact: a costed revenue line with gates and owners.'),
+    ('Leading in Complexity', 'Five contradictions named with owners; unknowns badged coral instead of hidden.'),
+]
+d.txt(s, 1.0, 1.92, 6.5, 0.22, 'THE FIVE EMERGING DEVELOPMENT THEMES · AND HOW THIS INITIATIVE TRAINS EACH',
+      size=8.5, color=MUT, bold=True)
+for i, (t_, how) in enumerate(themes):
+    y = 2.20 + i * 0.74
+    d.rect(s, 1.0, y, 6.55, 0.64, fill=TINT2, round_=True)
+    d.rect(s, 1.0, y + 0.06, 0.045, 0.52, fill=BLUE)
+    d.txt(s, 1.22, y + 0.06, 2.35, 0.52, t_, size=9.5, color=NAVY, bold=True, line_sp=1.05)
+    d.txt(s, 3.65, y + 0.08, 3.8, 0.5, how, size=8.5, color=NAVY, line_sp=1.12)
+d.rect(s, 7.90, 2.20, 4.82, 3.64, fill=NAVY, round_=True)
+d.txt(s, 8.18, 2.44, 4.3, 0.24, 'THE PROGRAMME’S OWN NEXT STEP', size=9.5, color=CYAN, bold=True)
+d.txt(s, 8.18, 2.76, 4.3, 0.9, '“Pick a Strategic Initiative of interest and discuss with your manager '
+                               'and MT member how to get started.”', size=13, color=WHITE, bold=True, line_sp=1.2)
+d.txt(s, 8.18, 3.95, 4.3, 1.0, 'The Product Factory line is that initiative. The playbook is the intake '
+                               'artifact; Mayur is the manager conversation; this hour is the MT one.',
+      size=10.5, color=SUB_D, line_sp=1.25)
+d.txt(s, 8.18, 5.20, 4.3, 0.5, '→ and the mentor pairing I want from the mid-year round: a commercial one.',
+      size=10, color=CYAN, bold=True, line_sp=1.15)
+d.footnote(s, 'Themes and the next-step quote: Talent Program 2026, Q1 wrap-up (Emerging Development Themes; Development Next Steps).')
+d.notes(s, 'PROGRAMME FIT. Every phrase on the left is the programme’s own vocabulary; the initiative operationalises '
+           'all five themes at once. DEFENSE: this is not a side project competing with the programme; it is the '
+           'programme’s prescribed vehicle.')
+
+# ═════════ S10 · STILL IN H1: THE RUNWAY ═════════
+s = d.slide()
+d.chrome(s, 'The programme clock · where we are', 'Still in H1: the programme’s runway is exactly my build window')
+d.txt(s, 1.0, 1.95, 6.0, 0.22, 'THE PROGRAMME YEAR', size=9, color=MUT, bold=True)
+prog = [('Q1 · DONE', 'Kick-offs, DiSC + CliftonStrengths, mentor programme, development intake', BLUE2, WHITE),
+        ('Q2 · DONE', 'MT coaching, Trusted Advisor sessions, 5 Behaviors, Founder Roundtable', BLUE, WHITE),
+        ('MID-YEAR · 6 JUL', 'F2F event: external speaker, new mentor pairings, external training', BLUE3, WHITE),
+        ('H2 · THE RUNWAY', 'The window this initiative fills with delivery', NAVY, CYAN)]
+for i, (tag, body, c, tagc) in enumerate(prog):
+    x = 1.0 + i * 2.98
+    d.rect(s, x, 2.20, 2.82, 1.10, fill=TINT2, round_=True)
+    d.rect(s, x, 2.20, 2.82, 0.32, fill=c, round_=True)
+    d.txt(s, x + 0.14, 2.25, 2.6, 0.22, tag, size=9, color=tagc, bold=True)
+    d.txt(s, x + 0.14, 2.62, 2.56, 0.62, body, size=8.5, color=NAVY, line_sp=1.14)
+    if i < 3:
+        d.txt(s, x + 2.82, 2.62, 0.16, 0.3, '→', size=11, color=MUT)
+d.txt(s, 1.0, 3.62, 8.0, 0.22, 'WHAT I PUT ON THAT RUNWAY', size=9, color=MUT, bold=True)
+mile = [('Aug', 'X-Ray design + delivery kit'), ('Sep', 'SE named · keystone study with Deepak'),
+        ('Oct', 'Pilot gate: prospect green-light'), ('Nov-Dec', 'Paid proof at the pilot account'),
+        ('Jan', 'First revenue: the programme’s receipt')]
+lx0, lx1, ly = 1.4, 12.2, 4.35
+d.hline(s, lx0, ly, lx1, ly, color=HAIR, wpt=1.6)
+for i, (m_, what) in enumerate(mile):
+    cx = lx0 + (lx1 - lx0) * i / 4
+    if i in (2,):
+        d.diamond(s, cx - 0.10, ly - 0.10, 0.20, 0.20, fill=CORAL, line=WHITE, line_w=0.9)
+    elif i == 4:
+        d.diamond(s, cx - 0.10, ly - 0.10, 0.20, 0.20, fill=BLUE, line=WHITE, line_w=0.9)
+    else:
+        d.oval(s, cx - 0.08, ly - 0.08, 0.16, 0.16, BLUE)
+    d.txt(s, cx - 0.9, ly - 0.42, 1.8, 0.22, m_, size=10, color=BLUE, bold=True, align=PP_ALIGN.CENTER)
+    d.txt(s, cx - 1.05, ly + 0.20, 2.1, 0.6, what, size=8.5, color=NAVY, align=PP_ALIGN.CENTER, line_sp=1.12)
+d.takeaway_band(s, 'By the next wrap-up: ', 'I report revenue and an installed component, never intentions.', y=5.45)
+d.footnote(s, 'Programme record: 9 Q1 activities, 72% participation, NPS 88; mid-year event 6 July. Initiative dates per the playbook roadmap, ±30% tolerance.', y=6.42)
+d.notes(s, 'THE CLOCK. H1 is spent on formation (theirs); H2 is the delivery runway (mine). The coral diamond is the one '
+           'decision that gates the runway: the pilot green-light in October.')
+
+# ═════════ S11 · THE ASK ═════════
 s = d.slide()
 d.chrome(s, 'The ask · where this goes', 'I am asking for ownership, sponsorship and a seed, in order')
 d.txt(s, 1.0, 1.95, 5.0, 0.24, 'THE MOVE I AM MAKING', size=10, color=MUT, bold=True, track='100')
@@ -300,7 +369,7 @@ for f_, v_, l_ in cards:
 asks = [
     ('1 · A named path to owning the line', 'The leadership development I want is commercial ownership: the product + services P&L, reviewed on revenue.'),
     ('2 · ExCo-altitude sponsorship', 'CMO air cover on the category story and launch collateral; a door to the EAP nominations.'),
-    ('3 · The €5,000 as seed, not training', 'It funds the Process X-Ray launch kit; the course it replaces would have taught me less than January will.'),
+    ('3 · The €5,000 as seed, not training', 'It funds the Process X-Ray launch kit. The programme’s own resources page notes short courses fit narrow gaps; deep transformation needs a live build.'),
 ]
 for i, (h_, b_) in enumerate(asks):
     y = 3.80 + i * 0.72
@@ -309,8 +378,9 @@ for i, (h_, b_) in enumerate(asks):
     d.txt(s, 1.24, y + 0.07, 3.85, 0.5, h_, size=10.5, color=NAVY, bold=True, line_sp=1.05)
     d.txt(s, 5.25, y + 0.10, 7.3, 0.46, b_, size=10, color=NAVY, line_sp=1.12)
 d.takeaway_band(s, 'Judge me on January: ', 'one product in market, sold exactly the way the playbook says.', y=6.02)
-d.footnote(s, 'The measurable commitments behind this sit in the playbook: proof-year targets, gates and the honest capacity math (chapters 05-06).', y=6.55)
-d.notes(s, 'CLOSE OF THE HOUR. Ownership is the development goal, sponsorship is Tim’s currency, the seed is the smallest yes.')
+d.footnote(s, 'Per the programme’s development step, this initiative goes to my manager and an MT member; this deck and the playbook are that intake, delivered.', y=6.55)
+d.notes(s, 'CLOSE OF THE HOUR. Ownership is the development goal, sponsorship is Tim’s currency, the seed is the smallest yes. '
+           'The programme asked for a Strategic Initiative; the ask ladder is how it gets started.')
 
 d.save(OUT)
 print(f'Wrote {OUT} ({len(d.prs.slides._sldIdLst)} slides)')

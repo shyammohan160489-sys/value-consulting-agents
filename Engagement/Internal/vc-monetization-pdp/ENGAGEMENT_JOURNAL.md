@@ -129,3 +129,20 @@ checkpoints: 2
 modification_source: consultant feedback (more visual, seven-question structure, flywheel)
 generated: 2026-07-28
 TELEMETRY_END -->
+
+## 2026-07-28 — Tim package v3: anchored in the Talent Program's own frame (11 slides)
+
+**Input:** Consultant-supplied Talent Program 2026 Q1 wrap-up deck (12-page PDF). Mined: Q1 record (9 activities, 72% participation, NPS 88), the five Emerging Development Themes, the Q2 agenda, the mid-year F2F (6 July), the resources page, and the key hook — the programme's own development step: "pick a Strategic Initiative of interest and discuss with your manager and MT member how to get started."
+
+**Change:** Two slides added before the ask (9 → 11): (1) "The Strategic Initiative the programme asked me to pick" — the five programme themes mapped to how the initiative trains each, with the programme's own next-step quote in the hero panel and the commercial-mentor ask; (2) "Still in H1: the runway" — programme year (Q1 done, Q2 done, mid-year 6 Jul, H2 runway) over the initiative milestone strip (Aug design → Jan first revenue), closing on "by the next wrap-up I report revenue, never intentions." Seed ask sharpened with the programme's own resources-page logic (short courses fit narrow gaps).
+
+<!-- TELEMETRY_START
+agent: exhibit-slides-pptx (locked engine v3.1)
+engagement: internal-pdp-vc-monetization
+deliverable: Shyam_Talent_Programme_Tim.pptx (v3, 11 slides)
+slides: 11
+checkpoints: 2
+evidence_sources: Talent_Program_CheckIn_Q1_Wrap_Up.pdf (consultant upload)
+modification_source: consultant-supplied programme deck (timelines, themes, strategic-initiative hook)
+generated: 2026-07-28
+TELEMETRY_END -->
