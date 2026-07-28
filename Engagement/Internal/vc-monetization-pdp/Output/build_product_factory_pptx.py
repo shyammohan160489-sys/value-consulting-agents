@@ -125,39 +125,99 @@ d.notes(s, 'COVER. One line and move: the function stops being a cost centre; he
 d.divider('00', 'The short version',
           'Six slides for a ten-minute read. The full playbook behind them starts at chapter 01.')
 
-# E1 · the play on a page
+# E1 · the play on a page — the ladder read LEFT TO RIGHT
 s = d.slide()
 d.chrome(s, 'The short version · the play', 'We sell paid discovery that leaves Banking OS installed')
-ladder_mini = [
-    ('Rung 0 · free', 'Ignite Inspire: ~4 meetings surface the evidence and the wedge choice.'),
-    ('Rung 1 · €60K wedge', 'A product diagnostic on the bank’s own data: X-Ray, Cartographer, Guardrail or Telemetry.'),
-    ('Rung 2 · €60K Mission POC', 'The top candidate goes live in 6-12 weeks via the Factory. Wedge fee credits in.'),
-    ('Rung 3 · recurring', 'Value Assurance: quarterly cost-per-outcome proof that funds the next domain.'),
+rungs_e = [
+    ('RUNG 0 · FREE', 'Ignite Inspire', TINT2, NAVY, MUT,
+     '~4 meetings: benchmark, leakage hypotheses, and the choice of wedge. Zero friction to start.',
+     'Specimen pack + a scoped SoW'),
+    ('RUNG 1 · €60K', 'The wedge product', TINT, NAVY, BLUE2,
+     'One diagnostic runs deep on the bank’s own data: X-Ray, Cartographer, Guardrail or Telemetry.',
+     'Evidence pack + ranked Mission backlog'),
+    ('RUNG 2 · €60K', 'Mission POC', BLUE, WHITE, WHITE,
+     'The top candidate goes live via the Factory in 6-12 weeks. The Rung-1 fee credits in full.',
+     'A live loop + telemetry baseline'),
+    ('RUNG 3 · RECURRING', 'Value Assurance', NAVY, WHITE, CYAN,
+     'Quarterly cost-per-outcome proof at €30-50K a year plus gain share; compounds with AI use.',
+     'The next Mission ranked + funded'),
 ]
-for i, (h_, b_) in enumerate(ladder_mini):
-    chip_card(s, 1.0, 1.95 + i * 0.80, 5.9, 0.70, h_, b_)
-hero(s, 7.15, 1.95, 5.55, 3.10, 'Two engines, one wedge',
-     'Products install the technical layers; services install the human layer.',
-     'Engine A (four product SKUs) pre-binds Nexus, Sentinel and Missions. Engine B (AI-native operating '
-     'model) redesigns the org that runs them. B never sells cold.')
-d.takeaway_band(s, 'The one-liner: ', 'paid discovery that leaves the platform installed.')
-d.footnote(s, 'Full detail: chapters 01-02. Canon: knowledge/product/banking-os.md.')
-d.notes(s, 'TIM OPENER. One breath: we stop selling reports; every paid engagement installs a component of Banking OS and pre-writes the next purchase.')
+rw_, rg_ = 2.62, 0.40
+for i, (tag, name, fill, tc, tagc, body, leave) in enumerate(rungs_e):
+    x = 1.0 + i * (rw_ + rg_)
+    d.rect(s, x, 2.00, rw_, 2.55, fill=fill, round_=True)
+    d.txt(s, x + 0.18, 2.12, rw_ - 0.32, 0.2, tag, size=9, color=tagc, bold=True)
+    d.txt(s, x + 0.18, 2.35, rw_ - 0.32, 0.26, name, size=13, color=tc, bold=True)
+    d.txt(s, x + 0.18, 2.68, rw_ - 0.32, 0.95, body, size=9.5,
+          color=tc if fill in (BLUE, NAVY) else NAVY, line_sp=1.18)
+    d.txt(s, x + 0.18, 3.72, rw_ - 0.32, 0.2, 'YOU LEAVE WITH', size=7.5,
+          color=CYAN if fill in (BLUE, NAVY) else BLUE, bold=True)
+    d.txt(s, x + 0.18, 3.94, rw_ - 0.32, 0.5, leave, size=9.5,
+          color=tc if fill in (BLUE, NAVY) else BLUE2, bold=True, line_sp=1.12)
+    if i < 3:
+        ax = x + rw_ + 0.03
+        d.txt(s, ax, 2.95, rg_ - 0.06, 0.3, '→', size=15, color=MUT, align=PP_ALIGN.CENTER)
+        d.txt(s, ax - 0.06, 3.28, rg_ + 0.06, 0.22, 'propose\n· sign', size=7.5, color=BLUE,
+              bold=True, align=PP_ALIGN.CENTER, line_sp=1.05)
+d.txt(s, 1.0, 4.78, 11.708, 0.26,
+      [[('Read left to right: ', 11, BLUE2, True),
+        ('each rung is cheap to enter, and its exit artifact is written as the entry contract of the next rung.',
+         11, NAVY, False)]])
+d.takeaway_band(s, 'The one-liner: ', 'paid discovery that leaves the platform installed.', y=5.30)
+d.footnote(s, 'Engine A products fill Rung 1; the Factory Mission Sprint is Rung 2; Engine B sells downstream of Rung 1. Full detail: chapters 01-03.')
+d.notes(s, 'TIM OPENER. Walk the ladder left to right in one breath: free proof of pain, paid proof on their data, '
+           'a live loop, then quarterly proof that funds the next domain. Nothing asks for platform faith up front.')
 
-# E2 · the line-up
+# E2 · the line-up — what / why us / outcome / feasibility per offer
 s = d.slide()
-d.chrome(s, 'The short version · the line-up', 'Five offers, one motion: each installs part of Banking OS')
-lineup = [
-    ('Process X-Ray · €50-75K', 'Prices the leakage in real work; installs the Mission backlog + integration map. First revenue Jan 2027.'),
-    ('Value Telemetry · €15-50K + share', 'Cost per resolved outcome on live AI; the recurring line. First revenue Jan 2027.'),
-    ('Guardrail Studio · €50-100K', 'Turns policy into executable rules; installs Sentinel readiness. First revenue Jun 2027.'),
-    ('Ontology Cartographer · €75-100K', 'Maps scattered data to shared truth; installs the Nexus blueprint. First revenue Aug 2027.'),
-    ('AI-Native Org Design · €80-150K', 'Engine B flagship: the inverted-T target org, sold downstream of a wedge. First revenue May 2027.'),
+d.chrome(s, 'The short version · the line-up', 'Five offers: what each sells, why us, and what the bank gets')
+heads = [('WHAT IT SELLS', 3.05), ('WHY ONLY US', 5.70), ('WHAT THE BANK GETS', 8.35), ('FEASIBILITY', 11.02)]
+for h_, hx in heads:
+    d.txt(s, hx, 1.88, 2.55, 0.2, h_, size=8.5, color=BLUE, bold=True)
+offers = [
+    ('Process X-Ray', '€50-75K',
+     'Observes real flows across the 6-12 systems per journey; prices the leakage in the messy middle.',
+     'Productizes the Process & Workspace Designer; runs the APA matrix on live client data.',
+     'The Mission candidate + ROI evidence; feeds Customer Ops and Bank Ops sales.',
+     'HIGH', BLUE, 'Assets exist; lite mode needs no InfoSec cycle.'),
+    ('Value Telemetry', '€15-50K + share',
+     'Cost-per-outcome observability on live AI deployments; waste scan and ROI re-proof.',
+     'Only the vendor in the execution path sees cost per resolved outcome; extends the cost model.',
+     'Waste register + re-proved ROI; the recurring Value Assurance line, the NRR engine.',
+     'HIGH · GATED', BLUE3, 'Needs a live deployment + the keystone study.'),
+    ('Guardrail Studio', '€50-100K',
+     'Codifies authority, policy and entitlements into executable, auditable guardrails.',
+     'Rules load straight into Sentinel; the platform executes what the workshop writes.',
+     'The risk committee’s approval pack; unblocks Transact and Resolve deals in flight.',
+     'HIGH', BLUE, 'Documents and workshops only; no system access.'),
+    ('Ontology Cartographer', '€75-100K',
+     'Maps the bank’s scattered data into the shared banking ontology; prices the truth gap.',
+     'Pre-installs Nexus; metadata-only, customer data never leaves the bank.',
+     'The € case for shared truth + the Nexus blueprint; feeds Relationship Intelligence.',
+     'MEDIUM', TINT, 'Deepest build; needs R&D alignment first.'),
+    ('AI-Native Org Design', '€80-150K',
+     'Redesigns the org chart on the A1-A5 autonomy curve: pyramid to inverted-T.',
+     'Runs on Engine A evidence no consultancy holds; binds the human layer of the OS.',
+     'Target org + transition roadmap; opens the CEO and CHRO door, locks in renewal.',
+     'MEDIUM', TINT, 'v0.1 exists; sells only downstream of a wedge.'),
 ]
-for i, (h_, b_) in enumerate(lineup):
-    chip_card(s, 1.0, 1.95 + i * 0.80, 11.708, 0.70, h_, b_)
-d.footnote(s, 'Tickets are price points to pressure-test (chapter 05 assumptions). Every wedge ships all four lenses; the SKU sets which one goes deep.')
-d.notes(s, 'Each offer passes the three-part filter: earns a fee, harvests proprietary evidence, pre-binds a Banking OS layer.')
+for i, (name, price, what, why, gets, feas, fc, freason) in enumerate(offers):
+    y = 2.12 + i * 0.86
+    d.rect(s, 1.0, y, 11.708, 0.78, fill=TINT2, round_=True)
+    d.rect(s, 1.0, y + 0.06, 0.045, 0.66, fill=BLUE)
+    d.txt(s, 1.18, y + 0.09, 1.85, 0.4, name, size=10, color=NAVY, bold=True, line_sp=1.02)
+    d.txt(s, 1.18, y + 0.50, 1.85, 0.22, price, size=8.5, color=BLUE2, bold=True)
+    d.txt(s, 3.05, y + 0.08, 2.50, 0.66, what, size=8.5, color=NAVY, line_sp=1.14)
+    d.txt(s, 5.70, y + 0.08, 2.50, 0.66, why, size=8.5, color=NAVY, line_sp=1.14)
+    d.txt(s, 8.35, y + 0.08, 2.50, 0.66, gets, size=8.5, color=NAVY, line_sp=1.14)
+    d.rect(s, 11.02, y + 0.09, 1.55, 0.24, fill=fc, round_=True)
+    d.txt(s, 11.02, y + 0.12, 1.55, 0.2, feas, size=8,
+          color=WHITE if fc in (BLUE, BLUE3) else NAVY, bold=True, align=PP_ALIGN.CENTER)
+    d.txt(s, 11.02, y + 0.38, 1.62, 0.4, freason, size=7.5, color=MUT, line_sp=1.1)
+d.footnote(s, 'Tickets are price points to pressure-test (chapter 05 assumptions). Feasibility rates build + sell risk today; gates are on the roadmap, chapter 05.')
+d.notes(s, 'The what/why/outcome/feasibility grid. Every offer passes the three-part filter: earns a fee, harvests '
+           'proprietary evidence, pre-binds a Banking OS layer. Feasibility DEFENSE: HIGH = assets exist and no access '
+           'barrier; GATED = a named precondition; MEDIUM = a real dependency (R&D alignment, sequencing rule).')
 
 # E3 · the numbers
 s = d.slide()

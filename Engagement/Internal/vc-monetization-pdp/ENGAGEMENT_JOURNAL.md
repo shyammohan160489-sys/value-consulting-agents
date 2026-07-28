@@ -85,3 +85,17 @@ assumptions_documented: 8
 modification_source: consultant direction (skill drop as default; operating-model depth; business connection; exec version for Tim)
 generated: 2026-07-28
 TELEMETRY_END -->
+
+## 2026-07-28 — Exec slides rework: horizontal ladder + what/why/outcome/feasibility grid
+
+**Change:** Consultant feedback on the short version. E1 (the play) rebuilt as a left-to-right rung journey — four rung cards with propose·sign arrows between, each carrying what happens plus a "you leave with" exit artifact, closing with the read-left-to-right explainer line. E2 (the line-up) rebuilt as a five-offer grid with columns WHAT IT SELLS / WHY ONLY US / WHAT THE BANK GETS / FEASIBILITY, mirroring the consultant's reference table. Feasibility rated honestly per offer: X-Ray HIGH (assets exist, lite mode), Telemetry HIGH·GATED (live deployment + keystone), Guardrail HIGH (documents only), Cartographer MEDIUM (R&D alignment), Org Design MEDIUM (sequencing rule).
+
+<!-- TELEMETRY_START
+agent: exhibit-slides-pptx (locked engine v3.1)
+engagement: internal-pdp-vc-monetization
+deliverable: Product_Factory_Execution_Plan_Exhibit.pptx (v4.1, 57 slides)
+slides: 57
+checkpoints: 2
+modification_source: consultant feedback (rungs horizontal, what/why/outcome + feasibility in short version)
+generated: 2026-07-28
+TELEMETRY_END -->
