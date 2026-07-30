@@ -178,3 +178,17 @@ checkpoints: 1
 modification_source: Tim Rutten 1:1 direction
 generated: 2026-07-28
 TELEMETRY_END -->
+
+## 2026-07-28 — Mayur 1:1 brief (8 slides, same-hour turnaround)
+
+**New deliverable:** `Output/VC_Engines_Mayur_Brief.pptx` — condensed from the playbook + Tim digest for the immediate Mayur 1:1: two engines with an explicit WHY box each · the six-engagement-type funnel table (Builder/awareness → Inspire/free wedge → wedge diagnostics/paid evidence → Mission POC/go-live → Value Assurance/recurring → Org Design/C-suite) with commercial model per row · the five-offer what/why/outcome/feasibility grid · activities → translates-into → plan-dates per offer (incl. the new Builder row, coral) · the four-point Tim delta (Builder in front, outcome-pricing window, buyer-question framing, prove-on-ourselves weekly) · the 12-month roadmap with the Builder row added · the four asks of Mayur (SE, pilot + prospect-rule decision, keystone, commercial treatment + outcome-variant sponsorship).
+
+<!-- TELEMETRY_START
+agent: exhibit-slides-pptx (locked engine v3.1)
+engagement: internal-pdp-vc-monetization
+deliverable: VC_Engines_Mayur_Brief.pptx (8 slides)
+slides: 8
+checkpoints: 1
+modification_source: consultant request (immediate Mayur 1:1; engines/engagement-types clarity)
+generated: 2026-07-28
+TELEMETRY_END -->
