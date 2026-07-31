@@ -1,5 +1,7 @@
 # Skill: Backbase McKinsey-exhibit decks
 
+> **STATUS (2026-07-28): DEFAULT for all PPTX, ratified by Shyam.** Every PowerPoint deck builds with the registered skill `.claude/skills/exhibit-slides-pptx/` (engine v3.1: right rail standard, one-line title law, `chip()` primitive, SNB + journey/workshop pattern catalog, LIVE slide-number fields per the Product Factory deck) unless Frontline is explicitly requested. See `BACKLOG.md` for the ratification record.
+
 Invoke this skill whenever building or editing a Backbase slide deck in the McKinsey exhibit style (action titles, one exhibit per slide, white slides with navy/blue accents). It captures everything validated during deck reviews (June-July 2026). The companion file **`Backbase Exhibit Templates.dc.html`** holds one ready-to-copy slide per pattern (T00-T14) — copy the `<section>` you need and replace the placeholder content.
 
 ## 1. Type scale (px on a 1280×720 slide) — validated, do not enlarge
@@ -47,6 +49,17 @@ Approved but not templated separately: stacked bars, phase grids, strategy pyram
 - Account names as clean text, never logos. Per-person data never on slides.
 - Placeholder slides: coral dashed outline badge "Placeholder/Open · owner".
 - Every numeric slide ends with a 17px source footnote.
+- **Punchline strips (bottom navy/tint bands): exactly ONE sentence, fitting ONE line.** Bold lead phrase + regular remainder ("£1.5-4M a year at stake, and one week with your numbers makes it yours."). If it wraps, cut words until it doesn't — never let a strip bleed to a second line. *(Ratified 2026-07-15, BACB close deck.)*
+
+## 5b. Voice — everything reads human (DEFAULT, non-negotiable)
+Slide copy must read like a sharp person wrote it, never like a machine. Ratified 2026-07-15 (BACB); this is a default of the skill, same weight as the type scale.
+- **The test: say it aloud.** If you wouldn't say the sentence to the room, it doesn't go on the slide.
+- Short sentences. Periods, not semicolon chains ("Payments and approvals at your scale. Trade visibility on Komgo." — never "payments; visibility; onboarding").
+- No stacked triads. Two beats or one, almost never three ("what we heard, and what it's worth").
+- No consultant abstractions ("the door to growth corridors" → "faster onboarding in the markets you're growing").
+- No "not X but Y" constructions, no italic mid-sentence emphasis, no em dashes (already banned), no filler.
+- Halve it. Whatever the first draft says, the slide version says in half the words.
+- Titles are things a person would claim out loud: "A little more ambition, a lot more reward." — not "Slightly more ambition, disproportionately more reward."
 
 ## 6. Build mechanics
 - One `.dc.html`, inline styles only, `<section data-screen-label>` per slide, Libre Franklin (via the bound design system's `tokens/fonts.css`, or Google Fonts when unbound).
