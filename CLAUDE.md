@@ -235,7 +235,7 @@ You succeed in this repository when:
 5. **Hidden assumptions:** Every assumption must be visible
 6. **Academic output:** This is business consulting, not research papers
 7. **Ad-hoc HTML generation for assessments:** Assessment HTML dashboards MUST be produced by the `/generate-assessment-html` skill, which contains the full Future UI design system with sidebar navigation, bento grids, capability heatmaps, ROI scenario toggles, and phone-frame prototypes. NEVER generate assessment HTML by converting markdown to HTML directly or by writing custom CSS inline. The skill output is a 250-400KB self-contained file; anything smaller is wrong.
-8. **Using deprecated templates for client presentations:** Client-facing presentations MUST use `/frontline-slides-html` (HTML) or `/frontline-slides-pptx` (PPTX) as the default. For long-form scrolling documents, use `/frontline-long-form`. For bespoke hand-authored scenes, use `/executive-briefing` (HTML) or `/executive-briefing-slides` (PPTX). The old `/presentation`, `/presentation-v2` (Prezi), `/backbase-slides*`, and Python-builder `/frontline-html`, `/frontline-slides` skills are retired — they live in `.claude/commands/deprecated/` and are not registered. All Frontline skills read tokens from `knowledge/design-system/frontline-tokens.json` (single source of truth).
+8. **Using deprecated templates for client presentations:** Client-facing presentations MUST use `/frontline-slides-html` (HTML) or `/exhibit-slides-pptx` (PPTX) as the default; `/frontline-slides-pptx` is the Frontline-branded PPTX lane, built only on explicit request. For long-form scrolling documents, use `/frontline-long-form`. For bespoke hand-authored scenes, use `/executive-briefing` (HTML) or `/executive-briefing-slides` (PPTX). The old `/presentation`, `/presentation-v2` (Prezi), `/backbase-slides*`, and Python-builder `/frontline-html`, `/frontline-slides` skills are retired — they live in `.claude/commands/deprecated/` and are not registered. All Frontline skills read tokens from `knowledge/design-system/frontline-tokens.json` (single source of truth).
 
 ## Remember
 
@@ -301,18 +301,21 @@ When resolving merge conflicts:
 
 All client-facing visual deliverables share one design language: **Frontline 2026**, sourced from `Backbase Master Template _ 2026.pptx` (theme1). Canonical tokens live in [`knowledge/design-system/frontline-tokens.json`](knowledge/design-system/frontline-tokens.json) — every Frontline skill reads from there. Do not invent or override hex values, fonts, or geometry.
 
+> **PPTX exception (ratified by Shyam, 2026-07-28):** the default for ALL PPTX decks is the **exhibit style** — `/exhibit-slides-pptx` (registered skill, engine v3.1). Frontline PPTX (`/frontline-slides-pptx`) is the branded lane, built only when explicitly requested. The two lanes never mix tokens.
+
 | What you're building | Skill | Output |
 |----------------------|-------|--------|
 | **Slide deck (HTML preview)** — default for HTML decks | `/frontline-slides-html` | Single self-contained HTML, 17 layouts, presenter mode |
-| **Slide deck (PPTX, Google Slides editable)** — default for PPTX | `/frontline-slides-pptx` | Google Slides-compatible `.pptx`, same 17 layouts |
+| **Slide deck (PPTX)** — default for PPTX | `/exhibit-slides-pptx` | Exhibit-style `.pptx` — white slides, chrome v3.1, one exhibit per slide; Google Slides-safe |
+| **Frontline-branded PPTX deck** — only on explicit request | `/frontline-slides-pptx` | Google Slides-compatible `.pptx`, same 17 layouts |
 | **Long-form scrolling document (HTML, PDF-printable)** | `/frontline-long-form` | Sidebar-navigated business case / value case / exec briefing |
 | **Bespoke hand-authored HTML scene deck** | `/executive-briefing` | Pixel-perfect custom scenes (SVG charts, journey maps) |
 | **Bespoke hand-authored PPTX scene deck** | `/executive-briefing-slides` | Same as above, in PPTX |
 
 **How to choose:**
 1. **Deck or document?** If it's read async, use `/frontline-long-form`. If it's presented, use a slides skill.
-2. **HTML or PPTX?** HTML for self-running demos and quick previews; PPTX when the team will edit in Google Slides before delivery.
-3. **Standard or bespoke?** Standard (Frontline) handles 95% of decks. Only use `/executive-briefing*` when standard layouts genuinely can't carry the message — and you're prepared to hand-author every scene.
+2. **HTML or PPTX?** HTML for self-running demos and quick previews; PPTX when the team will edit in Google Slides before delivery. PPTX defaults to the exhibit lane (`/exhibit-slides-pptx`); build Frontline PPTX only when explicitly requested.
+3. **Standard or bespoke?** Standard (Frontline for HTML, exhibit for PPTX) handles 95% of decks. Only use `/executive-briefing*` when standard layouts genuinely can't carry the message — and you're prepared to hand-author every scene.
 
 **Retired skills** (moved to `.claude/commands/deprecated/` on 2026-04-29 and no longer registered as slash commands): `/backbase-slides`, `/backbase-slides-pptx` (renamed to `/frontline-slides-html` and `/frontline-slides-pptx`), the old Python-builder `/frontline-html` and `/frontline-slides` (replaced by the engine-driven versions), and `/presentation` / `/presentation-v2` (Prezi templates, off-brand).
 
@@ -348,11 +351,36 @@ Then provide your content (transcript, data, bullet points, or upstream agent ou
 
 (The directory is named `backbase-slides-app/` for historical reasons — it is the Frontline 2026 engine.)
 
-### /frontline-slides-pptx — Frontline 2026 Slide Engine (PPTX) ⭐ DEFAULT
+### /exhibit-slides-pptx — Backbase Exhibit-Style Deck Engine (PPTX) ⭐ DEFAULT
 
-The **default format for all PPTX presentations**. Same 17 layout types as `/frontline-slides-html` but rendered to Google Slides-compatible `.pptx` files.
+The **default format for all PPTX presentations** (ratified by Shyam, 2026-07-28 — supersedes the previous Frontline PPTX default). Builds exhibit-style decks with the locked python-pptx engine (chrome v3.1) bundled in the skill: white slides, full-bleed hairlines with right rail, blue kicker + full-sentence action titles, ONE exhibit per slide, navy takeaway bands, source footnotes on every numeric slide. Google Slides-safe.
 
 **When to Use:**
+- Every deck/slides/PPT request — "exhibit deck", "McKinsey style", "VC-track", "the SNB/BACB style", or just "make me a deck"
+- Unless the user EXPLICITLY asks for Frontline 2026 branded layouts — then use `/frontline-slides-pptx`
+
+**Key Features:**
+- Locked style validated on client decks (BACB close, SNB Capital) and Google Slides round-trips — pour content in, never restyle
+- Own palette: navy `#071224` / blue `#4066F5` — never mix with Frontline tokens
+- Chrome v3.1 drawn by the engine: right rail, step glyph, takeaway band, footnote hairline
+- Action titles are full sentences, ONE line, ≤63 chars at 25pt; assumptions badged coral with an owner
+
+**Usage:**
+```
+/exhibit-slides-pptx
+```
+
+**Technical Files:**
+- `.claude/skills/exhibit-slides-pptx/SKILL.md` — full workflow, voice rules, QA checklist
+- `.claude/skills/exhibit-slides-pptx/scripts/exhibit_pptx.py` — the locked engine (palette, chrome, primitives, save pass)
+- `knowledge/design-system/claude-design-exhibit-kit/SKILL.md` — style canon + ratification record
+
+### /frontline-slides-pptx — Frontline 2026 Slide Engine (PPTX) — on explicit request
+
+The **Frontline-branded PPTX lane** — built only when the user explicitly asks for Frontline 2026 layouts (the PPTX default is `/exhibit-slides-pptx`). Same 17 layout types as `/frontline-slides-html` but rendered to Google Slides-compatible `.pptx` files.
+
+**When to Use:**
+- Only when the user explicitly asks for Frontline 2026 branded layouts in PPTX
 - Decks that need collaborative editing in Google Slides
 - When the team needs to tweak numbers, scope, or pricing before delivery
 - Any deck that lives in Google Drive
