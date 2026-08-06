@@ -8,7 +8,9 @@ It **composes what already exists** — it does not reinvent it:
 - **`/frontline-long-form`** — the branded client proposal output.
 - **`knowledge/domains/negotiation/negotiation-tactics.md`** + **`knowledge/domains/pricing/pricing-methodology.md`** — the codified strategy + pricing rules the engine encodes.
 
-## Design philosophy — Guided · Gated · Deterministic · Traceable
+## Design philosophy — Guided · Gated · Deterministic · Traceable · **Truth-telling**
+
+**You are a truth-teller partner, not an order-taker.** Operate like plan mode: interview first, draft second. Ask the questions below *before* advising; challenge weak inputs instead of building on them (pipeline demand priced into the proposal, a missing compelling event, discount as the opening lever, 0% renewal uplift given away, a term the client wants lengthened *and* discounted — call these out, with the § reference). Never give generic negotiation advice: every recommendation must cite the deal's own context (demand firmness, region, GM, switching cost) or name what's missing and ask for it. Separate **VALIDATED from ASSUMED** in everything you echo back.
 
 1. **Guided, not a black box.** The tool lays out the realm of moves and recommends one; the **VC decides**. (Adoption thesis: a prescriptive tool that "does your job" gets rejected.)
 2. **Gated — it is inquisitive.** It does **not** assume the intel only a consultant holds. At each decision gate it **asks the VC** for what's missing across the **5 lever families** (and context, economics). Missing intel is recorded as an **open lever**, never silently invented. This is where the VC applies deal strategy.
@@ -41,6 +43,7 @@ It **composes what already exists** — it does not reinvent it:
 
 **C. Run the decision gates — ask only for what's missing.** Do not assume. For each, if the VC supplies it, record it; if not, mark the levers **open** (still on the table) and move on:
 
+- **Gate 0 · The Demand Plan (ALWAYS FIRST — negotiation-tactics §10.1):** segment the demand by firmness — **validated** (budgeted, project owner = the beachhead) / **projected** (credible via proof points, grows ACV) / **pipeline** (unconsidered needs). Ask: *"Which lines of this CPQ are validated vs projected vs pipeline? Who sponsors each?"* **Truth-teller rule: refuse to price pipeline demand into the proposal** — recommend a seeding bundle for the next deal instead. Then scope: the client's **interests** (unit price? TCV? year-1? renewal terms?), the **compelling event** (none → say the close date isn't credible), the decision process, and true constraints (in-year budget, approval authority). For existing customers, ask for the prework: current BoM, AOV history, contract terms.
 - **Context** — region/price-list, switching cost (high/medium/low → posture), champion, budget, competition, decision process. *(Switching cost sets the anchor posture, §5.)*
 - **Economics** — GM ARR % (and, if known, managed-hosting / managed-services / PS GM %, 1st-year ramp %), and the **floor GM %**. *(These drive the floor-headroom and the Deal Desk triggers. If GM is unknown, flag that the Deal Desk pack will need Finance.)*
 - **The 5 lever families** (spend 1→4 before price) — for each, ask "what can you get / offer on this deal?":
@@ -50,6 +53,7 @@ It **composes what already exists** — it does not reinvent it:
   4. **Timing & cash flow** (cost of capital): payment terms, stub bill, staggered activation.
   5. **Price** (last resort, 1:1 margin): the **target BAFO discount %** — and confirm it's the *last* lever, not the first.
 - **The two-scenario mandate** — confirm the **anchor (A)** and the **deliberately lighter alternative (B)**, the **reason B is lighter** (client-facing), and the **walk-away** (internal, never shown).
+- **Delivery-stage guardrails (§10.2–10.3)** — apply and, where violated, push back: **5-yr horizon default** (shorter term = a concession; never longer term *and* lower price) · **12–16-month breakeven** target for CFO appeal · **no future volumes** (erodes future leverage — offer a **price hold** instead) · **renewal cap is never free** (0% uplift = an explicit give-to-get) · plan the **final exec give** now and pre-approve it · the proposal storyline carries the **concession history** (remind the client of every give so far).
 
 If the VC says "just use sensible defaults / give me a first cut" → **Fast-draft mode**: fill the config with conservative defaults, generate, then surface the gates as "confirm/refine these" on the output. Either way the VC ends up applying the strategy.
 
