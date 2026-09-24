@@ -5,6 +5,13 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v4.3 (25 Sep 2026, APEX compatibility for v3-era build scripts):
+  - Under Apex a v3 script renders in the Apex grammar without edits beyond
+    ExhibitDeck(look='apex'): chrome drops a trailing period from the title,
+    takeaway_band draws as the statement line, divider() becomes the blue divider
+    band, slide(dark=True) takes the close-page glow. Scripts that import tokens by
+    name should call exhibit_pptx.set_palette('apex') before the import.
+
 v4.2 (25 Sep 2026, APEX chart layer — the Nedbank report's charts, measured):
   - The no-bold law: under Apex, txt() and oval() draw every run regular (the 68- and
     80-slide references have no bold run); set d.allow_bold = True to override.
@@ -537,7 +544,11 @@ class ExhibitDeck:
 
     def takeaway_band(self, s, lead, rest, y=5.62, x=1.0, w=11.708):
         """Navy punchline strip: bold cyan lead-in + white remainder.
-        EXACTLY one sentence, fitting ONE line — cut words until it does."""
+        EXACTLY one sentence, fitting ONE line — cut words until it does.
+        Apex (v4.3): the band is rare in the measured grammar, so under look='apex' this
+        draws the statement line instead (navy lead, blue rest) at the same y."""
+        if getattr(self, 'look', 'v3') == 'v4':
+            return self.statement_line(s, x, y + 0.06, w, lead.strip(), rest.strip())
         self.rect(s, x, y, w, 0.479, fill=NAVY, round_=True)
         self.txt(s, x + 0.25, y + 0.125, w - 0.5, 0.28,
                  [[(lead, 13.5, CYAN, True), (rest, 13.5, WHITE, False)]])
@@ -1432,7 +1443,10 @@ class ExhibitDeck:
         if kicker:
             self.txt(s, 1.0, 0.86, 8.0, 0.22, kicker.upper(), size=9, color=NAVY, track="60")
         if title:
-            self.txt(s, 1.0, 1.10, 11.9, 0.9, title, size=(28 if title_size is None else title_size),
+            t = title.rstrip()
+            if t.endswith(".") and not t.endswith("..."):
+                t = t[:-1]                      # Apex titles carry no trailing period
+            self.txt(s, 1.0, 1.10, 11.9, 0.9, t, size=(28 if title_size is None else title_size),
                      color=NAVY, bold=False, line_sp=1.04)
         if self.logo and os.path.exists(self.logo):
             s.shapes.add_picture(self.logo, I(11.35), I(7.185), I(1.067), I(0.173))
@@ -2464,13 +2478,22 @@ class ExhibitDeck:
 
     # ------------------------------------------------------------ dark slides
     def dark_bg(self, s):
+        if getattr(self, 'look', 'v3') == 'v4':
+            bgp = os.path.abspath(os.path.join(_ASSETS, "close_bg.jpg"))
+            if os.path.exists(bgp):
+                s.shapes.add_picture(bgp, I(0), I(0), I(W), I(H))
+                return s
         self.rect(s, 0, 0, W, H, fill=NAVY)
         self.rect(s, 6.0, -2.2, 9.5, 5.2, fill=RGBColor(0x14, 0x2A, 0x6E))  # glow approximation
         self.rect(s, 8.2, -1.4, 6.2, 3.2, fill=RGBColor(0x1B, 0x38, 0x94))
         return s
 
     def divider(self, number, title, subtitle=None):
-        """T14 chapter divider: dark, big light-weight number + title."""
+        """T14 chapter divider: dark, big light-weight number + title.
+        Apex (v4.3): the blue divider band, the number as its kicker."""
+        if getattr(self, 'look', 'v3') == 'v4':
+            return self.divider_band(title, kicker=("%s" % number) if number is not None else None,
+                                     sub=subtitle)
         s = self.slide(dark=True)
         self.step_glyph(s, 0.406, 0.406, 0.167, 0.166, CYAN)
         self.rect(s, 0.57, 0.57, 12.19, 0.013, fill=RGBColor(0x2E, 0x3A, 0x52))

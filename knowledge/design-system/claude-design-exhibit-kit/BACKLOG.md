@@ -78,7 +78,9 @@ The Claude Design look, measured from the Nedbank ENBI Voice VC report (68 slide
 | 20 | HTML-engine parity for the Apex recipes (`backbase-slides-app/engine.js`) | Architect | OPEN |
 | 21 | Engine default stays v3 until every active v3 series (SNB Capital, BACB) has cycled; then flip `ExhibitDeck()` to Apex | Shyam | DECIDE later |
 | 22 | Apex chart layer (v4.2): the report's charts measured and shipped as recipes T56–T67 (ranked bars, stacked rows, paired rows, funnel, columns with dashed estimates, column walk, stacked columns, share bar, KPI stack, area block, donut/pie, legend) + team page and close from the summit deck; the no-bold law in `txt()`; `client_logo()` reads `Engagement/<Client>/Input/brand-assets/` | engine | ✅ SHIPPED 2026-09-25, QA'd page by page against the 22 Sep report |
-| 23 | Rebuild the FinOps, tokenomics and VC-enablement decks on Apex (tokenomicon-24sep, playbook, toolkit builders; company view done) | Shyam go | WAITING for Shyam's yes on the chart QA |
+| 23 | Rebuild the FinOps, tokenomics and VC-enablement decks on Apex (tokenomicon-24sep, playbook, toolkit builders; company view done) | Shyam go | ✅ DONE 2026-09-25 (his yes on the chart QA): seven builders switched to `look='apex'`, six decks + the sample pitch rebuilt and rendered; v3 files parked in `_v3/` |
+| 25 | Engine v4.3 compatibility: under Apex a v3 script renders in the Apex grammar (title period stripped, takeaway_band → statement line, divider → blue band, dark slides → the glow); scripts that import tokens by name call `set_palette('apex')` first | engine | ✅ SHIPPED 2026-09-25 |
+| 26 | Cover pages of the v3-era enablement scripts still hand-draw v3 cover text (wordmark bottom right, trailing period); move them to `cover_page()` at the next content edit | kit | OPEN, cosmetic |
 | 24 | Closes #17: `bars`/`hbars` no-bold under Apex now come from the txt() law; `milestone_strip` and `takeaway_band` too | engine | ✅ 2026-09-25 |
 
 ## Chrome exact-spec (XML-verified against BACB_Close_16Jul_ExhibitStyle.pptx, 2026-07-15)
