@@ -64,15 +64,43 @@ look in September 2026, so new Nedbank decks are Apex.
 ## Client logo rule (Shyam, 24 Sep 2026)
 
 - **Client deck** (anything an account will see): the client's logo on the cover and top right
-  of every content slide, via `ExhibitDeck(look='apex', client_logo=<png>)`. Look for the asset
-  in `Engagement/<Client>/Input/brand-assets/` or the account's assets folder (`logo*.png`,
-  `*logo*.svg`, an extracted mark from the bank's own deck). If you know the client but have no
-  logo file, **ask for it before building**; never draw a placeholder into a client deck and
-  never use another organisation's mark.
+  of every content slide, via `ExhibitDeck(look='apex', client_logo=X.client_logo("<Client>"))`.
+  The one place it lives (Shyam, 25 Sep 2026): **`Engagement/<Client>/Input/brand-assets/`**, a
+  PNG or JPG with "logo" in its name. `X.client_logo()` returns None when nothing is there: then
+  **ask for the logo before building**; never draw a placeholder into a client deck and never
+  use another organisation's mark. When the bank's own deck carries the mark, extract it into
+  brand-assets first (python-pptx `shape.image.blob`).
 - **Internal deck** (enablement, team, QBR, events, POVs for our own teams): no client logo.
   Mark it `d.tag_chip(s, "Internal · <what>", kind="quiet")` top right instead.
 - The engine fits the logo inside the box and keeps its aspect; the Claude Design export
   stretched it, and the fitted version is the one to ship.
+
+## The chart standard (Apex v4.2, 25 Sep 2026)
+
+The report's charts are the standard: clean, drawn from flat shapes, the value beside or above
+the bar, no axes, no gridlines, no native chart objects, regular weight. Every form below is a
+measured recipe (`references/exhibit-catalog.md` T56–T67); `scripts/example_apex_charts_build.py`
+rebuilds the reference pages line for line.
+
+| Claim shape | Recipe | Engine |
+|---|---|---|
+| Ranked magnitudes | horizontal bars, value after the bar, legend row | `d.hbar_rows` + `d.legend` |
+| Composition per row (minutes, cost) | stacked horizontal rows with a volume column | `d.hstack_rows` |
+| Today against released, per row | paired horizontal rows (tint reference, blue result) | `d.paired_hrows` |
+| A funnel, today against with-us | thin paired bars per step with a change column | `d.funnel_rows` |
+| A trend or a walk across states | columns, values above, muted deltas, dashed estimates | `d.bars` (Apex weight) |
+| A cost walk with the lever beside each step | column pairs on one baseline | `d.column_walk` |
+| Pay against get, by year | grouped stacked columns with totals and a legend | `d.stacked_columns` |
+| One share of one whole, one row | share bar, values inside, total under the right end | `d.share_bar` |
+| One share of one whole, a circle | donut with the total in the hole; thickness 1.0 = pie | `d.donut` |
+| A population split | proportional block with labels beside each part | `d.area_block` |
+| The KPIs beside a chart | rule, uppercase label, 24pt value, 9pt body, repeated | `d.kpi_stack` |
+| The team, the close | photo column with names; the navy close with the glow | `d.team_page`, `d.closing_page` |
+
+Colour semantics on every chart: BLUE = the lead or our state, NAVY = the second series or a
+committed figure, BLUE3 and BLUE4 = the next states, TINT = a reference or a fee, GREY = today's
+reference, dashed outline = an estimate or a state not yet certified, CORAL only as a warning.
+Never green, never a gradient, never a 3D or shadowed shape.
 
 ## Workflow
 
@@ -154,6 +182,8 @@ need to verify a detail or extend the engine; the engine already implements both
   timeline lanes, who signs. Locked; do not modify per deck.
 - `scripts/example_v4_build.py`: the Apex example, four Nedbank report pages rebuilt line for
   line for a side-by-side check. Copy it as your starting point.
+- `scripts/example_apex_charts_build.py`: the chart sampler, thirteen pages: every chart recipe
+  rebuilt from its reference page, the donut and pie, the team page and the close.
 - `scripts/example_build.py`, `example_data_build.py`, `example_charts_build.py`,
   `example_bcg_build.py`: the v3-era examples for the data, comparison and evidence layers;
   every helper in them draws in Apex tokens under `look='apex'`.
@@ -161,7 +191,7 @@ need to verify a detail or extend the engine; the engine already implements both
 - `references/exhibit-catalog.md`: the exhibit patterns and when to use each (T02–T55).
 - `references/storyline-patterns.md`: six deck archetypes and the title grammar.
 - `references/chrome-spec.md`: the v3 chrome numbers (verification only).
-- `assets/backbase_logo_black.png`, `assets/backbase_wordmark_white.png`: the wordmarks.
+- `assets/backbase_logo_black.png`, `assets/backbase_wordmark_white.png`: the wordmarks; `assets/close_bg.jpg`: the navy page with the glow for `closing_page`.
 - `assets/icons/*.png`: the twelve line icons (brightness, users, headset, sparkle, person,
   route, shield_check, document, database, check, phone, phone_incoming) via `X.icon(name)`.
 

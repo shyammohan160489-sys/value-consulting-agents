@@ -5,6 +5,16 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v4.2 (25 Sep 2026, APEX chart layer — the Nedbank report's charts, measured):
+  - The no-bold law: under Apex, txt() and oval() draw every run regular (the 68- and
+    80-slide references have no bold run); set d.allow_bold = True to override.
+  - Measured chart recipes (page numbers = the 22 Sep IGNITE report): hbar_rows (25),
+    hstack_rows (12), paired_hrows (24), funnel_rows (37), bars in Apex weight with
+    dashed estimates (33), column_walk (55), stacked_columns (28, 47), share_bar with
+    values above and a total (46), kpi_stack (28, 47), area_block (8), donut (new,
+    block arcs), legend (12, 25, 28). Plus team_page and closing_page from the McKinsey
+    summit deck (pages 10 and 11) and assets/close_bg.jpg.
+
 v4.1 (24 Sep 2026, APEX — the look is named and made the skill default):
   - ExhibitDeck(look='apex') is the name Shyam gave the Claude Design look on 24 Sep 2026;
     'v4' stays as an alias. The skill builds every new deck on Apex; v3 stays the ENGINE
@@ -202,6 +212,23 @@ def icon(name):
     return p if p and os.path.exists(p) else None
 
 
+ENGAGEMENT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "Engagement"))
+
+
+def client_logo(client, root=None):
+    """The client's logo for a client deck (Shyam, 25 Sep 2026): the first PNG or JPG in
+    Engagement/<client>/Input/brand-assets/ whose name contains 'logo' (else any image there),
+    or None. None means: ask for the logo before building; never draw a placeholder."""
+    base = os.path.join(root or ENGAGEMENT_ROOT, client, "Input", "brand-assets")
+    if not os.path.isdir(base):
+        return None
+    files = sorted(f for f in os.listdir(base) if f.lower().endswith((".png", ".jpg", ".jpeg")))
+    for f in files:
+        if "logo" in f.lower():
+            return os.path.join(base, f)
+    return os.path.join(base, files[0]) if files else None
+
+
 class ExhibitDeck:
     """One deck, exhibit chrome baked in. All coordinates in inches on 13.333x7.5."""
 
@@ -355,14 +382,18 @@ class ExhibitDeck:
             f = r.font
             f.name = FONT
             f.size = Pt(fs)
-            f.bold = bold
+            f.bold = (False if getattr(self, 'look', 'v3') == 'v4' else bold)
             f.color.rgb = tc
         return ov
 
     def txt(self, s, x, y, w, h, runs, size=14, color=NAVY, bold=False,
             align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP, sp_after=2, line_sp=1.0,
             wrap=True, track=None):
-        """runs: plain string, OR list of paragraphs, each a list of (text, size, color, bold)."""
+        """runs: plain string, OR list of paragraphs, each a list of (text, size, color, bold).
+        Apex law (v4.2): under look='apex' every run draws regular unless d.allow_bold is set."""
+        no_bold = (getattr(self, 'look', 'v3') == 'v4' and not getattr(self, 'allow_bold', False))
+        if no_bold:
+            bold = False
         tb = s.shapes.add_textbox(I(x), I(y), I(w), I(h))
         tf = tb.text_frame
         tf.word_wrap = wrap
@@ -387,7 +418,7 @@ class ExhibitDeck:
                 f.name = FONT
                 f.size = Pt(sz)
                 f.color.rgb = c
-                f.bold = b
+                f.bold = (False if no_bold else b)
                 if track is not None:
                     r._r.get_or_add_rPr().set('spc', str(track))
         return tb
@@ -568,47 +599,74 @@ class ExhibitDeck:
         return [self._lerp(BLUE4, BLUE, i / (n - 1)) for i in range(n)]
 
     def bars(self, s, x, y, w, h, items, mode='time', hi=None,
-             val_size=19, delta_size=10.5, cat_size=11.5, bar_frac=0.55):
+             val_size=None, delta_size=None, cat_size=None, bar_frac=0.55, dashed=(),
+             badge=None):
         """Drawn column chart (P2, TD slides 5-6). items: (cat, value) or
-        (cat, value, label) or (cat, value, label, delta). No y-axis, no gridlines —
-        the value labels ARE the data: bold navy above each bar, muted delta under
-        them, categories under a navy baseline. hi: index whose bar+label go full
-        BLUE (default: last bar in 'time' mode). Returns [(center_x, bar_top_y)]
-        for annotations."""
+        (cat, value, label) or (cat, value, label, delta) or (cat, value, label, delta, fill).
+        No y-axis, no gridlines: the value labels ARE the data, categories under a navy
+        baseline. v3: bold value above each bar, muted delta under it; hi = index whose
+        bar and label go full BLUE (default: last bar in 'time' mode).
+        Apex (report page 33): 15pt regular value, 10.5pt muted delta under it, 9pt
+        category, per-item fills (else the ramp), no highlight; `dashed` = indices drawn
+        as a dashed outline (an estimate or a state not yet certified); badge = (index,
+        text) draws a small 8pt note inside that column's top. Returns
+        [(center_x, bar_top_y)] for annotations."""
+        apex = (getattr(self, 'look', 'v3') == 'v4')
+        val_size = val_size or (15 if apex else 19)
+        delta_size = delta_size or 10.5
+        cat_size = cat_size or (9 if apex else 11.5)
         norm = []
         for it in items:
-            it = list(it) + [None] * (4 - len(it))
-            cat, val, label, delta = it[:4]
-            norm.append((cat, float(val), label if label is not None else str(val), delta))
+            it = list(it) + [None] * (5 - len(it))
+            cat, val, label, delta, fill = it[:5]
+            norm.append((cat, float(val), label if label is not None else str(val), delta, fill))
         n = len(norm)
         fills = self.ramp(n, mode)
-        if hi is None and mode == 'time':
+        if hi is None and mode == 'time' and not apex:
             hi = n - 1
-        has_delta = any(d for (_, _, _, d) in norm)
-        top_zone = 0.30 + (0.24 if has_delta else 0.0)
-        baseline = y + h - 0.34
+        has_delta = any(d for (_, _, _, d, _) in norm)
+        if apex:
+            top_zone = 0.62 if has_delta else 0.34
+        else:
+            top_zone = 0.30 + (0.24 if has_delta else 0.0)
+        baseline = y + h - (0.40 if apex else 0.34)
         plot_h = baseline - (y + top_zone)
-        vmax = max(v for (_, v, _, _) in norm) or 1.0
+        vmax = max(v for (_, v, _, _, _) in norm) or 1.0
         pitch = w / n
         bw = pitch * bar_frac
         out = []
-        for i, (cat, val, label, delta) in enumerate(norm):
+        for i, (cat, val, label, delta, ifill) in enumerate(norm):
             bh = plot_h * (val / vmax)
             bx = x + i * pitch + (pitch - bw) / 2.0
             bt = baseline - bh
-            fill = BLUE if i == hi else fills[i]
-            self.rect(s, bx, bt, bw, bh, fill=fill)
+            fill = ifill or (BLUE if i == hi else fills[i])
+            if i in dashed:
+                self.rect(s, bx, bt, bw, bh, fill=WHITE, line=(ifill or BLUE), line_w=0.75, dash='dash')
+            else:
+                self.rect(s, bx, bt, bw, bh, fill=fill)
             ly = bt - top_zone
-            vcol = BLUE if i == hi else NAVY
-            self.txt(s, x + i * pitch, ly, pitch, 0.30, label, size=val_size,
-                     color=vcol, bold=True, align=PP_ALIGN.CENTER, wrap=False)
-            if delta:
-                self.txt(s, x + i * pitch, ly + 0.29, pitch, 0.22, delta, size=delta_size,
-                         color=MUT, align=PP_ALIGN.CENTER, wrap=False)
-            self.txt(s, x + i * pitch, baseline + 0.07, pitch, 0.26, cat, size=cat_size,
-                     color=NAVY, align=PP_ALIGN.CENTER, wrap=False)
+            vcol = BLUE if (i == hi and not apex) else NAVY
+            if apex:
+                self.txt(s, x + i * pitch, ly, pitch, 0.28, label, size=val_size, color=vcol,
+                         align=PP_ALIGN.CENTER, wrap=False)
+                if delta:
+                    self.txt(s, x + i * pitch, ly + 0.30, pitch, 0.22, delta, size=delta_size,
+                             color=MUT, align=PP_ALIGN.CENTER, wrap=False)
+                self.txt(s, x + i * pitch - 0.05, baseline + 0.07, pitch + 0.10, 0.40, cat, size=cat_size,
+                         color=NAVY, align=PP_ALIGN.CENTER, line_sp=1.05)
+            else:
+                self.txt(s, x + i * pitch, ly, pitch, 0.30, label, size=val_size,
+                         color=vcol, bold=True, align=PP_ALIGN.CENTER, wrap=False)
+                if delta:
+                    self.txt(s, x + i * pitch, ly + 0.29, pitch, 0.22, delta, size=delta_size,
+                             color=MUT, align=PP_ALIGN.CENTER, wrap=False)
+                self.txt(s, x + i * pitch, baseline + 0.07, pitch, 0.26, cat, size=cat_size,
+                         color=NAVY, align=PP_ALIGN.CENTER, wrap=False)
+            if badge and badge[0] == i:
+                self.txt(s, bx - 0.30, bt + 0.06, bw + 0.60, 0.20, badge[1], size=8, color=NAVY,
+                         align=PP_ALIGN.CENTER, wrap=False)
             out.append((bx + bw / 2.0, bt))
-        self.hline(s, x, baseline, x + w, baseline, color=NAVY, wpt=1.1)
+        self.hline(s, x, baseline, x + w, baseline, color=NAVY, wpt=(0.75 if apex else 1.1))
         return out
 
     def hbars(self, s, x, y, w, h, items, client_idx=None, row_h=0.64, label_w=0.85):
@@ -1703,7 +1761,8 @@ class ExhibitDeck:
         return yy + 0.95
 
     def share_bar(self, s, x, y, w, segments, h=0.85, notes=None, note_y=None, val_size=15,
-                  lab_size=8.5):
+                  lab_size=8.5, values='inside', total=None, total_size=22.5, total_pos='right',
+                  label=None):
         """Slide 7: one full-width bar split to scale. segments: (value, display, label, weight)
         with weights blue | dark | grey | light | mid. Value 15pt and label 8.5pt sit inside each
         segment (white on blue and dark). notes: [(lead, body, x, w, lead_colour)] drawn under
@@ -1714,12 +1773,32 @@ class ExhibitDeck:
             sw = w * float(v) / tot
             fill, _, _, tc, _ = self._weight(weight)
             self.rect(s, sx, y, sw, h, fill=fill)
-            self.txt(s, sx + 0.12, y + 0.12, max(0.3, sw - 0.12), 0.25, disp, size=val_size, color=tc,
-                     wrap=False)
-            if label and sw > 0.9:
-                self.txt(s, sx + 0.12, y + 0.48, sw - 0.12, 0.21, label, size=lab_size, color=tc,
+            if values == 'above':
+                # report page 46: 9pt value above each segment, label under the bar
+                self.txt(s, sx, y - 0.27, max(0.5, sw), 0.22, disp, size=9, color=NAVY, wrap=False)
+                if label and sw > 0.6:
+                    self.txt(s, sx, y + h + 0.06, sw, 0.20, label, size=lab_size, color=MUT, wrap=False)
+            else:
+                self.txt(s, sx + 0.12, y + 0.12, max(0.3, sw - 0.12), 0.25, disp, size=val_size, color=tc,
                          wrap=False)
+                if label and sw > 0.9:
+                    self.txt(s, sx + 0.12, y + 0.48, sw - 0.12, 0.21, label, size=lab_size, color=tc,
+                             wrap=False)
             sx += sw
+        if total:
+            tdisp, tsub = (total if isinstance(total, (list, tuple)) else (total, None))[:2]
+            if total_pos == 'below':
+                # report page 46: the 22.5pt total under the bar's right end, its unit beside it
+                runs = [[(tdisp, total_size, BLUE, False)] + ([(" " + tsub, 9, NAVY, False)] if tsub else [])]
+                self.txt(s, x + w - 3.0, y + h + 0.08, 3.0, 0.45, runs, align=PP_ALIGN.RIGHT, wrap=False)
+            else:
+                self.txt(s, x + w + 0.20, y + h / 2.0 - 0.30, 2.0, 0.45, tdisp, size=total_size, color=NAVY,
+                         wrap=False)
+                if tsub:
+                    self.txt(s, x + w + 0.20, y + h / 2.0 + 0.16, 2.0, 0.20, tsub, size=9, color=NAVY,
+                             wrap=False)
+        if label:
+            self.txt(s, x, y + h + 0.26, w - 3.0, 0.20, label, size=9, color=NAVY, wrap=False)
         if notes:
             ny = note_y or (y + h + 0.40)
             for i, nt in enumerate(notes):
@@ -1985,6 +2064,403 @@ class ExhibitDeck:
                 self.txt(s, cx + 0.10, y + 0.41, chip_w - 0.20, 0.12, st, size=7, color=BLUE, wrap=False)
             cx += chip_w + gap
         return y + chip_h
+
+
+    # ------------------------------------------------------------ Apex chart layer (v4.2, 25 Sep 2026)
+    # Measured from the 22 Sep 2026 Nedbank IGNITE report (80 slides, XML-read) and the McKinsey
+    # summit deck (team page, close). Regular weight throughout (txt() enforces it under Apex).
+
+    def legend(self, s, x, y, items, size=8.5, swatch=0.16, gap=0.34, note=None, note_right=12.60):
+        """One legend row (pages 12, 25, 28): 0.16 swatches and 8.5pt muted labels. items:
+        (fill, label); fill may be ('dashed', colour) for an outlined swatch. note = a right-
+        aligned 8.5pt line in FN. Returns the y under the row."""
+        xx = x
+        for fill, label in items:
+            if isinstance(fill, (list, tuple)) and fill[0] == 'dashed':
+                self.rect(s, xx, y + 0.03, swatch, swatch, fill=WHITE, line=fill[1], line_w=0.75, dash='dash')
+            else:
+                self.rect(s, xx, y + 0.03, swatch, swatch, fill=fill)
+            self.txt(s, xx + swatch + 0.08, y, 3.2, 0.21, label, size=size, color=MUT, wrap=False)
+            xx += swatch + 0.08 + len(label) * size * 0.0069 + gap
+        if note:
+            self.txt(s, xx, y, max(1.0, note_right - xx), 0.21, note, size=size, color=FN,
+                     align=PP_ALIGN.RIGHT, wrap=False)
+        return y + 0.21
+
+    def _code_label(self, s, x, y, w, text, size=9.5, sep=" · "):
+        """A row label whose code prefix ("IN-16 · ") draws in BLUE and the rest in NAVY (pages
+        12 and 25). No separator: the whole label in NAVY."""
+        if sep in text:
+            code, rest = text.split(sep, 1)
+            return self.txt(s, x, y, w, 0.22, [[(code + sep, size, BLUE, False), (rest, size, NAVY, False)]],
+                            wrap=False)
+        return self.txt(s, x, y, w, 0.22, text, size=size, color=NAVY, wrap=False)
+
+    def hbar_rows(self, s, x, y, w, items, label_w=4.55, pitch=0.46, bar_h=0.28, fills=None, val_w=1.08):
+        """Page 25: ranked horizontal bars. items: (label, value, display[, fill]). 9.5pt label in
+        label_w, the bar from x + label_w, 9.5pt value 0.10 after it. Bars scale to the widest.
+        Returns the y under the last row."""
+        vmax = max(float(it[1]) for it in items) or 1.0
+        bx = x + label_w
+        bw_max = w - label_w - val_w - 0.10
+        yy = y
+        for i, it in enumerate(items):
+            label, val, disp = it[:3]
+            fill = it[3] if len(it) > 3 and it[3] is not None else (fills[i % len(fills)] if fills else BLUE)
+            self._code_label(s, x, yy, label_w - 0.15, label)
+            bw = bw_max * float(val) / vmax
+            self.rect(s, bx, yy + 0.02, bw, bar_h, fill=fill)
+            self.txt(s, bx + bw + 0.10, yy + 0.04, val_w, 0.21, disp, size=9.5, color=NAVY, wrap=False)
+            yy += pitch
+        return yy
+
+    def hstack_rows(self, s, x, y, w, rows, label_w=2.70, vol_w=1.00, val_w=1.18, pitch=0.58,
+                    bar_h=0.26, fills=None, scale=None):
+        """Page 12: per row a 9.5pt label with an 8pt sub-line, an optional volume column (9.5pt
+        with an 8pt sub), stacked segments from x + label_w + vol_w, a 9pt end label after the
+        bar and a 10.5pt value at the right edge. rows: dicts {label, sub, vol, vol_sub,
+        segments: [(value, fill)] or [value, ...], end, right}. Returns the y under the rows."""
+        fills = fills or [NAVY, BLUE, BLUE3, BLUE4]
+        bx = x + label_w + vol_w
+        bw_max = w - label_w - vol_w - val_w - 1.30
+        def tot(r):
+            return sum(float(sv[0] if isinstance(sv, (list, tuple)) else sv) for sv in r['segments'])
+        vmax = max(tot(r) for r in rows) or 1.0
+        sc = scale or bw_max / vmax
+        yy = y
+        for r in rows:
+            self._code_label(s, x, yy, label_w - 0.1, r['label'])
+            if r.get('sub'):
+                self.txt(s, x, yy + 0.24, label_w - 0.2, 0.36, r['sub'], size=8, color=MUT, line_sp=1.05)
+            if r.get('vol') is not None:
+                self.txt(s, x + label_w, yy, vol_w, 0.21, str(r['vol']), size=9.5, color=NAVY, wrap=False)
+                if r.get('vol_sub'):
+                    self.txt(s, x + label_w, yy + 0.24, vol_w, 0.21, r['vol_sub'], size=8, color=MUT,
+                             wrap=False)
+            sx = bx
+            for k, sv in enumerate(r['segments']):
+                v, f = (sv if isinstance(sv, (list, tuple)) else (sv, fills[k % len(fills)]))
+                sw = float(v) * sc
+                self.rect(s, sx, yy + 0.06, sw, bar_h, fill=f)
+                sx += sw
+            if r.get('end'):
+                self.txt(s, sx + 0.10, yy + 0.07, 1.30, 0.21, r['end'], size=9, color=NAVY, wrap=False)
+            if r.get('right'):
+                self.txt(s, x + w - val_w, yy + 0.05, val_w, 0.21, r['right'], size=10.5, color=NAVY,
+                         align=PP_ALIGN.RIGHT, wrap=False)
+            yy += pitch
+        return yy
+
+    def paired_hrows(self, s, x, y, w, rows, label_w=2.75, pitch=0.95, bar_h=0.30, ref_fill=None,
+                     fill=None):
+        """Page 24: per row an 11pt label with an 8.5pt sub, a reference bar (TINT) with its label
+        after it and, under it, the second bar (BLUE) with its label. rows: (label, sub,
+        ref_value, ref_display, value, display). Scaled to the widest reference. Returns the y
+        under the last row."""
+        ref_fill = ref_fill or TINT
+        fill = fill or BLUE
+        bx = x + label_w
+        bw_max = w - label_w - 2.20
+        vmax = max(float(r[2]) for r in rows) or 1.0
+        yy = y
+        for (label, sub, rv, rd, v, d) in rows:
+            self.txt(s, x, yy, label_w - 0.1, 0.22, label, size=11, color=NAVY, wrap=False)
+            if sub:
+                self.txt(s, x, yy + 0.28, label_w - 0.1, 0.22, sub, size=8.5, color=MUT, wrap=False)
+            rw = bw_max * float(rv) / vmax
+            self.rect(s, bx, yy, rw, bar_h, fill=ref_fill)
+            self.txt(s, bx + rw + 0.10, yy + 0.03, 2.1, 0.21, rd, size=9.5, color=NAVY, wrap=False)
+            bw = bw_max * float(v) / vmax
+            self.rect(s, bx, yy + 0.36, bw, bar_h, fill=fill)
+            self.txt(s, bx + bw + 0.10, yy + 0.39, 3.7, 0.21, d, size=9.5, color=NAVY, wrap=False)
+            yy += pitch
+        return yy
+
+    def funnel_rows(self, s, x, y, w, rows, headers=("Step, a year", "Today", "With us", "Change"),
+                    label_w=2.15, bar_w=3.42, change_x=None, pitch=0.87, bar_h=0.19):
+        """Page 37: a funnel as paired thin bars. rows: (label, sub, today_value, today_display,
+        with_value, with_display, change_display). A 7.9pt header row with swatches, today bars
+        GREY, with-us bars BLUE, a 13.5pt BLUE change column. Scaled to the widest today value.
+        Returns the y under the last row."""
+        bx = x + label_w
+        cx = change_x or (bx + bar_w + 0.70)
+        self.txt(s, x, y, label_w, 0.18, headers[0].upper(), size=7.9, color=NAVY, track="20", wrap=False)
+        self.rect(s, bx, y + 0.02, 0.10, 0.10, fill=GREY)
+        self.txt(s, bx + 0.16, y, 0.8, 0.18, headers[1].upper(), size=7.9, color=NAVY, track="20", wrap=False)
+        self.rect(s, bx + 0.77, y + 0.02, 0.10, 0.10, fill=BLUE)
+        self.txt(s, bx + 0.93, y, 1.4, 0.18, headers[2].upper(), size=7.9, color=NAVY, track="20", wrap=False)
+        self.txt(s, cx, y, 1.02, 0.18, headers[3].upper(), size=7.9, color=NAVY, track="20", wrap=False)
+        vmax = max(float(r[2]) for r in rows) or 1.0
+        yy = y + 0.43
+        for (label, sub, tv, td, wv, wd, ch) in rows:
+            self.txt(s, x, yy + 0.06, label_w, 0.21, label, size=9.75, color=NAVY, wrap=False)
+            if sub:
+                self.txt(s, x, yy + 0.22, label_w - 0.1, 0.36, sub, size=8.25, color=MUT, line_sp=1.05)
+            tw = bar_w * float(tv) / vmax
+            self.rect(s, bx, yy, tw, bar_h, fill=GREY)
+            self.txt(s, bx + tw + 0.08, yy + 0.01, 0.9, 0.20, td, size=9, color=NAVY, wrap=False)
+            ww = bar_w * float(wv) / vmax
+            self.rect(s, bx, yy + 0.24, ww, bar_h, fill=BLUE)
+            self.txt(s, bx + ww + 0.08, yy + 0.25, 0.9, 0.20, wd, size=9, color=NAVY, wrap=False)
+            if ch:
+                self.txt(s, cx, yy + 0.13, 1.02, 0.26, ch, size=13.5,
+                         color=(MUT if ch in ("—", "-", "–") else BLUE), wrap=False)
+            yy += pitch
+        return yy
+
+    def column_walk(self, s, x, y, w, h, steps, col_w=0.54, gap=0.06, pitch=1.21, val_size=13.5):
+        """Page 55: a cost walk as column pairs. steps: dicts {label, value, display, delta,
+        delta_display, fill, delta_fill, dashed, delta_dashed}. Each step draws its column and,
+        beside it, the delta column (what the next lever removes). 13.5pt value above the column,
+        9pt delta above the delta column, 7.9pt labels under the navy baseline. Returns the
+        baseline y."""
+        vmax = max(float(st['value']) for st in steps) or 1.0
+        baseline = y + h - 0.36
+        plot_h = baseline - (y + 0.36)
+        sc = plot_h / vmax
+        for i, st in enumerate(steps):
+            cx = x + i * pitch
+            ch_ = float(st['value']) * sc
+            fill = st.get('fill') or BLUE
+            if st.get('dashed'):
+                self.rect(s, cx, baseline - ch_, col_w, ch_, fill=WHITE, line=fill, line_w=0.75, dash='dash')
+            else:
+                self.rect(s, cx, baseline - ch_, col_w, ch_, fill=fill)
+            self.txt(s, cx - 0.05, baseline - ch_ - 0.30, col_w + 0.7, 0.26, st['display'], size=val_size,
+                     color=NAVY, wrap=False)
+            if st.get('delta'):
+                dh = float(st['delta']) * sc
+                dfill = st.get('delta_fill') or BLUE3
+                dx = cx + col_w + gap
+                if st.get('delta_dashed'):
+                    self.rect(s, dx, baseline - ch_, col_w, dh, fill=WHITE, line=dfill, line_w=0.75, dash='dash')
+                else:
+                    self.rect(s, dx, baseline - ch_, col_w, dh, fill=dfill)
+                if st.get('delta_display'):
+                    self.txt(s, dx + 0.13, baseline - ch_ - 0.24, 0.9, 0.20, st['delta_display'], size=9,
+                             color=NAVY, wrap=False)
+            self.txt(s, cx - 0.10, baseline + 0.08, pitch - 0.05, 0.40, st['label'], size=7.9, color=NAVY,
+                     line_sp=1.05)
+        self.rect(s, x, baseline, w, 0.01, fill=NAVY)
+        return baseline
+
+    def stacked_columns(self, s, x, y, w, h, groups, col_w=0.62, gap=0.08, val_size=10,
+                        label_size=10.5, sub_size=8.5, total_size=None):
+        """Pages 28 and 47: groups of stacked columns on one baseline. groups: dicts {label, sub,
+        columns: [dict(segments=[(value, fill)] where fill may be ('dashed', colour),
+        total='display')]}. The groups share the width; columns sit left-aligned in each
+        group. 10pt values centred above each column; 10.5pt group labels and 8.5pt subs
+        under the navy baseline. Scaled to the tallest column. Returns the y under the labels."""
+        n = max(1, len(groups))
+        gp = w / n
+        baseline = y + h - 0.45
+        plot_h = baseline - (y + 0.36)
+        def ctot(c):
+            return sum(float(v) for (v, _) in c['segments'])
+        vmax = max(ctot(c) for g in groups for c in g['columns']) or 1.0
+        sc = plot_h / vmax
+        for gi, g in enumerate(groups):
+            gx = x + gi * gp
+            for ci, c in enumerate(g['columns']):
+                cx = gx + ci * (col_w + gap)
+                by = baseline
+                for (v, f) in c['segments']:
+                    sh = float(v) * sc
+                    if isinstance(f, (list, tuple)) and f[0] == 'dashed':
+                        dfill = f[2] if len(f) > 2 else WHITE
+                        self.rect(s, cx, by - sh, col_w, sh, fill=dfill, line=f[1], line_w=0.75, dash='dash')
+                    else:
+                        self.rect(s, cx, by - sh, col_w, sh, fill=f)
+                    by -= sh
+                if c.get('total'):
+                    self.txt(s, cx - 0.24, by - 0.30, col_w + 0.48, 0.24, c['total'], size=(total_size or val_size),
+                             color=NAVY, align=PP_ALIGN.CENTER, wrap=False)
+                if c.get('sub'):
+                    self.txt(s, cx - 0.24, baseline + 0.08, col_w + 0.48, 0.20, c['sub'], size=7.9, color=MUT,
+                             align=PP_ALIGN.CENTER, wrap=False)
+            drop = 0.30 if any(c.get('sub') for c in g['columns']) else 0.0
+            self.txt(s, gx, baseline + 0.08 + drop, gp - 0.2, 0.22, g['label'], size=label_size, color=NAVY,
+                     wrap=False)
+            if g.get('sub'):
+                self.txt(s, gx, baseline + 0.26 + drop, gp - 0.2, 0.22, g['sub'], size=sub_size, color=MUT,
+                         wrap=False)
+        self.rect(s, x, baseline, w, 0.01, fill=NAVY)
+        return baseline + 0.50 + (0.30 if any(c.get('sub') for g in groups for c in g['columns']) else 0.0)
+
+    def kpi_stack(self, s, x, y, w, items, val_size=24, pitch=1.50):
+        """Pages 28 and 47 (right column): a rule, an 8.5pt uppercase label, a 24pt value and a
+        9pt body, repeated. items: (label, value, body); value may be [(text, colour)] runs for
+        a two-tone figure. Returns the y under the last item."""
+        yy = y
+        for (label, value, body) in items:
+            self.rect(s, x, yy, w - 0.10, 0.01, fill=CARD_LINE)
+            self.txt(s, x, yy + 0.17, w, 0.19, label.upper(), size=8.5, color=MUT, track="40", wrap=False)
+            if isinstance(value, str):
+                runs = [[(value, val_size, NAVY, False)]]
+            else:
+                runs = [[(t, val_size, (c or NAVY), False) for (t, c) in value]]
+            self.txt(s, x, yy + 0.40, w, 0.45, runs, wrap=False)
+            if body:
+                self.txt(s, x, yy + 0.95, w, 0.48, body, size=9, color=NAVY, line_sp=1.1)
+            yy += pitch
+        return yy
+
+    def area_block(self, s, x, y, w, h, parts, top_label=None, label_gap=0.15, label_w=4.3):
+        """Page 8: a proportional block, parts stacked top-down. parts: (fraction, fill, label,
+        sub); the 10.5pt label and 8.5pt sub sit beside each part at its middle. top_label =
+        9.5pt line above the block. Draws the navy baseline under it. Returns the baseline y."""
+        if top_label:
+            self.txt(s, x - 0.24, y - 0.30, w + 3.0, 0.21, top_label, size=9.5, color=NAVY, wrap=False)
+        tot = float(sum(p[0] for p in parts)) or 1.0
+        yy = y
+        for (frac, fill, label, sub) in parts:
+            ph = h * float(frac) / tot
+            self.rect(s, x, yy, w, ph, fill=fill)
+            ly = yy + ph / 2.0 - (0.30 if sub else 0.11)
+            self.txt(s, x + w + label_gap, ly, label_w, 0.22, label, size=10.5, color=NAVY, wrap=False)
+            if sub:
+                self.txt(s, x + w + label_gap, ly + 0.21, label_w, 0.41, sub, size=8.5, color=MUT, line_sp=1.1)
+            yy += ph
+        self.rect(s, x - 0.10, y + h, w + label_gap + label_w + 0.2, 0.01, fill=NAVY)
+        return y + h
+
+    def _arc(self, s, x, y, d, a0, a1, thick, fill):
+        """A block arc (or a pie slice when thick >= 1) from a0 to a1 degrees, clockwise from
+        3 o'clock, in the given fill. Flat, no line."""
+        shape_t = MSO_SHAPE.PIE if thick >= 1.0 else MSO_SHAPE.BLOCK_ARC
+        sh = s.shapes.add_shape(shape_t, I(x), I(y), I(d), I(d))
+        sh.fill.solid()
+        sh.fill.fore_color.rgb = fill
+        sh.line.fill.background()
+        sh.shadow.inherit = False
+        avLst = sh._element.spPr.find(qn('a:prstGeom')).find(qn('a:avLst'))
+        for g in list(avLst):
+            avLst.remove(g)
+        vals = [("adj1", int((a0 % 360) * 60000)), ("adj2", int((a1 % 360) * 60000))]
+        if thick < 1.0:
+            vals.append(("adj3", int(thick * 100000)))
+        for name, val in vals:
+            avLst.append(avLst.makeelement(qn('a:gd'), {"name": name, "fmla": "val %d" % val}))
+        self.flat(sh)
+        return sh
+
+    def donut(self, s, x, y, d, segments, thickness=0.28, start=270.0, center=None, legend=None,
+              legend_gap=0.45, legend_pitch=0.34):
+        """A donut (thickness < 1) or a pie (thickness=1.0) of block arcs, clockwise from 12
+        o'clock. segments: (fraction, fill[, label[, display]]); fractions are normalised.
+        center: (value, caption) drawn in the hole (16.5pt over 7.5pt) or one string.
+        legend=True lists the segments to the right: swatch, 9pt label, 9.5pt display.
+        Returns the y under the ring."""
+        tot = float(sum(sg[0] for sg in segments)) or 1.0
+        a = float(start)
+        for sg in segments:
+            frac, fill = sg[0], sg[1]
+            b = a + 360.0 * float(frac) / tot
+            if b - a >= 359.99:
+                b = a + 359.99
+            self._arc(s, x, y, d, a, b, thickness, fill)
+            a = b
+        if center and thickness < 1.0:
+            val, cap = (center if isinstance(center, (list, tuple)) else (center, None))[:2]
+            self.txt(s, x, y + d / 2.0 - (0.28 if cap else 0.16), d, 0.32, val, size=16.5, color=NAVY,
+                     align=PP_ALIGN.CENTER, wrap=False)
+            if cap:
+                self.txt(s, x + 0.2, y + d / 2.0 + 0.06, d - 0.4, 0.34, cap, size=7.5, color=MUT,
+                         align=PP_ALIGN.CENTER, line_sp=1.05)
+        if legend:
+            lx = x + d + legend_gap
+            ly = y + d / 2.0 - legend_pitch * len(segments) / 2.0 + 0.05
+            for sg in segments:
+                label = sg[2] if len(sg) > 2 else ""
+                disp = sg[3] if len(sg) > 3 else ("%d%%" % round(100.0 * float(sg[0]) / tot))
+                self.rect(s, lx, ly + 0.04, 0.14, 0.14, fill=sg[1])
+                self.txt(s, lx + 0.24, ly, 2.6, 0.21, label, size=9, color=NAVY, wrap=False)
+                self.txt(s, lx + 2.85, ly, 0.9, 0.21, disp, size=9.5, color=NAVY, align=PP_ALIGN.RIGHT,
+                         wrap=False)
+                ly += legend_pitch
+        return y + d
+
+    # ---- pages from the McKinsey summit deck (24 Sep 2026)
+    def team_page(self, kicker, title_runs, people, photo_x=5.73, photo_w=2.29, name_size=17,
+                  role_size=11, title_size=24, accent=None):
+        """Summit deck page 10: a light page with the frame, the kicker top left, a 24pt title
+        mid-left with its accent word in blue, and a column of photos filling the height with
+        name and role beside each. people: (photo_path_or_None, name, role), up to four.
+        title_runs: a string or [(text, colour_or_None)]. Creates and returns the slide."""
+        s = self.slide()
+        self.chrome(s, "", "")
+        top, bottom = 0.573, 7.042
+        n = max(1, len(people))
+        band = (bottom - top) / n
+        self.hline(s, photo_x, top, photo_x, bottom)
+        self.txt(s, 1.00, 0.86, 4.4, 0.22, kicker.upper(), size=9, color=NAVY, track="60")
+        if isinstance(title_runs, str):
+            title_runs = [(title_runs, NAVY)]
+        acc = accent or BLUE
+        runs = [[(t, title_size, (c if c is not None else acc), False) for (t, c) in title_runs]]
+        self.txt(s, 1.00, top + (bottom - top) / 2.0 - 0.55, photo_x - 1.45, 1.2, runs, line_sp=1.08)
+        for i, (photo, name, role) in enumerate(people):
+            y0 = top + i * band
+            if i:
+                self.hline(s, (0 if i == 1 else photo_x), y0, W if i == 1 else W, y0)
+            if photo and os.path.exists(photo):
+                self._fit_picture(s, photo, photo_x, y0, photo_w, band)
+            else:
+                self.rect(s, photo_x, y0, photo_w, band, fill=TINT2)
+                initials = "".join(p[0] for p in name.split()[:2]).upper()
+                self.txt(s, photo_x, y0 + band / 2.0 - 0.25, photo_w, 0.5, initials, size=22, color=MUT,
+                         align=PP_ALIGN.CENTER, wrap=False)
+            nx = photo_x + photo_w + 0.34
+            self.txt(s, nx, y0 + band / 2.0 - 0.36, W - nx - 0.7, 0.34, name, size=name_size, color=NAVY,
+                     wrap=False)
+            self.txt(s, nx, y0 + band / 2.0 + 0.02, W - nx - 0.7, 0.5, role, size=role_size, color=MUT,
+                     line_sp=1.1)
+        return s
+
+    def _fit_picture(self, s, path, x, y, w, h):
+        """Place an image cropped (centre) to fill the box, keeping its aspect."""
+        pic = s.shapes.add_picture(path, I(x), I(y), I(w), I(h))
+        try:
+            from PIL import Image as _Im
+            iw, ih = _Im.open(path).size
+            target = w / float(h)
+            src = iw / float(ih)
+            if src > target:      # too wide: crop left/right
+                f = (1.0 - target / src) / 2.0
+                pic.crop_left = f
+                pic.crop_right = f
+            elif src < target:    # too tall: crop top/bottom
+                f = (1.0 - src / target) / 2.0
+                pic.crop_top = f
+                pic.crop_bottom = f
+        except Exception:
+            pass
+        return pic
+
+    def closing_page(self, text="Thank you", size=87, bg=None, kicker=None):
+        """Summit deck page 11: the close. The navy page with the blue glow (assets/close_bg.jpg),
+        the cover frame's rails at 0.55 and 12.78, rules at 1.96 and 5.54, the white glyph at
+        the right crossing, the white wordmark top left and the big line at (1.08, 2.75).
+        Creates and returns the slide."""
+        s = self.slide()
+        bgp = bg or os.path.abspath(os.path.join(_ASSETS, "close_bg.jpg"))
+        if os.path.exists(bgp):
+            s.shapes.add_picture(bgp, I(0), I(0), I(W), I(H))
+        else:
+            self.rect(s, 0, 0, W, H, fill=NAVY)
+        self.hline(s, 0.55, 1.96, 12.79, 1.96, color=COVER_LINE, wpt=0.5)
+        self.hline(s, 0.55, 5.54, 12.78, 5.54, color=COVER_LINE, wpt=0.5)
+        self.hline(s, 0.55, 0, 0.55, H, color=COVER_LINE, wpt=0.5)
+        self.hline(s, 12.78, 0, 12.78, H, color=COVER_LINE, wpt=0.5)
+        self.step_glyph(s, 12.61, 1.79, 0.167, 0.166, WHITE)
+        if LOGO_WHITE and os.path.exists(LOGO_WHITE):
+            s.shapes.add_picture(LOGO_WHITE, I(1.08), I(0.67), I(2.36), I(0.38))
+        else:
+            self.txt(s, 1.08, 0.67, 3.0, 0.4, "Backbase", size=20, color=WHITE)
+        if kicker:
+            self.txt(s, 1.08, 2.30, 8.0, 0.25, kicker.upper(), size=9.5, color=WHITE, track="80")
+        self.txt(s, 1.08, 2.75, 9.5, 2.0, text, size=size, color=WHITE, line_sp=1.0)
+        return s
 
     # ------------------------------------------------------------ dark slides
     def dark_bg(self, s):

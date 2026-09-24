@@ -77,6 +77,9 @@ The Claude Design look, measured from the Nedbank ENBI Voice VC report (68 slide
 | 19 | Loop matrix of chips (McKinsey slide 9) and the era timeline (slide 4) as recipes | engine | OPEN |
 | 20 | HTML-engine parity for the Apex recipes (`backbase-slides-app/engine.js`) | Architect | OPEN |
 | 21 | Engine default stays v3 until every active v3 series (SNB Capital, BACB) has cycled; then flip `ExhibitDeck()` to Apex | Shyam | DECIDE later |
+| 22 | Apex chart layer (v4.2): the report's charts measured and shipped as recipes T56–T67 (ranked bars, stacked rows, paired rows, funnel, columns with dashed estimates, column walk, stacked columns, share bar, KPI stack, area block, donut/pie, legend) + team page and close from the summit deck; the no-bold law in `txt()`; `client_logo()` reads `Engagement/<Client>/Input/brand-assets/` | engine | ✅ SHIPPED 2026-09-25, QA'd page by page against the 22 Sep report |
+| 23 | Rebuild the FinOps, tokenomics and VC-enablement decks on Apex (tokenomicon-24sep, playbook, toolkit builders; company view done) | Shyam go | WAITING for Shyam's yes on the chart QA |
+| 24 | Closes #17: `bars`/`hbars` no-bold under Apex now come from the txt() law; `milestone_strip` and `takeaway_band` too | engine | ✅ 2026-09-25 |
 
 ## Chrome exact-spec (XML-verified against BACB_Close_16Jul_ExhibitStyle.pptx, 2026-07-15)
 When generating PPTX in this style, replicate these EMU-exact values (inches, 13.333x7.5):

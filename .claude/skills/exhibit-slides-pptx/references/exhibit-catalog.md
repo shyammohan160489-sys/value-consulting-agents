@@ -182,6 +182,19 @@ text in client decks. Never fabricate a logo — text chips until assets exist.
 | T54 | **Icons** | A line icon top left of a stat block or card, the twelve from the Nedbank export | `X.icon('phone')` → `stat_block(icon=...)`; never emoji, never a fabricated glyph |
 | T55 | **Apex bars** | Column or row bars without bold: 19pt value, 8.5pt status, dashed outline for estimates | compose from `d.rect()` + `d.txt()` as in the company-view build (`vbars`, `hrows`) until the engine variant lands |
 
+| T56 | **Ranked horizontal bars** | Ranked magnitudes, one series, two colours by category (report p25) | `d.hbar_rows(s, x, y, w, items)` + `d.legend()`; items `(label, value, display[, fill])`, codes before " · " draw BLUE |
+| T57 | **Stacked horizontal rows** | Composition per row with a volume column: minutes, cost per intent (p12) | `d.hstack_rows(s, x, y, w, rows, scale=)` — rows `{label, sub, vol, vol_sub, segments, end, right}` |
+| T58 | **Paired horizontal rows** | Today against released per story (p24) | `d.paired_hrows(s, x, y, w, rows)` — `(label, sub, ref_value, ref_display, value, display)` |
+| T59 | **Funnel rows** | A funnel today against with-us, a change column (p37) | `d.funnel_rows(s, x, y, w, rows, headers=)` + two `hero_number` blocks right |
+| T60 | **Columns, Apex weight** | A value across states or years; estimates dashed (p33) | `d.bars(..., dashed=(i,), badge=(i, text))` — 15pt values, 10.5pt deltas, per-item fills |
+| T61 | **Column walk** | A cost walk with the lever removed beside each step (p55) | `d.column_walk(s, x, y, w, h, steps)` — dicts `{label, value, display, delta, delta_display, fill, delta_fill, dashed, delta_dashed}` |
+| T62 | **Stacked columns** | Pay against get by year; the bill by year and state (p28, p47, p46) | `d.stacked_columns(s, x, y, w, h, groups, col_w=, gap=)` — segments `(value, fill)` or `(value, ('dashed', line[, fill]))` |
+| T63 | **KPI stack** | The three figures beside a chart (p28, p47) | `d.kpi_stack(s, x, y, w, items, val_size=, pitch=)` |
+| T64 | **Share bar, Apex** | One row split to scale, values inside, the total under the right end (p46) | `d.share_bar(..., val_size=9, total=(display, unit), total_pos='below', label=)` |
+| T65 | **Area block** | A population split as a proportional block (p8) | `d.area_block(s, x, y, w, h, parts, top_label=)` |
+| T66 | **Donut / pie** | One share of one whole as a circle (no reference page; built to order) | `d.donut(s, x, y, d, segments, thickness=0.28, center=, legend=True)`; `thickness=1.0` = pie |
+| T67 | **Team page · close** | The people in the room; the last page (summit deck p10, p11) | `d.team_page(kicker, title_runs, people)`; `d.closing_page("Thank you")` |
+
 Apex composition laws (from 68 measured slides): one exhibit per page and the so-what in a hero
 number or a statement line; captions bottom-anchored in cards; status words drawn, not asserted
 (dashed = estimate or indicative, solid = measured or committed); the client's own figures on
