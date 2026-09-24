@@ -160,6 +160,33 @@ Logo rule: market/vendor/ecosystem logos are allowed on landscape and evaluation
 exhibits (image assets supplied per deck); the CLIENT's own account name stays clean
 text in client decks. Never fabricate a logo — text chips until assets exist.
 
+## Apex recipes (T40–T55 — the Claude Design look measured from the Nedbank report, 18 Sep 2026;
+## named Apex and made the default 24 Sep 2026; every helper reads the active palette)
+
+| # | Exhibit | Use when | Engine |
+|---|---|---|---|
+| T40 | **Stat grid** | "The floor, in eight numbers": 4 to 8 bank-stated figures, tension numbers on dark blocks | `d.stat_grid(s, x, y, cells, cols=4)` — cells `{number, caption, dark, icon}`; icons via `X.icon()` |
+| T41 | **Lane grid + weight legend** | "Built once, used by all N": components in labelled lanes, a count badge per box, fill weight = reuse | `d.lane_grid(s, x, y, lanes)` + `d.weight_legend()`; span=2 for double cards; `d.card_row()` for one lane |
+| T42 | **State panels** | Today / next / beyond: 3 tinted panels, each with a drawn bar, a big price and mini-stats | `d.panel()` + `d.mini_stat()` + `d.rect()` bar (see example_v4_build P3) |
+| T43 | **Option cards** | Two or three commercial or design options, one recommended (dark, cyan badge), comparison-only dashed | `d.option_card(s, x, y, w, h, tag, name, body, stats, kind='dark'|'faint'|'dashed', badge=)` |
+| T44 | **Numbered cards** | "Your seven questions", roles on Monday, a question bank: number, title, body, page chip | `d.numbered_card(s, x, y, w, h, n, title, body, tag=)`; `kind='dark'` for the how-to-read card |
+| T45 | **Step flow** | How a call runs, how a deal runs: N step cards with arrows, one blue, one dark | `d.step_flow(s, x, y, items)` — items `(num, title, body, weight)` |
+| T46 | **Compare rows** | Moment by moment, today against with-us, an effort column | `d.compare_rows(s, x, y, headers, rows)` |
+| T47 | **Stacked hbars** | Cost by intent, do-nothing against with-us per row | `d.stacked_hbars(s, x, y, w, rows)` |
+| T48 | **Wave track** | Four waves, four gates the client owns | `d.wave_track(s, x, y, w, waves, progress=, marker=)` |
+| T49 | **Timeline lanes + who signs** | The mutual plan: dated nodes, an owner lane per side, the signing chips | `d.timeline_lanes(s, x, y, w, nodes, lanes, committed=)` then `d.who_signs()` |
+| T50 | **From → To columns + pillar row** | The shift page: muted today, navy tomorrow, an arrow between; three pillars under a rule | `d.from_to_columns(s, y, ...)`; `d.pillar_row(s, x, y, w, items, label=)` |
+| T51 | **Share bar** | Where the volume goes: one bar split to scale with values inside | `d.share_bar(s, x, y, w, segments)` |
+| T52 | **Hero number · mini stat · statement line** | The so-what as a figure (dark block, cyan number) or as one sentence (navy lead, blue rest) | `d.hero_number(dark=, layout='side'|'stack')`, `d.mini_stat()`, `d.statement_line()` |
+| T53 | **Pages** | Cover (navy, offset frame, accent word), chapter divider (blue band), vision band, film frame | `d.cover_page(kicker, runs, date_line=, client_logo=, title_w=)`, `d.divider_band()`, `d.vision_band()`, `d.film_frame()` |
+| T54 | **Icons** | A line icon top left of a stat block or card, the twelve from the Nedbank export | `X.icon('phone')` → `stat_block(icon=...)`; never emoji, never a fabricated glyph |
+| T55 | **Apex bars** | Column or row bars without bold: 19pt value, 8.5pt status, dashed outline for estimates | compose from `d.rect()` + `d.txt()` as in the company-view build (`vbars`, `hrows`) until the engine variant lands |
+
+Apex composition laws (from 68 measured slides): one exhibit per page and the so-what in a hero
+number or a statement line; captions bottom-anchored in cards; status words drawn, not asserted
+(dashed = estimate or indicative, solid = measured or committed); the client's own figures on
+the page, ours in the notes; the same template repeated N times for N comparable things.
+
 ## Credibility architecture (what made these decks defensible)
 
 - **Coral dashed badge** = ILLUSTRATIVE / OUTSIDE-IN / still-open. Never present an assumed

@@ -6,7 +6,7 @@
 
 | When Shyam says… | Route to | Notes |
 |---|---|---|
-| deck, slides, presentation, PPTX, PowerPoint, "board deck", "readout" | `/exhibit-slides-pptx` | ⭐ DEFAULT for ALL PPTX (ratified 28 Jul 2026). Frontline PPTX **only** when he names Frontline/branded layouts. |
+| deck, slides, presentation, PPTX, PowerPoint, "board deck", "readout", Apex, "the Claude Design look" | `/exhibit-slides-pptx` (or `/apex`) | ⭐ DEFAULT for ALL PPTX. Since 24 Sep 2026 the default look is **Apex** (`ExhibitDeck(look='apex')`, the Claude Design look as engine recipes); v3 chrome only to extend an account series still on v3. Frontline PPTX **only** when he names Frontline/branded layouts. Client logo on client decks only; ask when missing; never on internal decks. |
 | HTML deck, interactive deck, "self-running", walkthrough | `/frontline-slides-html` | Presenter mode, 17 layouts. |
 | long-form, document, business case, value case, "something they read", email-able, PDF | `/frontline-long-form` | Sidebar-nav scrolling doc, PDF-printable. |
 | proposal, commercial proposal, pricing proposal, bilingual/Arabic, sliders, executive readout | `/proposal-longform` | Client-facing interactive proposal. |

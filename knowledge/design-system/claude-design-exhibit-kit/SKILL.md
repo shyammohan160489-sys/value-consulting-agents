@@ -1,6 +1,6 @@
 # Skill: Backbase McKinsey-exhibit decks
 
-> **STATUS (2026-07-28): DEFAULT for all PPTX, ratified by Shyam.** Every PowerPoint deck builds with the registered skill `.claude/skills/exhibit-slides-pptx/` (engine v3.1: right rail standard, one-line title law, `chip()` primitive, SNB + journey/workshop pattern catalog, LIVE slide-number fields per the Product Factory deck) unless Frontline is explicitly requested. See `BACKLOG.md` for the ratification record.
+> **STATUS (2026-09-24): the default LOOK is now APEX** (`ExhibitDeck(look='apex')`, the Claude Design look measured in rounds 6–7, see `EXHIBIT_MINING_ROUND6_CLAUDE_DESIGN.md`); the v3 chrome below stays for continuity. **STATUS (2026-07-28): DEFAULT for all PPTX, ratified by Shyam.** Every PowerPoint deck builds with the registered skill `.claude/skills/exhibit-slides-pptx/` (engine v3.1: right rail standard, one-line title law, `chip()` primitive, SNB + journey/workshop pattern catalog, LIVE slide-number fields per the Product Factory deck) unless Frontline is explicitly requested. See `BACKLOG.md` for the ratification record.
 
 Invoke this skill whenever building or editing a Backbase slide deck in the McKinsey exhibit style (action titles, one exhibit per slide, white slides with navy/blue accents). It captures everything validated during deck reviews (June-July 2026). The companion file **`Backbase Exhibit Templates.dc.html`** holds one ready-to-copy slide per pattern (T00-T14) — copy the `<section>` you need and replace the placeholder content.
 

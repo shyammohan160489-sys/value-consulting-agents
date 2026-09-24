@@ -61,6 +61,23 @@ Standing sources for new exhibit vocabulary, worked in mining rounds. Status per
 
 Round-2 patterns still unbuilt as primitives (compose from primitives meanwhile): stacked-ramp+step-line pair · layer ziggurat with verb leaders · health-tier drift board · zone matrix with numbered path. Round-4 composables not yet primitives: architecture coverage shading · architecture navigator · phase matrix · funnel strip · exercise card — promote after first live use.
 
+## Round 6 and 7 → Apex, the default look (opened 2026-09-18, ratified 2026-09-24)
+
+The Claude Design look, measured from the Nedbank ENBI Voice VC report (68 slides, XML-read) and the McKinsey summit tech talk (11 slides), implemented as engine recipes and named **Apex** by Shyam on 24 Sep 2026. Log: `EXHIBIT_MINING_ROUND6_CLAUDE_DESIGN.md`. Spec: `references/visual-grammar-v4.md`.
+
+| # | Edit | Tier | Status |
+|---|------|------|--------|
+| 12 | `ExhibitDeck(look='v4')`: palette, three-rule frame, 9pt kicker, 28pt regular title, grey page number, client logo; 26 helpers | engine | ✅ SHIPPED 2026-09-18 (v4.0) |
+| 13 | Name the look Apex; `look='apex'` alias; SKILL.md rebuilt around it; catalog T40–T55; `/apex` command; routing and global rules updated | skill | ✅ SHIPPED 2026-09-24 (v4.1) |
+| 14 | Client-logo rule: client decks carry the client's logo (ask if missing); internal decks never | skill | ✅ RULED 2026-09-24 (Shyam) |
+| 15 | Icon pack (12 line icons from the Nedbank export) via `X.icon()`; `cover_page(title_w=)`; `tag_chip` regular under Apex | engine | ✅ SHIPPED 2026-09-24 |
+| 16 | Promotion test: first live deck on Apex (CB company view, 14 slides) rendered and read against v3 and the reference | skill | ✅ PASSED 2026-09-24 |
+| 17 | No-bold engine variants of `bars`, `hbars`, `milestone_strip`, `takeaway_band` under Apex (local `vbars`/`hrows` in the company-view build meanwhile) | engine | OPEN |
+| 18 | Dark scenes under Apex: dark content page, image-led mosaic cover, team page with photos, "Thank you" close (McKinsey deck grammar) | engine | OPEN |
+| 19 | Loop matrix of chips (McKinsey slide 9) and the era timeline (slide 4) as recipes | engine | OPEN |
+| 20 | HTML-engine parity for the Apex recipes (`backbase-slides-app/engine.js`) | Architect | OPEN |
+| 21 | Engine default stays v3 until every active v3 series (SNB Capital, BACB) has cycled; then flip `ExhibitDeck()` to Apex | Shyam | DECIDE later |
+
 ## Chrome exact-spec (XML-verified against BACB_Close_16Jul_ExhibitStyle.pptx, 2026-07-15)
 When generating PPTX in this style, replicate these EMU-exact values (inches, 13.333x7.5):
 - Hairlines: straight connectors, #D2D4D8, 0.75pt, FULL-BLEED — top (0,0.573)→(13.333,0.573); left rail (0.573,0)→(0.573,7.042); footer (0,7.042)→(13.333,7.042). Inner footnote hairline x=1.0→12.708.

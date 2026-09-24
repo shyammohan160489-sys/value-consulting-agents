@@ -5,6 +5,14 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v4.1 (24 Sep 2026, APEX — the look is named and made the skill default):
+  - ExhibitDeck(look='apex') is the name Shyam gave the Claude Design look on 24 Sep 2026;
+    'v4' stays as an alias. The skill builds every new deck on Apex; v3 stays the ENGINE
+    default so build scripts written before this date render exactly as before.
+  - cover_page(title_w=...) lets a long title wrap left of the inner rule; tag_chip is
+    regular weight under Apex; ICONS registers the line-icon pack extracted from the
+    Nedbank export (assets/icons/*.png) for stat_block(icon=X.icon('phone')).
+
 v4.0 (18 Sep 2026, the Claude Design look — mining round 6, additive):
   - ExhibitDeck(look='v4') switches the deck to the look measured from the Nedbank
     ENBI Voice VC report (Claude Design export): v4 palette (navy 091C35, blue
@@ -177,6 +185,22 @@ _ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets
 LOGO_BLACK = os.path.abspath(os.path.join(_ASSETS, "backbase_logo_black.png"))
 LOGO_WHITE = os.path.abspath(os.path.join(_ASSETS, "backbase_wordmark_white.png"))
 
+# Apex is the name of the v4 look (24 Sep 2026). Same palette, same chrome.
+PALETTES['apex'] = PALETTES['v4']
+LOOK_ALIASES = {'apex': 'v4', 'v4': 'v4', 'v3': 'v3'}
+
+# The line-icon pack (300 px PNGs, navy strokes) lifted from the Nedbank Claude Design export,
+# used top-left of stat blocks and cards: X.icon('phone') -> path or None.
+ICONS = {n: os.path.abspath(os.path.join(_ASSETS, "icons", n + ".png")) for n in (
+    "brightness", "users", "headset", "sparkle", "person", "route", "shield_check", "document",
+    "database", "check", "phone", "phone_incoming")}
+
+
+def icon(name):
+    """Path of a packed line icon, or None when the pack is missing (never raises)."""
+    p = ICONS.get(name)
+    return p if p and os.path.exists(p) else None
+
 
 class ExhibitDeck:
     """One deck, exhibit chrome baked in. All coordinates in inches on 13.333x7.5."""
@@ -189,11 +213,13 @@ class ExhibitDeck:
         (the default v3 deck leaves the module tokens untouched, so scripts that patch them by
         hand keep working). client_logo: path to the client's PNG, placed by chrome() on every
         slide; client_logo_box = (x, y, w, h). frame=False drops the rules and the corner mark."""
-        if look not in ('v3', 'v4'):
-            raise ValueError("look must be 'v3' or 'v4'")
+        if look not in LOOK_ALIASES:
+            raise ValueError("look must be 'apex', 'v4' or 'v3'")
+        self.look_name = look
+        look = LOOK_ALIASES[look]
         self.look = look
         if palette or look == 'v4':
-            set_palette(palette or 'v4')
+            set_palette(LOOK_ALIASES.get(palette, palette) if palette else 'v4')
         self.pal = palette_namespace()
         self.client_logo = client_logo
         self.client_logo_box = tuple(client_logo_box)
@@ -413,7 +439,7 @@ class ExhibitDeck:
         drops the rules and the corner mark. client_logo / client_logo_box override the
         deck-level logo for this slide. Under look='v3' every default is as before."""
         page = self.page if page is None else page
-        look = look or getattr(self, 'look', 'v3')
+        look = LOOK_ALIASES.get(look, look) if look else getattr(self, 'look', 'v3')
         frame = getattr(self, 'frame', True) if frame is None else frame
         if look == 'v4':
             return self._chrome_v4(s, kicker, title, page, title_size, frame, client_logo,
@@ -1262,7 +1288,8 @@ class ExhibitDeck:
             self.rect(s, x, y, w, 0.26, fill=TINT2, round_=True)
             tc = MUT
         self.txt(s, x, y + 0.045, w, 0.18, text.upper(), size=8.5, color=tc,
-                 bold=True, align=PP_ALIGN.CENTER, wrap=False, track="110")
+                 bold=(getattr(self, 'look', 'v3') == 'v3'), align=PP_ALIGN.CENTER, wrap=False,
+                 track="110")
 
     # ------------------------------------------------------------ v4 layer (18 Sep 2026): the Claude Design look
     # Measured from the Nedbank ENBI Voice VC report (mining round 6, references/visual-grammar-v4.md).
@@ -1524,7 +1551,7 @@ class ExhibitDeck:
 
     # ---- pages and bands
     def cover_page(self, kicker, title_runs, date_line=None, client_logo=None, accent=None,
-                   title_size=54):
+                   title_size=54, title_w=11.2):
         """Slide 1: navy cover with the offset frame (COVER_LINE 0.5pt: top rule at 1.62, inner
         vertical at 8.64, inner horizontal at 5.20 to 8.64, rails at 0.55 and 12.78), white glyph
         at the inner crossing, wordmark top left, client logo at (1.19, 1.76), 9.5pt kicker, 54pt
@@ -1549,7 +1576,8 @@ class ExhibitDeck:
             title_runs = [(title_runs, WHITE)]
         acc = accent or CYAN
         runs = [[(t, title_size, (c if c is not None else acc), False) for (t, c) in title_runs]]
-        self.txt(s, 1.06, 2.95, 11.2, 1.5, runs, line_sp=1.05)
+        # title_w < 7.4 keeps a long title left of the inner rule at 8.64 (Apex, 24 Sep 2026)
+        self.txt(s, 1.06, 2.95, title_w, 1.5, runs, line_sp=1.05)
         if date_line:
             self.txt(s, 1.00, 5.71, 6.61, 0.27, date_line, size=12, color=WHITE)
         return s
