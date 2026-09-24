@@ -87,6 +87,79 @@ Reference build: `Engagement/SNB Capital/Output/build_snbc_journey_maps_pptx.py`
 - **Story page** — who → problem → what we did → what it proved, one client story per slide,
   anonymised ("a UK wealth manager we are implementing now").
 
+## Data exhibits (T17-class — the v3.2 chart layer, mined from the TD 1Mn-calls deck, Sep 2026)
+
+**Form follows message (rule, same weight as the type scale):** if the slide's claim is a
+magnitude, trend, ranking, share or distribution, the exhibit MUST be a drawn chart from this
+section — never boxes. Boxes are for structure, sequence and quality comparisons. Charts are
+DRAWN (flat shapes + freeform polylines via the engine) — never native PowerPoint chart parts.
+Runnable reference: `example_data_build.py` (all seven, neutral content).
+
+| # | Pattern | Use when | Build with |
+|---|---------|----------|------------|
+| T17 | **Data slide + so-what rail** | Any chart slide needing its argument beside it | exhibit at x=1.0..9.6 + `d.so_what_rail()` (2-3 `hero_stat`s over an `implication_card`; coral stat = the tension). See S1/S2 |
+| T18 | **Column chart** | A magnitude over time or categories | `d.bars()` — value labels above bars ARE the data (no y-axis, no gridlines), muted deltas under them, intensity ramp `mode='time'` (light→BLUE) or `'rank'`; `hi` bar + label in full BLUE |
+| T19 | **Line panel(s)** | A trend, an inflection, a divergence | `d.line_panel()` — series label ON the panel, annotated peaks/troughs (dot + bold value + muted phrase), ticks under the LAST panel only; stack two thin panels over one dual-axis chart |
+| T20 | **Pulse-panel grid** | "We see live telemetry" operational credibility | `d.panel_grid()` of `pulse_panel`s — themed top bars (blue = day job, coral = friction, deep navy = growth), sparkline + observed range per card; takeaway callouts with tick bars beneath. See S3 |
+| T21 | **Double-click stage board** | One lever/use-case suite, end to end | `d.frame_band("OPPORTUNITY", …)` top → `d.stage_column()`s (numbered plays, bold lead + muted body) → navy solution rail → `d.frame_band("VALUE", …)` bottom. See S4 |
+| T22 | **Swimlane wave roadmap** | Capability roadmap gated by evidence, not dates | `d.lane_row()` headers left × wave columns; `d.chip()` use-cases (fill intensity = commitment), per-wave value notes in blue text, coral `d.diamond()` gates ON a bottom axis, labels under it. See S5 |
+| T23 | **Dot grid, codified** | "x of y" share messages (T09 now has an engine call) | `d.dot_grid()` — filled from the bottom row up + tick-bar hero line "= x of y". See S6 |
+
+Rail geometry (T17): rail x=9.98, w=2.70 (ends 12.68, clear of the right hairline at 12.760);
+exhibit keeps to x=1.0..9.6. Hero stats: number + tick in the SAME color, 30pt regular (never
+bold); the implication card fills down to y=6.30 and never crosses the footnote hairline.
+
+### Comparison exhibits (T24-T29 — the v3.3 layer; sources: MGI/BCG grammar via the round-2
+### mid-year mining, IBCS attainment discipline, JPM investor-day walk, HTML-engine parity)
+
+Runnable reference: `example_charts_build.py` (all six, neutral content).
+
+| # | Pattern | Use when | Build with |
+|---|---------|----------|------------|
+| T24 | **Waterfall (target walk)** | A number walks to another via named moves | `d.waterfall()` — totals NAVY; pass `positive=` the GOOD direction (BLUE), the honest counterweight goes CORAL (on a cost walk `positive='down'`); dashed step lines carry the levels |
+| T25 | **Bullet bars (attainment)** | Actuals vs plan/target, mixed units welcome | `d.bullet_bars()` — IBCS-style: light track, BLUE actual, NAVY plan tick at a fixed fraction so each row scales to ITS OWN plan and over-plan rows visibly cross the tick; deltas colored by direction |
+| T26 | **Paired From-To bars** | Current vs with-Backbase as data, not prose | `d.paired_bars()` — From = BLUE4 muted, To = BLUE bold, legend top-right; add `d.growth_arrow()` across the To-bars for the average lift (JPM CAGR style) |
+| T03 | **Segmented to-scale bar** — now engine-backed | One total split into parts | `d.segbar()` — widths strictly proportional, display inside segments, names below, total right; label only segments above ~8% share (group the tail) |
+| T05 | **Quadrant bubble** — now engine-backed | Two measures pick the priority order | `d.quadrant()` — target zone tinted, dashed midlines, uppercase zone captions, uniform BLUE dots, `move=` draws the dashed sequencing arrow |
+| T08 | **Milestone strip** — now engine-backed | 3-4 big numbers on a journey | `d.milestone_strip()` — oversized numerals over gate diamonds on one line, optional navy band beneath |
+
+Annotation helper: `d.growth_arrow(x1,y1,x2,y2, label)` — arrowed connector with a bold
+label above the midpoint; `dash='dash'` for the quadrant move arrow.
+
+### Evidence exhibits (T30-T39 — the v3.4 layer; grammar mined from the BCG archive,
+### re-expressed in exhibit tokens: good/covered = BLUE family, gap = CORAL, never green)
+
+Runnable reference: `example_bcg_build.py` (all of them, neutral content). Full mining:
+`knowledge/design-system/claude-design-exhibit-kit/EXHIBIT_MINING_ROUND4_BCG.md`.
+
+**Serial-template law:** when a deck profiles N comparable things (players, vendors,
+journeys, pillars), build ONE template slide and repeat it N times — never redesign per
+item. Kicker carries the series position ("player profile 3 of 9").
+
+| # | Pattern | Use when | Build with |
+|---|---------|----------|------------|
+| T30 | **Harvey ball** | One verdict per cell in ledgers | `d.harvey(x,y,d,frac)` — quarter steps, BLUE on TINT2 |
+| T31 | **Evaluation matrix** | Vendors/options x gating criteria | `d.eval_matrix()` — logo or clean-text columns, monogram criteria rows, harvey cells, legend on. See S2 |
+| T32 | **Logo chip / wall** | Market maps, "works with" rails, credential walls | `d.logo_chip()` (image, or clean-text fallback — never fabricate a logo), `d.logo_wall()`; group with header chips + count ovals. See S3 |
+| T33 | **Fact rail** | Dossier spine: the who/what/where of a profiled thing | `d.fact_rail()` — monogram square + bold label + muted value |
+| T34 | **Leader note** | Annotating a product shot, screen, or diagram | `d.leader_note()` — dashed line to a bold-lead floating note |
+| T35 | **Tile grid** | N parallel moves/themes/features, uniform weight | `d.tiles()` — accent top bars carry meaning (coral = the dependency/risk); never stretch tiles. See S4 |
+| T36 | **Agenda tracker rail** | Section navigation; re-shown each chapter, light moved | `d.agenda_rail()`. See S5 |
+| T37 | **Ring stat** | 1-5 proof numbers without a chart | `d.ring_stat()` — open circle, bold value, caption below |
+| T38 | **RAG coverage matrix** | OOTB vs configuration vs custom vs gap boards | `d.rag_matrix()` — BLUE covered / BLUE4 partial / CORAL gap / TINT2 n-a, legend mandatory. See S6 |
+| T39 | **Status tag** | Honesty labels top-right | `d.tag_chip()` — ILLUSTRATIVE / PRELIMINARY / NOT EXHAUSTIVE (coral dashed), BACKUP (tint) |
+
+Composable recipes (no primitive needed — see the round-4 mining doc): player dossier
+one-pager (S1) · vendor profile 4-up · architecture coverage shading (chip the blocks of a
+diagram BLUE/BLUE4/CORAL by OOTB fit) · architecture navigator breadcrumb · phase x
+activity matrix with ramped headers · funnel strip with ring counts · press/credential
+wall · journey teardown kit · workshop exercise card (Objective band + Exercise/Hints/
+Output columns) · From→To icon ledger.
+
+Logo rule: market/vendor/ecosystem logos are allowed on landscape and evaluation
+exhibits (image assets supplied per deck); the CLIENT's own account name stays clean
+text in client decks. Never fabricate a logo — text chips until assets exist.
+
 ## Credibility architecture (what made these decks defensible)
 
 - **Coral dashed badge** = ILLUSTRATIVE / OUTSIDE-IN / still-open. Never present an assumed

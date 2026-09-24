@@ -41,15 +41,24 @@ explicitly asked for Frontline.
 
 ## Workflow
 
-1. **Read the content input** (transcript, notes, bullets, upstream outputs). Draft the
-   storyline first as a list of action titles — each a full sentence a person would say out
-   loud. If the titles don't tell the story on their own, fix the storyline before building.
+1. **Read the content input** (transcript, notes, bullets, upstream outputs). Then draft
+   the storyline BEFORE any slide: pick the archetype and write the title chain per
+   `references/storyline-patterns.md` (six archetypes + title grammar), and run its
+   **flip test** — the titles read alone, in order, must argue the whole case. Each title
+   a full sentence a person would say out loud. If the titles don't tell the story on
+   their own, fix the chain before building.
 2. **Pick one exhibit per slide** from `references/exhibit-catalog.md`. Match the exhibit to
    the content shape (ranked magnitudes → sorted bars; "x of y" → dot grid; plan → waves).
-   Never invent a new visual grammar mid-deck. The richest exemplars are the SNB Capital
-   builds (`Engagement/SNB Capital/Output/build_snbc_vc_pptx.py` and
-   `build_snbc_journey_maps_pptx.py`) — the look Shyam ratified as default; lift slide
-   functions from there before composing from scratch.
+   **Form follows message (v3.2 law):** if the slide's claim is a magnitude, trend, ranking,
+   share or distribution, the exhibit MUST be a drawn chart (T17-T23 layer: `d.bars`,
+   `d.line_panel`, `d.panel_grid`, `d.dot_grid`) — never boxes; boxes carry structure,
+   sequence and quality comparisons only. Data slides carry the so-what rail
+   (`d.so_what_rail`: hero stats + implication card) unless the slide ends in a takeaway
+   band. Never invent a new visual grammar mid-deck. The richest exemplars are the SNB
+   Capital builds (`Engagement/SNB Capital/Output/build_snbc_vc_pptx.py` and
+   `build_snbc_journey_maps_pptx.py`) — the look Shyam ratified as default — plus
+   `scripts/example_data_build.py` for the chart layer; lift slide functions from there
+   before composing from scratch.
 3. **Write the build script.** Copy `scripts/example_build.py` next to your output as
    `build_<deck>_pptx.py` and compose slide by slide. The example imports the engine with
    `sys.path.insert(0, <dir of the script>)` — when your copy lives outside the skill
@@ -103,8 +112,16 @@ the engine already implements it.
 
 ## Files in this skill
 
-- `scripts/exhibit_pptx.py` — the engine: palette, chrome v3, primitives, save pass. Locked.
+- `scripts/exhibit_pptx.py` — the engine: palette, chrome v3, primitives, save pass, and the
+  v3.2 data-exhibit layer (bars, line panels, sparklines, dot grid, so-what rail). Locked.
 - `scripts/example_build.py` — runnable 6-slide neutral example; copy as your starting point.
+- `scripts/example_data_build.py` — runnable 6-slide chart-layer example (T17-T23); copy its
+  slides for any data-led deck.
+- `scripts/example_charts_build.py` — runnable 6-slide comparison-layer example (T24-T29:
+  waterfall, paired bars + growth arrow, bullet bars, segbar, quadrant, milestone strip).
+- `scripts/example_bcg_build.py` — runnable 6-slide evidence-layer example (T30-T39:
+  player dossier, harvey evaluation matrix, logo walls, tile grid, agenda tracker,
+  RAG coverage matrix, honesty tags). Serial-template law lives here.
 - `references/exhibit-catalog.md` — the validated exhibit patterns and when to use each.
 - `references/chrome-spec.md` — the XML-verified chrome numbers (verification only).
 - `assets/backbase_logo_black.png` — footer wordmark (light slides).
