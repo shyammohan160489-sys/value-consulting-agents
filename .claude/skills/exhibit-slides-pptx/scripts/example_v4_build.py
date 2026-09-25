@@ -43,7 +43,7 @@ if not LOGO:
                                               "placeholder_client_logo.png"))
 
 # The v4 look: v4 palette, three-rule frame, 9pt navy kicker, 28pt regular title, client logo.
-d = X.ExhibitDeck(look='v4', client_logo=LOGO)
+d = X.ExhibitDeck(look='v4', scale='report', client_logo=LOGO)
 NAVY, BLUE, BLUE3, BLUE4, TINT, TINT2, GREY, HAIR, MUT, FN, WHITE = (
     d.pal.NAVY, d.pal.BLUE, d.pal.BLUE3, d.pal.BLUE4, d.pal.TINT, d.pal.TINT2, d.pal.GREY,
     d.pal.HAIR, d.pal.MUT, d.pal.FN, d.pal.WHITE)

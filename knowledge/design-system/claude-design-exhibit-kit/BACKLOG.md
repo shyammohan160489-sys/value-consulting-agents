@@ -106,3 +106,6 @@ Lesson: build from the template/reference deck's XML, never re-derive chrome fro
 - Connectors: strip the <p:style> element AND append empty <a:effectLst> — otherwise the theme effectRef re-adds a line shadow in LibreOffice/Google renders.
 - Survives Google Slides round-trip (tested: geometry, freeform, PNG logo all preserved).
 | 27 | Text metrics: `text_w()` measures Libre Franklin from the repo TTFs; for exact QA renders install the full family from Google Fonts (the repo's webfont TTFs register as "Libre Franklin Thin" and LibreOffice falls back to Light/Bold) | tooling | OPEN, note |
+| 28 | STAGE scale (engine v4.5): Shyam wants the summit deck's readability; stage (32pt title, 12pt kicker, 12–13pt body, 15pt statement, 12pt footnote, navy secondary text, navy rule above the footer) is the default, report kept for dense documents; the recipes scale type and pitches by 4/3. Today's dense builds (company view, the seven kit decks, the samplers) pinned to `scale='report'` | engine | ✅ SHIPPED 2026-09-25 |
+| 29 | Re-lay the CB enablement kit at stage scale (about five rows a page, more pages) once Shyam confirms after seeing the stage/report comparison | kit | WAITING for Shyam |
+

@@ -16,7 +16,7 @@ PHOTOS = None
 if "--photos" in sys.argv:
     PHOTOS = sys.argv[sys.argv.index("--photos") + 1]
 
-d = X.ExhibitDeck(look='apex')
+d = X.ExhibitDeck(look='apex', scale='report')   # report scale: these pages replicate the dense report
 P = d.pal
 NAVY, BLUE, BLUE3, BLUE4, TINT, TINT2, GREY, CYAN, CORAL, MUT, FN, HAIR, HAIR_ROW, CARD_LINE, LINE_SOFT, DASHC, SUB_D, WHITE = (
     P.NAVY, P.BLUE, P.BLUE3, P.BLUE4, P.TINT, P.TINT2, P.GREY, P.CYAN, P.CORAL, P.MUT, P.FN, P.HAIR, P.HAIR_ROW,
@@ -262,6 +262,7 @@ d.footnote(s, "Illustrative split. The measured reports carried no pie; the form
 d.notes(s, "T66 donut: block arcs clockwise from 12 o'clock; thickness=1.0 gives the pie. Legend to the right with swatch, label and share.")
 
 # ---------------- 12 · the production runs (summit deck page 8)
+d.scale, d.tf = 'stage', 4.0 / 3.0      # the two summit pages are stage-scale by nature
 s = d.slide()
 d.chrome(s, "The practitioner's view · Backbase production deployments · summit page 8", "Where the needle moved, and what it took")
 d.proof_ledger(s, 0.98, 2.43, 8.19, [
@@ -293,6 +294,8 @@ d.hero_column(s, 10.14, 2.26, "4 of 4", "rows have live examples on this contine
               "The prize is the top two rows. $1.4tn+ moved through mobile money in Africa last year (1).", num_size=55)
 d.footnote(s, "Families from Backbase programmes, 2024 to 2026. Rows are design choices. 1 GSMA Mobile Money 2026, Sub-Saharan scope; the continent total is higher.", size=12, y=6.62)
 d.notes(s, "T69 loop_matrix + T70 hero_column: summit page 9 rebuilt. Value pools as chips on the autonomy rows; the hero counts the rows with live examples.")
+
+d.scale, d.tf = 'report', 1.0
 
 # ---------------- 12 · team page (summit deck page 10)
 photos = [None, None, None]

@@ -46,15 +46,35 @@ Never mix tokens between looks. Do not ask which look: build Apex unless the dec
 existing v3 series or the user names Frontline. Nedbank's own decks moved to the Claude Design
 look in September 2026, so new Nedbank decks are Apex.
 
+## Two scales, one look (Shyam, 25 Sep 2026: "the Claude Design original is cleaner, easier to read")
+
+Claude Design produced two type scales and both are measured. **Stage** is the default.
+
+| | **Stage (default)** | **Report** |
+|---|---|---|
+| Measured from | the McKinsey summit tech talk, 11 pages | the Nedbank IGNITE report, 80 pages |
+| Call | `ExhibitDeck(look='apex')` | `ExhibitDeck(look='apex', scale='report')` |
+| Title | 32pt at (0.98, 1.36); drops to 28pt only when 32 will not fit one line | 28pt at (1.00, 1.10) |
+| Kicker | 12pt navy at (0.98, 0.97) | 9pt navy at (1.00, 0.86) |
+| Body | 12 and 13pt, navy; 15pt statement line; 18pt values; 36pt stat numbers | 9pt, muted secondary text; 12pt statement; 15pt values; 33pt stat numbers |
+| Footnote | 12pt navy at 6.52, two lines at most | 8.5pt grey at 6.55 |
+| Footer | a navy rule at 6.98 above the wordmark | the grey hairline at 7.04 |
+| Rows per page | about five | eight to ten |
+
+The measured recipes scale their type and their row pitches by the deck's factor (4/3 at stage),
+so a page built at stage holds fewer rows and reads from the back of the room. Use report only
+for a dense reference document a reader studies, never for a room. The five pages of
+`scripts/example_apex_stage_build.py` show the same content at both scales.
+
 ## The Apex look, measured (`references/visual-grammar-v4.md` has every number)
 
 | Element | Apex |
 |---|---|
 | Frame | rules `D2D4D8` at y 0.573, x 0.573, y 7.042; step glyph at (0.406, 0.406) in blue |
-| Kicker | 9pt navy, uppercase, tracked, at (1.00, 0.86): `01 · WHAT WE FOUND` |
-| Title | 28pt regular navy at (1.00, 1.10), one line, no trailing period |
+| Kicker | 12pt navy uppercase at (0.98, 0.97) at stage; 9pt at (1.00, 0.86) at report: `01 · WHAT WE FOUND` |
+| Title | 32pt regular navy at (0.98, 1.36) at stage, 28pt at (1.00, 1.10) at report; one line, no trailing period |
 | Footer | black wordmark at 11.35 + 9pt grey page number at 12.55; no divider |
-| Footnote | 8.5pt `6E7B91` at y 6.55, no hairline above it |
+| Footnote | 12pt navy at 6.52 at stage; 8.5pt `6E7B91` at 6.55 at report; no hairline above it |
 | Cards | `F3F6F9` faint · `E5EBFF` light · `7D9DFF` mid · `091C35` dark; 9pt titles, 7.5pt sub-lines, count badges |
 | Numbers | 33pt blue on tint, cyan `69FEFF` on dark; 13.5pt mini-stats with 8.25pt suffixes |
 | So-what | a hero number or a 12pt statement line (navy lead, blue rest); a takeaway band is rare |
@@ -143,12 +163,12 @@ need to verify a detail or extend the engine; the engine already implements both
 
 ## Content and voice rules (same weight as the geometry)
 
-- **Titles are claims**, short and human, 28pt regular, ONE line, about 60 characters at most,
-  **no trailing period** (Apex). The test: say it aloud; if you would not say the sentence to
+- **Titles are claims**, short and human, 32pt regular at stage (28pt at report), ONE line, about
+  52 characters at 32pt, **no trailing period** (Apex). The test: say it aloud; if you would not say the sentence to
   the room, it does not go on the slide. Numbers go into the title when the claim is numeric.
 - **Kickers count the chapter**: `01 · The shift`, `02 · What we sell`; serial kickers count
   the series ("3 of 9").
-- **Footnotes**: 8.5pt at y 6.55, at most two lines (about 230 characters), numbered sources.
+- **Footnotes**: 12pt at stage, two lines at most (about 200 characters); 8.5pt at report. Numbered sources.
 - **Statement lines** carry the so-what: a navy lead of a few words, a blue remainder, one
   sentence, one line. Use a hero number when the so-what is a figure.
 - Short sentences. Periods, not semicolon chains. No stacked triads. No consultant
@@ -186,6 +206,8 @@ need to verify a detail or extend the engine; the engine already implements both
   line for a side-by-side check. Copy it as your starting point.
 - `scripts/example_apex_charts_build.py`: the chart sampler, fifteen pages: every chart recipe
   rebuilt from its reference page, the donut and pie, the two summit pages, the team page and the close.
+- `scripts/example_apex_stage_build.py`: five pages built at both scales, stage and report, for the
+  type-size trade-off.
 - `scripts/example_build.py`, `example_data_build.py`, `example_charts_build.py`,
   `example_bcg_build.py`: the v3-era examples for the data, comparison and evidence layers;
   every helper in them draws in Apex tokens under `look='apex'`.

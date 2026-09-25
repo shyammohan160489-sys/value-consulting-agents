@@ -5,6 +5,15 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v4.5 (25 Sep 2026, the STAGE scale — Shyam: "the Claude Design original is cleaner,
+  easier to read"): two Claude Design scales were measured, the report (Nedbank, 28pt
+  title, 9pt body, 8.5pt footnote) and the stage (summit talk, 32pt title at 1.36, 12pt
+  kicker, 12 to 13pt body, 15pt statement, 12pt footnote, navy secondary text, a navy
+  rule above the footer). ExhibitDeck(look='apex', scale='stage') is now the default;
+  scale='report' keeps the dense grammar. The measured recipes scale their type and
+  their row pitches by the deck's type factor (4/3 at stage), so a page holds fewer
+  rows at stage and the type reads from the back of the room.
+
 v4.4 (25 Sep 2026, the two summit pages Shyam pointed at): proof_ledger (page 8, the
   production runs with a resolution bar per row), loop_matrix (page 9, the value pools as
   chips on the autonomy rows) and hero_column (the big number, caption and implication
@@ -268,7 +277,7 @@ class ExhibitDeck:
     """One deck, exhibit chrome baked in. All coordinates in inches on 13.333x7.5."""
 
     def __init__(self, logo=LOGO_BLACK, look='v3', palette=None, client_logo=None,
-                 client_logo_box=(12.6, -0.08, 0.6, 0.69), frame=True):
+                 client_logo_box=(12.6, -0.08, 0.6, 0.69), frame=True, scale=None):
         """look='v3' (default, the locked 28 Jul 2026 chrome) or 'v4' (the Claude Design look,
         18 Sep 2026: v4 palette, three-rule frame, 9pt navy kicker, 28pt regular title, grey
         page number, client logo top right). palette forces 'v3' or 'v4' regardless of look
@@ -280,6 +289,11 @@ class ExhibitDeck:
         self.look_name = look
         look = LOOK_ALIASES[look]
         self.look = look
+        # Apex type scale (v4.5): 'stage' (summit deck, default) or 'report' (the dense grammar).
+        if scale not in (None, 'stage', 'report'):
+            raise ValueError("scale must be 'stage' or 'report'")
+        self.scale = (scale or 'stage') if look == 'v4' else 'report'
+        self.tf = (4.0 / 3.0) if self.scale == 'stage' else 1.0
         if palette or look == 'v4':
             set_palette(LOOK_ALIASES.get(palette, palette) if palette else 'v4')
         self.pal = palette_namespace()
@@ -554,12 +568,15 @@ class ExhibitDeck:
         v4: no hairline, 8.5pt FN text at y=6.55 (the measured footnote). Pass y, size,
         color or rule to override either look."""
         look = getattr(self, 'look', 'v3')
+        stage = (look == 'v4' and getattr(self, 'scale', 'report') == 'stage')
         if y is None:
-            y = 6.50 if look == 'v3' else 6.55
+            y = 6.50 if look == 'v3' else (6.52 if stage else 6.55)
         if rule is None:
             rule = (look == 'v3')
         if size is None:
-            size = 9.5 if look == 'v3' else 8.5
+            size = 9.5 if look == 'v3' else (12 if stage else 8.5)
+        if stage and color is None:
+            color = NAVY
         color = FN if color is None else color
         if rule:
             self.hline(s, 1.0, y + 0.06, 12.708, y + 0.06)
@@ -651,9 +668,10 @@ class ExhibitDeck:
         text) draws a small 8pt note inside that column's top. Returns
         [(center_x, bar_top_y)] for annotations."""
         apex = (getattr(self, 'look', 'v3') == 'v4')
-        val_size = val_size or (15 if apex else 19)
-        delta_size = delta_size or 10.5
-        cat_size = cat_size or (9 if apex else 11.5)
+        f = self.tf if apex else 1.0
+        val_size = (val_size or (15 if apex else 19)) * f
+        delta_size = (delta_size or 10.5) * f
+        cat_size = (cat_size or (9 if apex else 11.5)) * f
         norm = []
         for it in items:
             it = list(it) + [None] * (5 - len(it))
@@ -665,7 +683,7 @@ class ExhibitDeck:
             hi = n - 1
         has_delta = any(d for (_, _, _, d, _) in norm)
         if apex:
-            top_zone = 0.62 if has_delta else 0.34
+            top_zone = (0.62 if has_delta else 0.34) * f
         else:
             top_zone = 0.30 + (0.24 if has_delta else 0.0)
         baseline = y + h - (0.40 if apex else 0.34)
@@ -702,7 +720,7 @@ class ExhibitDeck:
                 self.txt(s, x + i * pitch, baseline + 0.07, pitch, 0.26, cat, size=cat_size,
                          color=NAVY, align=PP_ALIGN.CENTER, wrap=False)
             if badge and badge[0] == i:
-                self.txt(s, bx - 0.30, bt + 0.06, bw + 0.60, 0.20, badge[1], size=8, color=NAVY,
+                self.txt(s, bx - 0.30, bt + 0.06, bw + 0.60, 0.20, badge[1], size=8 * f, color=NAVY,
                          align=PP_ALIGN.CENTER, wrap=False)
             out.append((bx + bw / 2.0, bt))
         self.hline(s, x, baseline, x + w, baseline, color=NAVY, wpt=(0.75 if apex else 1.1))
@@ -1463,19 +1481,30 @@ class ExhibitDeck:
     def _chrome_v4(self, s, kicker, title, page, title_size, frame, client_logo, client_logo_box):
         """The v4 chrome: three rules + corner mark, 9pt navy kicker, 28pt regular title without a
         trailing period, wordmark at 11.35, 9pt grey page number, client logo top right."""
+        stage = (getattr(self, 'scale', 'report') == 'stage')
         if frame:
             self.hline(s, 0, 0.573, W, 0.573)
             self.hline(s, 0.573, 0, 0.573, 7.042)
-            self.hline(s, 0, 7.042, W, 7.042)
+            if stage:
+                self.rect(s, 0, 6.98, W, 0.01, fill=NAVY)      # the summit deck's navy rule above the footer
+            else:
+                self.hline(s, 0, 7.042, W, 7.042)
             self.step_glyph(s, 0.406, 0.406, 0.167, 0.166, BLUE)
         if kicker:
-            self.txt(s, 1.0, 0.86, 8.0, 0.22, kicker.upper(), size=9, color=NAVY, track="60")
+            if stage:
+                self.txt(s, 0.98, 0.97, 9.0, 0.23, kicker.upper(), size=12, color=NAVY, track="40")
+            else:
+                self.txt(s, 1.0, 0.86, 8.0, 0.22, kicker.upper(), size=9, color=NAVY, track="60")
         if title:
             t = title.rstrip()
             if t.endswith(".") and not t.endswith("..."):
                 t = t[:-1]                      # Apex titles carry no trailing period
-            self.txt(s, 1.0, 1.10, 11.9, 0.9, t, size=(28 if title_size is None else title_size),
-                     color=NAVY, bold=False, line_sp=1.04)
+            if stage:
+                ts = title_size or (32 if text_w(t, 32) <= 11.7 else 28)
+                self.txt(s, 0.98, 1.36, 11.95, 0.75, t, size=ts, color=NAVY, bold=False, line_sp=1.04)
+            else:
+                self.txt(s, 1.0, 1.10, 11.9, 0.9, t, size=(28 if title_size is None else title_size),
+                         color=NAVY, bold=False, line_sp=1.04)
         if self.logo and os.path.exists(self.logo):
             s.shapes.add_picture(self.logo, I(11.35), I(7.185), I(1.067), I(0.173))
         else:
@@ -1491,25 +1520,28 @@ class ExhibitDeck:
         right-aligned at (x+w-0.50, +0.05), 7.5pt sub-line at (+0.10, +0.29). h=0.50 gives the
         system tile (8pt title, no sub). weight: faint | light | mid | dark | blue | outline |
         dashed | grey | white (see _weight)."""
+        f = self.tf
         fill, line, dash, tc, sc = self._weight(weight)
         self.rect(s, x, y, w, h, fill=fill, line=line, line_w=0.75, dash=dash)
-        ts = title_size or (9 if h >= 0.6 else 8)
+        ts = (title_size or (9 if h >= 0.6 * f else 8)) * f
+        sub_size, count_size = sub_size * f, count_size * f
         tw = w - (0.37 if count is not None else 0.20)
-        th = 0.21 if sub else min(0.38, h - 0.14)
+        th = 0.21 * f if sub else min(0.38 * f, h - 0.14)
         self.txt(s, x + 0.10, y + 0.07, tw, th, title, size=ts, color=tc, line_sp=1.0)
         if count is not None:
             self.txt(s, x + w - 0.50, y + 0.05, 0.44, 0.21, str(count), size=count_size, color=tc,
                      align=PP_ALIGN.RIGHT, wrap=False)
         if sub:
-            self.txt(s, x + 0.10, y + 0.29, w - 0.16, max(0.22, h - 0.33), sub, size=sub_size,
+            self.txt(s, x + 0.10, y + 0.29 * f, w - 0.16, max(0.22, h - 0.33 * f), sub, size=sub_size,
                      color=sc, line_sp=1.05)
         return y + h
 
-    def card_row(self, s, x, y, cards, unit_w=1.62, h=0.62, gap=0.11, cols=None, row_gap=0.06,
+    def card_row(self, s, x, y, cards, unit_w=1.62, h=None, gap=0.11, cols=None, row_gap=0.06,
                  count_breaks=None):
         """A row of cards. cards: dicts {title, sub, count, weight, span}. A card without a weight
         takes it from its count (weight_for). span=2 makes the double card (2 units + gap). With
         cols, the row wraps after that many units. Returns the y under the last row."""
+        h = (0.62 * self.tf) if h is None else h
         cx, cy, used = x, y, 0
         for c in cards:
             span = int(c.get('span', 1))
@@ -1523,18 +1555,20 @@ class ExhibitDeck:
             used += span
         return cy + h
 
-    def lane_grid(self, s, x, y, lanes, label_w=1.55, unit_w=1.62, h=0.62, gap=0.11,
+    def lane_grid(self, s, x, y, lanes, label_w=1.55, unit_w=1.62, h=None, gap=0.11,
                   lane_gap=0.13, count_breaks=None):
         """Slide 15: labelled lanes, cards to the right. lanes: dicts {label, sub, cards} plus
         optional per-lane unit_w, h, gap, cols, row_gap. Label 8pt BLUE uppercase at (+0.06),
         sub 8pt MUT at (+0.25); cards start at x + label_w. Returns the y under the last lane."""
+        f = self.tf
+        h = (0.62 * f) if h is None else h
         yy = y
         for ln in lanes:
             lh = ln.get('h', h)
-            self.txt(s, x, yy + 0.06, label_w - 0.05, 0.18, ln['label'].upper(), size=8, color=BLUE,
+            self.txt(s, x, yy + 0.06, label_w - 0.05, 0.18, ln['label'].upper(), size=8 * f, color=BLUE,
                      track="40", wrap=False)
             if ln.get('sub'):
-                self.txt(s, x, yy + 0.25, label_w + 0.04, 0.21, ln['sub'], size=8, color=MUT, wrap=False)
+                self.txt(s, x, yy + 0.25 * f, label_w + 0.04, 0.21, ln['sub'], size=8 * f, color=MUT, wrap=False)
             bottom = self.card_row(s, x + label_w, yy, ln['cards'], unit_w=ln.get('unit_w', unit_w),
                                    h=lh, gap=ln.get('gap', gap), cols=ln.get('cols'),
                                    row_gap=ln.get('row_gap', 0.06), count_breaks=count_breaks)
@@ -1544,6 +1578,8 @@ class ExhibitDeck:
     def weight_legend(self, s, x, y, items, lead="Reused by", note=None, note_right=12.60, size=8.5):
         """The fill-weight legend (slide 15, y=6.40): lead 8.5 MUT, 0.16 swatches, labels,
         optional right-aligned note in FN. items: [(weight, label)]."""
+        f = self.tf
+        size = size * f
         xx = x
         if lead:
             self.txt(s, xx, y, 0.98, 0.21, lead, size=size, color=MUT, wrap=False)
@@ -1564,14 +1600,18 @@ class ExhibitDeck:
         """Slide 6: a 2.73 x 2.22 stat block. TINT2 (or NAVY) card, optional 0.25 icon top left,
         33pt number (BLUE on tint, CYAN on dark) and 9pt caption bottom-anchored 0.17 above the
         card's bottom edge. cap_lines overrides the estimated caption line count."""
+        f = self.tf
+        num_size, cap_size = num_size * f, cap_size * f
         self.rect(s, x, y, w, h, fill=(NAVY if dark else TINT2))
         if icon and os.path.exists(icon):
             s.shapes.add_picture(icon, I(x + 0.21), I(y + 0.21), I(0.25), I(0.25))
         cw = w - 0.33
         lines = cap_lines or self._est_lines(caption, cw, cap_size)
-        cap_h = 0.175 * lines + 0.045
+        cap_h = 0.175 * f * lines + 0.045
         cap_y = y + h - 0.17 - cap_h
-        self.txt(s, x + 0.21, cap_y - 0.56, w - 0.19, 0.50, number, size=num_size,
+        while num_size > 14 and text_w(number, num_size) > w - 0.40:
+            num_size -= 1.5                                   # a long number drops until it fits one line
+        self.txt(s, x + 0.21, cap_y - 0.56 * f, w - 0.19, 0.50 * f, number, size=num_size,
                  color=(CYAN if dark else BLUE), wrap=False)
         self.txt(s, x + 0.21, cap_y, cw, cap_h, caption, size=cap_size,
                  color=(WHITE if dark else NAVY), line_sp=1.1)
@@ -1593,9 +1633,14 @@ class ExhibitDeck:
         """Slides 27 and 37: the dark block with the cyan number. layout='side' puts the caption
         to the right of the number (5.83 x 0.83 block); 'stack' puts it under (3.65 x 1.28).
         dark=False gives the tinted companion (TINT2 block, BLUE number, NAVY caption)."""
+        f = self.tf
+        num_size, cap_size = num_size * f, cap_size * f
         self.rect(s, x, y, w, h, fill=(NAVY if dark else TINT2))
         nc = CYAN if dark else BLUE
         cc = WHITE if dark else NAVY
+        limit = (2.56 if layout == 'side' else w - 0.31)
+        while num_size > 14 and text_w(number, num_size) > limit:
+            num_size -= 1.5
         nh = num_size / 72.0 * 1.1
         if layout == 'side':
             self.txt(s, x + 0.21, y + 0.19, 2.56, nh, number, size=num_size, color=nc, wrap=False)
@@ -1611,12 +1656,14 @@ class ExhibitDeck:
                   label_size=7.5, value_size=13.5, suffix_size=8.25):
         """Slides 31 and 44: 7.5pt uppercase label over a 13.5pt value, optional small suffix
         (a delta in BLUE, a unit in NAVY). Returns the y under the value."""
+        f = self.tf
+        label_size, value_size, suffix_size = label_size * f, value_size * f, suffix_size * f
         lc = WHITE if dark else NAVY
-        self.txt(s, x, y, w, 0.17, label.upper(), size=label_size, color=lc, track="20", wrap=False)
+        self.txt(s, x, y, w, 0.17 * f, label.upper(), size=label_size, color=lc, track="20", wrap=False)
         runs = [(value, value_size, lc, False)]
         if suffix:
             runs.append((" " + suffix, suffix_size, suffix_color or lc, False))
-        vy = y + 0.12 + max(0.0, value_size - 13.5) * 0.0035
+        vy = y + 0.12 * f + max(0.0, value_size - 13.5 * f) * 0.0035
         self.txt(s, x, vy, w, value_size / 72.0 * 1.35, [runs], line_sp=1.0)
         return vy + value_size / 72.0 * 1.35
 
@@ -1644,10 +1691,12 @@ class ExhibitDeck:
             line, dash = DASHC, 'dash'
         return self.rect(s, x, y, w, h, fill=fill, line=line, line_w=0.75, dash=dash, round_=round_)
 
-    def statement_line(self, s, x, y, w, lead, rest, size=12, rest_color=None):
-        """The 12pt line under an exhibit (slides 10, 14): NAVY lead + BLUE (or MUT) rest."""
-        return self.txt(s, x, y, w, 0.41, [[(lead + " ", size, NAVY, False),
-                                            (rest, size, rest_color or BLUE, False)]], line_sp=1.15)
+    def statement_line(self, s, x, y, w, lead, rest, size=None, rest_color=None):
+        """The line under an exhibit (report slides 10, 14; summit page 9): NAVY lead + BLUE (or
+        MUT) rest. 12pt at report scale, 15pt at stage."""
+        size = size or (15 if getattr(self, 'scale', 'report') == 'stage' else 12)
+        return self.txt(s, x, y, w, size / 72.0 * 1.5, [[(lead + " ", size, NAVY, False),
+                                                        (rest, size, rest_color or BLUE, False)]], line_sp=1.15)
 
     # ---- pages and bands
     def cover_page(self, kicker, title_runs, date_line=None, client_logo=None, accent=None,
@@ -1746,6 +1795,8 @@ class ExhibitDeck:
     # ---- rows, columns, flows
     def numbered_rows(self, s, x, y, w, items, pitch=0.78, num_size=15, size=11.5, num_w=0.90):
         """Slide 5 (agenda): 15pt BLUE two-digit numbers, 11.5pt lines, CARD_LINE rules."""
+        f = self.tf
+        pitch, num_size, size = pitch * f, num_size * f, size * f
         yy = y
         self.rect(s, x, yy, w, 0.01, fill=CARD_LINE)
         for i, t in enumerate(items, 1):
@@ -1760,11 +1811,13 @@ class ExhibitDeck:
         """Slide 3: two bullet columns, muted on the left (from), navy with blue bullets on the
         right (to), a vertical rule between them carrying a 22pt blue arrow. Returns the y under
         the longer column."""
+        f = self.tf
+        pitch, size = pitch * f, size * f
         colw = 5.10 * (w / 11.6)
         lx, rx = x, x + 6.40 * (w / 11.6)
-        self.txt(s, lx, y, 4.0, 0.19, from_label.upper(), size=8.5, color=MUT, track="40", wrap=False)
-        self.txt(s, rx, y, 4.0, 0.19, to_label.upper(), size=8.5, color=MUT, track="40", wrap=False)
-        yy = y + 0.28
+        self.txt(s, lx, y, 4.0, 0.19, from_label.upper(), size=8.5 * f, color=MUT, track="40", wrap=False)
+        self.txt(s, rx, y, 4.0, 0.19, to_label.upper(), size=8.5 * f, color=MUT, track="40", wrap=False)
+        yy = y + 0.28 * f
         n = max(len(from_items), len(to_items))
         for i in range(n):
             if i < len(from_items):
@@ -1785,22 +1838,24 @@ class ExhibitDeck:
     def pillar_row(self, s, x, y, w, items, label=None, name_size=11, body_size=8.5, rule=True):
         """Slide 3 (bottom): a rule, a section label, then N columns of 11pt BLUE name + 8.5pt
         muted body with vertical separators. items: [(name, body)]. Returns the y under it."""
+        f = self.tf
+        name_size, body_size = name_size * f, body_size * f
         yy = y
         if rule:
             self.rect(s, x, yy, w, 0.01, fill=CARD_LINE)
             yy += 0.12
         if label:
-            self.txt(s, x, yy, w, 0.19, label.upper(), size=8.5, color=MUT, track="40", wrap=False)
-            yy += 0.23
+            self.txt(s, x, yy, w, 0.19, label.upper(), size=8.5 * f, color=MUT, track="40", wrap=False)
+            yy += 0.23 * f
         n = max(1, len(items))
         pitch = (w + 0.20) / n
         for i, (name, body) in enumerate(items):
             cx = x + i * pitch
             self.txt(s, cx, yy, pitch - 0.2, 0.21, name, size=name_size, color=BLUE, wrap=False)
-            self.txt(s, cx, yy + 0.30, pitch - 0.37, 0.70, body, size=body_size, color=MUT, line_sp=1.12)
+            self.txt(s, cx, yy + 0.30 * f, pitch - 0.37, 0.70 * f, body, size=body_size, color=MUT, line_sp=1.12)
             if i:
-                self.rect(s, cx - 0.15, yy, 0.01, 0.80, fill=CARD_LINE)
-        return yy + 0.95
+                self.rect(s, cx - 0.15, yy, 0.01, 0.80 * f, fill=CARD_LINE)
+        return yy + 0.95 * f
 
     def share_bar(self, s, x, y, w, segments, h=0.85, notes=None, note_y=None, val_size=15,
                   lab_size=8.5, values='inside', total=None, total_size=22.5, total_pos='right',
@@ -1809,6 +1864,7 @@ class ExhibitDeck:
         with weights blue | dark | grey | light | mid. Value 15pt and label 8.5pt sit inside each
         segment (white on blue and dark). notes: [(lead, body, x, w, lead_colour)] drawn under
         the bar with vertical separators. Returns the y under the bar."""
+        f = self.tf if getattr(self, 'look', 'v3') == 'v4' else 1.0
         tot = float(sum(seg[0] for seg in segments)) or 1.0
         sx = x
         for (v, disp, label, weight) in segments:
@@ -1817,11 +1873,11 @@ class ExhibitDeck:
             self.rect(s, sx, y, sw, h, fill=fill)
             if values == 'above':
                 # report page 46: 9pt value above each segment, label under the bar
-                self.txt(s, sx, y - 0.27, max(0.5, sw), 0.22, disp, size=9, color=NAVY, wrap=False)
+                self.txt(s, sx, y - 0.27, max(0.5, sw), 0.22, disp, size=9 * f, color=NAVY, wrap=False)
                 if label and sw > 0.6:
-                    self.txt(s, sx, y + h + 0.06, sw, 0.20, label, size=lab_size, color=MUT, wrap=False)
+                    self.txt(s, sx, y + h + 0.06, sw, 0.20, label, size=lab_size * f, color=MUT, wrap=False)
             else:
-                self.txt(s, sx + 0.12, y + 0.12, max(0.3, sw - 0.12), 0.25, disp, size=val_size, color=tc,
+                self.txt(s, sx + 0.12, y + 0.12, max(0.3, sw - 0.12), 0.25, disp, size=val_size * f, color=tc,
                          wrap=False)
                 if label and sw > 0.9:
                     self.txt(s, sx + 0.12, y + 0.48, sw - 0.12, 0.21, label, size=lab_size, color=tc,
@@ -1831,7 +1887,7 @@ class ExhibitDeck:
             tdisp, tsub = (total if isinstance(total, (list, tuple)) else (total, None))[:2]
             if total_pos == 'below':
                 # report page 46: the 22.5pt total under the bar's right end, its unit beside it
-                runs = [[(tdisp, total_size, BLUE, False)] + ([(" " + tsub, 9, NAVY, False)] if tsub else [])]
+                runs = [[(tdisp, total_size * f, BLUE, False)] + ([(" " + tsub, 9 * f, NAVY, False)] if tsub else [])]
                 self.txt(s, x + w - 3.0, y + h + 0.08, 3.0, 0.45, runs, align=PP_ALIGN.RIGHT, wrap=False)
             else:
                 self.txt(s, x + w + 0.20, y + h / 2.0 - 0.30, 2.0, 0.45, tdisp, size=total_size, color=NAVY,
@@ -1840,7 +1896,7 @@ class ExhibitDeck:
                     self.txt(s, x + w + 0.20, y + h / 2.0 + 0.16, 2.0, 0.20, tsub, size=9, color=NAVY,
                              wrap=False)
         if label:
-            self.txt(s, x, y + h + 0.26, w - 3.0, 0.20, label, size=9, color=NAVY, wrap=False)
+            self.txt(s, x, y + h + 0.26, w - 3.0, 0.20, label, size=9 * f, color=NAVY, wrap=False)
         if notes:
             ny = note_y or (y + h + 0.40)
             for i, nt in enumerate(notes):
@@ -1855,19 +1911,20 @@ class ExhibitDeck:
     def step_flow(self, s, x, y, items, card_w=1.72, card_h=2.10, gap=0.26, arrow=True):
         """Slide 14: N step cards with 12pt arrows between them. items: (number, title, body,
         weight) with weights faint | outline | blue | dark. Returns the y under the cards."""
+        f = self.tf
         cx = x
         for i, (num, title, body, weight) in enumerate(items):
             fill, line, dash, tc, sc = self._weight(weight)
             if weight == 'faint':
                 line = None
             self.rect(s, cx, y, card_w, card_h, fill=fill, line=line, line_w=0.75, dash=dash)
-            self.txt(s, cx + 0.15, y + 0.15, card_w - 0.3, 0.21, str(num), size=9.5,
+            self.txt(s, cx + 0.15, y + 0.15, card_w - 0.3, 0.21, str(num), size=9.5 * f,
                      color=(BLUE if tc == NAVY else WHITE), wrap=False)
-            self.txt(s, cx + 0.15, y + 0.43, card_w - 0.3, 0.50, title, size=11, color=tc, line_sp=1.05)
-            self.txt(s, cx + 0.15, y + 1.00, card_w - 0.34, card_h - 1.10, body, size=8.5,
+            self.txt(s, cx + 0.15, y + 0.43 * f, card_w - 0.3, 0.50 * f, title, size=11 * f, color=tc, line_sp=1.05)
+            self.txt(s, cx + 0.15, y + 1.00 * f, card_w - 0.34, card_h - 1.10 * f, body, size=8.5 * f,
                      color=(sc if tc == NAVY else WHITE), line_sp=1.1)
             if arrow and i < len(items) - 1:
-                self.txt(s, cx + card_w - 0.03, y + 0.80, gap + 0.07, 0.21, "→", size=12, color=MUT,
+                self.txt(s, cx + card_w - 0.03, y + 0.80, gap + 0.07, 0.21, "→", size=12 * f, color=MUT,
                          align=PP_ALIGN.CENTER, wrap=False)
             cx += card_w + gap
         return y + card_h
@@ -1970,6 +2027,7 @@ class ExhibitDeck:
         LINE_SOFT border), dashed (comparison only; outlined badge). stats: [(label, value)],
         two across at 19.5pt. bars: (lead, [(fraction, label, fill)]) thin 0.15 bars. note: text
         or runs [[(text, size, colour, bold)]] pinned to the card's bottom."""
+        f = self.tf
         if kind == 'dark':
             fill, line, dash, tc, lc = NAVY, None, None, WHITE, CYAN
         elif kind == 'dashed':
@@ -1978,39 +2036,39 @@ class ExhibitDeck:
             fill, line, dash, tc, lc = TINT2, LINE_SOFT, None, NAVY, BLUE
         self.rect(s, x, y, w, h, fill=fill, line=line, line_w=0.75, dash=dash)
         ix = x + 0.23
-        self.txt(s, ix, y + 0.25, 2.2, 0.19, tag.upper(), size=8.25, color=lc, track="20", wrap=False)
+        self.txt(s, ix, y + 0.25, 2.2, 0.19, tag.upper(), size=8.25 * f, color=lc, track="20", wrap=False)
         if badge:
-            bw = 0.30 + len(badge) * 0.062
+            bw = text_w(badge, 7.9 * f) + 0.26
             bx = x + w - 0.24 - bw
             if kind == 'dark':
                 self.rect(s, bx, y + 0.23, bw, 0.20, fill=CYAN)
-                self.txt(s, bx, y + 0.245, bw, 0.18, badge, size=7.9, color=NAVY,
+                self.txt(s, bx, y + 0.245, bw, 0.18, badge, size=7.9 * f, color=NAVY,
                          align=PP_ALIGN.CENTER, wrap=False)
             else:
                 self.rect(s, bx, y + 0.24, bw, 0.22, line=DASHC, line_w=0.75)
-                self.txt(s, bx, y + 0.265, bw, 0.18, badge, size=7.9, color=NAVY,
+                self.txt(s, bx, y + 0.265, bw, 0.18, badge, size=7.9 * f, color=NAVY,
                          align=PP_ALIGN.CENTER, wrap=False)
-        self.txt(s, ix, y + 0.57, w - 0.40, 0.32, name, size=16.5, color=tc, wrap=False)
-        self.txt(s, ix, y + 0.99, w - 0.60, 0.50, body, size=9, color=tc, line_sp=1.1)
+        self.txt(s, ix, y + 0.57 * f, w - 0.40, 0.32 * f, name, size=16.5 * f, color=tc, wrap=False)
+        self.txt(s, ix, y + 0.99 * f, w - 0.60, 0.50 * f, body, size=9 * f, color=tc, line_sp=1.1)
         sx = ix
         for (lab, val) in list(stats)[:2]:
-            self.mini_stat(s, sx, y + 1.55, 1.70, lab, val, dark=(kind == 'dark'), label_size=7.9,
+            self.mini_stat(s, sx, y + 1.55 * f, 1.70, lab, val, dark=(kind == 'dark'), label_size=7.9 * f,
                            value_size=19.5)
             sx += 1.65
-        self.rect(s, ix, y + 2.16, w - 0.46, 0.01, fill=(WHITE if kind == 'dark' else HAIR))
+        self.rect(s, ix, y + 2.16 * f, w - 0.46, 0.01, fill=(WHITE if kind == 'dark' else HAIR))
         if bars:
             lead, items = bars
-            self.txt(s, ix, y + 2.29, w - 0.40, 0.18, lead.upper(), size=7.9, color=tc, track="20",
+            self.txt(s, ix, y + 2.29 * f, w - 0.40, 0.18, lead.upper(), size=7.9 * f, color=tc, track="20",
                      wrap=False)
-            by = y + 2.50
+            by = y + 2.50 * f
             for (frac, label, col) in items:
                 bw_ = (w - 1.25) * float(frac)
                 self.rect(s, ix, by, bw_, 0.15, fill=col)
-                self.txt(s, ix + bw_ + 0.10, by - 0.03, 1.3, 0.21, label, size=9.75, color=tc, wrap=False)
+                self.txt(s, ix + bw_ + 0.10, by - 0.03, 1.3, 0.21, label, size=9.75 * f, color=tc, wrap=False)
                 by += 0.23
         if note:
             if isinstance(note, str):
-                note = [[(note, 9.4, tc, False)]]
+                note = [[(note, 9.4 * f, tc, False)]]
             self.txt(s, ix, y + h - 0.60, w - 0.50, 0.50, note, line_sp=1.1)
         return y + h
 
@@ -2018,11 +2076,12 @@ class ExhibitDeck:
         """Slide 48: a question card. 25.5pt BLUE number top left, outlined page chip top right
         (tag), 10.5pt title, 8.6pt body. kind: faint | dashed | dark (dark = the "how to read"
         card: uppercase CYAN label in `title`, white body, no number)."""
+        f = self.tf
         if kind == 'dark':
             self.rect(s, x, y, w, h, fill=NAVY)
-            self.txt(s, x + 0.17, y + 1.09, w - 0.3, 0.18, str(title).upper(), size=7.9, color=CYAN,
+            self.txt(s, x + 0.17, y + 1.09, w - 0.3, 0.18, str(title).upper(), size=7.9 * f, color=CYAN,
                      track="20", wrap=False)
-            self.txt(s, x + 0.17, y + 1.31, w - 0.42, h - 1.45, body, size=9, color=WHITE, line_sp=1.15)
+            self.txt(s, x + 0.17, y + 1.31, w - 0.42, h - 1.45, body, size=9 * f, color=WHITE, line_sp=1.15)
             return y + h
         if kind == 'dashed':
             self.rect(s, x, y, w, h, fill=WHITE, line=DASHC, line_w=0.75, dash='dash')
@@ -2030,16 +2089,16 @@ class ExhibitDeck:
         else:
             self.rect(s, x, y, w, h, fill=TINT2, line=LINE_SOFT, line_w=0.75)
             chip_line, chip_tc = BLUE, BLUE
-        self.txt(s, x + 0.18, y + 0.18, 0.7, 0.40, str(n), size=25.5, color=BLUE, wrap=False)
+        self.txt(s, x + 0.18, y + 0.18, 0.7 * f, 0.40 * f, str(n), size=25.5 * f, color=BLUE, wrap=False)
         if tag:
             cw = 0.16 + len(tag) * 0.058
             self.rect(s, x + w - 0.16 - cw, y + 0.34, cw, 0.19, line=chip_line, line_w=0.75)
-            self.txt(s, x + w - 0.16 - cw, y + 0.365, cw, 0.17, tag, size=7.5, color=chip_tc,
+            self.txt(s, x + w - 0.16 - cw, y + 0.365, cw, 0.17, tag, size=7.5 * f, color=chip_tc,
                      align=PP_ALIGN.CENTER, wrap=False)
-        tl = self._est_lines(title, w - 0.30, 10.5)
-        self.txt(s, x + 0.18, y + 0.61, w - 0.30, 0.22 * tl, title, size=10.5, color=NAVY, line_sp=1.05)
-        by = y + 0.88 + 0.18 * (tl - 1)
-        self.txt(s, x + 0.18, by, w - 0.28, h - (by - y) - 0.12, body, size=8.6, color=NAVY, line_sp=1.15)
+        tl = self._est_lines(title, w - 0.30, 10.5 * f)
+        self.txt(s, x + 0.18, y + 0.61 * f, w - 0.30, 0.22 * f * tl, title, size=10.5 * f, color=NAVY, line_sp=1.05)
+        by = y + 0.88 * f + 0.18 * f * (tl - 1)
+        self.txt(s, x + 0.18, by, w - 0.28, h - (by - y) - 0.12, body, size=8.6 * f, color=NAVY, line_sp=1.15)
         return y + h
 
     # ---- the mutual plan
@@ -2116,6 +2175,9 @@ class ExhibitDeck:
         """One legend row (pages 12, 25, 28): 0.16 swatches and 8.5pt muted labels. items:
         (fill, label); fill may be ('dashed', colour) for an outlined swatch. note = a right-
         aligned 8.5pt line in FN. Returns the y under the row."""
+        f = self.tf
+        size = size * f
+        swatch = swatch * f
         xx = x
         for fill, label in items:
             if isinstance(fill, (list, tuple)) and fill[0] == 'dashed':
@@ -2127,7 +2189,7 @@ class ExhibitDeck:
         if note:
             self.txt(s, xx, y, max(1.0, note_right - xx), 0.21, note, size=size, color=FN,
                      align=PP_ALIGN.RIGHT, wrap=False)
-        return y + 0.21
+        return y + 0.21 * f
 
     def _code_label(self, s, x, y, w, text, size=9.5, sep=" · "):
         """A row label whose code prefix ("IN-16 · ") draws in BLUE and the rest in NAVY (pages
@@ -2142,6 +2204,8 @@ class ExhibitDeck:
         """Page 25: ranked horizontal bars. items: (label, value, display[, fill]). 9.5pt label in
         label_w, the bar from x + label_w, 9.5pt value 0.10 after it. Bars scale to the widest.
         Returns the y under the last row."""
+        f = self.tf
+        pitch, bar_h = pitch * f, bar_h * f
         vmax = max(float(it[1]) for it in items) or 1.0
         bx = x + label_w
         bw_max = w - label_w - val_w - 0.10
@@ -2149,10 +2213,10 @@ class ExhibitDeck:
         for i, it in enumerate(items):
             label, val, disp = it[:3]
             fill = it[3] if len(it) > 3 and it[3] is not None else (fills[i % len(fills)] if fills else BLUE)
-            self._code_label(s, x, yy, label_w - 0.15, label)
+            self._code_label(s, x, yy, label_w - 0.15, label, size=9.5 * f)
             bw = bw_max * float(val) / vmax
             self.rect(s, bx, yy + 0.02, bw, bar_h, fill=fill)
-            self.txt(s, bx + bw + 0.10, yy + 0.04, val_w, 0.21, disp, size=9.5, color=NAVY, wrap=False)
+            self.txt(s, bx + bw + 0.10, yy + 0.04, val_w, 0.21, disp, size=9.5 * f, color=NAVY, wrap=False)
             yy += pitch
         return yy
 
@@ -2162,6 +2226,8 @@ class ExhibitDeck:
         with an 8pt sub), stacked segments from x + label_w + vol_w, a 9pt end label after the
         bar and a 10.5pt value at the right edge. rows: dicts {label, sub, vol, vol_sub,
         segments: [(value, fill)] or [value, ...], end, right}. Returns the y under the rows."""
+        tf = self.tf
+        pitch, bar_h = pitch * tf, bar_h * tf
         fills = fills or [NAVY, BLUE, BLUE3, BLUE4]
         bx = x + label_w + vol_w
         bw_max = w - label_w - vol_w - val_w - 1.30
@@ -2171,13 +2237,13 @@ class ExhibitDeck:
         sc = scale or bw_max / vmax
         yy = y
         for r in rows:
-            self._code_label(s, x, yy, label_w - 0.1, r['label'])
+            self._code_label(s, x, yy, label_w - 0.1, r['label'], size=9.5 * tf)
             if r.get('sub'):
-                self.txt(s, x, yy + 0.24, label_w - 0.2, 0.36, r['sub'], size=8, color=MUT, line_sp=1.05)
+                self.txt(s, x, yy + 0.24 * tf, label_w - 0.2, 0.36 * tf, r['sub'], size=8 * tf, color=MUT, line_sp=1.05)
             if r.get('vol') is not None:
-                self.txt(s, x + label_w, yy, vol_w, 0.21, str(r['vol']), size=9.5, color=NAVY, wrap=False)
+                self.txt(s, x + label_w, yy, vol_w, 0.21, str(r['vol']), size=9.5 * tf, color=NAVY, wrap=False)
                 if r.get('vol_sub'):
-                    self.txt(s, x + label_w, yy + 0.24, vol_w, 0.21, r['vol_sub'], size=8, color=MUT,
+                    self.txt(s, x + label_w, yy + 0.24 * tf, vol_w, 0.21, r['vol_sub'], size=8 * tf, color=MUT,
                              wrap=False)
             sx = bx
             for k, sv in enumerate(r['segments']):
@@ -2186,9 +2252,9 @@ class ExhibitDeck:
                 self.rect(s, sx, yy + 0.06, sw, bar_h, fill=f)
                 sx += sw
             if r.get('end'):
-                self.txt(s, sx + 0.10, yy + 0.07, 1.30, 0.21, r['end'], size=9, color=NAVY, wrap=False)
+                self.txt(s, sx + 0.10, yy + 0.07, 1.30, 0.21, r['end'], size=9 * tf, color=NAVY, wrap=False)
             if r.get('right'):
-                self.txt(s, x + w - val_w, yy + 0.05, val_w, 0.21, r['right'], size=10.5, color=NAVY,
+                self.txt(s, x + w - val_w, yy + 0.05, val_w, 0.21, r['right'], size=10.5 * tf, color=NAVY,
                          align=PP_ALIGN.RIGHT, wrap=False)
             yy += pitch
         return yy
@@ -2199,6 +2265,8 @@ class ExhibitDeck:
         after it and, under it, the second bar (BLUE) with its label. rows: (label, sub,
         ref_value, ref_display, value, display). Scaled to the widest reference. Returns the y
         under the last row."""
+        f = self.tf
+        pitch, bar_h = pitch * f, bar_h * f
         ref_fill = ref_fill or TINT
         fill = fill or BLUE
         bx = x + label_w
@@ -2206,15 +2274,15 @@ class ExhibitDeck:
         vmax = max(float(r[2]) for r in rows) or 1.0
         yy = y
         for (label, sub, rv, rd, v, d) in rows:
-            self.txt(s, x, yy, label_w - 0.1, 0.22, label, size=11, color=NAVY, wrap=False)
+            self.txt(s, x, yy, label_w - 0.1, 0.22, label, size=11 * f, color=NAVY, wrap=False)
             if sub:
-                self.txt(s, x, yy + 0.28, label_w - 0.1, 0.22, sub, size=8.5, color=MUT, wrap=False)
+                self.txt(s, x, yy + 0.28 * f, label_w - 0.1, 0.22, sub, size=8.5 * f, color=MUT, wrap=False)
             rw = bw_max * float(rv) / vmax
             self.rect(s, bx, yy, rw, bar_h, fill=ref_fill)
-            self.txt(s, bx + rw + 0.10, yy + 0.03, 2.1, 0.21, rd, size=9.5, color=NAVY, wrap=False)
+            self.txt(s, bx + rw + 0.10, yy + 0.03, 2.1, 0.21, rd, size=9.5 * f, color=NAVY, wrap=False)
             bw = bw_max * float(v) / vmax
-            self.rect(s, bx, yy + 0.36, bw, bar_h, fill=fill)
-            self.txt(s, bx + bw + 0.10, yy + 0.39, 3.7, 0.21, d, size=9.5, color=NAVY, wrap=False)
+            self.rect(s, bx, yy + 0.36 * f, bw, bar_h, fill=fill)
+            self.txt(s, bx + bw + 0.10, yy + 0.39 * f, 3.7, 0.21, d, size=9.5 * f, color=NAVY, wrap=False)
             yy += pitch
         return yy
 
@@ -2224,28 +2292,30 @@ class ExhibitDeck:
         with_value, with_display, change_display). A 7.9pt header row with swatches, today bars
         GREY, with-us bars BLUE, a 13.5pt BLUE change column. Scaled to the widest today value.
         Returns the y under the last row."""
+        f = self.tf
+        pitch, bar_h = pitch * f, bar_h * f
         bx = x + label_w
         cx = change_x or (bx + bar_w + 0.70)
-        self.txt(s, x, y, label_w, 0.18, headers[0].upper(), size=7.9, color=NAVY, track="20", wrap=False)
+        self.txt(s, x, y, label_w, 0.18, headers[0].upper(), size=7.9 * f, color=NAVY, track="20", wrap=False)
         self.rect(s, bx, y + 0.02, 0.10, 0.10, fill=GREY)
-        self.txt(s, bx + 0.16, y, 0.8, 0.18, headers[1].upper(), size=7.9, color=NAVY, track="20", wrap=False)
+        self.txt(s, bx + 0.16, y, 0.8, 0.18, headers[1].upper(), size=7.9 * f, color=NAVY, track="20", wrap=False)
         self.rect(s, bx + 0.77, y + 0.02, 0.10, 0.10, fill=BLUE)
-        self.txt(s, bx + 0.93, y, 1.4, 0.18, headers[2].upper(), size=7.9, color=NAVY, track="20", wrap=False)
-        self.txt(s, cx, y, 1.02, 0.18, headers[3].upper(), size=7.9, color=NAVY, track="20", wrap=False)
+        self.txt(s, bx + 0.93, y, 1.4, 0.18, headers[2].upper(), size=7.9 * f, color=NAVY, track="20", wrap=False)
+        self.txt(s, cx, y, 1.02, 0.18, headers[3].upper(), size=7.9 * f, color=NAVY, track="20", wrap=False)
         vmax = max(float(r[2]) for r in rows) or 1.0
-        yy = y + 0.43
+        yy = y + 0.43 * f
         for (label, sub, tv, td, wv, wd, ch) in rows:
-            self.txt(s, x, yy + 0.06, label_w, 0.21, label, size=9.75, color=NAVY, wrap=False)
+            self.txt(s, x, yy + 0.06, label_w, 0.21, label, size=9.75 * f, color=NAVY, wrap=False)
             if sub:
-                self.txt(s, x, yy + 0.22, label_w - 0.1, 0.36, sub, size=8.25, color=MUT, line_sp=1.05)
+                self.txt(s, x, yy + 0.22 * f, label_w - 0.1, 0.36, sub, size=8.25 * f, color=MUT, line_sp=1.05)
             tw = bar_w * float(tv) / vmax
             self.rect(s, bx, yy, tw, bar_h, fill=GREY)
-            self.txt(s, bx + tw + 0.08, yy + 0.01, 0.9, 0.20, td, size=9, color=NAVY, wrap=False)
+            self.txt(s, bx + tw + 0.08, yy + 0.01, 0.9, 0.20, td, size=9 * f, color=NAVY, wrap=False)
             ww = bar_w * float(wv) / vmax
-            self.rect(s, bx, yy + 0.24, ww, bar_h, fill=BLUE)
-            self.txt(s, bx + ww + 0.08, yy + 0.25, 0.9, 0.20, wd, size=9, color=NAVY, wrap=False)
+            self.rect(s, bx, yy + 0.24 * f, ww, bar_h, fill=BLUE)
+            self.txt(s, bx + ww + 0.08, yy + 0.25 * f, 0.9, 0.20, wd, size=9 * f, color=NAVY, wrap=False)
             if ch:
-                self.txt(s, cx, yy + 0.13, 1.02, 0.26, ch, size=13.5,
+                self.txt(s, cx, yy + 0.13, 1.02, 0.26, ch, size=13.5 * f,
                          color=(MUT if ch in ("—", "-", "–") else BLUE), wrap=False)
             yy += pitch
         return yy
@@ -2256,8 +2326,10 @@ class ExhibitDeck:
         beside it, the delta column (what the next lever removes). 13.5pt value above the column,
         9pt delta above the delta column, 7.9pt labels under the navy baseline. Returns the
         baseline y."""
+        f = self.tf
+        val_size = val_size * f
         vmax = max(float(st['value']) for st in steps) or 1.0
-        baseline = y + h - 0.36
+        baseline = y + h - 0.36 * f
         plot_h = baseline - (y + 0.36)
         sc = plot_h / vmax
         for i, st in enumerate(steps):
@@ -2279,9 +2351,9 @@ class ExhibitDeck:
                 else:
                     self.rect(s, dx, baseline - ch_, col_w, dh, fill=dfill)
                 if st.get('delta_display'):
-                    self.txt(s, dx + 0.13, baseline - ch_ - 0.24, 0.9, 0.20, st['delta_display'], size=9,
+                    self.txt(s, dx + 0.13, baseline - ch_ - 0.24, 0.9, 0.20, st['delta_display'], size=9 * f,
                              color=NAVY, wrap=False)
-            self.txt(s, cx - 0.10, baseline + 0.08, pitch - 0.05, 0.40, st['label'], size=7.9, color=NAVY,
+            self.txt(s, cx - 0.10, baseline + 0.08, pitch - 0.05, 0.40, st['label'], size=7.9 * f, color=NAVY,
                      line_sp=1.05)
         self.rect(s, x, baseline, w, 0.01, fill=NAVY)
         return baseline
@@ -2293,9 +2365,11 @@ class ExhibitDeck:
         total='display')]}. The groups share the width; columns sit left-aligned in each
         group. 10pt values centred above each column; 10.5pt group labels and 8.5pt subs
         under the navy baseline. Scaled to the tallest column. Returns the y under the labels."""
+        tf = self.tf
+        val_size, label_size, sub_size = val_size * tf, label_size * tf, sub_size * tf
         n = max(1, len(groups))
         gp = w / n
-        baseline = y + h - 0.45
+        baseline = y + h - 0.45 * tf
         plot_h = baseline - (y + 0.36)
         def ctot(c):
             return sum(float(v) for (v, _) in c['segments'])
@@ -2315,16 +2389,16 @@ class ExhibitDeck:
                         self.rect(s, cx, by - sh, col_w, sh, fill=f)
                     by -= sh
                 if c.get('total'):
-                    self.txt(s, cx - 0.24, by - 0.30, col_w + 0.48, 0.24, c['total'], size=(total_size or val_size),
+                    self.txt(s, cx - 0.24, by - 0.30, col_w + 0.48, 0.24, c['total'], size=((total_size * tf) if total_size else val_size),
                              color=NAVY, align=PP_ALIGN.CENTER, wrap=False)
                 if c.get('sub'):
-                    self.txt(s, cx - 0.24, baseline + 0.08, col_w + 0.48, 0.20, c['sub'], size=7.9, color=MUT,
+                    self.txt(s, cx - 0.24, baseline + 0.08, col_w + 0.48, 0.20, c['sub'], size=7.9 * tf, color=MUT,
                              align=PP_ALIGN.CENTER, wrap=False)
-            drop = 0.30 if any(c.get('sub') for c in g['columns']) else 0.0
+            drop = 0.30 * tf if any(c.get('sub') for c in g['columns']) else 0.0
             self.txt(s, gx, baseline + 0.08 + drop, gp - 0.2, 0.22, g['label'], size=label_size, color=NAVY,
                      wrap=False)
             if g.get('sub'):
-                self.txt(s, gx, baseline + 0.26 + drop, gp - 0.2, 0.22, g['sub'], size=sub_size, color=MUT,
+                self.txt(s, gx, baseline + 0.26 * tf + drop, gp - 0.2, 0.22, g['sub'], size=sub_size, color=MUT,
                          wrap=False)
         self.rect(s, x, baseline, w, 0.01, fill=NAVY)
         return baseline + 0.50 + (0.30 if any(c.get('sub') for g in groups for c in g['columns']) else 0.0)
@@ -2333,17 +2407,19 @@ class ExhibitDeck:
         """Pages 28 and 47 (right column): a rule, an 8.5pt uppercase label, a 24pt value and a
         9pt body, repeated. items: (label, value, body); value may be [(text, colour)] runs for
         a two-tone figure. Returns the y under the last item."""
+        f = self.tf
+        val_size, pitch = val_size * f, pitch * f
         yy = y
         for (label, value, body) in items:
             self.rect(s, x, yy, w - 0.10, 0.01, fill=CARD_LINE)
-            self.txt(s, x, yy + 0.17, w, 0.19, label.upper(), size=8.5, color=MUT, track="40", wrap=False)
+            self.txt(s, x, yy + 0.17, w, 0.19, label.upper(), size=8.5 * f, color=MUT, track="40", wrap=False)
             if isinstance(value, str):
                 runs = [[(value, val_size, NAVY, False)]]
             else:
                 runs = [[(t, val_size, (c or NAVY), False) for (t, c) in value]]
-            self.txt(s, x, yy + 0.40, w, 0.45, runs, wrap=False)
+            self.txt(s, x, yy + 0.40 * f, w, 0.45 * f, runs, wrap=False)
             if body:
-                self.txt(s, x, yy + 0.95, w, 0.48, body, size=9, color=NAVY, line_sp=1.1)
+                self.txt(s, x, yy + 0.95 * f, w, 0.48 * f, body, size=9 * f, color=NAVY, line_sp=1.1)
             yy += pitch
         return yy
 
@@ -2351,17 +2427,18 @@ class ExhibitDeck:
         """Page 8: a proportional block, parts stacked top-down. parts: (fraction, fill, label,
         sub); the 10.5pt label and 8.5pt sub sit beside each part at its middle. top_label =
         9.5pt line above the block. Draws the navy baseline under it. Returns the baseline y."""
+        f = self.tf
         if top_label:
-            self.txt(s, x - 0.24, y - 0.30, w + 3.0, 0.21, top_label, size=9.5, color=NAVY, wrap=False)
+            self.txt(s, x - 0.24, y - 0.30, w + 3.0, 0.21, top_label, size=9.5 * f, color=NAVY, wrap=False)
         tot = float(sum(p[0] for p in parts)) or 1.0
         yy = y
         for (frac, fill, label, sub) in parts:
             ph = h * float(frac) / tot
             self.rect(s, x, yy, w, ph, fill=fill)
             ly = yy + ph / 2.0 - (0.30 if sub else 0.11)
-            self.txt(s, x + w + label_gap, ly, label_w, 0.22, label, size=10.5, color=NAVY, wrap=False)
+            self.txt(s, x + w + label_gap, ly, label_w, 0.22, label, size=10.5 * f, color=NAVY, wrap=False)
             if sub:
-                self.txt(s, x + w + label_gap, ly + 0.21, label_w, 0.41, sub, size=8.5, color=MUT, line_sp=1.1)
+                self.txt(s, x + w + label_gap, ly + 0.21, label_w, 0.41, sub, size=8.5 * f, color=MUT, line_sp=1.1)
             yy += ph
         self.rect(s, x - 0.10, y + h, w + label_gap + label_w + 0.2, 0.01, fill=NAVY)
         return y + h
@@ -2393,6 +2470,8 @@ class ExhibitDeck:
         center: (value, caption) drawn in the hole (16.5pt over 7.5pt) or one string.
         legend=True lists the segments to the right: swatch, 9pt label, 9.5pt display.
         Returns the y under the ring."""
+        f = self.tf
+        legend_pitch = legend_pitch * f
         tot = float(sum(sg[0] for sg in segments)) or 1.0
         a = float(start)
         for sg in segments:
@@ -2404,10 +2483,10 @@ class ExhibitDeck:
             a = b
         if center and thickness < 1.0:
             val, cap = (center if isinstance(center, (list, tuple)) else (center, None))[:2]
-            self.txt(s, x, y + d / 2.0 - (0.28 if cap else 0.16), d, 0.32, val, size=16.5, color=NAVY,
+            self.txt(s, x, y + d / 2.0 - (0.28 if cap else 0.16), d, 0.32, val, size=16.5 * f, color=NAVY,
                      align=PP_ALIGN.CENTER, wrap=False)
             if cap:
-                self.txt(s, x + 0.2, y + d / 2.0 + 0.06, d - 0.4, 0.34, cap, size=7.5, color=MUT,
+                self.txt(s, x + 0.2, y + d / 2.0 + 0.06, d - 0.4, 0.34, cap, size=7.5 * f, color=MUT,
                          align=PP_ALIGN.CENTER, line_sp=1.05)
         if legend:
             lx = x + d + legend_gap
@@ -2416,8 +2495,8 @@ class ExhibitDeck:
                 label = sg[2] if len(sg) > 2 else ""
                 disp = sg[3] if len(sg) > 3 else ("%d%%" % round(100.0 * float(sg[0]) / tot))
                 self.rect(s, lx, ly + 0.04, 0.14, 0.14, fill=sg[1])
-                self.txt(s, lx + 0.24, ly, 2.6, 0.21, label, size=9, color=NAVY, wrap=False)
-                self.txt(s, lx + 2.85, ly, 0.9, 0.21, disp, size=9.5, color=NAVY, align=PP_ALIGN.RIGHT,
+                self.txt(s, lx + 0.24, ly, 2.6, 0.21, label, size=9 * f, color=NAVY, wrap=False)
+                self.txt(s, lx + 2.85, ly, 0.9, 0.21, disp, size=9.5 * f, color=NAVY, align=PP_ALIGN.RIGHT,
                          wrap=False)
                 ly += legend_pitch
         return y + d
@@ -2514,16 +2593,18 @@ class ExhibitDeck:
         """The right-hand column of the summit pages: a navy vertical rule 0.42 left of x, the
         big number in BLUE, a 13pt caption, a navy rule, the uppercase 12pt label and a 13pt body.
         Returns the y under the body."""
+        g = self.tf / (4.0 / 3.0)
+        num_size = num_size * g
         if rule:
             self.rect(s, x - 0.42, y, 0.01, h, fill=NAVY)
         nh = num_size / 72.0 * 1.03
         self.txt(s, x, y, w, nh, number, size=num_size, color=BLUE, wrap=False)
         cy = y + nh + 0.12
-        self.txt(s, x, cy, w - 0.18, 0.55, caption, size=13, color=NAVY, line_sp=1.1)
+        self.txt(s, x, cy, w - 0.18, 0.55, caption, size=13 * g, color=NAVY, line_sp=1.1)
         ry = cy + 0.84
         self.rect(s, x, ry, w - 0.26, 0.01, fill=NAVY)
-        self.txt(s, x, ry + 0.22, w, 0.23, label.upper(), size=12, color=NAVY, track="40", wrap=False)
-        self.txt(s, x, ry + 0.54, w - 0.18, 1.1, implication, size=13, color=NAVY, line_sp=1.15)
+        self.txt(s, x, ry + 0.22, w, 0.23, label.upper(), size=12 * g, color=NAVY, track="40", wrap=False)
+        self.txt(s, x, ry + 0.54, w - 0.18, 1.1, implication, size=13 * g, color=NAVY, line_sp=1.15)
         return ry + 1.64
 
     def proof_ledger(self, s, x, y, w, rows, headers=("Deployment", "Resolved", "What moved it"),
@@ -2534,6 +2615,9 @@ class ExhibitDeck:
         to `scale_to` (100 = a percentage), the 18pt value after it, the 12pt "what moved it"
         text at the right. A row's own fill (NAVY) marks the one to notice. Returns the y under
         the last rule."""
+        g = self.tf / (4.0 / 3.0)            # stage-measured: 1.0 at stage, 0.75 at report
+        name_size, body_size, val_size, pitch = name_size * g, body_size * g, val_size * g, pitch * g
+        sub_col = NAVY if getattr(self, 'scale', 'report') == 'stage' else MUT
         bx, vx, wx = x + 3.26, x + 5.40, x + 6.39
         self.txt(s, x, y, 3.36, 0.23, headers[0].upper(), size=body_size, color=NAVY, track="40", wrap=False)
         self.txt(s, bx, y, 3.0, 0.23, headers[1].upper(), size=body_size, color=NAVY, track="40", wrap=False)
@@ -2545,7 +2629,7 @@ class ExhibitDeck:
             fill = r[5] if len(r) > 5 and r[5] is not None else BLUE
             self.txt(s, x, ry, 3.36, 0.25, name, size=name_size, color=NAVY, wrap=False)
             sl = self._est_lines(sub, 3.15, body_size)
-            self.txt(s, x, ry + 0.24, 3.15, 0.22 * sl, sub, size=body_size, color=MUT, line_sp=1.05)
+            self.txt(s, x, ry + 0.24, 3.15, 0.22 * sl, sub, size=body_size, color=sub_col, line_sp=1.05)
             self.rect(s, bx, ry + 0.16, bar_w, 0.11, fill=TINT2)
             self.rect(s, bx, ry + 0.16, bar_w * min(1.0, float(val) / float(scale_to)), 0.11, fill=fill)
             self.txt(s, vx, ry + 0.07, 0.9, 0.33, disp, size=val_size, color=fill, wrap=False)
@@ -2561,6 +2645,9 @@ class ExhibitDeck:
         dicts {label, desc, chips: [(text, pool_key)]}. Chips flow left to right from x + chip_x,
         wrap to a second line, and sit centred in the row when they fit on one. Navy rules
         between rows. Returns the y under the last rule."""
+        g = self.tf / (4.0 / 3.0)
+        body_size, name_size, pitch, chip_h = body_size * g, name_size * g, pitch * g, chip_h * g
+        desc_col = NAVY if getattr(self, 'scale', 'report') == 'stage' else MUT
         styles = {'blue': (BLUE, None, WHITE), 'navy': (NAVY, None, WHITE), 'tint': (TINT, None, NAVY),
                   'outline': (None, NAVY, NAVY)}
         smap = {k: styles.get(st, styles['blue']) for (k, _, st) in pools}
@@ -2587,9 +2674,9 @@ class ExhibitDeck:
             top = ry - 0.01 if len(lines) > 1 else ry + 0.17
             self.txt(s, x, ry, chip_x - 0.1, 0.25, r['label'], size=name_size, color=NAVY, wrap=False)
             if r.get('desc'):
-                self.txt(s, x, ry + 0.25, chip_x - 0.15, 0.43, r['desc'], size=body_size, color=MUT, line_sp=1.05)
+                self.txt(s, x, ry + 0.25, chip_x - 0.15, 0.43, r['desc'], size=body_size, color=desc_col, line_sp=1.05)
             for li, line in enumerate(lines):
-                cy = top + li * 0.37
+                cy = top + li * 0.37 * g
                 for (text, key, cx, cw) in line:
                     fill, ln, tc = smap.get(key, styles['blue'])
                     self.rect(s, cx, cy, cw, chip_h, fill=fill, line=ln, line_w=0.75, dash=('dash' if ln else None))
