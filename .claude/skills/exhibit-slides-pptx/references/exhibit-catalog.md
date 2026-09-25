@@ -199,6 +199,27 @@ text in client decks. Never fabricate a logo — text chips until assets exist.
 | T69 | **Loop matrix** | The value pools as chips on the autonomy rows: out of / on / in the loop / person only (summit deck p9) | `d.loop_matrix(s, x, y, w, pools, rows)` — pools `(key, label, blue|navy|tint|outline)`, chips sized from the font metrics |
 | T70 | **Hero column** | The big number, caption and implication beside a ledger or matrix, behind a navy rule | `d.hero_column(s, x, y, number, caption, implication, num_size=75|55)` |
 
+## Framework layer (T71–T83 — engine v5.0, 25 Sep 2026; Shyam: "stop boxing yourself in with tiles; use the
+## frameworks from the BCG archive; use icons"). Structure without boxes. Sampler: `example_apex_frameworks_build.py`.
+
+| # | Exhibit | Use when | Engine |
+|---|---|---|---|
+| T71 | **Vector icon** | One icon per concept, in a row, a card, a node; never decorative | `d.icon_glyph(s, name, x, y, size, color)`; `X.lucide_search("word")` picks the name from 2,118 Lucide icons |
+| T72 | **Flywheel** | A loop where each step feeds the next: the operating model, a reinforcing cycle | `d.flywheel(s, cx, cy, r, steps, center=, start=)` — steps `(label, sub, icon)`; start=-60 for six steps keeps labels off the title and footnote |
+| T73 | **Cascade** | Where a total comes from: root → branches → leaves, left to right | `d.cascade(s, x, y, w, h, root, branches)` — the value tree, the driver tree, the lever cascade |
+| T74 | **Funnel** | Stages that narrow: leads to booked, applicants to accounts | `d.funnel(s, x, y, w, h, stages, orientation='down'|'right')` — `(label, value, display, conversion)` |
+| T75 | **Zoom** | One row of a map opened up: the overview at left, the detail at right behind a lens | `d.zoom(s, x, y, w, h, items, focus, title=)` returns the detail box; fill it with icon rows, a chart, cards |
+| T76 | **Value map** | The three pools with their levers and values, icons on the pools | `d.value_map(s, x, y, w, pools, total=)` |
+| T77 | **Chevron flow** | A process with a direction: how a deal runs, how a call runs | `d.chevron_flow(s, x, y, w, steps, h=)` — `(label, sub, icon)` |
+| T78 | **Rings** | Layers from a core outward: where the assistant sits, maturity levels | `d.rings(s, cx, cy, r, levels, label_x=, label_w=)` |
+| T79 | **Stack / ziggurat** | An architecture or a moat, top to bottom, one verb per layer, a thesis each | `d.stack(s, x, y, w, layers, shape='bands'|'ziggurat', band_h=)` |
+| T80 | **Hub and spoke** | One centre, many surfaces or parties | `d.hub_spoke(s, cx, cy, hub, spokes, r=, start=)` |
+| T81 | **Icon rows** | Points with an icon each and no box: the antidote to tiles | `d.icon_rows(s, x, y, w, items, cols=, pitch=)` — `(icon, title, body)` |
+| T82 | **Venn** | What each side brings and where the value overlaps | `d.venn(s, cx, cy, r, left, right, overlap)` |
+| T83 | **Pillars** | Programmes on a foundation under one roof: a strategy frame | `d.pillars(s, x, y, w, roof, columns, base)` |
+
+Framework laws: the claim decides the form (a loop → flywheel, a total → cascade, a narrowing → funnel, one part opened → zoom, a process → chevrons, layers → rings or stack, one centre → hub, sides and an overlap → venn, programmes on a base → pillars). Tiles and card rows carry structure only when none of these fit, and never twice in a row. One icon per concept, blue on light, white on dark, from the Lucide set by name; never an emoji, never a fabricated glyph.
+
 Apex composition laws (from 68 measured slides): one exhibit per page and the so-what in a hero
 number or a statement line; captions bottom-anchored in cards; status words drawn, not asserted
 (dashed = estimate or indicative, solid = measured or committed); the client's own figures on

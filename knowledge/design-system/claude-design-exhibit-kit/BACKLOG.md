@@ -110,3 +110,21 @@ Lesson: build from the template/reference deck's XML, never re-derive chrome fro
 | 29 | Re-lay the CB enablement kit at stage scale (about five rows a page, more pages) once Shyam confirms after seeing the stage/report comparison | kit | WAITING for Shyam |
 | 30 | The humanizer runs on every output (engine v4.6): `save()` lints and refuses hard hits; Stop hook `voice_gate.py` lints replies; `humanizer` agent (.claude/agents) decides altitude with the three detail questions; routing card rule 5 | engine + agents | ✅ SHIPPED 2026-09-25 |
 
+
+## 25 Sep 2026 · framework visuals composed for the Standard Chartered deck (candidates for engine recipes)
+
+Shyam's steer on the SCB deck: "force yourself to keep it more visual; bring framework visuals (a flywheel, a funnel, the BCG patterns); move away from boring boxes and tiles." Five exhibits were composed from primitives in the Apex grammar in `Engagement/Standard Chartered/Output/build_scb_value_ignite_apex_pptx.py`; each is a candidate for a T-numbered recipe in the next mining round.
+
+| Candidate | What it draws | Composed from | Where |
+|---|---|---|---|
+| Lifecycle strip | Numbered nodes on a navy arrow, a navy chip per moment, two "what each side feels" lanes, a "today's number" lane | `growth_arrow`, `oval`, `chip`, `txt`, hairline rules | `lifecycle()` |
+| Maturity staircase | Five rising steps (TINT2 → NAVY) with the name and an example inside each, two caption lines under the baseline; a minimum first-step height so the labels never collide | `rect`, `txt` | `staircase()` |
+| Value driver tree | Navy root → pool nodes → tinted leaves with the lever and its range, elbow connectors | `rect`, `hline` | `value_tree()` |
+| Four-step loop | A thin ring of block arcs, a numbered BLUE node at each quarter, labels beside, the centre value and caption | `donut` (thickness 0.07), `oval`, `txt` | `loop()` |
+| Funnel | Centred stacked bars of falling width with the count at the left of each | `rect`, `txt` | `funnel()` |
+
+Also noted: the paired-rows recipe (`paired_hrows`) is too tall for six rows at the stage scale; the deck carries a stage-native `paired_rows()` (label 13pt, sub 11pt, bars 0.20 high, pitch 0.62 for six rows) that could become the stage variant.
+| 31 | Framework layer + vector icons (engine v5.0): Lucide (2,118 icons, ISC) fetched to knowledge/design-system/icons and drawn as native shapes; twelve forms (flywheel, cascade, funnel, zoom, value map, chevron flow, rings, stack/ziggurat, hub and spoke, icon rows, venn, pillars); the frameworks-before-tiles rule and the tile cap in SKILL.md; sampler QA'd in three passes | engine | ✅ SHIPPED 2026-09-25 |
+| 32 | Re-lay the enablement kit's tile pages on the framework forms (the company view's tiles → icon rows, pillars, value map; the sales cards' doors → icon rows; the deal steps → chevrons) | kit | OPEN, next |
+| 33 | Supersedes the round-4 line "icon fonts as a dependency: not taken": real icons are now the rule on structural pages, as vectors, no font | note | ✅ 2026-09-25 |
+

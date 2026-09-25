@@ -5,6 +5,12 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.0 (25 Sep 2026, the framework layer + vector icons — Shyam: "stop boxing yourself in
+  with tiles and text; pick up the frameworks from the BCG examples; use icons"): Lucide icons
+  drawn as native shapes (icon_glyph, lucide_search) and twelve framework forms: flywheel,
+  cascade, funnel, zoom, value_map, chevron_flow, rings, stack (bands or ziggurat), hub_spoke,
+  icon_rows, venn, pillars. Sampler: scripts/example_apex_frameworks_build.py.
+
 v4.6 (25 Sep 2026, the humanizer runs on every save): save() lints every text frame
   and note with ~/.claude/skills/humanizer/scripts/humanizer_lint.py and refuses a hard
   hit (dashes, not-X-but-Y, warm-up openers, self-applause, banned words); soft findings
@@ -125,7 +131,9 @@ from pptx import Presentation
 from pptx.util import Inches as I, Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.dml import MSO_LINE
+from pptx.enum.shapes import MSO_CONNECTOR
 from pptx.oxml.ns import qn
 
 # ---------------------------------------------------------------- palette (LOCKED)
@@ -262,6 +270,215 @@ def text_w(text, size, weight="regular"):
     if font:
         return font.getlength(text) / 4.0 / 72.0
     return len(text) * float(size) * 0.53 / 72.0
+
+
+# ------------------------------------------------------------ vector icons (v5.0, 25 Sep 2026)
+# Lucide (ISC) lives in knowledge/design-system/icons/lucide/icons/*.svg: 24 x 24 stroke icons, width 2,
+# round caps. icon_glyph() draws one as native freeform shapes: crisp, recolourable, Google Slides-safe.
+LUCIDE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..",
+                                          "knowledge", "design-system", "icons", "lucide"))
+_LUCIDE_TAGS = None
+
+
+def lucide_path(name):
+    """The SVG file for a Lucide icon name (e.g. 'phone-incoming'), or None."""
+    p = os.path.join(LUCIDE_DIR, "icons", name + ".svg")
+    return p if os.path.exists(p) else None
+
+
+def lucide_search(word, limit=12):
+    """Icon names whose name or tags contain `word` (tags.json), for picking an icon in a build script."""
+    global _LUCIDE_TAGS
+    if _LUCIDE_TAGS is None:
+        try:
+            import json
+            _LUCIDE_TAGS = json.load(open(os.path.join(LUCIDE_DIR, "tags.json"), encoding="utf-8"))
+        except Exception:
+            _LUCIDE_TAGS = {}
+    w = word.lower()
+    hits = [n for n, tags in _LUCIDE_TAGS.items() if w in n or any(w in t for t in tags)]
+    return sorted(hits, key=lambda n: (0 if w in n else 1, n))[:limit]
+
+
+def _svg_arc_points(x1, y1, rx, ry, phi, large, sweep, x2, y2, segs=None):
+    """Flatten an SVG elliptical arc (endpoint form) into points (W3C implementation notes)."""
+    import math
+    if rx == 0 or ry == 0:
+        return [(x2, y2)]
+    phi_r = math.radians(phi)
+    cphi, sphi = math.cos(phi_r), math.sin(phi_r)
+    dx, dy = (x1 - x2) / 2.0, (y1 - y2) / 2.0
+    x1p = cphi * dx + sphi * dy
+    y1p = -sphi * dx + cphi * dy
+    rx, ry = abs(rx), abs(ry)
+    lam = (x1p ** 2) / (rx ** 2) + (y1p ** 2) / (ry ** 2)
+    if lam > 1:
+        rx, ry = rx * math.sqrt(lam), ry * math.sqrt(lam)
+    num = rx ** 2 * ry ** 2 - rx ** 2 * y1p ** 2 - ry ** 2 * x1p ** 2
+    den = rx ** 2 * y1p ** 2 + ry ** 2 * x1p ** 2
+    coef = math.sqrt(max(0.0, num / den)) if den else 0.0
+    if large == sweep:
+        coef = -coef
+    cxp, cyp = coef * rx * y1p / ry, -coef * ry * x1p / rx
+    cx = cphi * cxp - sphi * cyp + (x1 + x2) / 2.0
+    cy = sphi * cxp + cphi * cyp + (y1 + y2) / 2.0
+    def ang(ux, uy, vx, vy):
+        d = math.atan2(ux * vy - uy * vx, ux * vx + uy * vy)
+        return d
+    t1 = ang(1, 0, (x1p - cxp) / rx, (y1p - cyp) / ry)
+    dt = ang((x1p - cxp) / rx, (y1p - cyp) / ry, (-x1p - cxp) / rx, (-y1p - cyp) / ry)
+    if not sweep and dt > 0:
+        dt -= 2 * math.pi
+    elif sweep and dt < 0:
+        dt += 2 * math.pi
+    n = segs or max(4, int(abs(dt) / (math.pi / 2) * 8) + 1)
+    pts = []
+    for i in range(1, n + 1):
+        t = t1 + dt * i / n
+        px = cphi * rx * math.cos(t) - sphi * ry * math.sin(t) + cx
+        py = sphi * rx * math.cos(t) + cphi * ry * math.sin(t) + cy
+        pts.append((px, py))
+    return pts
+
+
+def _svg_path_polylines(d):
+    """SVG path data -> list of point lists (one per subpath), curves flattened. Handles
+    M m L l H h V v C c S s Q q T t A a Z z."""
+    import re
+    toks = re.findall(r"[MmLlHhVvCcSsQqTtAaZz]|-?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?", d)
+    polys, cur = [], []
+    x = y = 0.0
+    sx = sy = 0.0
+    cmd = None
+    i = 0
+    last_c2 = None
+    last_q = None
+    def num():
+        nonlocal i
+        v = float(toks[i]); i += 1
+        return v
+    def bez3(p0, p1, p2, p3, n=10):
+        out = []
+        for k in range(1, n + 1):
+            t = k / float(n); u = 1 - t
+            out.append((u**3*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t**3*p3[0],
+                        u**3*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t**3*p3[1]))
+        return out
+    def bez2(p0, p1, p2, n=8):
+        out = []
+        for k in range(1, n + 1):
+            t = k / float(n); u = 1 - t
+            out.append((u*u*p0[0] + 2*u*t*p1[0] + t*t*p2[0], u*u*p0[1] + 2*u*t*p1[1] + t*t*p2[1]))
+        return out
+    while i < len(toks):
+        t = toks[i]
+        if re.match(r"[A-Za-z]", t):
+            cmd = t; i += 1
+            if cmd in "Zz":
+                if cur:
+                    cur.append((sx, sy)); polys.append(cur); cur = []
+                x, y = sx, sy
+                continue
+        # implicit repeats: after M -> L, after m -> l
+        if cmd == "M":
+            x, y = num(), num(); sx, sy = x, y
+            if cur: polys.append(cur)
+            cur = [(x, y)]; cmd = "L"; last_c2 = last_q = None
+        elif cmd == "m":
+            x, y = x + num(), y + num(); sx, sy = x, y
+            if cur: polys.append(cur)
+            cur = [(x, y)]; cmd = "l"; last_c2 = last_q = None
+        elif cmd == "L":
+            x, y = num(), num(); cur.append((x, y)); last_c2 = last_q = None
+        elif cmd == "l":
+            x, y = x + num(), y + num(); cur.append((x, y)); last_c2 = last_q = None
+        elif cmd == "H":
+            x = num(); cur.append((x, y)); last_c2 = last_q = None
+        elif cmd == "h":
+            x += num(); cur.append((x, y)); last_c2 = last_q = None
+        elif cmd == "V":
+            y = num(); cur.append((x, y)); last_c2 = last_q = None
+        elif cmd == "v":
+            y += num(); cur.append((x, y)); last_c2 = last_q = None
+        elif cmd in "Cc":
+            rel = cmd == "c"
+            x1, y1, x2, y2, ex, ey = [num() for _ in range(6)]
+            if rel:
+                x1, y1, x2, y2, ex, ey = x + x1, y + y1, x + x2, y + y2, x + ex, y + ey
+            cur += bez3((x, y), (x1, y1), (x2, y2), (ex, ey)); last_c2 = (x2, y2); x, y = ex, ey; last_q = None
+        elif cmd in "Ss":
+            rel = cmd == "s"
+            x2, y2, ex, ey = [num() for _ in range(4)]
+            if rel:
+                x2, y2, ex, ey = x + x2, y + y2, x + ex, y + ey
+            x1, y1 = (2 * x - last_c2[0], 2 * y - last_c2[1]) if last_c2 else (x, y)
+            cur += bez3((x, y), (x1, y1), (x2, y2), (ex, ey)); last_c2 = (x2, y2); x, y = ex, ey; last_q = None
+        elif cmd in "Qq":
+            rel = cmd == "q"
+            x1, y1, ex, ey = [num() for _ in range(4)]
+            if rel:
+                x1, y1, ex, ey = x + x1, y + y1, x + ex, y + ey
+            cur += bez2((x, y), (x1, y1), (ex, ey)); last_q = (x1, y1); x, y = ex, ey; last_c2 = None
+        elif cmd in "Tt":
+            rel = cmd == "t"
+            ex, ey = num(), num()
+            if rel:
+                ex, ey = x + ex, y + ey
+            x1, y1 = (2 * x - last_q[0], 2 * y - last_q[1]) if last_q else (x, y)
+            cur += bez2((x, y), (x1, y1), (ex, ey)); last_q = (x1, y1); x, y = ex, ey; last_c2 = None
+        elif cmd in "Aa":
+            rel = cmd == "a"
+            rx, ry, phi, large, sweep, ex, ey = [num() for _ in range(7)]
+            if rel:
+                ex, ey = x + ex, y + ey
+            cur += _svg_arc_points(x, y, rx, ry, phi, int(large), int(sweep), ex, ey)
+            x, y = ex, ey; last_c2 = last_q = None
+        else:
+            i += 1
+    if cur:
+        polys.append(cur)
+    return polys
+
+
+def _svg_shapes(svg_path):
+    """Every drawable in a Lucide SVG as (polyline points, closed) on the 24 x 24 grid."""
+    import math
+    import xml.etree.ElementTree as ET
+    root = ET.parse(svg_path).getroot()
+    out = []
+    for el in root.iter():
+        tag = el.tag.split("}")[-1]
+        g = el.attrib.get
+        if tag == "path":
+            for poly in _svg_path_polylines(g("d", "")):
+                closed = len(poly) > 2 and abs(poly[0][0] - poly[-1][0]) < 1e-6 and abs(poly[0][1] - poly[-1][1]) < 1e-6
+                out.append((poly, closed))
+        elif tag == "circle" or tag == "ellipse":
+            cx, cy = float(g("cx", 0)), float(g("cy", 0))
+            rx = float(g("r", g("rx", 0))); ry = float(g("r", g("ry", 0)))
+            pts = [(cx + rx * math.cos(2 * math.pi * k / 40), cy + ry * math.sin(2 * math.pi * k / 40)) for k in range(41)]
+            out.append((pts, True))
+        elif tag == "rect":
+            x, y, w, h = [float(g(k, 0)) for k in ("x", "y", "width", "height")]
+            r = float(g("rx", 0))
+            if r <= 0:
+                out.append(([(x, y), (x + w, y), (x + w, y + h), (x, y + h), (x, y)], True))
+            else:
+                pts = []
+                for (cx, cy, a0) in ((x + w - r, y + r, -90), (x + w - r, y + h - r, 0), (x + r, y + h - r, 90), (x + r, y + r, 180)):
+                    for k in range(0, 11):
+                        a = math.radians(a0 + 90 * k / 10.0)
+                        pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+                pts.append(pts[0]); out.append((pts, True))
+        elif tag == "line":
+            out.append(([(float(g("x1", 0)), float(g("y1", 0))), (float(g("x2", 0)), float(g("y2", 0)))], False))
+        elif tag in ("polyline", "polygon"):
+            nums = [float(v) for v in g("points", "").replace(",", " ").split()]
+            pts = list(zip(nums[0::2], nums[1::2]))
+            if tag == "polygon" and pts:
+                pts.append(pts[0])
+            out.append((pts, tag == "polygon"))
+    return out
 
 
 def client_logo(client, root=None):
@@ -2689,6 +2906,481 @@ class ExhibitDeck:
             ry += pitch
             self.rect(s, x, ry - 0.13, w, 0.01, fill=NAVY)
         return ry - 0.13
+
+    # ------------------------------------------------------------ framework layer (v5.0, 25 Sep 2026)
+    # Shyam: "stop boxing yourself in with tiles and text; use the frameworks from the BCG archive and
+    # icons." Twelve forms that carry structure without boxes: flywheel, cascade, funnel, zoom, value
+    # map, chevron flow, rings, stack, hub and spoke, icon rows, venn, pillars. Apex tokens, stage-aware.
+
+    def _stroke(self, s, pts, color, width_pt=1.25, arrow=False, dash=None):
+        """An open polyline (inches) as a freeform stroke; arrow=True adds a triangle head at the end."""
+        emu = [(int(px * 914400), int(py * 914400)) for (px, py) in pts]
+        fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
+        fb.add_line_segments(emu[1:], close=False)
+        shp = fb.convert_to_shape()
+        shp.fill.background()
+        shp.line.color.rgb = color
+        shp.line.width = Pt(width_pt)
+        if dash:
+            shp.line.dash_style = MSO_LINE.DASH
+        shp.shadow.inherit = False
+        ln = shp._element.spPr.find(qn('a:ln'))
+        if ln is not None:
+            ln.set('cap', 'rnd')
+            if arrow:
+                ln.append(ln.makeelement(qn('a:tailEnd'), {'type': 'triangle', 'w': 'med', 'len': 'med'}))
+        self.flat(shp)
+        return shp
+
+    def _polygon(self, s, pts, fill, line=None):
+        """A closed freeform polygon (inches)."""
+        emu = [(int(px * 914400), int(py * 914400)) for (px, py) in pts]
+        fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
+        fb.add_line_segments(emu[1:], close=True)
+        shp = fb.convert_to_shape()
+        if fill is None:
+            shp.fill.background()
+        else:
+            shp.fill.solid(); shp.fill.fore_color.rgb = fill
+        if line is None:
+            shp.line.fill.background()
+        else:
+            shp.line.color.rgb = line; shp.line.width = Pt(0.75)
+        shp.shadow.inherit = False
+        self.flat(shp)
+        return shp
+
+    def _node(self, s, cx, cy, d, fill, icon=None, text=None, icon_color=None, text_size=None):
+        """A filled circle with an icon or a short text in its centre."""
+        self.oval(s, cx - d / 2, cy - d / 2, d, d, fill)
+        if icon:
+            isz = d * 0.5
+            self.icon_glyph(s, icon, cx - isz / 2, cy - isz / 2, isz, color=(icon_color or WHITE))
+        elif text:
+            ts = text_size or (d * 30)
+            self.txt(s, cx - d / 2, cy - ts / 144.0 - 0.02, d, ts / 72.0 * 1.4, text, size=ts,
+                     color=(icon_color or WHITE), align=PP_ALIGN.CENTER, wrap=False)
+
+    def flywheel(self, s, cx, cy, r, steps, center=None, node_d=None, label_w=2.3, start=-90.0):
+        """A loop of N steps on a circle, arrows between them, labels outside, an optional centre.
+        steps: (label, sub, icon_name) or (label, sub). Returns nothing."""
+        import math
+        f = self.tf
+        n = max(2, len(steps))
+        node_d = node_d or 0.62 * f
+        gap = math.degrees((node_d / 2 + 0.10) / r)
+        for i, st in enumerate(steps):
+            a0 = start + 360.0 * i / n
+            a1 = start + 360.0 * (i + 1) / n
+            pts = []
+            for k in range(0, 21):
+                a = math.radians(a0 + gap + (a1 - gap - a0 - gap) * k / 20.0)
+                pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+            self._stroke(s, pts, BLUE3, 1.5, arrow=True)
+        for i, st in enumerate(steps):
+            a = math.radians(start + 360.0 * i / n)
+            nx, ny = cx + r * math.cos(a), cy + r * math.sin(a)
+            icon = st[2] if len(st) > 2 else None
+            self._node(s, nx, ny, node_d, BLUE, icon=icon, text=(None if icon else str(i + 1)))
+            lx = cx + (r + node_d / 2 + 0.22) * math.cos(a)
+            ly = cy + (r + node_d / 2 + 0.22) * math.sin(a)
+            c = math.cos(a)
+            if c > 0.35:
+                x0, al = lx, PP_ALIGN.LEFT
+            elif c < -0.35:
+                x0, al = lx - label_w, PP_ALIGN.RIGHT
+            else:
+                x0, al = lx - label_w / 2, PP_ALIGN.CENTER
+            ty = ly - 0.14 * f if abs(c) > 0.35 else (ly - 0.36 * f if math.sin(a) < 0 else ly + 0.02)
+            self.txt(s, x0, ty, label_w, 0.25 * f, st[0], size=11 * f, color=NAVY, align=al, wrap=False)
+            if len(st) > 1 and st[1]:
+                self.txt(s, x0, ty + 0.24 * f, label_w, 0.4 * f, st[1], size=9 * f, color=MUT, align=al, line_sp=1.1)
+        if center:
+            title, sub = (center if isinstance(center, (list, tuple)) else (center, None))[:2]
+            self.txt(s, cx - r + 0.5, cy - 0.30 * f, 2 * r - 1.0, 0.35 * f, title, size=15 * f, color=NAVY,
+                     align=PP_ALIGN.CENTER, line_sp=1.05)
+            if sub:
+                self.txt(s, cx - r + 0.5, cy + 0.12 * f, 2 * r - 1.0, 0.5 * f, sub, size=9.5 * f, color=MUT,
+                         align=PP_ALIGN.CENTER, line_sp=1.1)
+
+    def cascade(self, s, x, y, w, h, root, branches, root_w=2.55, branch_w=3.05):
+        """A left-to-right tree: the root (dark panel: title, big number, sub), the branches (light
+        panels: title, number, sub) and their leaves (plain rows: text, value) joined by elbow lines.
+        root: dict(title, number, sub); branches: [dict(title, number, sub, leaves=[(text, value)])].
+        Returns the y under the tree."""
+        f = self.tf
+        n = max(1, len(branches))
+        gap = 0.16
+        bh = (h - gap * (n - 1)) / n
+        # root
+        self.rect(s, x, y, root_w, h, fill=NAVY)
+        self.txt(s, x + 0.22, y + 0.24, root_w - 0.4, 0.22 * f, root.get('title', '').upper(), size=8.5 * f, color=CYAN, track="40")
+        self.txt(s, x + 0.22, y + 0.24 + 0.32 * f, root_w - 0.4, 0.6 * f, root.get('number', ''), size=30 * f, color=WHITE, wrap=False)
+        if root.get('sub'):
+            self.txt(s, x + 0.22, y + 0.24 + 0.95 * f, root_w - 0.44, h - 1.3 * f, root['sub'], size=9.5 * f, color=SUB_D, line_sp=1.15)
+        bx = x + root_w + 0.55
+        lx = bx + branch_w + 0.45
+        lw = x + w - lx
+        for i, b in enumerate(branches):
+            by = y + i * (bh + gap)
+            self.rect(s, bx, by, branch_w, bh, fill=TINT)
+            self.txt(s, bx + 0.18, by + 0.14, branch_w - 0.3, 0.22 * f, b.get('title', ''), size=11 * f, color=NAVY, wrap=False)
+            self.txt(s, bx + 0.18, by + 0.14 + 0.26 * f, branch_w - 0.3, 0.4 * f, b.get('number', ''), size=19.5 * f, color=BLUE, wrap=False)
+            if b.get('sub'):
+                self.txt(s, bx + 0.18, by + 0.14 + 0.60 * f, branch_w - 0.3, max(0.2, bh - 0.8 * f), b['sub'], size=8.5 * f, color=MUT, line_sp=1.1)
+            midy = by + bh / 2
+            self._stroke(s, [(x + root_w, y + h / 2), (x + root_w + 0.27, y + h / 2), (x + root_w + 0.27, midy), (bx, midy)], CARD_LINE, 1.0)
+            leaves = b.get('leaves') or []
+            if leaves:
+                lp = bh / max(1, len(leaves))
+                for j, lf in enumerate(leaves):
+                    ly = by + j * lp
+                    t, v = (lf if isinstance(lf, (list, tuple)) else (lf, ""))[:2]
+                    self.txt(s, lx + 0.18, ly + lp / 2 - 0.11 * f, lw - 1.3, 0.22 * f, t, size=9.5 * f, color=NAVY, wrap=False)
+                    if v:
+                        self.txt(s, x + w - 1.1, ly + lp / 2 - 0.11 * f, 1.1, 0.22 * f, v, size=9.5 * f, color=BLUE, align=PP_ALIGN.RIGHT, wrap=False)
+                    if j:
+                        self.rect(s, lx + 0.18, ly, lw - 0.18, 0.01, fill=HAIR_ROW)
+                    self._stroke(s, [(bx + branch_w, midy), (bx + branch_w + 0.22, midy), (bx + branch_w + 0.22, ly + lp / 2), (lx, ly + lp / 2)], CARD_LINE, 0.75)
+        return y + h
+
+    def funnel(self, s, x, y, w, h, stages, orientation='down', label_w=None):
+        """A funnel of trapezoids narrowing along the flow. stages: (label, value, display[, conversion]);
+        conversion = the share reaching this stage from the last, shown between stages. Fills darken
+        along the flow. Returns the y (or x) under the last stage."""
+        f = self.tf
+        n = max(2, len(stages))
+        vmax = max(float(st[1]) for st in stages) or 1.0
+        fills = [BLUE4, BLUE3, BLUE, NAVY][-n:] if n <= 4 else self.ramp(n, 'time')
+        if orientation == 'down':
+            label_w = label_w or 2.3
+            fx, fw = x + label_w + 0.2, w - label_w - 0.2 - 1.0     # the funnel sits right of the label column
+            sh = (h - 0.12 * (n - 1)) / n
+            for i, st in enumerate(stages):
+                top_w = fw * (0.40 + 0.60 * float(st[1]) / vmax)
+                nxt = stages[i + 1][1] if i + 1 < n else st[1]
+                bot_w = fw * (0.40 + 0.60 * float(nxt) / vmax)
+                sy = y + i * (sh + 0.12)
+                cx = fx + fw / 2
+                fill = fills[i % len(fills)]
+                self._polygon(s, [(cx - top_w / 2, sy), (cx + top_w / 2, sy), (cx + bot_w / 2, sy + sh), (cx - bot_w / 2, sy + sh)], fill)
+                tc = WHITE if fill in (NAVY, BLUE, BLUE3) else NAVY
+                self.txt(s, x, sy + sh / 2 - 0.13 * f, label_w, 0.26 * f, st[0], size=11 * f, color=NAVY, align=PP_ALIGN.RIGHT, wrap=False)
+                self.txt(s, cx - 1.0, sy + sh / 2 - 0.17 * f, 2.0, 0.34 * f, st[2], size=15 * f, color=tc, align=PP_ALIGN.CENTER, wrap=False)
+                if len(st) > 3 and st[3] and i:
+                    self.txt(s, fx + fw + 0.12, sy - 0.11 * f, 0.9, 0.22 * f, st[3], size=9.5 * f, color=BLUE, wrap=False)
+            return y + h
+        # left-to-right
+        sw = (w - 0.12 * (n - 1)) / n
+        for i, st in enumerate(stages):
+            lh = h * (0.35 + 0.65 * float(st[1]) / vmax)
+            nxt = stages[i + 1][1] if i + 1 < n else st[1]
+            rh = h * (0.35 + 0.65 * float(nxt) / vmax)
+            sx = x + i * (sw + 0.12)
+            cy = y + h / 2
+            fill = fills[i % len(fills)]
+            self._polygon(s, [(sx, cy - lh / 2), (sx + sw, cy - rh / 2), (sx + sw, cy + rh / 2), (sx, cy + lh / 2)], fill)
+            tc = WHITE if fill in (NAVY, BLUE, BLUE3) else NAVY
+            self.txt(s, sx + 0.15, cy - 0.30 * f, sw - 0.3, 0.30 * f, st[2], size=15 * f, color=tc, wrap=False)
+            self.txt(s, sx + 0.15, cy + 0.04 * f, sw - 0.3, 0.44 * f, st[0], size=9.5 * f, color=tc, line_sp=1.05)
+            if len(st) > 3 and st[3] and i:
+                self.txt(s, sx - 0.12, y + h + 0.08, sw, 0.22 * f, st[3], size=9 * f, color=BLUE, wrap=False)
+        return y + h
+
+    def zoom(self, s, x, y, w, h, items, focus, over_w=3.2, title=None):
+        """A deep dive: the overview strip at left (one band per item, the focus in BLUE), a lens of
+        two lines to the detail panel at right, which the caller fills. items: (label, display).
+        Returns (dx, dy, dw, dh), the inner box of the detail panel."""
+        f = self.tf
+        n = max(1, len(items))
+        bh = (h - 0.08 * (n - 1)) / n
+        for i, it in enumerate(items):
+            by = y + i * (bh + 0.08)
+            on = (i == focus)
+            self.rect(s, x, by, over_w, bh, fill=(BLUE if on else TINT2))
+            self.txt(s, x + 0.16, by + bh / 2 - 0.12 * f, over_w - 1.2, 0.24 * f, it[0], size=10.5 * f, color=(WHITE if on else NAVY), wrap=False)
+            if len(it) > 1 and it[1]:
+                self.txt(s, x + over_w - 1.15, by + bh / 2 - 0.12 * f, 1.0, 0.24 * f, it[1], size=10.5 * f, color=(WHITE if on else BLUE), align=PP_ALIGN.RIGHT, wrap=False)
+        fy = y + focus * (bh + 0.08)
+        dx = x + over_w + 0.75
+        dw = x + w - dx
+        self.panel(s, dx, y, dw, h, weight='faint', border='soft')
+        self._stroke(s, [(x + over_w, fy), (dx, y)], BLUE, 0.75, dash=True)
+        self._stroke(s, [(x + over_w, fy + bh), (dx, y + h)], BLUE, 0.75, dash=True)
+        if title:
+            self.txt(s, dx + 0.22, y + 0.18, dw - 0.4, 0.2 * f, title.upper(), size=8.5 * f, color=BLUE, track="40", wrap=False)
+        return (dx + 0.22, y + (0.5 * f if title else 0.22), dw - 0.44, h - (0.7 * f if title else 0.44))
+
+    def value_map(self, s, x, y, w, pools, total=None, col_gap=0.35):
+        """The value map: one column per pool with an icon, the pool name, its value and lever rows.
+        pools: dict(name, value, icon, levers=[(text, value)]). total = (display, caption) drawn as a
+        tinted hero number above. Returns the y under the longest column."""
+        f = self.tf
+        top = y
+        if total:
+            self.hero_number(s, x, y, 5.6, 0.80, total[0], total[1], dark=False, layout='side', num_size=26)
+            top = y + 1.02
+        n = max(1, len(pools))
+        cw = (w - col_gap * (n - 1)) / n
+        bottom = top
+        for i, p in enumerate(pools):
+            cx = x + i * (cw + col_gap)
+            if i:
+                self.rect(s, cx - col_gap / 2, top, 0.01, 4.2, fill=CARD_LINE)
+            if p.get('icon'):
+                self.icon_glyph(s, p['icon'], cx, top, 0.42 * f, color=BLUE)
+            self.txt(s, cx, top + 0.50 * f, cw, 0.26 * f, p.get('name', ''), size=13 * f, color=NAVY, wrap=False)
+            self.txt(s, cx, top + 0.78 * f, cw, 0.45 * f, p.get('value', ''), size=22.5 * f, color=BLUE, wrap=False)
+            ly = top + 1.38 * f
+            for (t, v) in p.get('levers') or []:
+                self.rect(s, cx, ly, cw, 0.01, fill=HAIR_ROW)
+                self.txt(s, cx, ly + 0.08, cw - 1.1, 0.22 * f, t, size=9.5 * f, color=NAVY, wrap=False)
+                if v:
+                    self.txt(s, cx + cw - 1.1, ly + 0.08, 1.1, 0.22 * f, v, size=9.5 * f, color=MUT, align=PP_ALIGN.RIGHT, wrap=False)
+                ly += 0.36 * f
+            bottom = max(bottom, ly)
+        return bottom
+
+    def chevron_flow(self, s, x, y, w, steps, h=None, gap=0.08):
+        """A process as chevrons in the blue ramp. steps: (label, sub, icon) or (label, sub) or label.
+        Icons sit above each chevron, subs below. Returns the y under the subs."""
+        f = self.tf
+        h = h or 0.85 * f
+        n = max(1, len(steps))
+        cw = (w - gap * (n - 1)) / n
+        fills = self.ramp(n, 'time')
+        for i, st in enumerate(steps):
+            st = st if isinstance(st, (list, tuple)) else (st,)
+            cx = x + i * (cw + gap)
+            fill = fills[i]
+            shape = s.shapes.add_shape(MSO_SHAPE.PENTAGON if i == 0 else MSO_SHAPE.CHEVRON, I(cx), I(y), I(cw), I(h))
+            shape.fill.solid(); shape.fill.fore_color.rgb = fill; shape.line.fill.background(); shape.shadow.inherit = False
+            self.flat(shape)
+            tc = WHITE if fill in (NAVY, BLUE, BLUE3) else NAVY
+            lx0 = cx + (0.15 if i == 0 else 0.55 * h)
+            lw0 = cw - 0.55 * h - 0.3
+            nl = 2 if text_w(st[0], 11 * f) > lw0 else 1
+            self.txt(s, lx0, y + h / 2 - 0.13 * f * nl, lw0, 0.28 * f * nl, st[0], size=11 * f, color=tc, line_sp=1.05)
+            if len(st) > 2 and st[2]:
+                self.icon_glyph(s, st[2], cx + (0.05 if i == 0 else 0.25), y - 0.52 * f, 0.38 * f, color=BLUE)
+            if len(st) > 1 and st[1]:
+                self.txt(s, cx + (0.05 if i == 0 else 0.25), y + h + 0.10, cw - 0.4, 0.6 * f, st[1], size=9 * f, color=MUT, line_sp=1.1)
+        return y + h + 0.75 * f
+
+    def rings(self, s, cx, cy, r, levels, label_x=None, label_w=3.6):
+        """Concentric rings from the core outward, each with a label and a sub to the right on a
+        leader line. levels: (label, sub) inner first. Fills NAVY (core) → BLUE → BLUE3 → BLUE4 → TINT.
+        Returns nothing."""
+        import math
+        f = self.tf
+        n = max(1, len(levels))
+        fills = [NAVY, BLUE, BLUE3, BLUE4, TINT, TINT2][:n]
+        step = r / n
+        for i in range(n - 1, -1, -1):
+            rr = step * (i + 1)
+            self.oval(s, cx - rr, cy - rr, 2 * rr, 2 * rr, fills[i])
+        lx = label_x or (cx + r + 0.6)
+        for i, lv in enumerate(levels):
+            rr = step * (i + 0.5)
+            a = math.radians(-35 + 70.0 * i / max(1, n - 1))
+            px, py = cx + rr * math.cos(a), cy + rr * math.sin(a)
+            ly = cy - r + (2 * r) * (i + 0.5) / n
+            self._stroke(s, [(px, py), (lx - 0.25, ly)], CARD_LINE, 0.75)
+            self.oval(s, px - 0.05, py - 0.05, 0.10, 0.10, WHITE if i < 3 else NAVY)
+            self.txt(s, lx, ly - 0.13 * f, label_w, 0.25 * f, lv[0], size=11 * f, color=NAVY, wrap=False)
+            if len(lv) > 1 and lv[1]:
+                self.txt(s, lx, ly + 0.12 * f, label_w, 0.4 * f, lv[1], size=9 * f, color=MUT, line_sp=1.1)
+
+    def stack(self, s, x, y, w, layers, shape='bands', leaders=True, band_h=None, right_w=3.6):
+        """The layer cake: bands (or ziggurat trapezoids narrowing upward) top to bottom, an icon and
+        a title on each, a verb leader to a thesis at the right. layers: dict(title, sub, icon, verb,
+        thesis) top first. Fills NAVY (top) → BLUE → BLUE3 → BLUE4 → TINT. Returns the y under it."""
+        f = self.tf
+        n = max(1, len(layers))
+        bh = band_h or 0.82 * f
+        fills = [NAVY, BLUE, BLUE3, BLUE4, TINT, TINT2][:n]
+        bw = w - (right_w + 0.4 if leaders else 0)
+        for i, ly in enumerate(layers):
+            by = y + i * (bh + 0.06)
+            fill = fills[i]
+            if shape == 'ziggurat':
+                inset = (n - 1 - i) * (bw * 0.06)
+                self._polygon(s, [(x + inset + bw * 0.03, by), (x + bw - inset - bw * 0.03, by), (x + bw - inset, by + bh), (x + inset, by + bh)], fill)
+                tx = x + inset + bw * 0.03 + 0.2
+            else:
+                self.rect(s, x, by, bw, bh, fill=fill)
+                tx = x + 0.2
+            tc = WHITE if fill in (NAVY, BLUE, BLUE3) else NAVY
+            sc = SUB_D if fill in (NAVY, BLUE, BLUE3) else MUT
+            if ly.get('icon'):
+                self.icon_glyph(s, ly['icon'], tx, by + bh / 2 - 0.19 * f, 0.38 * f, color=tc)
+                tx += 0.55 * f
+            self.txt(s, tx, by + 0.12 * f, bw - 1.0, 0.26 * f, ly.get('title', ''), size=12 * f, color=tc, wrap=False)
+            if ly.get('sub'):
+                self.txt(s, tx, by + 0.40 * f, bw - 1.2, 0.4 * f, ly['sub'], size=9 * f, color=sc, line_sp=1.05)
+            if leaders and (ly.get('verb') or ly.get('thesis')):
+                lx = x + bw + 0.15
+                self._stroke(s, [(x + bw, by + bh / 2), (lx + 0.2, by + bh / 2)], CARD_LINE, 0.75, dash=True)
+                self.txt(s, lx + 0.3, by + bh / 2 - 0.36 * f, right_w - 0.3, 0.22 * f, (ly.get('verb') or '').upper(), size=8.5 * f, color=BLUE, track="40", wrap=False)
+                if ly.get('thesis'):
+                    self.txt(s, lx + 0.3, by + bh / 2 - 0.12 * f, right_w - 0.3, bh - 0.1, ly['thesis'], size=9.5 * f, color=NAVY, line_sp=1.1)
+        return y + n * (bh + 0.06)
+
+    def hub_spoke(self, s, cx, cy, hub, spokes, r=2.2, hub_d=None, node_d=None, label_w=2.0, start=-90.0):
+        """A hub with N spokes to nodes on a circle. hub: (title, sub, icon). spokes: (label, sub, icon).
+        Returns nothing."""
+        import math
+        f = self.tf
+        hub_d = hub_d or 1.7 * f
+        node_d = node_d or 0.62 * f
+        n = max(1, len(spokes))
+        for i, sp in enumerate(spokes):
+            a = math.radians(start + 360.0 * i / n)
+            nx, ny = cx + r * math.cos(a), cy + r * math.sin(a)
+            self._stroke(s, [(cx + hub_d / 2 * math.cos(a), cy + hub_d / 2 * math.sin(a)), (nx - node_d / 2 * math.cos(a), ny - node_d / 2 * math.sin(a))], CARD_LINE, 1.0)
+            icon = sp[2] if len(sp) > 2 else None
+            self._node(s, nx, ny, node_d, BLUE, icon=icon, text=(None if icon else str(i + 1)))
+            c = math.cos(a)
+            lx = cx + (r + node_d / 2 + 0.2) * math.cos(a)
+            ly = cy + (r + node_d / 2 + 0.2) * math.sin(a)
+            if c > 0.35:
+                x0, al = lx, PP_ALIGN.LEFT
+            elif c < -0.35:
+                x0, al = lx - label_w, PP_ALIGN.RIGHT
+            else:
+                x0, al = lx - label_w / 2, PP_ALIGN.CENTER
+            ty = ly - 0.13 * f if abs(c) > 0.35 else (ly - 0.36 * f if math.sin(a) < 0 else ly + 0.02)
+            self.txt(s, x0, ty, label_w, 0.25 * f, sp[0], size=11 * f, color=NAVY, align=al, wrap=False)
+            if len(sp) > 1 and sp[1]:
+                self.txt(s, x0, ty + 0.24 * f, label_w, 0.4 * f, sp[1], size=9 * f, color=MUT, align=al, line_sp=1.1)
+        self.oval(s, cx - hub_d / 2, cy - hub_d / 2, hub_d, hub_d, NAVY)
+        ht, hs, hi = (list(hub) + [None, None])[:3]
+        if hi:
+            self.icon_glyph(s, hi, cx - 0.22 * f, cy - hub_d / 2 + 0.28 * f, 0.44 * f, color=CYAN)
+        self.txt(s, cx - hub_d / 2 + 0.1, cy - 0.10 * f, hub_d - 0.2, 0.3 * f, ht or '', size=12 * f, color=WHITE, align=PP_ALIGN.CENTER, wrap=False)
+        if hs:
+            self.txt(s, cx - hub_d / 2 + 0.12, cy + 0.20 * f, hub_d - 0.24, 0.4 * f, hs, size=8.5 * f, color=SUB_D, align=PP_ALIGN.CENTER, line_sp=1.05)
+
+    def icon_rows(self, s, x, y, w, items, cols=1, pitch=None, icon_size=None, col_gap=0.5, rule=True):
+        """Icon, title and one line, no box: the antidote to tiles. items: (icon, title, body).
+        Returns the y under the last row."""
+        f = self.tf
+        icon_size = icon_size or 0.42 * f
+        pitch = pitch or 1.02 * f
+        cw = (w - col_gap * (cols - 1)) / cols
+        rows = (len(items) + cols - 1) // cols
+        for i, it in enumerate(items):
+            r_, c = divmod(i, cols)
+            cx = x + c * (cw + col_gap)
+            cy = y + r_ * pitch
+            if rule and r_:
+                self.rect(s, cx, cy - 0.12 * f, cw, 0.01, fill=HAIR_ROW)
+            if it[0]:
+                self.icon_glyph(s, it[0], cx, cy + 0.02, icon_size, color=BLUE)
+            tx = cx + icon_size + 0.25
+            tw = cw - icon_size - 0.25
+            lines = max(1, int(text_w(it[1], 12.5 * f) / max(0.5, tw - 0.05)) + 1) if text_w(it[1], 12.5 * f) > tw else 1
+            self.txt(s, tx, cy, tw, 0.27 * f * lines, it[1], size=12.5 * f, color=NAVY, line_sp=1.05)
+            if len(it) > 2 and it[2]:
+                by = cy + 0.30 * f * lines
+                self.txt(s, tx, by, tw - 0.05, max(0.2, pitch - (by - cy) - 0.05), it[2], size=10 * f, color=NAVY, line_sp=1.12)
+        return y + rows * pitch
+
+    def venn(self, s, cx, cy, r, left, right, overlap, d=None):
+        """Two circles and their overlap, the overlap filled BLUE with white text. left/right/overlap:
+        (title, sub). Returns nothing."""
+        import math
+        f = self.tf
+        d = d or 1.15 * r
+        lx, rx = cx - d / 2, cx + d / 2
+        self.oval(s, lx - r, cy - r, 2 * r, 2 * r, TINT)
+        self.oval(s, rx - r, cy - r, 2 * r, 2 * r, BLUE4)
+        h = math.sqrt(max(0.0, r * r - (d / 2) ** 2))
+        a = math.atan2(h, d / 2)
+        pts = []
+        for k in range(0, 25):
+            t = -a + 2 * a * k / 24.0
+            pts.append((rx - r * math.cos(t), cy + r * math.sin(t)))    # left arc of the right circle... mirrored below
+        pts = [(rx + r * math.cos(math.pi - a + 2 * a * k / 24.0), cy + r * math.sin(math.pi - a + 2 * a * k / 24.0)) for k in range(0, 25)]
+        pts += [(lx + r * math.cos(a - 2 * a * k / 24.0), cy + r * math.sin(a - 2 * a * k / 24.0)) for k in range(0, 25)]
+        self._polygon(s, pts, BLUE)
+        lw = r * 0.95
+        self.txt(s, lx - r + 0.25, cy - 0.62 * f, lw, 0.56 * f, left[0], size=12 * f, color=NAVY, line_sp=1.05)
+        if len(left) > 1 and left[1]:
+            self.txt(s, lx - r + 0.25, cy + 0.02 * f, lw - 0.1, 0.9 * f, left[1], size=9 * f, color=NAVY, line_sp=1.1)
+        self.txt(s, rx + r * 0.05, cy - 0.62 * f, lw, 0.56 * f, right[0], size=12 * f, color=NAVY, line_sp=1.05)
+        if len(right) > 1 and right[1]:
+            self.txt(s, rx + r * 0.05, cy + 0.02 * f, lw - 0.1, 0.9 * f, right[1], size=9 * f, color=NAVY, line_sp=1.1)
+        ow = 2 * (r - d / 2) - 0.1
+        self.txt(s, cx - ow / 2, cy - 0.34 * f, ow, 0.28 * f, overlap[0], size=11 * f, color=WHITE, align=PP_ALIGN.CENTER, line_sp=1.05)
+        if len(overlap) > 1 and overlap[1]:
+            self.txt(s, cx - ow / 2, cy + 0.02 * f, ow, 0.7 * f, overlap[1], size=8.5 * f, color=WHITE, align=PP_ALIGN.CENTER, line_sp=1.1)
+
+    def pillars(self, s, x, y, w, roof, columns, base, col_h=None, gap=0.12):
+        """The temple: a roof band, N columns with an icon, a title and a sub, a base band.
+        roof/base: (title, sub). columns: (title, sub, icon). Returns the y under the base."""
+        f = self.tf
+        col_h = col_h or 2.6 * f
+        rh = 0.62 * f
+        self.rect(s, x, y, w, rh, fill=NAVY)
+        self.txt(s, x + 0.22, y + 0.10 * f, w - 3.5, 0.28 * f, roof[0], size=12 * f, color=WHITE, wrap=False)
+        if len(roof) > 1 and roof[1]:
+            self.txt(s, x + w - 3.4, y + 0.14 * f, 3.2, 0.24 * f, roof[1], size=9 * f, color=SUB_D, align=PP_ALIGN.RIGHT, wrap=False)
+        n = max(1, len(columns))
+        cw = (w - gap * (n - 1)) / n
+        cy = y + rh + 0.12
+        for i, c in enumerate(columns):
+            cx = x + i * (cw + gap)
+            self.rect(s, cx, cy, cw, col_h, fill=TINT2)
+            if len(c) > 2 and c[2]:
+                self.icon_glyph(s, c[2], cx + 0.18, cy + 0.2, 0.42 * f, color=BLUE)
+            self.txt(s, cx + 0.18, cy + 0.2 + 0.55 * f, cw - 0.3, 0.5 * f, c[0], size=11 * f, color=NAVY, line_sp=1.05)
+            if len(c) > 1 and c[1]:
+                self.txt(s, cx + 0.18, cy + 0.2 + 1.05 * f, cw - 0.32, col_h - 1.3 * f, c[1], size=8.5 * f, color=MUT, line_sp=1.1)
+        by = cy + col_h + 0.12
+        self.rect(s, x, by, w, rh, fill=BLUE)
+        self.txt(s, x + 0.22, by + 0.10 * f, w - 3.5, 0.28 * f, base[0], size=12 * f, color=WHITE, wrap=False)
+        if len(base) > 1 and base[1]:
+            self.txt(s, x + w - 3.4, by + 0.14 * f, 3.2, 0.24 * f, base[1], size=9 * f, color=WHITE, align=PP_ALIGN.RIGHT, wrap=False)
+        return by + rh
+
+    # ---- vector icons (v5.0)
+    def icon_glyph(self, s, name, x, y, size=0.4, color=None, weight=2.0):
+        """Draw a Lucide icon as native stroke shapes inside the (x, y, size, size) box: crisp at any
+        size, recolourable, editable in PowerPoint and Google Slides. name = the Lucide name
+        ('phone-incoming', 'users', 'shield-check'); X.lucide_search('router') finds names. weight
+        = the stroke on the 24-grid (Lucide draws 2). Returns the shapes, or [] when the icon is
+        missing (the build never fails on an icon)."""
+        p = lucide_path(name)
+        if not p:
+            return []
+        color = color or NAVY
+        sc = size / 24.0
+        lw_pt = weight * sc * 72.0
+        shapes = []
+        try:
+            polys = _svg_shapes(p)
+        except Exception:
+            return []
+        for pts, closed in polys:
+            if len(pts) < 2:
+                continue
+            emu = [(int((x + px * sc) * 914400), int((y + py * sc) * 914400)) for (px, py) in pts]
+            fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
+            fb.add_line_segments(emu[1:], close=False)
+            shp = fb.convert_to_shape()
+            shp.fill.background()
+            shp.line.color.rgb = color
+            shp.line.width = Pt(lw_pt)
+            shp.shadow.inherit = False
+            ln = shp._element.spPr.find(qn('a:ln'))
+            if ln is not None:
+                ln.set('cap', 'rnd')
+                if ln.find(qn('a:round')) is None:
+                    ln.append(ln.makeelement(qn('a:round'), {}))
+            self.flat(shp)
+            shapes.append(shp)
+        return shapes
 
     # ------------------------------------------------------------ dark slides
     def dark_bg(self, s):

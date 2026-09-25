@@ -95,6 +95,27 @@ for a dense reference document a reader studies, never for a room. The five page
 - The engine fits the logo inside the box and keeps its aspect; the Claude Design export
   stretched it, and the fitted version is the one to ship.
 
+## Frameworks before tiles (Apex v5.0, 25 Sep 2026)
+
+Shyam: "stop boxing yourself in with horizontal tiles and text in boxes; use the frameworks from the
+BCG examples; use icons." The rule, in order:
+
+1. **Name the claim's shape first**, then pick the form that draws that shape. A loop is a flywheel.
+   A total with its parts is a cascade. A narrowing is a funnel. One part opened up is a zoom. A
+   process is chevrons. Layers are rings or a stack. One centre with many surfaces is a hub and
+   spoke. Two sides and an overlap is a venn. Programmes on a foundation are pillars. Magnitudes,
+   trends, shares and rankings are drawn charts (T56–T66). Recipes T71–T83 in the catalog; the
+   sampler `scripts/example_apex_frameworks_build.py` shows all twelve at stage scale.
+2. **Tiles and card rows are the last resort**, for structure none of the forms above carries, and
+   never on two pages in a row. A page that is a grid of boxes with text in them goes back to
+   step 1.
+3. **Icons on every structural page**: one per concept, drawn as native shapes from the Lucide set
+   (`X.icon_glyph(s, "phone-incoming", x, y, 0.42)`, `X.lucide_search("router")` to find a name).
+   Blue on light, white on dark, navy in a ledger. Never decorative, never an emoji, never a
+   fabricated glyph. The set lives in `knowledge/design-system/icons/lucide/` (ISC licence).
+4. **Whitespace over filled panels.** If a page needs a big filled shape to feel finished, the
+   content is thin: cut the shape, keep the whitespace.
+
 ## The chart standard (Apex v4.2, 25 Sep 2026)
 
 The report's charts are the standard: clean, drawn from flat shapes, the value beside or above
@@ -194,6 +215,7 @@ need to verify a detail or extend the engine; the engine already implements both
 - [ ] Titles ONE line each, no trailing period; footnotes at most two lines
 - [ ] No bold anywhere; weight comes from size and colour
 - [ ] Voice: the save-time lint passed with no hard hit; the humanizer agent's altitude pass ran
+- [ ] Form: every structural page uses a framework form or a drawn chart; tiles at most once, never twice in a row; icons on the structural pages
 - [ ] One exhibit per slide, at most 2 or 3 callouts, nothing crossing y 6.55
 - [ ] Every numeric slide has a source footnote; estimates dashed or badged coral with an owner
 - [ ] At most ONE plain table in the whole deck
@@ -213,6 +235,8 @@ need to verify a detail or extend the engine; the engine already implements both
   rebuilt from its reference page, the donut and pie, the two summit pages, the team page and the close.
 - `scripts/example_apex_stage_build.py`: five pages built at both scales, stage and report, for the
   type-size trade-off.
+- `scripts/example_apex_frameworks_build.py`: the twelve framework forms, one page each, with icons.
+- `knowledge/design-system/icons/lucide/`: the icon set the engine draws as native shapes; `README.md` there.
 - `scripts/example_build.py`, `example_data_build.py`, `example_charts_build.py`,
   `example_bcg_build.py`: the v3-era examples for the data, comparison and evidence layers;
   every helper in them draws in Apex tokens under `look='apex'`.
