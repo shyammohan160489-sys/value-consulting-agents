@@ -152,6 +152,10 @@ Never green, never a gradient, never a 3D or shadowed shape.
    blocks and cards come from `X.icon('phone')` (the pack in `assets/icons/`).
 4. **Run it** (`python3 build_<deck>_pptx.py out.pptx`; needs `python-pptx`). Fix overflow by
    cutting words or switching to a denser exhibit, never by shrinking type below the scale.
+   `d.save()` runs the humanizer lint over every text frame and note and refuses a hard hit
+   (dashes, not-X-but-Y, warm-up openers, self-applause, banned words): fix the copy in the
+   script and rebuild. Before the render step, run the `humanizer` agent over the script's copy
+   for the altitude pass (stupid simple where the room reads, detail in footnotes and notes).
 5. **Render and look** (mandatory since 24 Sep 2026): `soffice --headless --convert-to pdf`,
    then `pdftoppm -r 80 -png`, then a contact sheet, and read it. Check the cover title stays
    left of the inner rule, captions are not squeezed, nothing crosses the footnote.
@@ -189,6 +193,7 @@ need to verify a detail or extend the engine; the engine already implements both
 - [ ] Client deck: client logo on the cover and every content slide; internal deck: none, `Internal` tag instead
 - [ ] Titles ONE line each, no trailing period; footnotes at most two lines
 - [ ] No bold anywhere; weight comes from size and colour
+- [ ] Voice: the save-time lint passed with no hard hit; the humanizer agent's altitude pass ran
 - [ ] One exhibit per slide, at most 2 or 3 callouts, nothing crossing y 6.55
 - [ ] Every numeric slide has a source footnote; estimates dashed or badged coral with an owner
 - [ ] At most ONE plain table in the whole deck

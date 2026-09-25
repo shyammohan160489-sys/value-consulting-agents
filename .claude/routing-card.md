@@ -5,3 +5,4 @@ CORTEX ROUTER (deterministic pre-flight — apply on every turn before respondin
 3. CANON: knowledge/product/banking-os.md (substance) + knowledge/design-system/narrative-spine.md (voice) govern every narrative asset.
 4. AMBIGUITY RULE: if a request could route ≥2 ways, or no built asset fits but one feels adjacent — ask Shyam first (one line, name the options), then execute.
 Full word-association map: knowledge/ROUTING.md
+5. HUMANIZER, ALWAYS ON: every deliverable and every reply longer than a paragraph goes through the humanizer agent's altitude pass before it is delivered (stupid simple for a room or a decision-maker, detail for whoever builds, checks or signs). Reply shape: the answer in the first sentence, one simple paragraph, then a short block headed "The detail". The exhibit engine lints every saved deck; the Stop hook lints every reply.

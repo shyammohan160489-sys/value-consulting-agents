@@ -5,6 +5,11 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v4.6 (25 Sep 2026, the humanizer runs on every save): save() lints every text frame
+  and note with ~/.claude/skills/humanizer/scripts/humanizer_lint.py and refuses a hard
+  hit (dashes, not-X-but-Y, warm-up openers, self-applause, banned words); soft findings
+  print. save(path, voice='warn') or APEX_VOICE=warn reports only.
+
 v4.5 (25 Sep 2026, the STAGE scale — Shyam: "the Claude Design original is cleaner,
   easier to read"): two Claude Design scales were measured, the report (Nedbank, 28pt
   title, 9pt body, 8.5pt footnote) and the stage (summit talk, 32pt title at 1.36, 12pt
@@ -2728,7 +2733,35 @@ class ExhibitDeck:
                 if spPr is not None and not spPr.findall(qn('a:effectLst')):
                     spPr.append(spPr.makeelement(qn('a:effectLst'), {}))
 
-    def save(self, path):
+    def save(self, path, voice='strict'):
+        """Save, then run the humanizer lint over every text frame and note (v4.6, 25 Sep 2026:
+        the humanizer runs on every output without being asked). A hard hit (dashes, not-X-but-Y,
+        warm-up openers, self-applause, banned words) raises, so the build fails until the copy is
+        fixed in the script; soft findings print. voice='warn' (or APEX_VOICE=warn) reports only."""
         self._strip_theme_styles()
         self.prs.save(path)
+        self.voice_check(path, voice)
         return path
+
+    def voice_check(self, path, voice='strict'):
+        lint = os.path.expanduser("~/.claude/skills/humanizer/scripts/humanizer_lint.py")
+        if not os.path.exists(lint):
+            return None
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("humanizer_lint", lint)
+            HL = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(HL)
+            hard, soft = HL.lint(path)
+        except Exception as e:                      # the lint must never wedge a build
+            print("voice check skipped (%s)" % e)
+            return None
+        mode = os.environ.get("APEX_VOICE", voice)
+        for loc, name, ctx in hard:
+            print("  VOICE HARD  %-14s %-26s …%s…" % (loc, name, ctx))
+        for loc, name, ctx in soft[:12]:
+            print("  voice soft  %-14s %-40s …%s…" % (loc, name, ctx))
+        if hard and mode != 'warn':
+            raise SystemExit("REFUSED: %d banned writing shape(s) in %s. Fix the copy in the build script "
+                             "(never the .pptx) and rebuild; APEX_VOICE=warn to override once." % (len(hard), os.path.basename(path)))
+        return hard, soft
