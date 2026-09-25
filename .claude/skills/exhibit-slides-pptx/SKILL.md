@@ -177,9 +177,11 @@ Never green, never a gradient, never a 3D or shadowed shape.
    (dashes, not-X-but-Y, warm-up openers, self-applause, banned words): fix the copy in the
    script and rebuild. Before the render step, run the `humanizer` agent over the script's copy
    for the altitude pass (stupid simple where the room reads, detail in footnotes and notes).
-5. **Render and look** (mandatory since 24 Sep 2026): `soffice --headless --convert-to pdf`,
-   then `pdftoppm -r 80 -png`, then a contact sheet, and read it. Check the cover title stays
-   left of the inner rule, captions are not squeezed, nothing crosses the footnote.
+5. **Render and look** (mandatory since 24 Sep 2026): `python3 scripts/render_preview.py <deck.pptx>`
+   renders through PowerPoint when it is installed (the true renderer: real fonts, real shapes)
+   and through LibreOffice otherwise, at 160 dpi, with a contact sheet. Read every page. Check
+   that labels clear their nodes, nothing bleeds off the page, captions are not squeezed,
+   nothing crosses the footnote. Judge sharpness in PowerPoint, never in a downscaled sheet.
 6. **QA against the checklist** below, then deliver the `.pptx` plus the build script (the
    script IS the editable source; keep it next to the output).
 
@@ -236,6 +238,7 @@ need to verify a detail or extend the engine; the engine already implements both
 - `scripts/example_apex_stage_build.py`: five pages built at both scales, stage and report, for the
   type-size trade-off.
 - `scripts/example_apex_frameworks_build.py`: the twelve framework forms, one page each, with icons.
+- `scripts/render_preview.py`: the QA render (PowerPoint, else LibreOffice) to page PNGs and a sheet.
 - `knowledge/design-system/icons/lucide/`: the icon set the engine draws as native shapes; `README.md` there.
 - `scripts/example_build.py`, `example_data_build.py`, `example_charts_build.py`,
   `example_bcg_build.py`: the v3-era examples for the data, comparison and evidence layers;

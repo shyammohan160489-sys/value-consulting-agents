@@ -2932,8 +2932,20 @@ class ExhibitDeck:
         self.flat(shp)
         return shp
 
-    def _polygon(self, s, pts, fill, line=None):
-        """A closed freeform polygon (inches)."""
+    @staticmethod
+    def _alpha(shape, pct):
+        """Fill transparency: pct = 0..100 visible share (e.g. 10 = a faint wash)."""
+        sf = shape._element.spPr.find(qn('a:solidFill'))
+        if sf is None:
+            return
+        clr = sf.find(qn('a:srgbClr'))
+        if clr is not None:
+            for a in clr.findall(qn('a:alpha')):
+                clr.remove(a)
+            clr.append(clr.makeelement(qn('a:alpha'), {'val': str(int(pct * 1000))}))
+
+    def _polygon(self, s, pts, fill, line=None, alpha=None):
+        """A closed freeform polygon (inches). alpha = visible share in percent (a wash)."""
         emu = [(int(px * 914400), int(py * 914400)) for (px, py) in pts]
         fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
         fb.add_line_segments(emu[1:], close=True)
@@ -2947,6 +2959,8 @@ class ExhibitDeck:
         else:
             shp.line.color.rgb = line; shp.line.width = Pt(0.75)
         shp.shadow.inherit = False
+        if alpha is not None and fill is not None:
+            self._alpha(shp, alpha)
         self.flat(shp)
         return shp
 
@@ -2961,40 +2975,63 @@ class ExhibitDeck:
             self.txt(s, cx - d / 2, cy - ts / 144.0 - 0.02, d, ts / 72.0 * 1.4, text, size=ts,
                      color=(icon_color or WHITE), align=PP_ALIGN.CENTER, wrap=False)
 
-    def flywheel(self, s, cx, cy, r, steps, center=None, node_d=None, label_w=2.3, start=-90.0):
+    def _ring_label(self, s, cx, cy, r, node_d, a, label, sub, label_w, bounds=(0.98, 12.35), gap=0.14):
+        """A label for a node on a ring at angle a (radians). Side nodes: the block clears the node's
+        edge and centres on it. Top and bottom nodes: the block sits above or below with a gap.
+        Boxes are clamped to `bounds` (x). Returns nothing."""
+        import math
+        f = self.tf
+        nx, ny = cx + r * math.cos(a), cy + r * math.sin(a)
+        c, sn = math.cos(a), math.sin(a)
+        th = 0.27 * f
+        sub_lines = 0
+        if sub:
+            sub_lines = 1 if text_w(sub, 9 * f) <= label_w - 0.05 else 2
+        bh = th + (0.22 * f * sub_lines + 0.04 if sub else 0)
+        if abs(c) >= 0.35:                         # a side node: clear the node, centre on it
+            if c > 0:
+                x0 = nx + node_d / 2 + gap
+                w = min(label_w, bounds[1] - x0)
+                al = PP_ALIGN.LEFT
+            else:
+                x1 = nx - node_d / 2 - gap
+                x0 = max(bounds[0], x1 - label_w)
+                w = x1 - x0
+                al = PP_ALIGN.RIGHT
+            y0 = ny - bh / 2
+        else:                                      # top or bottom: above or below the node
+            x0 = max(bounds[0], min(nx - label_w / 2, bounds[1] - label_w))
+            w = label_w
+            al = PP_ALIGN.CENTER
+            y0 = (ny - node_d / 2 - gap - bh) if sn < 0 else (ny + node_d / 2 + gap)
+        self.txt(s, x0, y0, w, th, label, size=11 * f, color=NAVY, align=al, wrap=False)
+        if sub:
+            self.txt(s, x0, y0 + th + 0.02, w, 0.22 * f * sub_lines + 0.05, sub, size=9 * f, color=MUT, align=al, line_sp=1.08)
+
+    def flywheel(self, s, cx, cy, r, steps, center=None, node_d=None, label_w=2.3, start=-90.0,
+                 bounds=(0.98, 12.35)):
         """A loop of N steps on a circle, arrows between them, labels outside, an optional centre.
         steps: (label, sub, icon_name) or (label, sub). Returns nothing."""
         import math
         f = self.tf
         n = max(2, len(steps))
-        node_d = node_d or 0.62 * f
-        gap = math.degrees((node_d / 2 + 0.10) / r)
+        node_d = node_d or 0.64 * f
+        self._arc(s, cx - r, cy - r, 2 * r, 0, 359.99, 0.02 / max(r, 0.1), TINT)   # the track behind the wheel
+        gap = math.degrees((node_d / 2 + 0.12) / r)
         for i, st in enumerate(steps):
             a0 = start + 360.0 * i / n
             a1 = start + 360.0 * (i + 1) / n
             pts = []
-            for k in range(0, 21):
-                a = math.radians(a0 + gap + (a1 - gap - a0 - gap) * k / 20.0)
+            for k in range(0, 25):
+                a = math.radians(a0 + gap + (a1 - gap - a0 - gap) * k / 24.0)
                 pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
-            self._stroke(s, pts, BLUE3, 1.5, arrow=True)
+            self._stroke(s, pts, BLUE3, 2.0, arrow=True)
         for i, st in enumerate(steps):
             a = math.radians(start + 360.0 * i / n)
             nx, ny = cx + r * math.cos(a), cy + r * math.sin(a)
             icon = st[2] if len(st) > 2 else None
             self._node(s, nx, ny, node_d, BLUE, icon=icon, text=(None if icon else str(i + 1)))
-            lx = cx + (r + node_d / 2 + 0.22) * math.cos(a)
-            ly = cy + (r + node_d / 2 + 0.22) * math.sin(a)
-            c = math.cos(a)
-            if c > 0.35:
-                x0, al = lx, PP_ALIGN.LEFT
-            elif c < -0.35:
-                x0, al = lx - label_w, PP_ALIGN.RIGHT
-            else:
-                x0, al = lx - label_w / 2, PP_ALIGN.CENTER
-            ty = ly - 0.14 * f if abs(c) > 0.35 else (ly - 0.36 * f if math.sin(a) < 0 else ly + 0.02)
-            self.txt(s, x0, ty, label_w, 0.25 * f, st[0], size=11 * f, color=NAVY, align=al, wrap=False)
-            if len(st) > 1 and st[1]:
-                self.txt(s, x0, ty + 0.24 * f, label_w, 0.4 * f, st[1], size=9 * f, color=MUT, align=al, line_sp=1.1)
+            self._ring_label(s, cx, cy, r, node_d, a, st[0], (st[1] if len(st) > 1 else None), label_w, bounds)
         if center:
             title, sub = (center if isinstance(center, (list, tuple)) else (center, None))[:2]
             self.txt(s, cx - r + 0.5, cy - 0.30 * f, 2 * r - 1.0, 0.35 * f, title, size=15 * f, color=NAVY,
@@ -3029,7 +3066,7 @@ class ExhibitDeck:
             if b.get('sub'):
                 self.txt(s, bx + 0.18, by + 0.14 + 0.60 * f, branch_w - 0.3, max(0.2, bh - 0.8 * f), b['sub'], size=8.5 * f, color=MUT, line_sp=1.1)
             midy = by + bh / 2
-            self._stroke(s, [(x + root_w, y + h / 2), (x + root_w + 0.27, y + h / 2), (x + root_w + 0.27, midy), (bx, midy)], CARD_LINE, 1.0)
+            self._stroke(s, [(x + root_w, y + h / 2), (x + root_w + 0.27, y + h / 2), (x + root_w + 0.27, midy), (bx, midy)], BLUE4, 1.5)
             leaves = b.get('leaves') or []
             if leaves:
                 lp = bh / max(1, len(leaves))
@@ -3041,7 +3078,7 @@ class ExhibitDeck:
                         self.txt(s, x + w - 1.1, ly + lp / 2 - 0.11 * f, 1.1, 0.22 * f, v, size=9.5 * f, color=BLUE, align=PP_ALIGN.RIGHT, wrap=False)
                     if j:
                         self.rect(s, lx + 0.18, ly, lw - 0.18, 0.01, fill=HAIR_ROW)
-                    self._stroke(s, [(bx + branch_w, midy), (bx + branch_w + 0.22, midy), (bx + branch_w + 0.22, ly + lp / 2), (lx, ly + lp / 2)], CARD_LINE, 0.75)
+                    self._stroke(s, [(bx + branch_w, midy), (bx + branch_w + 0.22, midy), (bx + branch_w + 0.22, ly + lp / 2), (lx, ly + lp / 2)], BLUE4, 1.0)
         return y + h
 
     def funnel(self, s, x, y, w, h, stages, orientation='down', label_w=None):
@@ -3104,9 +3141,10 @@ class ExhibitDeck:
         fy = y + focus * (bh + 0.08)
         dx = x + over_w + 0.75
         dw = x + w - dx
+        self._polygon(s, [(x + over_w, fy), (dx, y), (dx, y + h), (x + over_w, fy + bh)], BLUE, alpha=9)   # the lens
         self.panel(s, dx, y, dw, h, weight='faint', border='soft')
-        self._stroke(s, [(x + over_w, fy), (dx, y)], BLUE, 0.75, dash=True)
-        self._stroke(s, [(x + over_w, fy + bh), (dx, y + h)], BLUE, 0.75, dash=True)
+        self._stroke(s, [(x + over_w, fy), (dx, y)], BLUE3, 0.75)
+        self._stroke(s, [(x + over_w, fy + bh), (dx, y + h)], BLUE3, 0.75)
         if title:
             self.txt(s, dx + 0.22, y + 0.18, dw - 0.4, 0.2 * f, title.upper(), size=8.5 * f, color=BLUE, track="40", wrap=False)
         return (dx + 0.22, y + (0.5 * f if title else 0.22), dw - 0.44, h - (0.7 * f if title else 0.44))
@@ -3178,7 +3216,8 @@ class ExhibitDeck:
         step = r / n
         for i in range(n - 1, -1, -1):
             rr = step * (i + 1)
-            self.oval(s, cx - rr, cy - rr, 2 * rr, 2 * rr, fills[i])
+            ov = self.oval(s, cx - rr, cy - rr, 2 * rr, 2 * rr, fills[i])
+            ov.line.color.rgb = WHITE; ov.line.width = Pt(1.5)
         lx = label_x or (cx + r + 0.6)
         for i, lv in enumerate(levels):
             rr = step * (i + 0.5)
@@ -3226,7 +3265,8 @@ class ExhibitDeck:
                     self.txt(s, lx + 0.3, by + bh / 2 - 0.12 * f, right_w - 0.3, bh - 0.1, ly['thesis'], size=9.5 * f, color=NAVY, line_sp=1.1)
         return y + n * (bh + 0.06)
 
-    def hub_spoke(self, s, cx, cy, hub, spokes, r=2.2, hub_d=None, node_d=None, label_w=2.0, start=-90.0):
+    def hub_spoke(self, s, cx, cy, hub, spokes, r=2.2, hub_d=None, node_d=None, label_w=2.0, start=-90.0,
+                  bounds=(0.98, 12.35)):
         """A hub with N spokes to nodes on a circle. hub: (title, sub, icon). spokes: (label, sub, icon).
         Returns nothing."""
         import math
@@ -3237,22 +3277,10 @@ class ExhibitDeck:
         for i, sp in enumerate(spokes):
             a = math.radians(start + 360.0 * i / n)
             nx, ny = cx + r * math.cos(a), cy + r * math.sin(a)
-            self._stroke(s, [(cx + hub_d / 2 * math.cos(a), cy + hub_d / 2 * math.sin(a)), (nx - node_d / 2 * math.cos(a), ny - node_d / 2 * math.sin(a))], CARD_LINE, 1.0)
+            self._stroke(s, [(cx + hub_d / 2 * math.cos(a), cy + hub_d / 2 * math.sin(a)), (nx - node_d / 2 * math.cos(a), ny - node_d / 2 * math.sin(a))], BLUE4, 1.75)
             icon = sp[2] if len(sp) > 2 else None
             self._node(s, nx, ny, node_d, BLUE, icon=icon, text=(None if icon else str(i + 1)))
-            c = math.cos(a)
-            lx = cx + (r + node_d / 2 + 0.2) * math.cos(a)
-            ly = cy + (r + node_d / 2 + 0.2) * math.sin(a)
-            if c > 0.35:
-                x0, al = lx, PP_ALIGN.LEFT
-            elif c < -0.35:
-                x0, al = lx - label_w, PP_ALIGN.RIGHT
-            else:
-                x0, al = lx - label_w / 2, PP_ALIGN.CENTER
-            ty = ly - 0.13 * f if abs(c) > 0.35 else (ly - 0.36 * f if math.sin(a) < 0 else ly + 0.02)
-            self.txt(s, x0, ty, label_w, 0.25 * f, sp[0], size=11 * f, color=NAVY, align=al, wrap=False)
-            if len(sp) > 1 and sp[1]:
-                self.txt(s, x0, ty + 0.24 * f, label_w, 0.4 * f, sp[1], size=9 * f, color=MUT, align=al, line_sp=1.1)
+            self._ring_label(s, cx, cy, r, node_d, a, sp[0], (sp[1] if len(sp) > 1 else None), label_w, bounds)
         self.oval(s, cx - hub_d / 2, cy - hub_d / 2, hub_d, hub_d, NAVY)
         ht, hs, hi = (list(hub) + [None, None])[:3]
         if hi:
@@ -3265,7 +3293,7 @@ class ExhibitDeck:
         """Icon, title and one line, no box: the antidote to tiles. items: (icon, title, body).
         Returns the y under the last row."""
         f = self.tf
-        icon_size = icon_size or 0.42 * f
+        icon_size = icon_size or 0.46 * f
         pitch = pitch or 1.02 * f
         cw = (w - col_gap * (cols - 1)) / cols
         rows = (len(items) + cols - 1) // cols
@@ -3293,8 +3321,8 @@ class ExhibitDeck:
         f = self.tf
         d = d or 1.15 * r
         lx, rx = cx - d / 2, cx + d / 2
-        self.oval(s, lx - r, cy - r, 2 * r, 2 * r, TINT)
-        self.oval(s, rx - r, cy - r, 2 * r, 2 * r, BLUE4)
+        o1 = self.oval(s, lx - r, cy - r, 2 * r, 2 * r, TINT); o1.line.color.rgb = WHITE; o1.line.width = Pt(1.5)
+        o2 = self.oval(s, rx - r, cy - r, 2 * r, 2 * r, BLUE4); o2.line.color.rgb = WHITE; o2.line.width = Pt(1.5)
         h = math.sqrt(max(0.0, r * r - (d / 2) ** 2))
         a = math.atan2(h, d / 2)
         pts = []
@@ -3332,8 +3360,9 @@ class ExhibitDeck:
         for i, c in enumerate(columns):
             cx = x + i * (cw + gap)
             self.rect(s, cx, cy, cw, col_h, fill=TINT2)
+            self.rect(s, cx, cy, cw, 0.05, fill=BLUE)
             if len(c) > 2 and c[2]:
-                self.icon_glyph(s, c[2], cx + 0.18, cy + 0.2, 0.42 * f, color=BLUE)
+                self.icon_glyph(s, c[2], cx + 0.18, cy + 0.24, 0.42 * f, color=BLUE)
             self.txt(s, cx + 0.18, cy + 0.2 + 0.55 * f, cw - 0.3, 0.5 * f, c[0], size=11 * f, color=NAVY, line_sp=1.05)
             if len(c) > 1 and c[1]:
                 self.txt(s, cx + 0.18, cy + 0.2 + 1.05 * f, cw - 0.32, col_h - 1.3 * f, c[1], size=8.5 * f, color=MUT, line_sp=1.1)

@@ -16,16 +16,16 @@ NAVY, BLUE, BLUE3, BLUE4, TINT, TINT2, MUT, WHITE = P.NAVY, P.BLUE, P.BLUE3, P.B
 # 1 · flywheel
 s = d.slide()
 d.chrome(s, "The operating model · flywheel", "Every finished call pays for the next rail")
-d.flywheel(s, 4.3, 4.35, 1.4, [
+d.flywheel(s, 5.2, 4.35, 1.55, [
     ("More calls finished", "on the bank's own case states", "phone-call"),
     ("Fewer banker minutes", "released to advice and the close", "users"),
     ("More rails certified", "each write path validated once", "shield-check"),
     ("More intents in scope", "more of the call log", "list-checks"),
     ("Lower cost a call", "the router and small models", "trending-down"),
     ("More volume presented", "the bank chooses what to serve", "chart-column")],
-    center=("One brain", "paid on finished work"), start=-60)
-d.hero_number(s, 8.9, 2.6, 3.8, 1.45, "44c → 18c", "compute a finished conversation, three states, each certified on the bank's calls", dark=True, layout='stack', num_size=30)
-d.txt(s, 8.9, 4.3, 3.8, 1.4, "The wheel turns once a quarter: the intents certified in one review widen the scope of the next, and the unit cost falls as the router learns the bank's mix.", size=11, color=NAVY, line_sp=1.15)
+    center=("One brain", "paid on finished work"), start=-60, label_w=2.2)
+d.hero_number(s, 9.55, 2.6, 3.15, 1.55, "44c → 18c", "compute a finished conversation, three states, each certified on the bank's calls", dark=True, layout='stack', num_size=30)
+d.txt(s, 9.55, 4.4, 3.15, 1.5, "The wheel turns once a quarter: the intents certified in one review widen the scope of the next, and the unit cost falls as the router learns the bank's mix.", size=11, color=NAVY, line_sp=1.15)
 d.footnote(s, "The loop is the operating model of the conversational assistant; the numbers are the live fire's three states, September 2026.")
 
 # 2 · cascade
@@ -107,7 +107,7 @@ d.footnote(s, "The placements against the bank's own engine (on top, as a node u
 # 9 · hub and spoke
 s = d.slide()
 d.chrome(s, "One brain, six surfaces · hub and spoke", "The app and the kiosk consume the brain the phone installed")
-d.hub_spoke(s, 6.6, 4.15, ("The assistant", "built once", "bot"), [
+d.hub_spoke(s, 6.65, 4.2, ("The assistant", "built once", "bot"), [
     ("Voice", "the contact centre, first", "phone"), ("Chat", "the app's front door", "message-square"), ("The app", "nine in ten intents guided", "smartphone"),
     ("Messaging", "WhatsApp, a reference", "send"), ("The kiosk", "the branch queue", "monitor"), ("The staff desk", "the brief before hello", "headset")], r=1.55, start=-60)
 d.footnote(s, "80 to 90% of the build is reused across surfaces: intent, identity, context and the rails are built once. The second channel costs a fraction of the first.")
