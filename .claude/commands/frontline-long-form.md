@@ -12,6 +12,7 @@ Read the canonical token file and the template before writing a single line of H
 2. **`templates/long-form/document-template.html`** — the complete CSS + class library. Clone its `<style>` block verbatim into your output.
 3. **`knowledge/product/banking-os.md`** — Banking OS product substance (control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools). Where other repo files diverge, banking-os.md wins.
 4. **`knowledge/design-system/narrative-spine.md`** — voice (operating-model thesis, From→To, vocabulary). Retire "engagement banking" / "better channels".
+5. **`knowledge/domains/ai-value-evidence/`** (+ the relevant `knowledge/domains/<domain>/`) — evidence pre-flight (mandatory — Shyam, 6 Aug 2026). Embed the verified market evidence that supports the document's value story, cited to the primary source (bank disclosure, named analyst report), never to an aggregator. Where a value proposition has NO external validation, do not stretch research — carry it with demonstration (prototype, design, journey) and keep the claim honest. Unverified (⚠️) items never enter client assets.
 
 Do not rewrite, simplify, or replace the CSS. The classes are the contract.
 

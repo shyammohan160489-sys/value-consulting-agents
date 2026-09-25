@@ -14,6 +14,7 @@ Usage:
 """
 
 import argparse
+import fnmatch
 import json
 import os
 import re
@@ -109,6 +110,17 @@ def get_agent_name(filepath: str) -> str:
     return name
 
 
+def check_applies(check: dict, filepath: str) -> bool:
+    """Honor per-check scoping: `applies_to` glob and `exclude_paths` prefixes/globs."""
+    applies_to = check.get('applies_to')
+    if applies_to and not fnmatch.fnmatch(filepath, applies_to):
+        return False
+    for excluded in check.get('exclude_paths', []):
+        if filepath.startswith(excluded) or fnmatch.fnmatch(filepath, excluded):
+            return False
+    return True
+
+
 def run_checks(files: list, metrics: dict) -> dict:
     """Run all applicable checks against changed files."""
     all_results = {}
@@ -137,6 +149,8 @@ def run_checks(files: list, metrics: dict) -> dict:
 
         elif file_type == 'knowledge':
             checks_to_run.extend(metrics.get('knowledge_files', {}).get('structural', []))
+
+        checks_to_run = [c for c in checks_to_run if check_applies(c, filepath)]
 
         if not checks_to_run:
             continue

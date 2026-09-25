@@ -10,6 +10,8 @@ Read `knowledge/design-system/frontline-tokens.json` before generating. All hex 
 
 > **Canon — read first.** The token file above is the *visual* source of truth; align the *substance and voice* to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Open the deck on From→To. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
 
+> **Evidence pre-flight (mandatory — Shyam, 6 Aug 2026).** Before drafting content, read `knowledge/domains/ai-value-evidence/` (+ the relevant `knowledge/domains/<domain>/`) and embed the verified market evidence that supports this deck's story — cited to the primary source (bank disclosure, named analyst report), never to an aggregator. Where a value proposition has NO external validation, do not stretch research to cover it: carry it with demonstration instead (prototype, design, journey) and keep the claim honest. Unverified (⚠️) items never enter client assets.
+
 ## Composition rules (canonical — read first)
 
 Follow `knowledge/design-system/composition-rules.md`; it is enforced in BOTH renderers. Most relevant here:

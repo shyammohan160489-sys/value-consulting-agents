@@ -10,6 +10,8 @@ Read `knowledge/design-system/frontline-tokens.json` before generating. All hex 
 
 > **Canon — read first.** The token file above is the *visual* source of truth; align the *substance and voice* to `knowledge/product/banking-os.md` (Banking OS product substance: control plane · Nexus + Sentinel · 2 domains → 4 solutions [Digital Banking, Conversational Banking, Relationship Intelligence, Customer Operations] · Factory/Missions · three value pools) and `knowledge/design-system/narrative-spine.md` (voice: operating-model thesis, From→To, vocabulary). Open the deck on From→To. Retire "engagement banking" / "better channels". Where other repo files diverge, banking-os.md wins.
 
+> **Evidence pre-flight (mandatory — Shyam, 6 Aug 2026).** Before drafting content, read `knowledge/domains/ai-value-evidence/` (+ the relevant `knowledge/domains/<domain>/`) and embed the verified market evidence that supports this deck's story — cited to the primary source (bank disclosure, named analyst report), never to an aggregator. Where a value proposition has NO external validation, do not stretch research to cover it: carry it with demonstration instead (prototype, design, journey) and keep the claim honest. Unverified (⚠️) items never enter client assets.
+
 ## How This Skill Works
 
 You generate a **single self-contained HTML file** that embeds:
@@ -325,6 +327,11 @@ Press `P` during presentation to see notes and a timer.
    - **`label` (eyebrow) → omit it when it just echoes the title.** Include only when it carries a real section/category the title doesn't. When unsure, leave it out.
    - **`subtitle` → include only when it adds something the title and body don't.** Drop it when it restates the title or repeats what the body shows. Good keep: a line that orients the reader to a complex element (e.g. "one-time change … and the recurring run" above a numbers table).
    - Omitting the subtitle auto-lifts the body up under the title (engine adds `no-subtitle`), so a title-only slide reads as intentional, not gap-toothed. One strong headline beats three weak ones.
+11. **Data slides use the adopted EXHIBIT vocabulary — don't invent charts.** When a slide's job is quantitative (ranking, composition, position, coverage, funnel-over-time, schedule, objections), reach for an adopted exhibit pattern, rendered in **Frontline tokens** (never the exhibit kit's `#4066F5/#071224` palette):
+   - **Tranche 1 (adopted + sampled):** sorted bars (ranking) · segmented to-scale bar (composition) · quadrant bubble (portfolio/position) · unit dot-grid (countable coverage) — plus the **source-footnote slot** on every numeric slide and the **chart color grammar**: blue = lead/forecast · green = actuals/success · red = current/"from" pain · amber = warning · gray = neutral · cyan = hero total on dark; sequential ramp = alpha steps of token blue with light steps direct-labelled.
+   - **Tranche 2 (adopted):** cohort cascade (funnel-over-time) · milestone strip · dotted region map · roadmap gates · concern→answer stack.
+   - **Pattern library — copy from here:** `knowledge/design-system/claude-design-exhibit-kit/frontline-exhibit-adoption-sample.html` — every adopted exhibit already built as a Frontline structured body in token colors. Copy the markup, swap the data. Round-2 patterns (target-walk waterfall, attainment bullet-bars, drift board, layer ziggurat, current-vs-future paired bars, …) are catalogued in `EXHIBIT_MINING_ROUND2.md` — same token grammar when content calls for them.
+   - **Content rules that ride along (style-agnostic, from the kit review):** one exhibit per slide, 2–3 callouts max; ranges as ranges (15–20 = honest forecasting); detail goes to speaker notes, never on-slide.
 
 ## Quality Checklist
 
@@ -337,6 +344,7 @@ Before saving the output, verify:
 - [ ] All `body` HTML uses `em` units, not `px`
 - [ ] **Right layout chosen for the content** (columns for pillars, stats for numbers, timeline for sequences) — content-standard only as last resort (see guideline 9)
 - [ ] **content-standard bodies are top-anchored & legible** — no `height:100%`/centering, card title `~0.8em` / body `~0.62em`, cards content-sized NOT stretched, sparse slides keep a clean bottom margin
+- [ ] **Data slides use an adopted exhibit** (sorted bars / segmented bar / quadrant bubble / dot-grid / cascade / milestone strip …) with a **source footnote** — in Frontline tokens, never the kit palette (guideline 11)
 - [ ] Speaker notes are included for key slides
 - [ ] The SLIDES `<script>` comes before the engine.js `<script>`
 - [ ] bg.jpg is base64-encoded inline (no external file references)
