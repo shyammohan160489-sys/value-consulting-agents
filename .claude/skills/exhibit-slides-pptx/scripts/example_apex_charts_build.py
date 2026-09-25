@@ -261,6 +261,39 @@ d.statement_line(s, 1.00, 5.85, 11.7, "Use a donut for one share of one whole.",
 d.footnote(s, "Illustrative split. The measured reports carried no pie; the form is here because it was asked for, in the same tokens and weight.")
 d.notes(s, "T66 donut: block arcs clockwise from 12 o'clock; thickness=1.0 gives the pie. Legend to the right with swatch, label and share.")
 
+# ---------------- 12 · the production runs (summit deck page 8)
+s = d.slide()
+d.chrome(s, "The practitioner's view · Backbase production deployments · summit page 8", "Where the needle moved, and what it took")
+d.proof_ledger(s, 0.98, 2.43, 8.19, [
+    ("Retail concierge", "South Africa · 3 yrs · 14.1M requests", 88.6, "88.6%", "Six domains. Two-layer stack."),
+    ("Retail engagement", "South Africa · 5 yrs · 26.4M requests", 80, "~80%", "About 60% of requests after hours."),
+    ("Business banking", "North America · 1 qtr · 29.7K requests", 74.0, "74.0%", "Payments a quarter of intents."),
+    ("Wealth and advice", "Australia · 6 mo · 127.8K requests", 67.9, "67.9%", "Advisers and investors, one assistant."),
+    ("Voice collections", "United States · 3 deployments · 30.7K calls", 55.6, "55.6%", "$1.3M+ banked in the call.", NAVY)])
+d.hero_column(s, 10.14, 2.43, "76%", "tool-call rate at an agentic deployment, 29 days in",
+              "Resolution stops near 80%. The next number comes from actions: tool calls, payments in the call, leads.")
+d.footnote(s, "Backbase production data, July 2026. Banks anonymised. Periods differ, so read as directional. RESOLVED = resolved without a person.", size=12, y=6.62)
+d.notes(s, "T68 proof_ledger + T70 hero_column: summit page 8 rebuilt. A resolution bar per deployment, the newest number as the hero.")
+
+# ---------------- 13 · the value pools on the loop (summit deck page 9)
+s = d.slide()
+d.chrome(s, "The roll-up · where the work goes · summit page 9", "Impact follows where the work sits on the loop")
+y_end = d.loop_matrix(s, 0.98, 2.26, 8.19,
+    [("cost", "Cost to serve", "blue"), ("loyalty", "Loyalty and retention", "navy"), ("revenue", "Revenue", "tint"), ("risk", "Risk and conduct", "outline")],
+    [dict(label="Out of the loop", desc="AI resolves inside policy, alone.",
+          chips=[("Everyday servicing: cards, balances, resets", "cost"), ("After-hours and overflow", "cost"), ("Travel notices, limits, statements", "cost"), ("Proactive alerts that act", "loyalty")]),
+     dict(label="On the loop", desc="AI acts; a person takes the exceptions.",
+          chips=[("Disputes and fraud moments", "loyalty"), ("Address and mandate changes", "cost"), ("Collections and promise-to-pay", "revenue"), ("Onboarding and KYC refresh", "risk")]),
+     dict(label="In the loop", desc="A person decides; AI prepares the file.",
+          chips=[("Credit decisions, restructuring", "risk"), ("Sales moments, licensed advice", "revenue"), ("Complex complaints", "loyalty"), ("Morning handoffs, case prep", "cost")]),
+     dict(label="Person only", desc="AI does not act; it clears the queue.",
+          chips=[("Vulnerable customers", "risk"), ("Bereavement", "loyalty"), ("Escalated complaints", "risk")])])
+d.statement_line(s, 0.98, y_end + 0.03, 8.0, "The decision is the row,", "not the bot.", size=15)
+d.hero_column(s, 10.14, 2.26, "4 of 4", "rows have live examples on this continent today",
+              "The prize is the top two rows. $1.4tn+ moved through mobile money in Africa last year (1).", num_size=55)
+d.footnote(s, "Families from Backbase programmes, 2024 to 2026. Rows are design choices. 1 GSMA Mobile Money 2026, Sub-Saharan scope; the continent total is higher.", size=12, y=6.62)
+d.notes(s, "T69 loop_matrix + T70 hero_column: summit page 9 rebuilt. Value pools as chips on the autonomy rows; the hero counts the rows with live examples.")
+
 # ---------------- 12 · team page (summit deck page 10)
 photos = [None, None, None]
 if PHOTOS:

@@ -195,6 +195,10 @@ text in client decks. Never fabricate a logo — text chips until assets exist.
 | T66 | **Donut / pie** | One share of one whole as a circle (no reference page; built to order) | `d.donut(s, x, y, d, segments, thickness=0.28, center=, legend=True)`; `thickness=1.0` = pie |
 | T67 | **Team page · close** | The people in the room; the last page (summit deck p10, p11) | `d.team_page(kicker, title_runs, people)`; `d.closing_page("Thank you")` |
 
+| T68 | **Proof ledger** | The production runs: a resolution bar per deployment, what moved it (summit deck p8) | `d.proof_ledger(s, x, y, w, rows)` — `(name, sub, value, display, what[, fill])`, bars scaled to 100 |
+| T69 | **Loop matrix** | The value pools as chips on the autonomy rows: out of / on / in the loop / person only (summit deck p9) | `d.loop_matrix(s, x, y, w, pools, rows)` — pools `(key, label, blue|navy|tint|outline)`, chips sized from the font metrics |
+| T70 | **Hero column** | The big number, caption and implication beside a ledger or matrix, behind a navy rule | `d.hero_column(s, x, y, number, caption, implication, num_size=75|55)` |
+
 Apex composition laws (from 68 measured slides): one exhibit per page and the so-what in a hero
 number or a statement line; captions bottom-anchored in cards; status words drawn, not asserted
 (dashed = estimate or indicative, solid = measured or committed); the client's own figures on

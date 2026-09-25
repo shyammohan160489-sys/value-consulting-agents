@@ -95,6 +95,8 @@ rebuilds the reference pages line for line.
 | One share of one whole, a circle | donut with the total in the hole; thickness 1.0 = pie | `d.donut` |
 | A population split | proportional block with labels beside each part | `d.area_block` |
 | The KPIs beside a chart | rule, uppercase label, 24pt value, 9pt body, repeated | `d.kpi_stack` |
+| Production proof | a ledger with a resolution bar per deployment and the hero number beside it | `d.proof_ledger` + `d.hero_column` |
+| Where the work sits on the loop | value-pool chips on the autonomy rows, the hero count beside them | `d.loop_matrix` + `d.hero_column` |
 | The team, the close | photo column with names; the navy close with the glow | `d.team_page`, `d.closing_page` |
 
 Colour semantics on every chart: BLUE = the lead or our state, NAVY = the second series or a
@@ -182,8 +184,8 @@ need to verify a detail or extend the engine; the engine already implements both
   timeline lanes, who signs. Locked; do not modify per deck.
 - `scripts/example_v4_build.py`: the Apex example, four Nedbank report pages rebuilt line for
   line for a side-by-side check. Copy it as your starting point.
-- `scripts/example_apex_charts_build.py`: the chart sampler, thirteen pages: every chart recipe
-  rebuilt from its reference page, the donut and pie, the team page and the close.
+- `scripts/example_apex_charts_build.py`: the chart sampler, fifteen pages: every chart recipe
+  rebuilt from its reference page, the donut and pie, the two summit pages, the team page and the close.
 - `scripts/example_build.py`, `example_data_build.py`, `example_charts_build.py`,
   `example_bcg_build.py`: the v3-era examples for the data, comparison and evidence layers;
   every helper in them draws in Apex tokens under `look='apex'`.

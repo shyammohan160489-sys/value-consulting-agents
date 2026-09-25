@@ -74,7 +74,7 @@ The Claude Design look, measured from the Nedbank ENBI Voice VC report (68 slide
 | 16 | Promotion test: first live deck on Apex (CB company view, 14 slides) rendered and read against v3 and the reference | skill | ✅ PASSED 2026-09-24 |
 | 17 | No-bold engine variants of `bars`, `hbars`, `milestone_strip`, `takeaway_band` under Apex (local `vbars`/`hrows` in the company-view build meanwhile) | engine | OPEN |
 | 18 | Dark scenes under Apex: dark content page, image-led mosaic cover, team page with photos, "Thank you" close (McKinsey deck grammar) | engine | OPEN |
-| 19 | Loop matrix of chips (McKinsey slide 9) and the era timeline (slide 4) as recipes | engine | OPEN |
+| 19 | Loop matrix of chips (summit slide 9) and the era timeline (slide 4) as recipes | engine | loop matrix ✅ 2026-09-25 (T69, with the proof ledger T68 and hero column T70: the two pages Shyam meant); era timeline OPEN |
 | 20 | HTML-engine parity for the Apex recipes (`backbase-slides-app/engine.js`) | Architect | OPEN |
 | 21 | Engine default stays v3 until every active v3 series (SNB Capital, BACB) has cycled; then flip `ExhibitDeck()` to Apex | Shyam | DECIDE later |
 | 22 | Apex chart layer (v4.2): the report's charts measured and shipped as recipes T56–T67 (ranked bars, stacked rows, paired rows, funnel, columns with dashed estimates, column walk, stacked columns, share bar, KPI stack, area block, donut/pie, legend) + team page and close from the summit deck; the no-bold law in `txt()`; `client_logo()` reads `Engagement/<Client>/Input/brand-assets/` | engine | ✅ SHIPPED 2026-09-25, QA'd page by page against the 22 Sep report |
@@ -105,3 +105,4 @@ Lesson: build from the template/reference deck's XML, never re-derive chrome fro
 - Page number: 12.75pt BOLD black, textbox anchored MIDDLE on the footer divider (divider: vertical hairline #9A9EA6 at x=12.802, y=7.118–7.367); number at x≈12.87. Wordmark 1.067x0.173 ends at 12.700.
 - Connectors: strip the <p:style> element AND append empty <a:effectLst> — otherwise the theme effectRef re-adds a line shadow in LibreOffice/Google renders.
 - Survives Google Slides round-trip (tested: geometry, freeform, PNG logo all preserved).
+| 27 | Text metrics: `text_w()` measures Libre Franklin from the repo TTFs; for exact QA renders install the full family from Google Fonts (the repo's webfont TTFs register as "Libre Franklin Thin" and LibreOffice falls back to Light/Bold) | tooling | OPEN, note |

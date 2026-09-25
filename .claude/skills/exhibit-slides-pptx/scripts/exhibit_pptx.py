@@ -5,6 +5,11 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v4.4 (25 Sep 2026, the two summit pages Shyam pointed at): proof_ledger (page 8, the
+  production runs with a resolution bar per row), loop_matrix (page 9, the value pools as
+  chips on the autonomy rows) and hero_column (the big number, caption and implication
+  beside either). Measured from the McKinsey Africa AI Summit tech talk, stage sizes.
+
 v4.3 (25 Sep 2026, APEX compatibility for v3-era build scripts):
   - Under Apex a v3 script renders in the Apex grammar without edits beyond
     ExhibitDeck(look='apex'): chrome drops a trailing period from the title,
@@ -220,6 +225,29 @@ def icon(name):
 
 
 ENGAGEMENT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "Engagement"))
+
+
+_FONT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..",
+                                         "knowledge", "design-system", "fonts", "libre-franklin"))
+_FONT_CACHE = {}
+
+
+def text_w(text, size, weight="regular"):
+    """Width in inches of `text` at `size` pt in Libre Franklin, from the TTF in
+    knowledge/design-system/fonts (PIL metrics); falls back to 0.53 em per character."""
+    key = (weight, round(float(size) * 4))
+    font = _FONT_CACHE.get(key)
+    if font is None:
+        try:
+            from PIL import ImageFont
+            fn = os.path.join(_FONT_DIR, "libre-franklin-v20-latin-%s.ttf" % weight)
+            font = ImageFont.truetype(fn, int(round(float(size) * 4)))   # 4x for precision
+        except Exception:
+            font = False
+        _FONT_CACHE[key] = font
+    if font:
+        return font.getlength(text) / 4.0 / 72.0
+    return len(text) * float(size) * 0.53 / 72.0
 
 
 def client_logo(client, root=None):
@@ -2095,7 +2123,7 @@ class ExhibitDeck:
             else:
                 self.rect(s, xx, y + 0.03, swatch, swatch, fill=fill)
             self.txt(s, xx + swatch + 0.08, y, 3.2, 0.21, label, size=size, color=MUT, wrap=False)
-            xx += swatch + 0.08 + len(label) * size * 0.0069 + gap
+            xx += swatch + 0.08 + text_w(label, size) + gap
         if note:
             self.txt(s, xx, y, max(1.0, note_right - xx), 0.21, note, size=size, color=FN,
                      align=PP_ALIGN.RIGHT, wrap=False)
@@ -2475,6 +2503,100 @@ class ExhibitDeck:
             self.txt(s, 1.08, 2.30, 8.0, 0.25, kicker.upper(), size=9.5, color=WHITE, track="80")
         self.txt(s, 1.08, 2.75, 9.5, 2.0, text, size=size, color=WHITE, line_sp=1.0)
         return s
+
+
+    # ------------------------------------------------------------ the summit pages (v4.4, 25 Sep 2026)
+    # Measured from the McKinsey Africa AI Summit tech talk (pages 8 and 9): stage sizes, 12 and 13pt
+    # body, navy 0.01 rules, the hero column to the right of a navy vertical rule.
+
+    def hero_column(self, s, x, y, number, caption, implication, num_size=75, w=2.88, h=3.68,
+                    label="Implication", rule=True):
+        """The right-hand column of the summit pages: a navy vertical rule 0.42 left of x, the
+        big number in BLUE, a 13pt caption, a navy rule, the uppercase 12pt label and a 13pt body.
+        Returns the y under the body."""
+        if rule:
+            self.rect(s, x - 0.42, y, 0.01, h, fill=NAVY)
+        nh = num_size / 72.0 * 1.03
+        self.txt(s, x, y, w, nh, number, size=num_size, color=BLUE, wrap=False)
+        cy = y + nh + 0.12
+        self.txt(s, x, cy, w - 0.18, 0.55, caption, size=13, color=NAVY, line_sp=1.1)
+        ry = cy + 0.84
+        self.rect(s, x, ry, w - 0.26, 0.01, fill=NAVY)
+        self.txt(s, x, ry + 0.22, w, 0.23, label.upper(), size=12, color=NAVY, track="40", wrap=False)
+        self.txt(s, x, ry + 0.54, w - 0.18, 1.1, implication, size=13, color=NAVY, line_sp=1.15)
+        return ry + 1.64
+
+    def proof_ledger(self, s, x, y, w, rows, headers=("Deployment", "Resolved", "What moved it"),
+                     bar_w=2.0, scale_to=100.0, name_size=13, body_size=12, val_size=18,
+                     pitch=0.655):
+        """Summit page 8: the production runs. rows: (name, sub, value, display, what[, fill]).
+        Header 12pt uppercase, navy rules between rows, a TINT2 track with the BLUE bar scaled
+        to `scale_to` (100 = a percentage), the 18pt value after it, the 12pt "what moved it"
+        text at the right. A row's own fill (NAVY) marks the one to notice. Returns the y under
+        the last rule."""
+        bx, vx, wx = x + 3.26, x + 5.40, x + 6.39
+        self.txt(s, x, y, 3.36, 0.23, headers[0].upper(), size=body_size, color=NAVY, track="40", wrap=False)
+        self.txt(s, bx, y, 3.0, 0.23, headers[1].upper(), size=body_size, color=NAVY, track="40", wrap=False)
+        self.txt(s, wx, y, w - (wx - x), 0.23, headers[2].upper(), size=body_size, color=NAVY, track="40", wrap=False)
+        self.rect(s, x, y + 0.31, w, 0.01, fill=NAVY)
+        ry = y + 0.48
+        for r in rows:
+            name, sub, val, disp, what = r[:5]
+            fill = r[5] if len(r) > 5 and r[5] is not None else BLUE
+            self.txt(s, x, ry, 3.36, 0.25, name, size=name_size, color=NAVY, wrap=False)
+            sl = self._est_lines(sub, 3.15, body_size)
+            self.txt(s, x, ry + 0.24, 3.15, 0.22 * sl, sub, size=body_size, color=MUT, line_sp=1.05)
+            self.rect(s, bx, ry + 0.16, bar_w, 0.11, fill=TINT2)
+            self.rect(s, bx, ry + 0.16, bar_w * min(1.0, float(val) / float(scale_to)), 0.11, fill=fill)
+            self.txt(s, vx, ry + 0.07, 0.9, 0.33, disp, size=val_size, color=fill, wrap=False)
+            self.txt(s, wx, ry, w - (wx - x), 0.46, what, size=body_size, color=NAVY, line_sp=1.1)
+            ry += pitch + (0.20 if sl > 1 else 0.0)
+            self.rect(s, x, ry - 0.11, w, 0.01, fill=NAVY)
+        return ry - 0.11
+
+    def loop_matrix(self, s, x, y, w, pools, rows, chip_x=2.50, pitch=0.905, chip_h=0.30,
+                    body_size=12, name_size=13):
+        """Summit page 9: the value pools as chips on the autonomy rows. pools: (key, label,
+        style) with style blue | navy | tint | outline; the legend row draws them first. rows:
+        dicts {label, desc, chips: [(text, pool_key)]}. Chips flow left to right from x + chip_x,
+        wrap to a second line, and sit centred in the row when they fit on one. Navy rules
+        between rows. Returns the y under the last rule."""
+        styles = {'blue': (BLUE, None, WHITE), 'navy': (NAVY, None, WHITE), 'tint': (TINT, None, NAVY),
+                  'outline': (None, NAVY, NAVY)}
+        smap = {k: styles.get(st, styles['blue']) for (k, _, st) in pools}
+        # legend
+        self.txt(s, x, y, 1.6, 0.23, "Value pool".upper(), size=body_size, color=NAVY, track="40", wrap=False)
+        lx = x + 1.54
+        for (k, label, st) in pools:
+            fill, line, _ = styles.get(st, styles['blue'])
+            self.rect(s, lx, y + 0.04, 0.12, 0.12, fill=fill, line=line, line_w=0.75, dash=('dash' if line else None))
+            self.txt(s, lx + 0.19, y, 2.2, 0.23, label, size=body_size, color=NAVY, wrap=False)
+            lx += 0.19 + text_w(label, body_size) + 0.36
+        self.rect(s, x, y + 0.32, w, 0.01, fill=NAVY)
+        ry = y + 0.50
+        for r in rows:
+            # lay out chips first to know the line count
+            lines, cur, cx = [], [], x + chip_x
+            for (text, key) in r['chips']:
+                cw = text_w(text, body_size) + 0.18          # the export's padding: 0.09 each side
+                if cur and cx + cw > x + w:
+                    lines.append(cur); cur, cx = [], x + chip_x
+                cur.append((text, key, cx, cw)); cx += cw + 0.07
+            if cur:
+                lines.append(cur)
+            top = ry - 0.01 if len(lines) > 1 else ry + 0.17
+            self.txt(s, x, ry, chip_x - 0.1, 0.25, r['label'], size=name_size, color=NAVY, wrap=False)
+            if r.get('desc'):
+                self.txt(s, x, ry + 0.25, chip_x - 0.15, 0.43, r['desc'], size=body_size, color=MUT, line_sp=1.05)
+            for li, line in enumerate(lines):
+                cy = top + li * 0.37
+                for (text, key, cx, cw) in line:
+                    fill, ln, tc = smap.get(key, styles['blue'])
+                    self.rect(s, cx, cy, cw, chip_h, fill=fill, line=ln, line_w=0.75, dash=('dash' if ln else None))
+                    self.txt(s, cx + 0.09, cy + 0.045, cw - 0.08, 0.23, text, size=body_size, color=tc, wrap=False)
+            ry += pitch
+            self.rect(s, x, ry - 0.13, w, 0.01, fill=NAVY)
+        return ry - 0.13
 
     # ------------------------------------------------------------ dark slides
     def dark_bg(self, s):
