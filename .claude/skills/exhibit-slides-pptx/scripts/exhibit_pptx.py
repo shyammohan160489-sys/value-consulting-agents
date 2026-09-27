@@ -5,6 +5,12 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.1 (27 Sep 2026, a second icon family): Tabler Icons (MIT, 5,166 outline icons) sit beside
+  Lucide under knowledge/design-system/icons/tabler/. One namespace: icon_glyph(s, 'pig-money')
+  looks in Lucide first, then Tabler; 'tabler:users' or 'lucide:users' pins a family;
+  icon_search('bank') reads both tag files. The SVG reader skips invisible frame paths and
+  reads glued arc flags (141 Lucide icons drew nothing before this fix).
+
 v5.0 (25 Sep 2026, the framework layer + vector icons — Shyam: "stop boxing yourself in
   with tiles and text; pick up the frameworks from the BCG examples; use icons"): Lucide icons
   drawn as native shapes (icon_glyph, lucide_search) and twelve framework forms: flywheel,
@@ -272,32 +278,65 @@ def text_w(text, size, weight="regular"):
     return len(text) * float(size) * 0.53 / 72.0
 
 
-# ------------------------------------------------------------ vector icons (v5.0, 25 Sep 2026)
-# Lucide (ISC) lives in knowledge/design-system/icons/lucide/icons/*.svg: 24 x 24 stroke icons, width 2,
-# round caps. icon_glyph() draws one as native freeform shapes: crisp, recolourable, Google Slides-safe.
-LUCIDE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..",
-                                          "knowledge", "design-system", "icons", "lucide"))
-_LUCIDE_TAGS = None
+# ------------------------------------------------------------ vector icons (v5.0, 25 Sep 2026; v5.1 two families)
+# Lucide (ISC) and Tabler (MIT) live in knowledge/design-system/icons/<family>/icons/*.svg: 24 x 24 stroke
+# icons, width 2, round caps. icon_glyph() draws one as native freeform shapes: crisp, recolourable,
+# Google Slides-safe. A bare name resolves Lucide first, then Tabler; 'tabler:name' or 'lucide:name' pins one.
+_ICONS_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..",
+                                           "knowledge", "design-system", "icons"))
+ICON_FAMILIES = ("lucide", "tabler")
+LUCIDE_DIR = os.path.join(_ICONS_ROOT, "lucide")
+_ICON_TAGS = {}
+
+
+def icon_path(name):
+    """The SVG file for an icon name ('phone-incoming', 'tabler:pig-money', 'lucide:users'), or None."""
+    fams = ICON_FAMILIES
+    if ":" in name:
+        fam, name = name.split(":", 1)
+        fams = (fam,)
+    for fam in fams:
+        p = os.path.join(_ICONS_ROOT, fam, "icons", name + ".svg")
+        if os.path.exists(p):
+            return p
+    return None
 
 
 def lucide_path(name):
-    """The SVG file for a Lucide icon name (e.g. 'phone-incoming'), or None."""
-    p = os.path.join(LUCIDE_DIR, "icons", name + ".svg")
-    return p if os.path.exists(p) else None
+    """Kept for older build scripts; the same as icon_path()."""
+    return icon_path(name)
 
 
-def lucide_search(word, limit=12):
-    """Icon names whose name or tags contain `word` (tags.json), for picking an icon in a build script."""
-    global _LUCIDE_TAGS
-    if _LUCIDE_TAGS is None:
+def _icon_tags(fam):
+    if fam not in _ICON_TAGS:
         try:
             import json
-            _LUCIDE_TAGS = json.load(open(os.path.join(LUCIDE_DIR, "tags.json"), encoding="utf-8"))
+            _ICON_TAGS[fam] = json.load(open(os.path.join(_ICONS_ROOT, fam, "tags.json"), encoding="utf-8"))
         except Exception:
-            _LUCIDE_TAGS = {}
+            _ICON_TAGS[fam] = {}
+    return _ICON_TAGS[fam]
+
+
+def icon_search(word, limit=12, family=None):
+    """Icon names whose name or tags contain `word`, across both families (or one: family='tabler').
+    Lucide hits come bare; Tabler-only hits come as 'tabler:name', ready to paste into icon_glyph()."""
     w = word.lower()
-    hits = [n for n, tags in _LUCIDE_TAGS.items() if w in n or any(w in t for t in tags)]
-    return sorted(hits, key=lambda n: (0 if w in n else 1, n))[:limit]
+    fams = (family,) if family else ICON_FAMILIES
+    lucide_names = _icon_tags("lucide")
+    hits = []
+    for fam in fams:
+        for n, tags in _icon_tags(fam).items():
+            if w in n or any(w in str(t) for t in tags):
+                if fam == "lucide":
+                    label = n
+                else:
+                    label = "%s:%s" % (fam, n) if (family or n not in lucide_names) else n
+                if label not in hits:
+                    hits.append(label)
+    return sorted(hits, key=lambda n: (0 if w in n.split(":")[-1] else 1, n))[:limit]
+
+
+lucide_search = icon_search
 
 
 def _svg_arc_points(x1, y1, rx, ry, phi, large, sweep, x2, y2, segs=None):
@@ -356,6 +395,16 @@ def _svg_path_polylines(d):
     def num():
         nonlocal i
         v = float(toks[i]); i += 1
+        return v
+    def flag():
+        # an arc flag is one digit and may be glued to what follows ('00.407' = 0, then 0.407)
+        nonlocal i
+        t = toks[i]
+        if t in ("0", "1"):
+            i += 1; return float(t)
+        if len(t) > 1 and t[0] in "01":
+            toks[i] = t[1:]; return float(t[0])
+        v = float(t); i += 1
         return v
     def bez3(p0, p1, p2, p3, n=10):
         out = []
@@ -428,7 +477,9 @@ def _svg_path_polylines(d):
             cur += bez2((x, y), (x1, y1), (ex, ey)); last_q = (x1, y1); x, y = ex, ey; last_c2 = None
         elif cmd in "Aa":
             rel = cmd == "a"
-            rx, ry, phi, large, sweep, ex, ey = [num() for _ in range(7)]
+            rx, ry, phi = num(), num(), num()
+            large, sweep = flag(), flag()
+            ex, ey = num(), num()
             if rel:
                 ex, ey = x + ex, y + ey
             cur += _svg_arc_points(x, y, rx, ry, phi, int(large), int(sweep), ex, ey)
@@ -441,7 +492,7 @@ def _svg_path_polylines(d):
 
 
 def _svg_shapes(svg_path):
-    """Every drawable in a Lucide SVG as (polyline points, closed) on the 24 x 24 grid."""
+    """Every drawable in a Lucide or Tabler SVG as (polyline points, closed) on the 24 x 24 grid."""
     import math
     import xml.etree.ElementTree as ET
     root = ET.parse(svg_path).getroot()
@@ -450,6 +501,8 @@ def _svg_shapes(svg_path):
         tag = el.tag.split("}")[-1]
         g = el.attrib.get
         if tag == "path":
+            if g("stroke") == "none" and g("fill", "none") == "none":
+                continue  # an invisible frame path (Tabler opens every icon with one)
             for poly in _svg_path_polylines(g("d", "")):
                 closed = len(poly) > 2 and abs(poly[0][0] - poly[-1][0]) < 1e-6 and abs(poly[0][1] - poly[-1][1]) < 1e-6
                 out.append((poly, closed))
@@ -3375,12 +3428,13 @@ class ExhibitDeck:
 
     # ---- vector icons (v5.0)
     def icon_glyph(self, s, name, x, y, size=0.4, color=None, weight=2.0):
-        """Draw a Lucide icon as native stroke shapes inside the (x, y, size, size) box: crisp at any
-        size, recolourable, editable in PowerPoint and Google Slides. name = the Lucide name
-        ('phone-incoming', 'users', 'shield-check'); X.lucide_search('router') finds names. weight
-        = the stroke on the 24-grid (Lucide draws 2). Returns the shapes, or [] when the icon is
-        missing (the build never fails on an icon)."""
-        p = lucide_path(name)
+        """Draw a Lucide or Tabler icon as native stroke shapes inside the (x, y, size, size) box:
+        crisp at any size, recolourable, editable in PowerPoint and Google Slides. name = the icon
+        name ('phone-incoming', 'users', 'shield-check'); Lucide is searched first, then Tabler;
+        'tabler:pig-money' or 'lucide:users' pins a family. X.icon_search('router') finds names.
+        weight = the stroke on the 24-grid (both families draw 2). Returns the shapes, or [] when
+        the icon is missing (the build never fails on an icon)."""
+        p = icon_path(name)
         if not p:
             return []
         color = color or NAVY

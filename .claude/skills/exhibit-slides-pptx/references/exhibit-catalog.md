@@ -204,7 +204,7 @@ text in client decks. Never fabricate a logo — text chips until assets exist.
 
 | # | Exhibit | Use when | Engine |
 |---|---|---|---|
-| T71 | **Vector icon** | One icon per concept, in a row, a card, a node; never decorative | `d.icon_glyph(s, name, x, y, size, color)`; `X.lucide_search("word")` picks the name from 2,118 Lucide icons |
+| T71 | **Vector icon** | One icon per concept, in a row, a card, a node; never decorative | `d.icon_glyph(s, name, x, y, size, color)`; `X.icon_search("word")` picks the name from 6,632 Lucide and Tabler icons; `tabler:name` pins a family |
 | T72 | **Flywheel** | A loop where each step feeds the next: the operating model, a reinforcing cycle | `d.flywheel(s, cx, cy, r, steps, center=, start=)` — steps `(label, sub, icon)`; start=-60 for six steps keeps labels off the title and footnote |
 | T73 | **Cascade** | Where a total comes from: root → branches → leaves, left to right | `d.cascade(s, x, y, w, h, root, branches)` — the value tree, the driver tree, the lever cascade |
 | T74 | **Funnel** | Stages that narrow: leads to booked, applicants to accounts | `d.funnel(s, x, y, w, h, stages, orientation='down'|'right')` — `(label, value, display, conversion)` |
@@ -218,7 +218,7 @@ text in client decks. Never fabricate a logo — text chips until assets exist.
 | T82 | **Venn** | What each side brings and where the value overlaps | `d.venn(s, cx, cy, r, left, right, overlap)` |
 | T83 | **Pillars** | Programmes on a foundation under one roof: a strategy frame | `d.pillars(s, x, y, w, roof, columns, base)` |
 
-Framework laws: the claim decides the form (a loop → flywheel, a total → cascade, a narrowing → funnel, one part opened → zoom, a process → chevrons, layers → rings or stack, one centre → hub, sides and an overlap → venn, programmes on a base → pillars). Tiles and card rows carry structure only when none of these fit, and never twice in a row. One icon per concept, blue on light, white on dark, from the Lucide set by name; never an emoji, never a fabricated glyph.
+Framework laws: the claim decides the form (a loop → flywheel, a total → cascade, a narrowing → funnel, one part opened → zoom, a process → chevrons, layers → rings or stack, one centre → hub, sides and an overlap → venn, programmes on a base → pillars). Tiles and card rows carry structure only when none of these fit, and never twice in a row. One icon per concept, blue on light, white on dark, from the Lucide or Tabler sets by name; never an emoji, never a fabricated glyph.
 
 Apex composition laws (from 68 measured slides): one exhibit per page and the so-what in a hero
 number or a statement line; captions bottom-anchored in cards; status words drawn, not asserted

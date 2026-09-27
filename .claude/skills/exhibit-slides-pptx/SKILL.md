@@ -109,10 +109,10 @@ BCG examples; use icons." The rule, in order:
 2. **Tiles and card rows are the last resort**, for structure none of the forms above carries, and
    never on two pages in a row. A page that is a grid of boxes with text in them goes back to
    step 1.
-3. **Icons on every structural page**: one per concept, drawn as native shapes from the Lucide set
-   (`X.icon_glyph(s, "phone-incoming", x, y, 0.42)`, `X.lucide_search("router")` to find a name).
+3. **Icons on every structural page**: one per concept, drawn as native shapes from the Lucide or Tabler sets
+   (`X.icon_glyph(s, "phone-incoming", x, y, 0.42)`, `X.icon_search("router")` to find a name across both; `tabler:name` pins a family).
    Blue on light, white on dark, navy in a ledger. Never decorative, never an emoji, never a
-   fabricated glyph. The set lives in `knowledge/design-system/icons/lucide/` (ISC licence).
+   fabricated glyph. The sets live in `knowledge/design-system/icons/` (Lucide, ISC; Tabler, MIT): 6,632 names.
 4. **Whitespace over filled panels.** If a page needs a big filled shape to feel finished, the
    content is thin: cut the shape, keep the whitespace.
 
@@ -239,7 +239,7 @@ need to verify a detail or extend the engine; the engine already implements both
   type-size trade-off.
 - `scripts/example_apex_frameworks_build.py`: the twelve framework forms, one page each, with icons.
 - `scripts/render_preview.py`: the QA render (PowerPoint, else LibreOffice) to page PNGs and a sheet.
-- `knowledge/design-system/icons/lucide/`: the icon set the engine draws as native shapes; `README.md` there.
+- `knowledge/design-system/icons/`: the two icon sets (Lucide, Tabler) the engine draws as native shapes; `README.md` there.
 - `scripts/example_build.py`, `example_data_build.py`, `example_charts_build.py`,
   `example_bcg_build.py`: the v3-era examples for the data, comparison and evidence layers;
   every helper in them draws in Apex tokens under `look='apex'`.
