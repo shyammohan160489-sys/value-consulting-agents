@@ -122,16 +122,12 @@ The report's charts are the standard: clean, the value beside or above the bar, 
 gridlines, regular weight. Every form below is a measured recipe (`references/exhibit-catalog.md`
 T56–T67); `scripts/example_apex_charts_build.py` rebuilds the reference pages line for line.
 
-The recipes draw these as flat shapes by default, and that is the right default for us: Google Slides
-flattens imported PowerPoint charts to pictures (tested 28 Sep 2026 on the Nedbank rebuild), while
-drawn shapes arrive in Slides as editable rectangles and text. For a deck that lives in PowerPoint,
-the same recipes can draw real charts instead: `ExhibitDeck(native_charts=True)`, `native=True` on a
-call, or `APEX_NATIVE=1` for a run; then anyone can right-click a chart, choose Edit Data, change a
-number and watch the bars redraw. `fmt='"$"0.00"M"'` sets a native chart's label format; without it
-the labels follow the display with the most decimals. Labels that sit beside a chart (deltas, totals,
-end labels, the donut's centre) stay text at the built value, so after someone edits a native deck by
-hand run `X.chart_values(path)` to read the numbers back and rebuild from the script, which stays the
-source of truth. Funnel rows, the KPI stack, the proof ledger and the loop matrix are always drawn.
+**Google Slides is where every Backbase deck is opened, edited and presented** (Shyam, 28 Sep 2026:
+"we will never use PowerPoint natively"). Build every deck Slides-safe. Charts are drawn shapes,
+always: every bar, label and value arrives in Slides as a rectangle or a text box anyone can nudge or
+retype. Native PowerPoint chart objects become pictures on import, so the native-chart path of v5.2
+is dropped from the workflow (the code is dormant behind an explicit `native=True` and never the
+default). A number changes by rebuilding from the script, which stays the source of truth.
 
 | Claim shape | Recipe | Engine |
 |---|---|---|
@@ -228,7 +224,7 @@ need to verify a detail or extend the engine; the engine already implements both
 - [ ] No bold anywhere; weight comes from size and colour
 - [ ] Voice: the save-time lint passed with no hard hit; the humanizer agent's altitude pass ran
 - [ ] Form: every structural page uses a framework form or a drawn chart; tiles at most once, never twice in a row; icons on the structural pages
-- [ ] Charts: drawn shapes unless the deck is for PowerPoint only (Google Slides turns native charts into pictures); with native charts, label formats read right and `chart_values()` runs before any rebuild of a hand-edited deck
+- [ ] Slides-safe: drawn charts only (Google Slides turns native chart objects into pictures), no autofit, no gradients, Libre Franklin; when in doubt open the file in Slides before calling it done
 - [ ] Layout: `save()` printed no LAYOUT lines (overflow, bleed, overlap, footnote zone, a rule through text); if it did, fix the build script until it is quiet, then render and read the pages. `python3 scripts/layout_check.py deck.pptx` runs the same check on any deck; `APEX_LAYOUT=strict` makes save() refuse a deck with faults
 - [ ] Busyness: one icon set per page at most (a chevron row OR an icon list, never both); at stage scale a page holds about six rows, seven words a row
 - [ ] One exhibit per slide, at most 2 or 3 callouts, nothing crossing y 6.55

@@ -5,6 +5,10 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.3.2 (28 Sep 2026, native charts dropped): Shyam: "we will never use PowerPoint natively; everything
+  is opened in Google Slides". Charts are drawn shapes, always; the native path is dormant behind an
+  explicit flag and has no environment switch. Every deck is built Slides-safe.
+
 v5.3.1 (28 Sep 2026, the Google Slides verdict): Shyam opened the native-chart deck in Google Slides and
   every chart had become a picture. Drawn shapes are the default again (they import into Slides as
   editable shapes); native charts are opt-in for a PowerPoint audience (ExhibitDeck(native_charts=True),
@@ -635,9 +639,10 @@ class ExhibitDeck:
         # v5.3.1 (28 Sep 2026): Google Slides flattens imported PowerPoint charts to pictures (Shyam's test),
         # so drawn shapes are the default again; they import into Slides as editable shapes. Native charts
         # are for a PowerPoint audience: ExhibitDeck(native_charts=True), native=True per call, or APEX_NATIVE=1.
-        if native_charts is None:
-            native_charts = os.environ.get('APEX_NATIVE', '0').lower() in ('1', 'on', 'true')
-        self.native_charts = bool(native_charts)
+        # v5.3.2 (28 Sep 2026): native charts are DROPPED. Google Slides is the only presentation app at
+        # Backbase, and it flattens imported chart objects to pictures. The path stays dormant behind an
+        # explicit native_charts=True / native=True and is never on by default; no environment switch.
+        self.native_charts = bool(native_charts) if native_charts else False
 
     # ------------------------------------------------------------ slide factory
     def slide(self, dark=False):

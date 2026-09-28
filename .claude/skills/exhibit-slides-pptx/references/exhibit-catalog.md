@@ -195,7 +195,7 @@ text in client decks. Never fabricate a logo — text chips until assets exist.
 | T66 | **Donut / pie** | One share of one whole as a circle (no reference page; built to order) | `d.donut(s, x, y, d, segments, thickness=0.28, center=, legend=True)`; `thickness=1.0` = pie |
 | T67 | **Team page · close** | The people in the room; the last page (summit deck p10, p11) | `d.team_page(kicker, title_runs, people)`; `d.closing_page("Thank you")` |
 
-Native charts (v5.2, 28 Sep 2026; opt-in since v5.3.1): T56, T57, T58, T60, T61, T62, T64, T65 and T66 can draw as editable PowerPoint charts (`native=True`, `ExhibitDeck(native_charts=True)` or `APEX_NATIVE=1`): right-click, Edit Data, the bars redraw. Drawn shapes are the default because Google Slides flattens imported charts to pictures. `fmt=` sets the label number format; `X.chart_values(path)` reads a hand-edited deck back. Deltas, totals, end labels and the donut centre stay text at the built value.
+Native charts (v5.2, 28 Sep 2026) are DROPPED as of v5.3.2: Google Slides, the only presentation app at Backbase, flattens imported chart objects to pictures. Every chart recipe draws shapes. The native path is dormant behind an explicit `native=True` and is never used.
 
 | T68 | **Proof ledger** | The production runs: a resolution bar per deployment, what moved it (summit deck p8) | `d.proof_ledger(s, x, y, w, rows)` — `(name, sub, value, display, what[, fill])`, bars scaled to 100 |
 | T69 | **Loop matrix** | The value pools as chips on the autonomy rows: out of / on / in the loop / person only (summit deck p9) | `d.loop_matrix(s, x, y, w, pools, rows)` — pools `(key, label, blue|navy|tint|outline)`, chips sized from the font metrics |
