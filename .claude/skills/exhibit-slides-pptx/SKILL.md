@@ -229,6 +229,8 @@ need to verify a detail or extend the engine; the engine already implements both
 - [ ] Voice: the save-time lint passed with no hard hit; the humanizer agent's altitude pass ran
 - [ ] Form: every structural page uses a framework form or a drawn chart; tiles at most once, never twice in a row; icons on the structural pages
 - [ ] Charts: native by default (Edit Data works); label formats read right; if anyone edited the deck by hand, `chart_values()` before the rebuild
+- [ ] Layout: `save()` printed no LAYOUT lines (overflow, bleed, overlap, footnote zone, a rule through text); if it did, fix the build script until it is quiet, then render and read the pages. `python3 scripts/layout_check.py deck.pptx` runs the same check on any deck; `APEX_LAYOUT=strict` makes save() refuse a deck with faults
+- [ ] Busyness: one icon set per page at most (a chevron row OR an icon list, never both); at stage scale a page holds about six rows, seven words a row
 - [ ] One exhibit per slide, at most 2 or 3 callouts, nothing crossing y 6.55
 - [ ] Every numeric slide has a source footnote; estimates dashed or badged coral with an owner
 - [ ] At most ONE plain table in the whole deck
