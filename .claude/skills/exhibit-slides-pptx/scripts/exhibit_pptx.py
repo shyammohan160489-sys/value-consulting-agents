@@ -5,6 +5,11 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.3.1 (28 Sep 2026, the Google Slides verdict): Shyam opened the native-chart deck in Google Slides and
+  every chart had become a picture. Drawn shapes are the default again (they import into Slides as
+  editable shapes); native charts are opt-in for a PowerPoint audience (ExhibitDeck(native_charts=True),
+  native=True on a call, or APEX_NATIVE=1).
+
 v5.3 (28 Sep 2026, the layout pass, Shyam: "the lines are off, the text is bleeding, the text is up
   and down"): scripts/layout_check.py measures every text box against its text with the real font
   metrics and reports overflow, bleed, overlap, footnote-zone crossings and rules through text; save()
@@ -627,9 +632,11 @@ class ExhibitDeck:
         self._blank = self.prs.slide_layouts[6]
         self.logo = logo
         self.page = 0
-        # v5.2: the chart recipes draw as editable PowerPoint charts by default under Apex
+        # v5.3.1 (28 Sep 2026): Google Slides flattens imported PowerPoint charts to pictures (Shyam's test),
+        # so drawn shapes are the default again; they import into Slides as editable shapes. Native charts
+        # are for a PowerPoint audience: ExhibitDeck(native_charts=True), native=True per call, or APEX_NATIVE=1.
         if native_charts is None:
-            native_charts = (look == 'v4') and os.environ.get('APEX_NATIVE', '1') not in ('0', 'off', 'false')
+            native_charts = os.environ.get('APEX_NATIVE', '0').lower() in ('1', 'on', 'true')
         self.native_charts = bool(native_charts)
 
     # ------------------------------------------------------------ slide factory
@@ -2618,7 +2625,10 @@ class ExhibitDeck:
             for k, sv in enumerate(r['segments']):
                 v, f = (sv if isinstance(sv, (list, tuple)) else (sv, fills[k % len(fills)]))
                 sw = float(v) * sc
-                self.rect(s, sx, yy + 0.06, sw, bar_h, fill=f)
+                if isinstance(f, tuple) and f and f[0] == 'dashed':      # an estimate: white with a dashed outline
+                    self.rect(s, sx, yy + 0.06, sw, bar_h, fill=(f[2] if len(f) > 2 else WHITE), line=f[1], line_w=0.75, dash='dash')
+                else:
+                    self.rect(s, sx, yy + 0.06, sw, bar_h, fill=f)
                 sx += sw
             if r.get('end'):
                 self.txt(s, sx + 0.10, yy + 0.07, max(1.30, x + w - val_w - 0.15 - (sx + 0.10)), 0.21, r['end'], size=9 * tf, color=NAVY, wrap=False)
