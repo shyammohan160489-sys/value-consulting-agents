@@ -21,3 +21,11 @@ Non-negotiables, restated:
 4. Render to PNG and read every page before delivering; ship the `.pptx` with its build script
    next to it.
 5. Use `look='v3'` only when the deck extends an account series that is still on v3 mid-cycle.
+
+## "Visualize better" (28 Sep 2026)
+
+The default page uses tiles, cards, numbered columns and drawn charts. When Shyam says "visualize
+better", names a form, or a claim has the shape of a loop, a centre, an overlap or a split, draw the
+page both ways and show the two-up before building: `X.preview_forms([("cards", draw_a), ("hub",
+draw_b)], "preview.png")`, send the PNG, and build the one he picks. Never put a parked form
+(hub and spoke, venn, value map, rings, pillars, flywheel, cascade) into a deck unseen.

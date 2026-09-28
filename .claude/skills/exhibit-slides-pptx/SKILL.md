@@ -108,14 +108,19 @@ clean; I worry the wrong framework is used for the depiction." The rule, in orde
 2. **A framework form only when its shape is the claim** and a reader would draw it that way on a
    whiteboard: a real loop is a flywheel, a total that splits is a cascade, a narrowing with numbers
    is a funnel, one row opened up is a zoom, architecture layers are a stack. Hub and spoke, venn,
-   rings, pillars and the value map are parked: use cards. Chevrons are retired: use step columns.
+   rings, pillars, flywheel, cascade and the value map are parked (Shyam, 28 Sep 2026): they reach
+   a deck in two ways only. Shyam asks to "visualize better" or names the form; or the claim has
+   that shape and the page is shown first as a two-up, the plain form beside the framework form
+   (`X.preview_forms([("cards", draw_a), ("hub", draw_b)], "preview.png")`), and he picks.
+   Chevrons are retired: use step columns.
 3. **Icons are small and rare.** 0.25 in a stat block, top left with the number below it; 0.30 in an
    icon row; never a row of large glyphs above a flow. One icon set per page at most, and a page
    without icons is fine. `X.icon_search("router")` finds a name; `tabler:name` pins a family.
 4. **Numbers in a row sit on one line.** A stat block places the icon, then the number, then the
    caption at fixed heights. A caption that needs more lines is shortened; the number never moves.
-5. **One title size, one line.** 32pt at stage, 28pt at report; the engine never shrinks a title. A
-   title that would wrap is shortened (the layout check reports it; about 58 characters at stage).
+5. **One title size, one line, one sentence.** 32pt at stage, 28pt at report; the engine never
+   shrinks a title. A title that would wrap is shortened (the layout check reports it; about 58
+   characters at stage).
 6. **In-page labels run to four words.** The kicker keeps the section path; every other uppercase
    label on the page says its thing in four words or fewer (the layout check reports the rest).
 

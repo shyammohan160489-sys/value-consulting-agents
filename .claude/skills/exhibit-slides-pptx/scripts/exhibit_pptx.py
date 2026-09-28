@@ -5,6 +5,10 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.4.2 (28 Sep 2026): preview_forms(pages, out_png) draws one page in two or more forms side by side,
+  so a parked form (hub, venn, value map, rings, pillars, flywheel, cascade) is chosen from a
+  preview, or on Shyam's ask to "visualize better"; never by default. Titles: one sentence, one line.
+
 v5.4 (28 Sep 2026, clean forms, Shyam on the first full Apex deck in Google Slides: "the numbers are
   jumping up and down; the number comes below the icon; icons too big; the headline size changed
   between two slides; tiles look cleaner; the chevrons do not look clean"): stat_block draws icon,
@@ -4193,6 +4197,37 @@ class ExhibitDeck:
             raise SystemExit("REFUSED: %d banned writing shape(s) in %s. Fix the copy in the build script "
                              "(never the .pptx) and rebuild; APEX_VOICE=warn to override once." % (len(hard), os.path.basename(path)))
         return hard, soft
+
+
+# ------------------------------------------------------------ a two-up preview before a form is chosen (v5.4.2)
+def preview_forms(pages, out_png, look='apex', scale='stage', client_logo=None, dpi=90):
+    """One page drawn in two or more forms, side by side in one PNG, so the form is chosen before
+    the deck is built (28 Sep 2026, Shyam: "maybe you show the visualization beforehand"). pages:
+    [(name, fn)] where fn(d, s) draws the page on slide s of deck d; the first entry is the plain
+    form. A parked form (hub and spoke, venn, value map, rings, pillars, flywheel, cascade) goes
+    into a deck only after this preview, or when Shyam asks to visualize better. Renders through
+    LibreOffice; returns out_png."""
+    import tempfile, subprocess, shutil, glob
+    d = ExhibitDeck(look=look, scale=scale, client_logo=client_logo)
+    for name, fn in pages:
+        fn(d, d.slide())
+    tmp = tempfile.mkdtemp(prefix='apex_preview_')
+    pptx = os.path.join(tmp, 'preview.pptx')
+    d.save(pptx, voice='warn')
+    soffice = shutil.which('soffice') or '/Applications/LibreOffice.app/Contents/MacOS/soffice'
+    subprocess.run([soffice, '--headless', '--convert-to', 'pdf', '--outdir', tmp, pptx], capture_output=True, timeout=300)
+    subprocess.run(['pdftoppm', '-r', str(dpi), '-png', os.path.join(tmp, 'preview.pdf'), os.path.join(tmp, 'pg')], check=True)
+    from PIL import Image, ImageDraw
+    ims = [Image.open(p).convert('RGB') for p in sorted(glob.glob(os.path.join(tmp, 'pg-*.png')))]
+    w, h = ims[0].size
+    sheet = Image.new('RGB', (len(ims) * (w + 10) + 10, h + 40), (205, 205, 205))
+    dr = ImageDraw.Draw(sheet)
+    for i, (im, (name, _)) in enumerate(zip(ims, pages)):
+        sheet.paste(im, (10 + i * (w + 10), 30))
+        dr.text((12 + i * (w + 10), 10), name, fill=(0, 0, 0))
+    sheet.save(out_png)
+    shutil.rmtree(tmp, ignore_errors=True)
+    return out_png
 
 
 # ------------------------------------------------------------ reading a hand-edited deck back (v5.2)
