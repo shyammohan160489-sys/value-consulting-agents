@@ -293,7 +293,7 @@ def _fmt_from_text(text):
     import re
     m = re.match(r'^\s*([^\d\-.]*)(-?[\d,]*\.?\d*)(.*?)\s*$', str(text))
     if not m or not m.group(2).strip('-,.'):
-        return '0.0'
+        return None
     pre, num, suf = m.groups()
     dec = len(num.split('.')[1]) if '.' in num else 0
     body = ('#,##0' if ',' in num else '0') + ('.' + '0' * dec if dec else '')
@@ -305,6 +305,8 @@ def _fmt_from_texts(texts):
     best, best_dec = '0.0', -1
     for t in texts:
         fm = _fmt_from_text(t)
+        if fm is None:
+            continue  # a word, not a number ('new volume'): it says nothing about the format
         dec = len(fm.split('.')[1].split('"')[0]) if '.' in fm else 0
         if dec > best_dec:
             best, best_dec = fm, dec
@@ -2186,7 +2188,7 @@ class ExhibitDeck:
                         [(seg[2] or ("Part %d" % (k + 1)), [float(seg[0])], self._weight(seg[3])[0])
                          for k, seg in enumerate(segments)], inner=(x, y, w, h), gap=0, overlap=100)
         sx = x
-        for (v, disp, label, weight) in segments:
+        for (v, disp, seg_label, weight) in segments:
             sw = w * float(v) / tot
             fill, _, _, tc, _ = self._weight(weight)
             if not (self.native_charts if native is None else native):
@@ -2194,13 +2196,13 @@ class ExhibitDeck:
             if values == 'above':
                 # report page 46: 9pt value above each segment, label under the bar
                 self.txt(s, sx, y - 0.27, max(0.5, sw), 0.22, disp, size=9 * f, color=NAVY, wrap=False)
-                if label and sw > 0.6:
-                    self.txt(s, sx, y + h + 0.06, sw, 0.20, label, size=lab_size * f, color=MUT, wrap=False)
+                if seg_label and sw > 0.6:
+                    self.txt(s, sx, y + h + 0.06, sw, 0.20, seg_label, size=lab_size * f, color=MUT, wrap=False)
             else:
                 self.txt(s, sx + 0.12, y + 0.12, max(0.3, sw - 0.12), 0.25, disp, size=val_size * f, color=tc,
                          wrap=False)
-                if label and sw > 0.9:
-                    self.txt(s, sx + 0.12, y + 0.48, sw - 0.12, 0.21, label, size=lab_size, color=tc,
+                if seg_label and sw > 0.9:
+                    self.txt(s, sx + 0.12, y + 0.48, sw - 0.12, 0.21, seg_label, size=lab_size, color=tc,
                              wrap=False)
             sx += sw
         if total:
@@ -2952,9 +2954,26 @@ class ExhibitDeck:
         pie = ctype in (XL_CHART_TYPE.DOUGHNUT, XL_CHART_TYPE.PIE)
         if not pie:
             if gap is not None:
-                plot.gap_width = int(round(gap))
+                plot.gap_width = max(0, min(500, int(round(gap))))
             if overlap is not None:
-                plot.overlap = int(round(overlap))
+                ov_val = max(-100, min(100, int(round(overlap))))
+                if ov_val >= 0:
+                    plot.overlap = ov_val
+                else:  # python-pptx validates overlap as 0..500; a negative gap between clustered bars goes in by XML
+                    el = plot._element
+                    ov = el.find(qn('c:overlap'))
+                    if ov is None:
+                        ov = el.makeelement(qn('c:overlap'), {'val': str(ov_val)})
+                        gw = el.find(qn('c:gapWidth'))
+                        ax = el.find(qn('c:axId'))
+                        if gw is not None:
+                            gw.addnext(ov)
+                        elif ax is not None:
+                            ax.addprevious(ov)
+                        else:
+                            el.append(ov)
+                    else:
+                        ov.set('val', str(ov_val))
         for k, ser in enumerate(plot.series):
             self._fill_series(ser, series[k][2], len(series[k][1]))
         if labels:
