@@ -3853,9 +3853,10 @@ class ExhibitDeck:
                 bh = bl * body_size / 72.0 * 1.25 + 0.04
                 self.txt(s, cx, y_body, cw - 0.15, bh, st["body"], size=body_size, color=NAVY, line_sp=1.12)
                 bottom = max(bottom, y_body + bh)
-            if arrows and i < n - 1:
-                self.txt(s, cx + cw - 0.05, y_num + 0.02, gap + 0.10, 0.4, "→", size=lead_size, color=BLUE,
-                         align=PP_ALIGN.CENTER, wrap=False)
+            if arrows and i < n - 1:                    # a muted arrow centred on the number line; off by default
+                ah = num_size * 0.6 / 72.0 * 1.25
+                self.txt(s, cx + cw - 0.30, y_num + (num_size / 72.0 * 1.25 - ah) / 2.0, gap + 0.60, ah, "→",
+                         size=num_size * 0.6, color=BLUE4, align=PP_ALIGN.CENTER, wrap=False)
         subs = [st.get("sub") for (st, _, _) in plan]
         if any(subs):
             ys = sub_y or (bottom + 0.10)
