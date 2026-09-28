@@ -5,6 +5,12 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.5 (28 Sep 2026, the source page's own form is the recipe): story_card / story_cards (T85), measured
+  from report page 8 after Shyam preferred the original to the rebuilt tile: code, icon top right, name,
+  body, then an anchored label, value, sub and a thin bar (filled, or dashed when unpriced), a dark
+  hero card. Rule: when a measured Claude Design page has its own form, rebuild that form; never swap
+  in a plainer tile or a framework.
+
 v5.4.2 (28 Sep 2026): preview_forms(pages, out_png) draws one page in two or more forms side by side,
   so a parked form (hub, venn, value map, rings, pillars, flywheel, cascade) is chosen from a
   preview, or on Shyam's ask to "visualize better"; never by default. Titles: one sentence, one line.
@@ -2020,6 +2026,57 @@ class ExhibitDeck:
                             num_size=c.get("num_size", 33), cap_lines=c.get("cap_lines"))
         rows = (len(cells) + cols - 1) // cols
         return y + rows * (h + row_gap) - row_gap
+
+    def story_card(self, s, x, y, w, h, code, name, body, label, value, sub, bar=None, dark=False, icon=None):
+        """Report page 8 (v5.5, 28 Sep 2026, Shyam: "this view is more; it has icons, highlights, and it is
+        clean"): a tall card for one story. Top: the 19.5pt code in BLUE (CYAN on dark), a small icon top
+        right, the 12.75pt name, the 9pt body. Bottom, anchored: a 7.9pt uppercase label, the 24pt value,
+        an 8.25pt sub and a thin bar (bar = a fraction 0..1 filled, or 'dashed' for an unpriced story).
+        dark=True is the hero card. icon = a PNG path (X.icon) or a Lucide/Tabler name. Returns y + h."""
+        f = self.tf
+        self.rect(s, x, y, w, h, fill=(NAVY if dark else TINT2))
+        tc = WHITE if dark else NAVY
+        ac = CYAN if dark else BLUE
+        ix = x + 0.21
+        iw = w - 0.42
+        self.txt(s, ix, y + 0.21, 1.8, 0.36 * f, code, size=19.5 * f, color=ac, wrap=False)
+        if icon:
+            if os.path.exists(str(icon)):
+                s.shapes.add_picture(icon, I(x + w - 0.22 - 0.23), I(y + 0.25), I(0.23), I(0.23))
+            elif icon_path(icon):
+                self.icon_glyph(s, icon, x + w - 0.22 - 0.23, y + 0.25, 0.23, color=ac)
+        name_y = y + 0.21 + 0.42 * f
+        nl = self._est_lines(name, iw, 12.75 * f)
+        self.txt(s, ix, name_y, iw, nl * 12.75 * f / 72.0 * 1.25 + 0.03, name, size=12.75 * f, color=tc, line_sp=1.05)
+        body_y = name_y + nl * 12.75 * f / 72.0 * 1.25 + 0.08
+        bar_y = y + h - 0.26
+        sub_y = bar_y - 0.06 - 0.24 * f
+        value_y = sub_y - 0.42 * f
+        label_y = value_y - 0.24 * f
+        self.txt(s, ix, body_y, iw, max(0.2, label_y - body_y - 0.10), body, size=9 * f, color=tc, line_sp=1.12)
+        self.txt(s, ix, label_y, iw, 0.20 * f, label.upper(), size=7.9 * f, color=ac, track="20", wrap=False)
+        vs = 24 * f
+        while vs > 12 and text_w(value, vs) > iw:
+            vs -= 1.5
+        self.txt(s, ix, value_y, iw, 0.40 * f, value, size=vs, color=tc, wrap=False)
+        self.txt(s, ix, sub_y, iw, 0.22 * f, sub, size=8.25 * f, color=tc, wrap=False)
+        if bar == 'dashed':
+            self.rect(s, ix, bar_y - 0.04, iw, 0.12, fill=None, line=(CYAN if dark else BLUE4), line_w=0.75, dash='dash')
+        elif bar is not None:
+            self.rect(s, ix, bar_y, iw, 0.06, fill=(BLUE3 if dark else TINT))
+            self.rect(s, ix, bar_y, iw * max(0.0, min(1.0, float(bar))), 0.06, fill=ac)
+        return y + h
+
+    def story_cards(self, s, x, y, cells, cols=4, w=2.73, h=None, gap=0.145):
+        """A row of story cards (report page 8). cells: dicts {code, name, body, label, value, sub, bar,
+        dark, icon}. h defaults to 3.5 at stage and 4.12 at report. Returns the y under the row."""
+        h = h or (3.75 if getattr(self, 'scale', 'report') == 'stage' else 4.12)   # stage: four body lines at 12pt
+        for i, c in enumerate(cells):
+            r, k = divmod(i, cols)
+            self.story_card(s, x + k * (w + gap), y + r * (h + gap), w, h, c["code"], c["name"], c["body"],
+                            c["label"], c["value"], c["sub"], bar=c.get("bar"), dark=c.get("dark", False), icon=c.get("icon"))
+        rows = (len(cells) + cols - 1) // cols
+        return y + rows * (h + gap) - gap
 
     def hero_number(self, s, x, y, w, h, number, caption, dark=True, layout='side', num_size=33,
                     cap_size=9):

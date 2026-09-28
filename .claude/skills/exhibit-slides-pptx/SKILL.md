@@ -100,11 +100,14 @@ for a dense reference document a reader studies, never for a room. The five page
 Shyam, on the first full Apex deck in Google Slides: "tiles look cleaner; the chevrons do not look
 clean; I worry the wrong framework is used for the depiction." The rule, in order:
 
-1. **The report's own idioms come first.** Tiles and cards for a set of things (stat blocks, option
-   cards, numbered cards, lane grids, `d.tiles`). Numbered columns (`d.step_columns`, T84) for a
-   process or a sequence of moments: a blue two-digit number, an uppercase label, a lead line, a
-   body, no fills, no icons. Drawn charts for magnitudes, shares, trends and rankings (T56 to T66).
-   Compare rows for today against tomorrow. These carry nine pages in ten.
+1. **The report's own idioms come first, and a measured page's own form is the recipe.** When a
+   Claude Design page has a form of its own (the story cards of page 8, T85; the moment rows; the
+   numbered columns), rebuild that form; swapping in a plainer tile or a framework is a regression
+   (Shyam, 28 Sep 2026: "the original has icons, highlights, and it is clean"). Tiles and cards for
+   a set of things (stat blocks, story cards, option cards, numbered cards, lane grids, `d.tiles`).
+   Numbered columns (`d.step_columns`, T84) for a process: a blue two-digit number, an uppercase
+   label, a lead line, a body, no fills. Drawn charts for magnitudes, shares, trends and rankings
+   (T56 to T66). Compare rows for today against tomorrow. These carry nine pages in ten.
 2. **A framework form only when its shape is the claim** and a reader would draw it that way on a
    whiteboard: a real loop is a flywheel, a total that splits is a cascade, a narrowing with numbers
    is a funnel, one row opened up is a zoom, architecture layers are a stack. Hub and spoke, venn,
