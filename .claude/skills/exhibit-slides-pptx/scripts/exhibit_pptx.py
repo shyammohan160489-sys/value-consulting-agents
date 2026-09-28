@@ -5,6 +5,15 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.4 (28 Sep 2026, clean forms, Shyam on the first full Apex deck in Google Slides: "the numbers are
+  jumping up and down; the number comes below the icon; icons too big; the headline size changed
+  between two slides; tiles look cleaner; the chevrons do not look clean"): stat_block draws icon,
+  number and caption at fixed heights so a row's numbers share one line; the title is one size and
+  never shrinks (the layout check reports a title that would wrap, and an in-page label over four
+  words); icons default to 0.30 (icon rows) and 0.25 (stat blocks); step_columns (T84) is the process
+  form, the report's own numbered-column idiom; chevron_flow is retired, hub_spoke, venn, rings,
+  pillars and value_map are parked behind cards. SKILL.md: "Clean forms first".
+
 v5.3.2 (28 Sep 2026, native charts dropped): Shyam: "we will never use PowerPoint natively; everything
   is opened in Google Slides". Charts are drawn shapes, always; the native path is dormant behind an
   explicit flag and has no environment switch. Every deck is built Slides-safe.
@@ -1652,20 +1661,25 @@ class ExhibitDeck:
         title, muted body, optional BLUE bold footer stat. cells: {title, body,
         stat?, accent?}. Whitespace law: never stretch tiles to fill — add tiles
         or shrink the grid."""
+        f = self.tf                       # v5.4: tiles scale with the deck and measure their titles
         cw = (w - gap * (cols - 1)) / cols
+        ts, bs = 11.5 * f, 10 * f
         for i, c in enumerate(cells):
             r, k = divmod(i, cols)
             tx = x + k * (cw + gap)
             ty = y + r * (h + gap)
             self.rect(s, tx, ty, cw, h, fill=TINT2)
             self.rect(s, tx, ty, cw, 0.035, fill=c.get("accent", BLUE3))
-            self.txt(s, tx + 0.14, ty + 0.13, cw - 0.28, 0.42, c["title"], size=11.5,
+            tl = self._est_lines(c["title"], cw - 0.28, ts)
+            th = tl * ts / 72.0 * 1.25 + 0.04
+            self.txt(s, tx + 0.14, ty + 0.13, cw - 0.28, th, c["title"], size=ts,
                      color=NAVY, bold=True, line_sp=1.02)
-            self.txt(s, tx + 0.14, ty + 0.47, cw - 0.28, h - (0.82 if c.get("stat") else 0.60),
-                     c["body"], size=10, color=MUT, line_sp=1.14)
+            by = ty + 0.13 + th + 0.06
+            self.txt(s, tx + 0.14, by, cw - 0.28, max(0.2, h - (by - ty) - (0.36 * f if c.get("stat") else 0.14)),
+                     c["body"], size=bs, color=(NAVY if getattr(self, 'look', 'v3') == 'v4' else MUT), line_sp=1.14)
             if c.get("stat"):
-                self.txt(s, tx + 0.14, ty + h - 0.32, cw - 0.28, 0.24, c["stat"],
-                         size=11.5, color=BLUE, bold=True, wrap=False)
+                self.txt(s, tx + 0.14, ty + h - 0.32 * f, cw - 0.28, 0.26 * f, c["stat"],
+                         size=ts, color=BLUE, bold=True, wrap=False)
         rows = (len(cells) + cols - 1) // cols
         return y + rows * (h + gap) - gap
 
@@ -1795,15 +1809,26 @@ class ExhibitDeck:
 
     @staticmethod
     def _est_lines(text, w, size, em=0.52):
-        """Rough line count of `text` in a w-inch box at `size` pt (Libre Franklin runs at about
-        0.48 em per character). Used to bottom-anchor captions; pass cap_lines to override."""
-        import math
+        """Line count of `text` in a w-inch box at `size` pt: a greedy word wrap on the real Libre
+        Franklin widths (v5.4; layout_check.py wraps the same way). em is kept for old callers."""
         if not text:
             return 0
-        cpl = max(1.0, w * 72.0 / (size * em))
-        return max(1, int(math.ceil(len(text) / cpl)))
-
-    # ---- client logo (v4 rule: client decks carry the client's logo, internal decks do not)
+        lines = 0
+        space = text_w(" ", size)
+        for chunk in str(text).replace("\r", "\n").split("\n"):
+            cur = 0.0
+            n = 1
+            for wd in chunk.split(" "):
+                ww = text_w(wd, size)
+                if cur == 0.0:
+                    cur = ww
+                elif cur + space + ww <= w:
+                    cur += space + ww
+                else:
+                    n += 1
+                    cur = ww
+            lines += n
+        return lines
     def set_client_logo(self, path, box=None):
         """Deck-level client logo. Every chrome() after this call places it top right.
         box = (x, y, w, h); the measured default is (12.60, -0.08, 0.60, 0.69)."""
@@ -1852,7 +1877,7 @@ class ExhibitDeck:
             if t.endswith(".") and not t.endswith("..."):
                 t = t[:-1]                      # Apex titles carry no trailing period
             if stage:
-                ts = title_size or (32 if text_w(t, 32) <= 11.7 else 28)
+                ts = title_size or 32            # v5.4: one title size; a title that would wrap is shortened, never shrunk
                 self.txt(s, 0.98, 1.36, 11.95, 0.75, t, size=ts, color=NAVY, bold=False, line_sp=1.04)
             else:
                 self.txt(s, 1.0, 1.10, 11.9, 0.9, t, size=(28 if title_size is None else title_size),
@@ -1958,17 +1983,26 @@ class ExhibitDeck:
         f = self.tf
         num_size, cap_size = num_size * f, cap_size * f
         self.rect(s, x, y, w, h, fill=(NAVY if dark else TINT2))
+        # v5.4 (28 Sep 2026, Shyam: "the numbers are jumping up and down; if there is an icon the number
+        # comes below it"): fixed positions. Icon top left, the number on one line below it at the same
+        # height in every block of the row, the caption top-anchored under the number. Nothing floats
+        # with the caption's line count, so Google Slides and PowerPoint draw the row alike.
+        icon_h = 0.0
         if icon and os.path.exists(icon):
             s.shapes.add_picture(icon, I(x + 0.21), I(y + 0.21), I(0.25), I(0.25))
-        cw = w - 0.33
-        lines = cap_lines or self._est_lines(caption, cw, cap_size)
-        cap_h = 0.175 * f * lines + 0.045
-        cap_y = y + h - 0.17 - cap_h
+            icon_h = 0.25 + 0.10
+        elif icon and isinstance(icon, str) and icon_path(icon):
+            self.icon_glyph(s, icon, x + 0.21, y + 0.21, 0.25, color=(CYAN if dark else BLUE))
+            icon_h = 0.25 + 0.10
         while num_size > 14 and text_w(number, num_size) > w - 0.40:
             num_size -= 1.5                                   # a long number drops until it fits one line
-        self.txt(s, x + 0.21, cap_y - 0.56 * f, w - 0.19, 0.50 * f, number, size=num_size,
+        num_y = y + 0.21 + icon_h
+        num_h = num_size / 72.0 * 1.25
+        self.txt(s, x + 0.21, num_y, w - 0.19, num_h, number, size=num_size,
                  color=(CYAN if dark else BLUE), wrap=False)
-        self.txt(s, x + 0.21, cap_y, cw, cap_h, caption, size=cap_size,
+        cw = w - 0.33
+        cap_y = num_y + num_h + 0.06
+        self.txt(s, x + 0.21, cap_y, cw, max(0.2, y + h - 0.17 - cap_y), caption, size=cap_size,
                  color=(WHITE if dark else NAVY), line_sp=1.1)
         return y + h
 
@@ -3743,7 +3777,7 @@ class ExhibitDeck:
             if i:
                 self.rect(s, cx - col_gap / 2, top, 0.01, 4.2, fill=CARD_LINE)
             if p.get('icon'):
-                self.icon_glyph(s, p['icon'], cx, top, 0.42 * f, color=BLUE)
+                self.icon_glyph(s, p['icon'], cx, top, 0.30 * f, color=BLUE)
             self.txt(s, cx, top + 0.50 * f, cw, 0.26 * f, p.get('name', ''), size=13 * f, color=NAVY, wrap=False)
             self.txt(s, cx, top + 0.78 * f, cw, 0.45 * f, p.get('value', ''), size=22.5 * f, color=BLUE, wrap=False)
             ly = top + 1.38 * f
@@ -3781,6 +3815,57 @@ class ExhibitDeck:
             if len(st) > 1 and st[1]:
                 self.txt(s, cx + (0.05 if i == 0 else 0.25), y + h + 0.10, cw - 0.4, 0.6 * f, st[1], size=9 * f, color=MUT, line_sp=1.1)
         return y + h + 0.75 * f
+
+    def step_columns(self, s, x, y, w, steps, arrows=False, num_size=22.5, lead_size=12, body_size=9,
+                     label_size=7.9, gap=0.20, sub_y=None):
+        """A process as numbered columns, the report's own idiom (pages 10 and 13; Shyam 28 Sep 2026:
+        chevrons do not look clean). Per column: a two-digit BLUE number, an uppercase label, a lead
+        line, a body, an optional muted sub (the system touched) on one shared baseline. arrows=True
+        draws a thin arrow between columns. steps: dicts {label, lead, body, sub} or (label, lead,
+        body[, sub]). No fills, no icons. Returns the y under the longest column."""
+        f = self.tf
+        n = max(1, len(steps))
+        cw = (w - gap * (n - 1)) / n
+        num_size, lead_size, body_size, label_size = num_size * f, lead_size * f, body_size * f, label_size * f
+        y_num = y
+        y_label = y + num_size / 72.0 * 1.25 + 0.04
+        max_lead, max_lbl = 1, 1
+        plan = []
+        for st in steps:
+            st = st if isinstance(st, dict) else dict(zip(("label", "lead", "body", "sub"), st))
+            ll = self._est_lines(st.get("lead", ""), cw - 0.15, lead_size)
+            bl_ = self._est_lines(st.get("label", "").upper(), cw - 0.05, label_size) if st.get("label") else 0
+            plan.append((st, ll, bl_))
+            max_lead = max(max_lead, ll)
+            max_lbl = max(max_lbl, bl_)
+        y_lead = y_label + max_lbl * label_size / 72.0 * 1.25 + 0.08
+        y_body = y_lead + max_lead * lead_size / 72.0 * 1.25 + 0.08
+        bottom = y_body
+        for i, (st, ll, bl_) in enumerate(plan):
+            cx = x + i * (cw + gap)
+            self.txt(s, cx, y_num, cw, num_size / 72.0 * 1.25, "%02d" % (i + 1), size=num_size, color=BLUE, wrap=False)
+            if st.get("label"):
+                self.txt(s, cx, y_label, cw, bl_ * label_size / 72.0 * 1.25 + 0.02, st["label"].upper(), size=label_size, color=NAVY, track="20", line_sp=1.05)
+            if st.get("lead"):
+                self.txt(s, cx, y_lead, cw - 0.15, ll * lead_size / 72.0 * 1.25 + 0.03, st["lead"], size=lead_size, color=NAVY, line_sp=1.05)
+            if st.get("body"):
+                bl = self._est_lines(st["body"], cw - 0.15, body_size)
+                bh = bl * body_size / 72.0 * 1.25 + 0.04
+                self.txt(s, cx, y_body, cw - 0.15, bh, st["body"], size=body_size, color=NAVY, line_sp=1.12)
+                bottom = max(bottom, y_body + bh)
+            if arrows and i < n - 1:
+                self.txt(s, cx + cw - 0.05, y_num + 0.02, gap + 0.10, 0.4, "→", size=lead_size, color=BLUE,
+                         align=PP_ALIGN.CENTER, wrap=False)
+        subs = [st.get("sub") for (st, _, _) in plan]
+        if any(subs):
+            ys = sub_y or (bottom + 0.10)
+            for i, sub in enumerate(subs):
+                if sub:
+                    cx = x + i * (cw + gap)
+                    sl = self._est_lines(sub, cw - 0.15, label_size)
+                    self.txt(s, cx, ys, cw - 0.15, sl * label_size / 72.0 * 1.25 + 0.04, sub, size=label_size, color=MUT, line_sp=1.1)
+                    bottom = max(bottom, ys + sl * label_size / 72.0 * 1.25 + 0.04)
+        return bottom
 
     def rings(self, s, cx, cy, r, levels, label_x=None, label_w=3.6):
         """Concentric rings from the core outward, each with a label and a sub to the right on a
@@ -3870,7 +3955,7 @@ class ExhibitDeck:
         """Icon, title and one line, no box: the antidote to tiles. items: (icon, title, body).
         Returns the y under the last row."""
         f = self.tf
-        icon_size = icon_size or 0.46 * f
+        icon_size = icon_size or 0.30 * f
         any_icon = any(it[0] for it in items)
         indent = (icon_size + 0.25) if any_icon else 0.0
         cw = (w - col_gap * (cols - 1)) / cols

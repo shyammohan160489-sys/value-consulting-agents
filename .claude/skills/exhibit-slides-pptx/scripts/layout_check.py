@@ -7,6 +7,8 @@ real Libre Franklin metrics, and report the faults a reader sees as "bleeding", 
   overlap    two boxes that both carry text and intersect
   footzone   content that runs into the footnote zone (y + needed height > 6.48) or past the frame (x + w > 12.45)
   rule       a hairline drawn through the text of a box
+  title      a title wider than its box: it would wrap, and titles are one line at one size
+  label      an in-page uppercase label of more than four words
 
 Run: python3 layout_check.py deck.pptx [--slides 3,10] [--json out.json] [--quiet]
 Exit code 1 when any fault is found, so a build can gate on it."""
@@ -94,6 +96,15 @@ def check_slide(slide, idx):
             if not wrap and widest > inner_w + 0.03:
                 faults.append(dict(kind="bleed", text=snippet, box_w=round(w, 2), text_w=round(widest, 2), y=round(y, 2)))
             is_foot = (6.2 <= y < 6.9 and w >= 11.0)
+            # the title: one line at one size (v5.4); a title wider than its box would wrap
+            first_size = next((p.runs[0].font.size.pt for p in paras if p.runs and p.runs[0].font.size), None)
+            if 1.0 <= y < 1.7 and first_size and first_size >= 26 and widest > inner_w + 0.03:
+                faults.append(dict(kind="title", text=snippet, chars=len(text), text_w=round(widest, 2), box_w=round(inner_w, 2)))
+            # an in-page label (uppercase, small) runs at most four words (Shyam, 28 Sep 2026)
+            if 1.9 <= y < 6.2 and first_size and first_size <= 11 and text.upper() == text and any(ch.isalpha() for ch in text):
+                words = [t for t in text.replace("·", " ").split() if t.replace(",", "").replace(".", "").replace("'", "").isalpha()]
+                if len(words) > 4 and sum(ch.isalpha() for ch in text) >= 6:
+                    faults.append(dict(kind="label", text=snippet, words=len(words)))
             content = (1.9 <= y < foot_y) or (y >= foot_y and not is_foot and y < 7.0)
             if content and y + ext_h > foot_y + 0.02:
                 faults.append(dict(kind="footzone", text=snippet, y=round(y, 2), bottom=round(y + ext_h, 2)))

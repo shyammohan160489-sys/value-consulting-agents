@@ -212,15 +212,16 @@ Native charts (v5.2, 28 Sep 2026) are DROPPED as of v5.3.2: Google Slides, the o
 | T74 | **Funnel** | Stages that narrow: leads to booked, applicants to accounts | `d.funnel(s, x, y, w, h, stages, orientation='down'|'right')` — `(label, value, display, conversion)` |
 | T75 | **Zoom** | One row of a map opened up: the overview at left, the detail at right behind a lens | `d.zoom(s, x, y, w, h, items, focus, title=)` returns the detail box; fill it with icon rows, a chart, cards |
 | T76 | **Value map** | The three pools with their levers and values, icons on the pools | `d.value_map(s, x, y, w, pools, total=)` |
-| T77 | **Chevron flow** | A process with a direction: how a deal runs, how a call runs | `d.chevron_flow(s, x, y, w, steps, h=)` — `(label, sub, icon)` |
+| T77 | **Chevron flow** · RETIRED 28 Sep 2026 | Shyam: "the chevrons do not look clean" | use T84 step columns; `d.chevron_flow` stays only for old build scripts |
 | T78 | **Rings** | Layers from a core outward: where the assistant sits, maturity levels | `d.rings(s, cx, cy, r, levels, label_x=, label_w=)` |
 | T79 | **Stack / ziggurat** | An architecture or a moat, top to bottom, one verb per layer, a thesis each | `d.stack(s, x, y, w, layers, shape='bands'|'ziggurat', band_h=)` |
 | T80 | **Hub and spoke** | One centre, many surfaces or parties | `d.hub_spoke(s, cx, cy, hub, spokes, r=, start=)` |
 | T81 | **Icon rows** | Points with an icon each and no box: the antidote to tiles | `d.icon_rows(s, x, y, w, items, cols=, pitch=)` — `(icon, title, body)` |
 | T82 | **Venn** | What each side brings and where the value overlaps | `d.venn(s, cx, cy, r, left, right, overlap)` |
 | T83 | **Pillars** | Programmes on a foundation under one roof: a strategy frame | `d.pillars(s, x, y, w, roof, columns, base)` |
+| T84 | **Step columns** | A process or a sequence of moments: the report's own idiom (pages 10 and 13) | `d.step_columns(s, x, y, w, steps, arrows=)` — dicts `{label, lead, body, sub}`; blue two-digit numbers, uppercase labels, no fills, no icons |
 
-Framework laws: the claim decides the form (a loop → flywheel, a total → cascade, a narrowing → funnel, one part opened → zoom, a process → chevrons, layers → rings or stack, one centre → hub, sides and an overlap → venn, programmes on a base → pillars). Tiles and card rows carry structure only when none of these fit, and never twice in a row. One icon per concept, blue on light, white on dark, from the Lucide or Tabler sets by name; never an emoji, never a fabricated glyph.
+Framework laws (v5.4, 28 Sep 2026): tiles, cards, numbered columns (T84) and drawn charts first; a framework form only when its shape is the claim (a real loop → flywheel, a total that splits → cascade, a narrowing with numbers → funnel, one row opened → zoom, layers → stack). Hub and spoke, venn, rings, pillars and the value map are parked behind cards; chevrons are retired. Icons small (0.25 in a stat block with the number below it, 0.30 in a row) and at most one set a page. Numbers in a row on one line. One title size, one line. In-page labels four words.
 
 Apex composition laws (from 68 measured slides): one exhibit per page and the so-what in a hero
 number or a statement line; captions bottom-anchored in cards; status words drawn, not asserted

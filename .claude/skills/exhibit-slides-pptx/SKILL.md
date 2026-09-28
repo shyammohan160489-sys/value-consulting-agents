@@ -95,26 +95,29 @@ for a dense reference document a reader studies, never for a room. The five page
 - The engine fits the logo inside the box and keeps its aspect; the Claude Design export
   stretched it, and the fitted version is the one to ship.
 
-## Frameworks before tiles (Apex v5.0, 25 Sep 2026)
+## Clean forms first (Apex v5.4, 28 Sep 2026)
 
-Shyam: "stop boxing yourself in with horizontal tiles and text in boxes; use the frameworks from the
-BCG examples; use icons." The rule, in order:
+Shyam, on the first full Apex deck in Google Slides: "tiles look cleaner; the chevrons do not look
+clean; I worry the wrong framework is used for the depiction." The rule, in order:
 
-1. **Name the claim's shape first**, then pick the form that draws that shape. A loop is a flywheel.
-   A total with its parts is a cascade. A narrowing is a funnel. One part opened up is a zoom. A
-   process is chevrons. Layers are rings or a stack. One centre with many surfaces is a hub and
-   spoke. Two sides and an overlap is a venn. Programmes on a foundation are pillars. Magnitudes,
-   trends, shares and rankings are drawn charts (T56–T66). Recipes T71–T83 in the catalog; the
-   sampler `scripts/example_apex_frameworks_build.py` shows all twelve at stage scale.
-2. **Tiles and card rows are the last resort**, for structure none of the forms above carries, and
-   never on two pages in a row. A page that is a grid of boxes with text in them goes back to
-   step 1.
-3. **Icons on every structural page**: one per concept, drawn as native shapes from the Lucide or Tabler sets
-   (`X.icon_glyph(s, "phone-incoming", x, y, 0.42)`, `X.icon_search("router")` to find a name across both; `tabler:name` pins a family).
-   Blue on light, white on dark, navy in a ledger. Never decorative, never an emoji, never a
-   fabricated glyph. The sets live in `knowledge/design-system/icons/` (Lucide, ISC; Tabler, MIT): 6,632 names.
-4. **Whitespace over filled panels.** If a page needs a big filled shape to feel finished, the
-   content is thin: cut the shape, keep the whitespace.
+1. **The report's own idioms come first.** Tiles and cards for a set of things (stat blocks, option
+   cards, numbered cards, lane grids, `d.tiles`). Numbered columns (`d.step_columns`, T84) for a
+   process or a sequence of moments: a blue two-digit number, an uppercase label, a lead line, a
+   body, no fills, no icons. Drawn charts for magnitudes, shares, trends and rankings (T56 to T66).
+   Compare rows for today against tomorrow. These carry nine pages in ten.
+2. **A framework form only when its shape is the claim** and a reader would draw it that way on a
+   whiteboard: a real loop is a flywheel, a total that splits is a cascade, a narrowing with numbers
+   is a funnel, one row opened up is a zoom, architecture layers are a stack. Hub and spoke, venn,
+   rings, pillars and the value map are parked: use cards. Chevrons are retired: use step columns.
+3. **Icons are small and rare.** 0.25 in a stat block, top left with the number below it; 0.30 in an
+   icon row; never a row of large glyphs above a flow. One icon set per page at most, and a page
+   without icons is fine. `X.icon_search("router")` finds a name; `tabler:name` pins a family.
+4. **Numbers in a row sit on one line.** A stat block places the icon, then the number, then the
+   caption at fixed heights. A caption that needs more lines is shortened; the number never moves.
+5. **One title size, one line.** 32pt at stage, 28pt at report; the engine never shrinks a title. A
+   title that would wrap is shortened (the layout check reports it; about 58 characters at stage).
+6. **In-page labels run to four words.** The kicker keeps the section path; every other uppercase
+   label on the page says its thing in four words or fewer (the layout check reports the rest).
 
 ## The chart standard (Apex v4.2, 25 Sep 2026; native charts v5.2, 28 Sep 2026)
 
@@ -223,10 +226,10 @@ need to verify a detail or extend the engine; the engine already implements both
 - [ ] Titles ONE line each, no trailing period; footnotes at most two lines
 - [ ] No bold anywhere; weight comes from size and colour
 - [ ] Voice: the save-time lint passed with no hard hit; the humanizer agent's altitude pass ran
-- [ ] Form: every structural page uses a framework form or a drawn chart; tiles at most once, never twice in a row; icons on the structural pages
+- [ ] Form: tiles, cards, numbered columns and drawn charts first; a framework form only where its shape is the claim; no chevrons, hubs or venns
 - [ ] Slides-safe: drawn charts only (Google Slides turns native chart objects into pictures), no autofit, no gradients, Libre Franklin; when in doubt open the file in Slides before calling it done
 - [ ] Layout: `save()` printed no LAYOUT lines (overflow, bleed, overlap, footnote zone, a rule through text); if it did, fix the build script until it is quiet, then render and read the pages. `python3 scripts/layout_check.py deck.pptx` runs the same check on any deck; `APEX_LAYOUT=strict` makes save() refuse a deck with faults
-- [ ] Busyness: one icon set per page at most (a chevron row OR an icon list, never both); at stage scale a page holds about six rows, seven words a row
+- [ ] Busyness: icons small (0.25 to 0.30) and at most one set per page; one title size, never shrunk; in-page labels four words; a row of numbers on one line; at stage scale a page holds about six rows, seven words a row
 - [ ] One exhibit per slide, at most 2 or 3 callouts, nothing crossing y 6.55
 - [ ] Every numeric slide has a source footnote; estimates dashed or badged coral with an owner
 - [ ] At most ONE plain table in the whole deck
