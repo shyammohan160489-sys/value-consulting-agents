@@ -5,6 +5,15 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.2 (28 Sep 2026, native charts): the measured chart recipes (hbar_rows, bars, stacked_columns,
+  hstack_rows, paired_hrows, share_bar, donut, area_block, column_walk) draw as real PowerPoint
+  charts, so a reader right-clicks, chooses Edit Data and the bars redraw. Same box, same type
+  sizes, same fills; the numbers live in the sheet behind the chart. ExhibitDeck(native_charts=)
+  sets the deck default (True under Apex, False for v3; APEX_NATIVE=0 turns it off for a run);
+  native=True/False per call; fmt= an Excel number format for the labels, else read off the first
+  display string. chart_values(path) reads a hand-edited deck's numbers back. Annotations that sit
+  beside a chart (deltas, totals, end labels) stay engine text and do not follow an edit.
+
 v5.1 (27 Sep 2026, a second icon family): Tabler Icons (MIT, 5,166 outline icons) sit beside
   Lucide under knowledge/design-system/icons/tabler/. One namespace: icon_glyph(s, 'pig-money')
   looks in Lucide first, then Tabler; 'tabler:users' or 'lucide:users' pins a family;
@@ -276,6 +285,30 @@ def text_w(text, size, weight="regular"):
     if font:
         return font.getlength(text) / 4.0 / 72.0
     return len(text) * float(size) * 0.53 / 72.0
+
+
+def _fmt_from_text(text):
+    """An Excel number format read off a display string, for a native chart's labels: '$2.8M' gives
+    '"$"0.0"M"', '88.6%' gives '0.0"%"' (values already in percent units), '2,000' gives '#,##0'."""
+    import re
+    m = re.match(r'^\s*([^\d\-.]*)(-?[\d,]*\.?\d*)(.*?)\s*$', str(text))
+    if not m or not m.group(2).strip('-,.'):
+        return '0.0'
+    pre, num, suf = m.groups()
+    dec = len(num.split('.')[1]) if '.' in num else 0
+    body = ('#,##0' if ',' in num else '0') + ('.' + '0' * dec if dec else '')
+    return ('"%s"' % pre if pre else '') + body + ('"%s"' % suf if suf else '')
+
+
+def _fmt_from_texts(texts):
+    """The format of the display with the most decimals, so '$1.05M' beside '$2.8M' keeps its cents."""
+    best, best_dec = '0.0', -1
+    for t in texts:
+        fm = _fmt_from_text(t)
+        dec = len(fm.split('.')[1].split('"')[0]) if '.' in fm else 0
+        if dec > best_dec:
+            best, best_dec = fm, dec
+    return best
 
 
 # ------------------------------------------------------------ vector icons (v5.0, 25 Sep 2026; v5.1 two families)
@@ -552,7 +585,7 @@ class ExhibitDeck:
     """One deck, exhibit chrome baked in. All coordinates in inches on 13.333x7.5."""
 
     def __init__(self, logo=LOGO_BLACK, look='v3', palette=None, client_logo=None,
-                 client_logo_box=(12.6, -0.08, 0.6, 0.69), frame=True, scale=None):
+                 client_logo_box=(12.6, -0.08, 0.6, 0.69), frame=True, scale=None, native_charts=None):
         """look='v3' (default, the locked 28 Jul 2026 chrome) or 'v4' (the Claude Design look,
         18 Sep 2026: v4 palette, three-rule frame, 9pt navy kicker, 28pt regular title, grey
         page number, client logo top right). palette forces 'v3' or 'v4' regardless of look
@@ -581,6 +614,10 @@ class ExhibitDeck:
         self._blank = self.prs.slide_layouts[6]
         self.logo = logo
         self.page = 0
+        # v5.2: the chart recipes draw as editable PowerPoint charts by default under Apex
+        if native_charts is None:
+            native_charts = (look == 'v4') and os.environ.get('APEX_NATIVE', '1') not in ('0', 'off', 'false')
+        self.native_charts = bool(native_charts)
 
     # ------------------------------------------------------------ slide factory
     def slide(self, dark=False):
@@ -931,7 +968,7 @@ class ExhibitDeck:
 
     def bars(self, s, x, y, w, h, items, mode='time', hi=None,
              val_size=None, delta_size=None, cat_size=None, bar_frac=0.55, dashed=(),
-             badge=None):
+             badge=None, native=None, fmt=None):
         """Drawn column chart (P2, TD slides 5-6). items: (cat, value) or
         (cat, value, label) or (cat, value, label, delta) or (cat, value, label, delta, fill).
         No y-axis, no gridlines: the value labels ARE the data, categories under a navy
@@ -941,7 +978,9 @@ class ExhibitDeck:
         category, per-item fills (else the ramp), no highlight; `dashed` = indices drawn
         as a dashed outline (an estimate or a state not yet certified); badge = (index,
         text) draws a small 8pt note inside that column's top. Returns
-        [(center_x, bar_top_y)] for annotations."""
+        [(center_x, bar_top_y)] for annotations. native (v5.2): a real chart, Apex sizes."""
+        if (self.native_charts if native is None else native):
+            return self._bars_native(s, x, y, w, h, items, val_size, delta_size, cat_size, bar_frac, dashed, badge, fmt)
         apex = (getattr(self, 'look', 'v3') == 'v4')
         f = self.tf if apex else 1.0
         val_size = (val_size or (15 if apex else 19)) * f
@@ -2134,18 +2173,24 @@ class ExhibitDeck:
 
     def share_bar(self, s, x, y, w, segments, h=0.85, notes=None, note_y=None, val_size=15,
                   lab_size=8.5, values='inside', total=None, total_size=22.5, total_pos='right',
-                  label=None):
+                  label=None, native=None):
         """Slide 7: one full-width bar split to scale. segments: (value, display, label, weight)
         with weights blue | dark | grey | light | mid. Value 15pt and label 8.5pt sit inside each
         segment (white on blue and dark). notes: [(lead, body, x, w, lead_colour)] drawn under
         the bar with vertical separators. Returns the y under the bar."""
         f = self.tf if getattr(self, 'look', 'v3') == 'v4' else 1.0
         tot = float(sum(seg[0] for seg in segments)) or 1.0
+        if (self.native_charts if native is None else native):
+            from pptx.enum.chart import XL_CHART_TYPE
+            self._chart(s, XL_CHART_TYPE.BAR_STACKED_100, x, y, w, h, ["share"],
+                        [(seg[2] or ("Part %d" % (k + 1)), [float(seg[0])], self._weight(seg[3])[0])
+                         for k, seg in enumerate(segments)], inner=(x, y, w, h), gap=0, overlap=100)
         sx = x
         for (v, disp, label, weight) in segments:
             sw = w * float(v) / tot
             fill, _, _, tc, _ = self._weight(weight)
-            self.rect(s, sx, y, sw, h, fill=fill)
+            if not (self.native_charts if native is None else native):
+                self.rect(s, sx, y, sw, h, fill=fill)
             if values == 'above':
                 # report page 46: 9pt value above each segment, label under the bar
                 self.txt(s, sx, y - 0.27, max(0.5, sw), 0.22, disp, size=9 * f, color=NAVY, wrap=False)
@@ -2475,10 +2520,13 @@ class ExhibitDeck:
                             wrap=False)
         return self.txt(s, x, y, w, 0.22, text, size=size, color=NAVY, wrap=False)
 
-    def hbar_rows(self, s, x, y, w, items, label_w=4.55, pitch=0.46, bar_h=0.28, fills=None, val_w=1.08):
+    def hbar_rows(self, s, x, y, w, items, label_w=4.55, pitch=0.46, bar_h=0.28, fills=None, val_w=1.08,
+                  native=None, fmt=None):
         """Page 25: ranked horizontal bars. items: (label, value, display[, fill]). 9.5pt label in
         label_w, the bar from x + label_w, 9.5pt value 0.10 after it. Bars scale to the widest.
-        Returns the y under the last row."""
+        Returns the y under the last row. native (v5.2): a real PowerPoint chart; fmt = its label format."""
+        if (self.native_charts if native is None else native):
+            return self._hbar_rows_native(s, x, y, w, items, label_w, pitch, bar_h, fills, val_w, fmt)
         f = self.tf
         pitch, bar_h = pitch * f, bar_h * f
         vmax = max(float(it[1]) for it in items) or 1.0
@@ -2496,11 +2544,13 @@ class ExhibitDeck:
         return yy
 
     def hstack_rows(self, s, x, y, w, rows, label_w=2.70, vol_w=1.00, val_w=1.18, pitch=0.58,
-                    bar_h=0.26, fills=None, scale=None):
+                    bar_h=0.26, fills=None, scale=None, native=None):
         """Page 12: per row a 9.5pt label with an 8pt sub-line, an optional volume column (9.5pt
         with an 8pt sub), stacked segments from x + label_w + vol_w, a 9pt end label after the
         bar and a 10.5pt value at the right edge. rows: dicts {label, sub, vol, vol_sub,
         segments: [(value, fill)] or [value, ...], end, right}. Returns the y under the rows."""
+        if (self.native_charts if native is None else native):
+            return self._hstack_rows_native(s, x, y, w, rows, label_w, vol_w, val_w, pitch, bar_h, fills, scale)
         tf = self.tf
         pitch, bar_h = pitch * tf, bar_h * tf
         fills = fills or [NAVY, BLUE, BLUE3, BLUE4]
@@ -2535,11 +2585,13 @@ class ExhibitDeck:
         return yy
 
     def paired_hrows(self, s, x, y, w, rows, label_w=2.75, pitch=0.95, bar_h=0.30, ref_fill=None,
-                     fill=None):
+                     fill=None, native=None):
         """Page 24: per row an 11pt label with an 8.5pt sub, a reference bar (TINT) with its label
         after it and, under it, the second bar (BLUE) with its label. rows: (label, sub,
         ref_value, ref_display, value, display). Scaled to the widest reference. Returns the y
         under the last row."""
+        if (self.native_charts if native is None else native):
+            return self._paired_hrows_native(s, x, y, w, rows, label_w, pitch, bar_h, ref_fill, fill)
         f = self.tf
         pitch, bar_h = pitch * f, bar_h * f
         ref_fill = ref_fill or TINT
@@ -2595,23 +2647,38 @@ class ExhibitDeck:
             yy += pitch
         return yy
 
-    def column_walk(self, s, x, y, w, h, steps, col_w=0.54, gap=0.06, pitch=1.21, val_size=13.5):
+    def column_walk(self, s, x, y, w, h, steps, col_w=0.54, gap=0.06, pitch=1.21, val_size=13.5, native=None):
         """Page 55: a cost walk as column pairs. steps: dicts {label, value, display, delta,
         delta_display, fill, delta_fill, dashed, delta_dashed}. Each step draws its column and,
         beside it, the delta column (what the next lever removes). 13.5pt value above the column,
         9pt delta above the delta column, 7.9pt labels under the navy baseline. Returns the
-        baseline y."""
+        baseline y. native (v5.2): one small stacked chart per step, the delta floating on an
+        invisible base."""
         f = self.tf
         val_size = val_size * f
         vmax = max(float(st['value']) for st in steps) or 1.0
         baseline = y + h - 0.36 * f
         plot_h = baseline - (y + 0.36)
         sc = plot_h / vmax
+        nat = (self.native_charts if native is None else native)
         for i, st in enumerate(steps):
             cx = x + i * pitch
             ch_ = float(st['value']) * sc
             fill = st.get('fill') or BLUE
-            if st.get('dashed'):
+            if nat:
+                from pptx.enum.chart import XL_CHART_TYPE
+                vis_fill = ('dashed', fill) if st.get('dashed') else fill
+                cats, base, vis, fills = ["value"], [0.0], [float(st['value'])], [vis_fill]
+                if st.get('delta'):
+                    dfill = st.get('delta_fill') or BLUE3
+                    cats.append("delta"); base.append(float(st['value']) - float(st['delta'])); vis.append(float(st['delta']))
+                    fills.append(('dashed', dfill) if st.get('delta_dashed') else dfill)
+                p = col_w + gap
+                self._chart(s, XL_CHART_TYPE.COLUMN_STACKED, cx - gap / 2.0, y + 0.36, p * len(cats), plot_h, cats,
+                            [("Base", base, None), ("Value", vis, fills)],
+                            inner=(cx - gap / 2.0, y + 0.36, p * len(cats), plot_h), gap=gap / col_w * 100.0,
+                            overlap=100, vmax=vmax)
+            elif st.get('dashed'):
                 self.rect(s, cx, baseline - ch_, col_w, ch_, fill=WHITE, line=fill, line_w=0.75, dash='dash')
             else:
                 self.rect(s, cx, baseline - ch_, col_w, ch_, fill=fill)
@@ -2621,7 +2688,9 @@ class ExhibitDeck:
                 dh = float(st['delta']) * sc
                 dfill = st.get('delta_fill') or BLUE3
                 dx = cx + col_w + gap
-                if st.get('delta_dashed'):
+                if nat:
+                    pass
+                elif st.get('delta_dashed'):
                     self.rect(s, dx, baseline - ch_, col_w, dh, fill=WHITE, line=dfill, line_w=0.75, dash='dash')
                 else:
                     self.rect(s, dx, baseline - ch_, col_w, dh, fill=dfill)
@@ -2634,12 +2703,15 @@ class ExhibitDeck:
         return baseline
 
     def stacked_columns(self, s, x, y, w, h, groups, col_w=0.62, gap=0.08, val_size=10,
-                        label_size=10.5, sub_size=8.5, total_size=None):
+                        label_size=10.5, sub_size=8.5, total_size=None, native=None):
         """Pages 28 and 47: groups of stacked columns on one baseline. groups: dicts {label, sub,
         columns: [dict(segments=[(value, fill)] where fill may be ('dashed', colour),
         total='display')]}. The groups share the width; columns sit left-aligned in each
         group. 10pt values centred above each column; 10.5pt group labels and 8.5pt subs
         under the navy baseline. Scaled to the tallest column. Returns the y under the labels."""
+        if (self.native_charts if native is None else native):
+            return self._stacked_columns_native(s, x, y, w, h, groups, col_w, gap, val_size, label_size, sub_size,
+                                                total_size)
         tf = self.tf
         val_size, label_size, sub_size = val_size * tf, label_size * tf, sub_size * tf
         n = max(1, len(groups))
@@ -2698,18 +2770,26 @@ class ExhibitDeck:
             yy += pitch
         return yy
 
-    def area_block(self, s, x, y, w, h, parts, top_label=None, label_gap=0.15, label_w=4.3):
+    def area_block(self, s, x, y, w, h, parts, top_label=None, label_gap=0.15, label_w=4.3, native=None):
         """Page 8: a proportional block, parts stacked top-down. parts: (fraction, fill, label,
         sub); the 10.5pt label and 8.5pt sub sit beside each part at its middle. top_label =
-        9.5pt line above the block. Draws the navy baseline under it. Returns the baseline y."""
+        9.5pt line above the block. Draws the navy baseline under it. Returns the baseline y.
+        native (v5.2): one 100% stacked column, the first part on top."""
         f = self.tf
         if top_label:
             self.txt(s, x - 0.24, y - 0.30, w + 3.0, 0.21, top_label, size=9.5 * f, color=NAVY, wrap=False)
         tot = float(sum(p[0] for p in parts)) or 1.0
+        nat = (self.native_charts if native is None else native)
+        if nat:
+            from pptx.enum.chart import XL_CHART_TYPE
+            self._chart(s, XL_CHART_TYPE.COLUMN_STACKED_100, x, y, w, h, ["block"],
+                        [(p[2] or ("Part %d" % (k + 1)), [float(p[0])], p[1]) for k, p in enumerate(reversed(parts))],
+                        inner=(x, y, w, h), gap=0, overlap=100)
         yy = y
         for (frac, fill, label, sub) in parts:
             ph = h * float(frac) / tot
-            self.rect(s, x, yy, w, ph, fill=fill)
+            if not nat:
+                self.rect(s, x, yy, w, ph, fill=fill)
             ly = yy + ph / 2.0 - (0.30 if sub else 0.11)
             self.txt(s, x + w + label_gap, ly, label_w, 0.22, label, size=10.5 * f, color=NAVY, wrap=False)
             if sub:
@@ -2739,23 +2819,31 @@ class ExhibitDeck:
         return sh
 
     def donut(self, s, x, y, d, segments, thickness=0.28, start=270.0, center=None, legend=None,
-              legend_gap=0.45, legend_pitch=0.34):
+              legend_gap=0.45, legend_pitch=0.34, native=None):
         """A donut (thickness < 1) or a pie (thickness=1.0) of block arcs, clockwise from 12
         o'clock. segments: (fraction, fill[, label[, display]]); fractions are normalised.
         center: (value, caption) drawn in the hole (16.5pt over 7.5pt) or one string.
         legend=True lists the segments to the right: swatch, 9pt label, 9.5pt display.
-        Returns the y under the ring."""
+        Returns the y under the ring. native (v5.2): a real doughnut or pie chart."""
         f = self.tf
         legend_pitch = legend_pitch * f
         tot = float(sum(sg[0] for sg in segments)) or 1.0
-        a = float(start)
-        for sg in segments:
-            frac, fill = sg[0], sg[1]
-            b = a + 360.0 * float(frac) / tot
-            if b - a >= 359.99:
-                b = a + 359.99
-            self._arc(s, x, y, d, a, b, thickness, fill)
-            a = b
+        if (self.native_charts if native is None else native):
+            from pptx.enum.chart import XL_CHART_TYPE
+            ctype = XL_CHART_TYPE.PIE if thickness >= 1.0 else XL_CHART_TYPE.DOUGHNUT
+            self._chart(s, ctype, x, y, d, d, [sg[2] if len(sg) > 2 and sg[2] else ("Part %d" % (k + 1)) for k, sg in enumerate(segments)],
+                        [("Share", [float(sg[0]) for sg in segments], [sg[1] for sg in segments])],
+                        inner=(x, y, d, d), hole=max(10, min(90, int(round((1.0 - 2.0 * thickness) * 100)))),
+                        first_angle=int(round((float(start) - 270.0) % 360)))
+        else:
+            a = float(start)
+            for sg in segments:
+                frac, fill = sg[0], sg[1]
+                b = a + 360.0 * float(frac) / tot
+                if b - a >= 359.99:
+                    b = a + 359.99
+                self._arc(s, x, y, d, a, b, thickness, fill)
+                a = b
         if center and thickness < 1.0:
             val, cap = (center if isinstance(center, (list, tuple)) else (center, None))[:2]
             self.txt(s, x, y + d / 2.0 - (0.28 if cap else 0.16), d, 0.32, val, size=16.5 * f, color=NAVY,
@@ -2775,6 +2863,350 @@ class ExhibitDeck:
                          wrap=False)
                 ly += legend_pitch
         return y + d
+
+
+    # ------------------------------------------------------------ native charts (v5.2, 28 Sep 2026)
+    # The measured recipes above can draw as real PowerPoint charts: right-click, Edit Data, and the bars
+    # redraw. Same box, same type sizes, same fills. Labels beside a chart (deltas, totals, end labels,
+    # the donut's centre) stay engine text at the built value; chart_values() reads an edited deck back.
+
+    @staticmethod
+    def _fill_series(ser, fills, n):
+        """fills: one colour for the series, a list with one entry per point, ('dashed', colour[, fill])
+        for a dashed outline on a white column, or None for an invisible series (a walk's base)."""
+        from pptx.enum.dml import MSO_LINE as _DASH
+        def one(fmt, spec):
+            if isinstance(spec, (list, tuple)) and spec and spec[0] == 'dashed':
+                fmt.fill.solid(); fmt.fill.fore_color.rgb = (spec[2] if len(spec) > 2 else WHITE)
+                fmt.line.color.rgb = spec[1]; fmt.line.width = Pt(0.75); fmt.line.dash_style = _DASH.DASH
+            elif spec is None:
+                fmt.fill.background(); fmt.line.fill.background()
+            else:
+                fmt.fill.solid(); fmt.fill.fore_color.rgb = spec; fmt.line.fill.background()
+        if isinstance(fills, list):
+            base = next((c for c in fills if c is not None and not (isinstance(c, tuple) and c and c[0] == 'dashed')), BLUE)
+            one(ser.format, base)
+            for j in range(min(n, len(fills))):
+                one(ser.points[j].format, fills[j])
+        else:
+            one(ser.format, fills)
+
+    def _chart(self, s, ctype, x, y, w, h, cats, series, inner=None, gap=None, overlap=None, vmax=None,
+               vmin=0.0, labels=False, fmt='0.0', label_size=9.5, label_pos=None, label_color=None,
+               cat_labels=False, cat_size=9.5, reverse=False, hole=None, first_angle=None):
+        """A python-pptx chart styled to Apex: no title, no legend, no gridlines, no border, the value
+        axis hidden, Libre Franklin in navy. series: [(name, values, fills)] (see _fill_series). inner =
+        (x, y, w, h) in inches of the plot area inside the frame, so bars land where the drawn recipe
+        put them. vmax pins the axis so the widest bar fills the plot. reverse = categories top-down.
+        hole / first_angle for doughnuts and pies. Returns the chart."""
+        from pptx.chart.data import CategoryChartData
+        from pptx.enum.chart import XL_CHART_TYPE, XL_TICK_MARK, XL_TICK_LABEL_POSITION
+        cd = CategoryChartData()
+        cd.categories = [str(c) for c in cats]
+        for k, (name, vals, _fills) in enumerate(series):
+            cd.add_series(name or ("Series %d" % (k + 1)), [float(v) for v in vals])
+        gf = s.shapes.add_chart(ctype, I(x), I(y), I(w), I(h), cd)
+        ch = gf.chart
+        ch.has_title = False
+        ch.has_legend = False
+        ch.font.name = "Libre Franklin"
+        ch.font.size = Pt(cat_size)
+        ch.font.color.rgb = NAVY
+        cs = ch._chartSpace
+        rc = cs.find(qn('c:roundedCorners'))
+        if rc is None:
+            rc = cs.makeelement(qn('c:roundedCorners'), {'val': '0'})
+            d1904 = cs.find(qn('c:date1904'))
+            if d1904 is not None:
+                d1904.addnext(rc)
+            else:
+                cs.insert(0, rc)
+        else:
+            rc.set('val', '0')
+        spPr = cs.find(qn('c:spPr'))
+        if spPr is None:
+            spPr = cs.makeelement(qn('c:spPr'), {})
+            cs.find(qn('c:chart')).addnext(spPr)
+        for el in list(spPr):
+            spPr.remove(el)
+        spPr.append(spPr.makeelement(qn('a:noFill'), {}))
+        ln = spPr.makeelement(qn('a:ln'), {})
+        ln.append(ln.makeelement(qn('a:noFill'), {}))
+        spPr.append(ln)
+        plot = ch.plots[0]
+        plot.vary_by_categories = False
+        if inner:
+            ix, iy, iw, ih = inner
+            pa = cs.chart.plotArea
+            lay = pa.find(qn('c:layout'))
+            if lay is None:
+                lay = pa.makeelement(qn('c:layout'), {})
+                pa.insert(0, lay)
+            for el in list(lay):
+                lay.remove(el)
+            ml = lay.makeelement(qn('c:manualLayout'), {})
+            lay.append(ml)
+            for tag, val in (('c:layoutTarget', 'inner'), ('c:xMode', 'edge'), ('c:yMode', 'edge'),
+                             ('c:x', (ix - x) / w), ('c:y', (iy - y) / h), ('c:w', iw / w), ('c:h', ih / h)):
+                ml.append(ml.makeelement(qn(tag), {'val': str(val)}))
+        pie = ctype in (XL_CHART_TYPE.DOUGHNUT, XL_CHART_TYPE.PIE)
+        if not pie:
+            if gap is not None:
+                plot.gap_width = int(round(gap))
+            if overlap is not None:
+                plot.overlap = int(round(overlap))
+        for k, ser in enumerate(plot.series):
+            self._fill_series(ser, series[k][2], len(series[k][1]))
+        if labels:
+            plot.has_data_labels = True
+            dl = plot.data_labels
+            dl.show_value = True
+            dl.number_format = fmt
+            dl.number_format_is_linked = False
+            dl.font.size = Pt(label_size)
+            dl.font.name = "Libre Franklin"
+            dl.font.color.rgb = (label_color or NAVY)
+            if label_pos is not None:
+                dl.position = label_pos
+        if pie:
+            el = plot._element
+            if first_angle is not None:
+                fa = el.find(qn('c:firstSliceAng'))
+                if fa is None:
+                    fa = el.makeelement(qn('c:firstSliceAng'), {'val': str(int(first_angle) % 360)})
+                    hs0 = el.find(qn('c:holeSize'))
+                    if hs0 is not None:
+                        hs0.addprevious(fa)
+                    else:
+                        el.append(fa)
+                else:
+                    fa.set('val', str(int(first_angle) % 360))
+            if hole is not None and ctype == XL_CHART_TYPE.DOUGHNUT:
+                hs = el.find(qn('c:holeSize'))
+                if hs is None:
+                    hs = el.makeelement(qn('c:holeSize'), {'val': str(int(hole))})
+                    el.append(hs)
+                else:
+                    hs.set('val', str(int(hole)))
+            return ch
+        va = ch.value_axis
+        va.visible = False
+        va.has_major_gridlines = False
+        va.has_minor_gridlines = False
+        if vmax is not None:
+            va.maximum_scale = float(vmax)
+            va.minimum_scale = float(vmin)
+        ca = ch.category_axis
+        ca.has_major_gridlines = False
+        ca.format.line.fill.background()
+        ca.major_tick_mark = XL_TICK_MARK.NONE
+        ca.tick_label_position = XL_TICK_LABEL_POSITION.LOW if cat_labels else XL_TICK_LABEL_POSITION.NONE
+        ca.tick_labels.font.size = Pt(cat_size)
+        ca.tick_labels.font.name = "Libre Franklin"
+        ca.tick_labels.font.color.rgb = NAVY
+        if reverse:
+            if hasattr(ca, 'reverse_order'):
+                ca.reverse_order = True
+            else:
+                ca._element.find(qn('c:scaling')).find(qn('c:orientation')).set('val', 'maxMin')
+        return ch
+
+    def _hbar_rows_native(self, s, x, y, w, items, label_w, pitch, bar_h, fills, val_w, fmt):
+        from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
+        f = self.tf
+        pitch, bar_h = pitch * f, bar_h * f
+        n = len(items)
+        vmax = max(float(it[1]) for it in items) or 1.0
+        bx = x + label_w
+        bw_max = w - label_w - val_w - 0.10
+        cols = [(it[3] if len(it) > 3 and it[3] is not None else (fills[i % len(fills)] if fills else BLUE))
+                for i, it in enumerate(items)]
+        top = y + 0.02 + bar_h / 2.0 - pitch / 2.0
+        self._chart(s, XL_CHART_TYPE.BAR_CLUSTERED, bx - 0.05, top, w - label_w + 0.05, n * pitch,
+                    [it[0] for it in items], [("Value", [float(it[1]) for it in items], cols)],
+                    inner=(bx, top, bw_max, n * pitch), gap=(pitch / bar_h - 1.0) * 100.0, vmax=vmax,
+                    labels=True, fmt=(fmt or _fmt_from_texts([it[2] for it in items])), label_size=9.5 * f,
+                    label_pos=XL_LABEL_POSITION.OUTSIDE_END, reverse=True)
+        yy = y
+        for it in items:
+            self._code_label(s, x, yy, label_w - 0.15, it[0], size=9.5 * f)
+            yy += pitch
+        return yy
+
+    def _bars_native(self, s, x, y, w, h, items, val_size, delta_size, cat_size, bar_frac, dashed, badge, fmt):
+        from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
+        f = self.tf
+        val_size = (val_size or 15) * f
+        delta_size = (delta_size or 10.5) * f
+        cat_size = (cat_size or 9) * f
+        norm = []
+        for it in items:
+            it = list(it) + [None] * (5 - len(it))
+            cat, val, label, delta, fill = it[:5]
+            norm.append((cat, float(val), label if label is not None else str(val), delta, fill))
+        n = len(norm)
+        ramp = self.ramp(n, 'time')
+        has_delta = any(dl for (_, _, _, dl, _) in norm)
+        top_zone = (0.62 if has_delta else 0.34) * f
+        baseline = y + h - 0.40
+        plot_h = baseline - (y + top_zone)
+        vmax = max(v for (_, v, _, _, _) in norm) or 1.0
+        pitch = w / n
+        bw = pitch * bar_frac
+        cols = []
+        for i, (cat, val, label, delta, ifill) in enumerate(norm):
+            c = ifill or ramp[i]
+            cols.append(('dashed', c) if i in dashed else c)
+        head = 0.34 * f
+        self._chart(s, XL_CHART_TYPE.COLUMN_CLUSTERED, x, y + top_zone - head, w, plot_h + head,
+                    [c for (c, _, _, _, _) in norm], [("Value", [v for (_, v, _, _, _) in norm], cols)],
+                    inner=(x, y + top_zone, w, plot_h), gap=(1.0 / bar_frac - 1.0) * 100.0, vmax=vmax,
+                    labels=True, fmt=(fmt or _fmt_from_texts([lab for (_, _, lab, _, _) in norm])), label_size=val_size,
+                    label_pos=XL_LABEL_POSITION.OUTSIDE_END)
+        out = []
+        for i, (cat, val, label, delta, ifill) in enumerate(norm):
+            bh = plot_h * (val / vmax)
+            bx = x + i * pitch + (pitch - bw) / 2.0
+            bt = baseline - bh
+            if delta:
+                self.txt(s, x + i * pitch, bt - top_zone, pitch, 0.22, delta, size=delta_size, color=MUT,
+                         align=PP_ALIGN.CENTER, wrap=False)
+            self.txt(s, x + i * pitch - 0.05, baseline + 0.07, pitch + 0.10, 0.40, cat, size=cat_size,
+                     color=NAVY, align=PP_ALIGN.CENTER, line_sp=1.05)
+            if badge and badge[0] == i:
+                self.txt(s, bx - 0.30, bt + 0.06, bw + 0.60, 0.20, badge[1], size=8 * f, color=NAVY,
+                         align=PP_ALIGN.CENTER, wrap=False)
+            out.append((bx + bw / 2.0, bt))
+        self.hline(s, x, baseline, x + w, baseline, color=NAVY, wpt=0.75)
+        return out
+
+    def _stacked_columns_native(self, s, x, y, w, h, groups, col_w, gap, val_size, label_size, sub_size, total_size):
+        from pptx.enum.chart import XL_CHART_TYPE
+        tf = self.tf
+        val_size, label_size, sub_size = val_size * tf, label_size * tf, sub_size * tf
+        n = max(1, len(groups))
+        gp = w / n
+        baseline = y + h - 0.45 * tf
+        plot_h = baseline - (y + 0.36)
+        def ctot(c):
+            return sum(float(v) for (v, _) in c['segments'])
+        vmax = max(ctot(c) for g in groups for c in g['columns']) or 1.0
+        sc = plot_h / vmax
+        for gi, g in enumerate(groups):
+            gx = x + gi * gp
+            cols = g['columns']
+            nc = len(cols)
+            nseg = max(len(c['segments']) for c in cols)
+            series = []
+            for k in range(nseg):
+                vals, fl = [], []
+                for c in cols:
+                    if k < len(c['segments']):
+                        v, fcol = c['segments'][k]
+                        vals.append(float(v)); fl.append(fcol)
+                    else:
+                        vals.append(0.0); fl.append(None)
+                series.append(("Segment %d" % (k + 1), vals, fl))
+            cw = nc * (col_w + gap)
+            self._chart(s, XL_CHART_TYPE.COLUMN_STACKED, gx - gap / 2.0, y + 0.36, cw, plot_h,
+                        [str(ci + 1) for ci in range(nc)], series, inner=(gx - gap / 2.0, y + 0.36, cw, plot_h),
+                        gap=gap / col_w * 100.0, overlap=100, vmax=vmax)
+            for ci, c in enumerate(cols):
+                cx = gx + ci * (col_w + gap)
+                top = baseline - ctot(c) * sc
+                if c.get('total'):
+                    self.txt(s, cx - 0.24, top - 0.30, col_w + 0.48, 0.24, c['total'],
+                             size=((total_size * tf) if total_size else val_size), color=NAVY,
+                             align=PP_ALIGN.CENTER, wrap=False)
+                if c.get('sub'):
+                    self.txt(s, cx - 0.24, baseline + 0.08, col_w + 0.48, 0.20, c['sub'], size=7.9 * tf, color=MUT,
+                             align=PP_ALIGN.CENTER, wrap=False)
+            drop = 0.30 * tf if any(c.get('sub') for c in cols) else 0.0
+            self.txt(s, gx, baseline + 0.08 + drop, gp - 0.2, 0.22, g['label'], size=label_size, color=NAVY,
+                     wrap=False)
+            if g.get('sub'):
+                self.txt(s, gx, baseline + 0.26 * tf + drop, gp - 0.2, 0.22, g['sub'], size=sub_size, color=MUT,
+                         wrap=False)
+        self.rect(s, x, baseline, w, 0.01, fill=NAVY)
+        return baseline + 0.50 + (0.30 if any(c.get('sub') for g in groups for c in g['columns']) else 0.0)
+
+    def _hstack_rows_native(self, s, x, y, w, rows, label_w, vol_w, val_w, pitch, bar_h, fills, scale):
+        from pptx.enum.chart import XL_CHART_TYPE
+        tf = self.tf
+        pitch, bar_h = pitch * tf, bar_h * tf
+        fills = fills or [NAVY, BLUE, BLUE3, BLUE4]
+        bx = x + label_w + vol_w
+        bw_max = w - label_w - vol_w - val_w - 1.30
+        def seg(sv, k):
+            return (float(sv[0]), sv[1]) if isinstance(sv, (list, tuple)) else (float(sv), fills[k % len(fills)])
+        def tot(r):
+            return sum(seg(sv, k)[0] for k, sv in enumerate(r['segments']))
+        vmax = max(tot(r) for r in rows) or 1.0
+        sc = scale or bw_max / vmax
+        nseg = max(len(r['segments']) for r in rows)
+        series = []
+        for k in range(nseg):
+            vals, fl = [], []
+            for r in rows:
+                if k < len(r['segments']):
+                    v, fcol = seg(r['segments'][k], k)
+                    vals.append(v); fl.append(fcol)
+                else:
+                    vals.append(0.0); fl.append(None)
+            series.append(("Segment %d" % (k + 1), vals, fl))
+        n = len(rows)
+        top = y + 0.06 + bar_h / 2.0 - pitch / 2.0
+        self._chart(s, XL_CHART_TYPE.BAR_STACKED, bx - 0.05, top, bw_max + 1.35, n * pitch,
+                    [r['label'] for r in rows], series, inner=(bx, top, bw_max, n * pitch),
+                    gap=(pitch / bar_h - 1.0) * 100.0, overlap=100, vmax=bw_max / sc, reverse=True)
+        yy = y
+        for r in rows:
+            self._code_label(s, x, yy, label_w - 0.1, r['label'], size=9.5 * tf)
+            if r.get('sub'):
+                self.txt(s, x, yy + 0.24 * tf, label_w - 0.2, 0.36 * tf, r['sub'], size=8 * tf, color=MUT, line_sp=1.05)
+            if r.get('vol') is not None:
+                self.txt(s, x + label_w, yy, vol_w, 0.21, str(r['vol']), size=9.5 * tf, color=NAVY, wrap=False)
+                if r.get('vol_sub'):
+                    self.txt(s, x + label_w, yy + 0.24 * tf, vol_w, 0.21, r['vol_sub'], size=8 * tf, color=MUT,
+                             wrap=False)
+            sx = bx + tot(r) * sc
+            if r.get('end'):
+                self.txt(s, sx + 0.10, yy + 0.07, 1.30, 0.21, r['end'], size=9 * tf, color=NAVY, wrap=False)
+            if r.get('right'):
+                self.txt(s, x + w - val_w, yy + 0.05, val_w, 0.21, r['right'], size=10.5 * tf, color=NAVY,
+                         align=PP_ALIGN.RIGHT, wrap=False)
+            yy += pitch
+        return yy
+
+    def _paired_hrows_native(self, s, x, y, w, rows, label_w, pitch, bar_h, ref_fill, fill):
+        from pptx.enum.chart import XL_CHART_TYPE
+        f = self.tf
+        pitch, bar_h = pitch * f, bar_h * f
+        ref_fill = ref_fill or TINT
+        fill = fill or BLUE
+        bx = x + label_w
+        bw_max = w - label_w - 2.20
+        vmax = max(float(r[2]) for r in rows) or 1.0
+        n = len(rows)
+        inner_gap = 0.06 * f
+        cluster = 2.0 + inner_gap / bar_h
+        top = y + (bar_h + inner_gap / 2.0) - pitch / 2.0
+        self._chart(s, XL_CHART_TYPE.BAR_CLUSTERED, bx - 0.05, top, w - label_w + 0.05, n * pitch,
+                    [r[0] for r in rows],
+                    [("Reference", [float(r[2]) for r in rows], ref_fill), ("Value", [float(r[4]) for r in rows], fill)],
+                    inner=(bx, top, bw_max, n * pitch), gap=(pitch / bar_h - cluster) * 100.0,
+                    overlap=-(inner_gap / bar_h) * 100.0, vmax=vmax, reverse=True)
+        yy = y
+        for (label, sub, rv, rd, v, dsp) in rows:
+            self.txt(s, x, yy, label_w - 0.1, 0.22, label, size=11 * f, color=NAVY, wrap=False)
+            if sub:
+                self.txt(s, x, yy + 0.28 * f, label_w - 0.1, 0.22, sub, size=8.5 * f, color=MUT, wrap=False)
+            rw = bw_max * float(rv) / vmax
+            self.txt(s, bx + rw + 0.10, yy + 0.03, 2.1, 0.21, rd, size=9.5 * f, color=NAVY, wrap=False)
+            bw = bw_max * float(v) / vmax
+            self.txt(s, bx + bw + 0.10, yy + 0.39 * f, 3.7, 0.21, dsp, size=9.5 * f, color=NAVY, wrap=False)
+            yy += pitch
+        return yy
 
     # ---- pages from the McKinsey summit deck (24 Sep 2026)
     def team_page(self, kicker, title_runs, people, photo_x=5.73, photo_w=2.29, name_size=17,
@@ -3540,3 +3972,24 @@ class ExhibitDeck:
             raise SystemExit("REFUSED: %d banned writing shape(s) in %s. Fix the copy in the build script "
                              "(never the .pptx) and rebuild; APEX_VOICE=warn to override once." % (len(hard), os.path.basename(path)))
         return hard, soft
+
+
+# ------------------------------------------------------------ reading a hand-edited deck back (v5.2)
+def chart_values(pptx_path):
+    """Every native chart in a saved deck, as [{slide, chart, type, categories, series: [(name, values)]}].
+    Run it before rebuilding a deck whose numbers someone changed in PowerPoint, and put the numbers back
+    into the build script; the build script stays the source of truth."""
+    from pptx import Presentation as _Prs
+    out = []
+    prs = _Prs(pptx_path)
+    for si, sl in enumerate(prs.slides, 1):
+        ci = 0
+        for sh in sl.shapes:
+            if getattr(sh, 'has_chart', False):
+                ci += 1
+                ch = sh.chart
+                plot = ch.plots[0]
+                out.append(dict(slide=si, chart=ci, type=str(ch.chart_type).split(' ')[0],
+                                categories=[str(c) for c in plot.categories],
+                                series=[(sr.name, list(sr.values)) for sr in plot.series]))
+    return out

@@ -85,7 +85,7 @@ d.notes(s, "T58 paired_hrows: page 24 rebuilt. Reference bar in tint, the releas
 s = d.slide()
 d.chrome(s, "03 · The business case · revenue view · page 37", "More people hear the offer: what it is worth on your funnel")
 d.funnel_rows(s, 1.00, 1.77, 7.5, [
-    ("Leads worked", "your campaign book", 3.0, "3.0M", 3.0, "3.0M", "—"),
+    ("Leads worked", "your campaign book", 3.0, "3.0M", 3.0, "3.0M", "-"),
     ("Right party reached", "49.8% → 55% when the caller is known", 1.49, "1.49M", 1.65, "1.65M", "+156K"),
     ("Hear the offer", "31% → 36% with warm-up and a booked call", 0.463, "463K", 0.594, "594K", "+131K"),
     ("Agree to apply", "your 95%, unchanged", 0.440, "440K", 0.564, "564K", "+124K"),
@@ -289,7 +289,7 @@ y_end = d.loop_matrix(s, 0.98, 2.26, 8.19,
           chips=[("Credit decisions, restructuring", "risk"), ("Sales moments, licensed advice", "revenue"), ("Complex complaints", "loyalty"), ("Morning handoffs, case prep", "cost")]),
      dict(label="Person only", desc="AI does not act; it clears the queue.",
           chips=[("Vulnerable customers", "risk"), ("Bereavement", "loyalty"), ("Escalated complaints", "risk")])])
-d.statement_line(s, 0.98, y_end + 0.03, 8.0, "The decision is the row,", "not the bot.", size=15)
+d.statement_line(s, 0.98, y_end + 0.03, 8.0, "The row sets the prize.", " The bot only does the work.", size=15)
 d.hero_column(s, 10.14, 2.26, "4 of 4", "rows have live examples on this continent today",
               "The prize is the top two rows. $1.4tn+ moved through mobile money in Africa last year (1).", num_size=55)
 d.footnote(s, "Families from Backbase programmes, 2024 to 2026. Rows are design choices. 1 GSMA Mobile Money 2026, Sub-Saharan scope; the continent total is higher.", size=12, y=6.62)

@@ -116,12 +116,22 @@ BCG examples; use icons." The rule, in order:
 4. **Whitespace over filled panels.** If a page needs a big filled shape to feel finished, the
    content is thin: cut the shape, keep the whitespace.
 
-## The chart standard (Apex v4.2, 25 Sep 2026)
+## The chart standard (Apex v4.2, 25 Sep 2026; native charts v5.2, 28 Sep 2026)
 
-The report's charts are the standard: clean, drawn from flat shapes, the value beside or above
-the bar, no axes, no gridlines, no native chart objects, regular weight. Every form below is a
-measured recipe (`references/exhibit-catalog.md` T56–T67); `scripts/example_apex_charts_build.py`
-rebuilds the reference pages line for line.
+The report's charts are the standard: clean, the value beside or above the bar, no axes, no
+gridlines, regular weight. Every form below is a measured recipe (`references/exhibit-catalog.md`
+T56–T67); `scripts/example_apex_charts_build.py` rebuilds the reference pages line for line.
+
+Since v5.2 the recipes draw these as real PowerPoint charts by default: anyone can right-click a
+chart, choose Edit Data, change a number and watch the bars redraw, because the numbers live in the
+sheet behind the chart. Same box, same type sizes, same fills as the drawn version. `native=False`
+on a call, `ExhibitDeck(native_charts=False)` for a deck, or `APEX_NATIVE=0` for a run draws flat
+shapes instead. `fmt='"$"0.00"M"'` sets the label format; without it the labels follow the display
+with the most decimals. Labels that sit beside a chart (deltas, totals, end labels, the donut's
+centre) stay text at the built value, so after someone edits a deck by hand run
+`X.chart_values(path)` to read the numbers back and rebuild from the script, which stays the source
+of truth. Funnel rows, the KPI stack, the proof ledger and the loop matrix stay drawn. Google Slides
+may flatten native charts to images on import (unverified; test one file before a Slides delivery).
 
 | Claim shape | Recipe | Engine |
 |---|---|---|
@@ -218,6 +228,7 @@ need to verify a detail or extend the engine; the engine already implements both
 - [ ] No bold anywhere; weight comes from size and colour
 - [ ] Voice: the save-time lint passed with no hard hit; the humanizer agent's altitude pass ran
 - [ ] Form: every structural page uses a framework form or a drawn chart; tiles at most once, never twice in a row; icons on the structural pages
+- [ ] Charts: native by default (Edit Data works); label formats read right; if anyone edited the deck by hand, `chart_values()` before the rebuild
 - [ ] One exhibit per slide, at most 2 or 3 callouts, nothing crossing y 6.55
 - [ ] Every numeric slide has a source footnote; estimates dashed or badged coral with an owner
 - [ ] At most ONE plain table in the whole deck
