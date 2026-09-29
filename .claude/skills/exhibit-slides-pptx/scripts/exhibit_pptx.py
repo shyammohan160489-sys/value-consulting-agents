@@ -5,6 +5,10 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.6 (29 Sep 2026, four more measured forms, Shyam: "pages 15, 16, 41, 44: I like the original more"):
+  section_cards (T86, page 15), rail_columns (T87, page 16), walk_cards (T88, page 41), text_matrix
+  (T89, page 44). Report-density recipes: they keep the report's type sizes at every scale.
+
 v5.5 (28 Sep 2026, the source page's own form is the recipe): story_card / story_cards (T85), measured
   from report page 8 after Shyam preferred the original to the rebuilt tile: code, icon top right, name,
   body, then an anchored label, value, sub and a thin bar (filled, or dashed when unpriced), a dark
@@ -2077,6 +2081,243 @@ class ExhibitDeck:
                             c["label"], c["value"], c["sub"], bar=c.get("bar"), dark=c.get("dark", False), icon=c.get("icon"))
         rows = (len(cells) + cols - 1) // cols
         return y + rows * (h + gap) - gap
+
+    # ------------------------------------------------------------ report-density pages (v5.6, 29 Sep 2026)
+    # Four forms measured from report pages 15, 16, 41 and 44, after Shyam preferred the originals to
+    # the rebuilt pages. Dense pages, read on screen: they keep the report's type sizes at every scale.
+
+    def _chip_outline(self, s, x_right, y, text, size=7.5, h=0.19, color=None, fill=None, tc=None):
+        """A small chip whose right edge sits at x_right: outlined in `color` (BLUE), or filled."""
+        color = color or BLUE
+        w = text_w(text, size) + 0.16
+        x0 = x_right - w
+        if fill is not None:
+            self.rect(s, x0, y, w, h, fill=fill)
+        else:
+            self.rect(s, x0, y, w, h, fill=None, line=color, line_w=0.75)
+        th = size / 72.0 * 1.25
+        self.txt(s, x0, y + (h - th) / 2.0, w, th + 0.02, text, size=size, color=(tc or color),
+                 align=PP_ALIGN.CENTER, wrap=False)
+        return x0
+
+    def _status_square(self, s, x, y, status, d=0.10):
+        """full = a BLUE square; half = a TINT square with a BLUE line; none = a dashed grey outline."""
+        if status == 'full':
+            self.rect(s, x, y, d, d, fill=BLUE)
+        elif status == 'half':
+            self.rect(s, x, y, d, d, fill=TINT, line=BLUE, line_w=0.75)
+        else:
+            self.rect(s, x, y, d, d, fill=None, line=DASHC, line_w=0.75, dash='dash')
+
+    def section_cards(self, s, x, y, cards, cols=3, w=3.67, h=None, gap=0.17):
+        """Report page 15 (T86): tall cards, each with a small icon, a tag chip top right, a 12pt title
+        and sections split by hairlines (a 9.4pt heading, an 8.25pt body). cards: dicts {title,
+        sections: [(heading, body)], kind: dark|tint|dashed, icon (PNG path or icon name), tag}.
+        Report type sizes. h defaults to the tallest card. Returns the y under the cards."""
+        def need(c):
+            hh = 0.87 + (self._est_lines(c['title'], w - 0.42, 12) - 1) * 0.21
+            for (hd, bd) in c.get('sections', []):
+                bl = self._est_lines(bd, w - 0.42, 8.25)
+                hh += 0.35 + bl * 8.25 / 72.0 * 1.25 + 0.03 + 0.13
+            return hh + 0.10
+        h = h or max(need(c) for c in cards)
+        rows = (len(cards) + cols - 1) // cols
+        for i, c in enumerate(cards):
+            r, k = divmod(i, cols)
+            cx, cy = x + k * (w + gap), y + r * (h + gap)
+            kind = c.get('kind', 'tint')
+            if kind == 'dark':
+                self.rect(s, cx, cy, w, h, fill=NAVY); tc, rule = WHITE, WHITE
+            elif kind == 'dashed':
+                self.rect(s, cx, cy, w, h, fill=TINT2, line=GREY, line_w=0.75, dash='dash'); tc, rule = NAVY, HAIR
+            else:
+                self.rect(s, cx, cy, w, h, fill=TINT); tc, rule = NAVY, HAIR
+            icon = c.get('icon')
+            if icon:
+                if os.path.exists(str(icon)):
+                    s.shapes.add_picture(icon, I(cx + 0.21), I(cy + 0.19), I(0.23), I(0.23))
+                elif icon_path(icon):
+                    self.icon_glyph(s, icon, cx + 0.21, cy + 0.19, 0.23, color=(CYAN if kind == 'dark' else BLUE))
+            if c.get('tag'):
+                if kind == 'dark':
+                    self._chip_outline(s, cx + w - 0.20, cy + 0.22, c['tag'], fill=CYAN, tc=NAVY, h=0.17)
+                else:
+                    self._chip_outline(s, cx + w - 0.20, cy + 0.22, c['tag'], color=BLUE, h=0.19)
+            tl = self._est_lines(c['title'], w - 0.42, 12)
+            self.txt(s, cx + 0.21, cy + 0.54, w - 0.42, tl * 12 / 72.0 * 1.25 + 0.02, c['title'], size=12, color=tc, line_sp=1.05)
+            sy = cy + 0.87 + (tl - 1) * 0.21
+            for (hd, bd) in c.get('sections', []):
+                self.rect(s, cx + 0.21, sy, w - 0.42, 0.01, fill=rule)
+                self.txt(s, cx + 0.21, sy + 0.11, w - 0.42, 0.20, hd, size=9.38, color=tc, wrap=False)
+                bl = self._est_lines(bd, w - 0.42, 8.25)
+                bh = bl * 8.25 / 72.0 * 1.25 + 0.03
+                self.txt(s, cx + 0.21, sy + 0.35, w - 0.42, bh, bd, size=8.25, color=tc, line_sp=1.1)
+                sy += 0.35 + bh + 0.13
+        return y + rows * (h + gap) - gap
+
+    def rail_columns(self, s, x, y, w, left, right, labels=None, subs=None, row_h=0.58, gap=0.095):
+        """Report page 16 (T87): two columns of low row cards on one row grid. Left rows: TINT2 cards
+        with an icon, a 10.5pt title and a 9pt body (the rail exists today). Right rows: white cards
+        with a dashed BLUE3 border and an outlined chip at the right (the rail follows), joined by a
+        spine with a blue square and a stub per row. rows: dicts {icon, title, body, chip} or {note}
+        for plain text in that slot. labels/subs: the column heads. Report type sizes. Returns the y
+        under the rows."""
+        col_w = (w - 0.83) / 2.0
+        lx, rx = x, x + col_w + 0.83
+        spine = x + col_w + 0.42
+        yy = y
+        if labels:
+            self.txt(s, lx, yy, col_w, 0.18, labels[0].upper(), size=8.25, color=BLUE, track="20", wrap=False)
+            self.txt(s, rx, yy, col_w, 0.18, labels[1].upper(), size=8.25, color=BLUE, track="20", wrap=False)
+            yy += 0.15
+            if subs:
+                self.txt(s, lx, yy, col_w, 0.22, subs[0], size=10.5, color=NAVY, wrap=False)
+                self.txt(s, rx, yy, col_w, 0.22, subs[1], size=10.5, color=NAVY, wrap=False)
+                yy += 0.31
+            yy += 0.15
+        n = max(len(left), len(right))
+        def rh(row, tw):
+            if not row or row.get('note'):
+                return row_h
+            bl = self._est_lines(row.get('body', ''), tw, 9) if row.get('body') else 0
+            return max(row_h, 0.32 + bl * 9 / 72.0 * 1.25 + 0.08)
+        for i in range(n):
+            L = left[i] if i < len(left) else None
+            R = right[i] if i < len(right) else None
+            h = max(rh(L, col_w - 0.75), rh(R, col_w - 1.6))
+            if L:
+                if L.get('note'):
+                    self.txt(s, lx, yy + 0.05, col_w, h, L['note'], size=9, color=NAVY, line_sp=1.12)
+                else:
+                    self.rect(s, lx, yy, col_w, h, fill=TINT2, line=LINE_SOFT, line_w=0.75)
+                    ic = L.get('icon')
+                    if ic:
+                        if os.path.exists(str(ic)):
+                            s.shapes.add_picture(ic, I(lx + 0.18), I(yy + (h - 0.23) / 2.0), I(0.23), I(0.23))
+                        elif icon_path(ic):
+                            self.icon_glyph(s, ic, lx + 0.18, yy + (h - 0.23) / 2.0, 0.23, color=NAVY)
+                    self.txt(s, lx + 0.55, yy + 0.13, col_w - 0.7, 0.2, L['title'], size=10.5, color=NAVY, wrap=False)
+                    if L.get('body'):
+                        self.txt(s, lx + 0.55, yy + 0.32, col_w - 0.75, h - 0.36, L['body'], size=9, color=NAVY, line_sp=1.1)
+            if R:
+                if R.get('note'):
+                    self.txt(s, rx + 0.09, yy + 0.05, col_w - 0.2, h + 0.3, R['note'], size=9, color=NAVY, line_sp=1.12)
+                else:
+                    self.rect(s, rx, yy, col_w, h, fill=WHITE, line=BLUE3, line_w=0.75, dash='dash')
+                    self.txt(s, rx + 0.18, yy + 0.13, col_w - 1.5, 0.2, R['title'], size=10.5, color=NAVY, wrap=False)
+                    if R.get('body'):
+                        self.txt(s, rx + 0.18, yy + 0.32, col_w - 1.6, h - 0.36, R['body'], size=9, color=NAVY, line_sp=1.1)
+                    if R.get('chip'):
+                        self._chip_outline(s, rx + col_w - 0.17, yy + (h - 0.23) / 2.0, R['chip'], size=8.25, h=0.23)
+                self.rect(s, spine, yy - 0.10, 0.01, h + 0.21, fill=HAIR)
+                if not R.get('note'):
+                    self.rect(s, spine - 0.07, yy + h / 2.0 - 0.06, 0.12, 0.12, fill=BLUE)
+                    self.rect(s, spine, yy + h / 2.0, 0.42, 0.01, fill=BLUE3)
+            yy += h + gap
+        return yy - gap
+
+    def walk_cards(self, s, x, y, cards, cols=3, w=3.65, h=None, gap=0.20, bar_max=0.60):
+        """Report page 41 (T88): option cards with a mini cost walk each. cards: dicts {title, body,
+        label, bars: [(value, display, style)] with style grey|blue|dashed, caption, paragraphs:
+        [(lead, text)], highlight}. Bars scale to the tallest bar across the cards. Report type
+        sizes. Returns the y under the cards."""
+        vmax = max([float(b[0]) for c in cards for b in c.get('bars', [])] or [1.0])
+        iw = w - 0.42
+        def layout(c):
+            tl = self._est_lines(c['title'], iw, 12.75)
+            body_y = 0.18 + tl * 0.22 + 0.11
+            bl = self._est_lines(c.get('body', ''), iw, 8.25) if c.get('body') else 0
+            label_y = body_y + bl * 8.25 / 72.0 * 1.25 + 0.14
+            bars_top = label_y + 0.20 + 0.24
+            base_y = bars_top + bar_max
+            cap_y = base_y + 0.07
+            cl = self._est_lines(c.get('caption', ''), iw, 7.88) if c.get('caption') else 0
+            rule_y = cap_y + cl * 7.88 / 72.0 * 1.25 + 0.12
+            py = rule_y + 0.10
+            paras = []
+            for (lead, text) in c.get('paragraphs', []):
+                pl = self._est_lines(lead + " " + text, iw, 8.25)
+                paras.append((py, pl))
+                py += pl * 8.25 / 72.0 * 1.25 + 0.10
+            return dict(tl=tl, body_y=body_y, bl=bl, label_y=label_y, base_y=base_y, cap_y=cap_y, cl=cl, rule_y=rule_y, paras=paras, end=py + 0.10)
+        lays = [layout(c) for c in cards]
+        h = h or max(L['end'] for L in lays)
+        rows = (len(cards) + cols - 1) // cols
+        for i, (c, L) in enumerate(zip(cards, lays)):
+            r, k = divmod(i, cols)
+            cx, cy = x + k * (w + gap), y + r * (h + gap)
+            self.rect(s, cx, cy, w, h, fill=(TINT if c.get('highlight') else TINT2))
+            ix = cx + 0.21
+            self.txt(s, ix, cy + 0.18, iw, L['tl'] * 0.22 + 0.02, c['title'], size=12.75, color=NAVY, line_sp=1.05)
+            if c.get('body'):
+                self.txt(s, ix, cy + L['body_y'], iw, L['bl'] * 8.25 / 72.0 * 1.25 + 0.03, c['body'], size=8.25, color=NAVY, line_sp=1.1)
+            if c.get('label'):
+                self.txt(s, ix, cy + L['label_y'], iw, 0.18, c['label'].upper(), size=7.88, color=BLUE, track="20", wrap=False)
+            bars = c.get('bars', [])
+            if bars:
+                nb = len(bars)
+                bw = (iw - 0.10 * (nb - 1)) / nb
+                base = cy + L['base_y']
+                for j, (v, disp, style) in enumerate(bars):
+                    bx = ix + j * (bw + 0.10)
+                    bh = bar_max * float(v) / vmax
+                    if style == 'dashed':
+                        self.rect(s, bx, base - bh, bw, bh, fill=None, line=BLUE, line_w=0.75, dash='dash')
+                    else:
+                        self.rect(s, bx, base - bh, bw, bh, fill=(GREY if style == 'grey' else BLUE))
+                    self.txt(s, bx, base - bh - 0.23, bw, 0.20, disp, size=10.5, color=NAVY, align=PP_ALIGN.CENTER, wrap=False)
+            if c.get('caption'):
+                self.txt(s, ix, cy + L['cap_y'], iw, L['cl'] * 7.88 / 72.0 * 1.25 + 0.03, c['caption'], size=7.88, color=NAVY, line_sp=1.1)
+            self.rect(s, ix, cy + L['rule_y'], iw, 0.01, fill=HAIR)
+            for (lead, text), (py, pl) in zip(c.get('paragraphs', []), L['paras']):
+                self.txt(s, ix, cy + py, iw, pl * 8.25 / 72.0 * 1.25 + 0.03, lead + " " + text, size=8.25, color=NAVY, line_sp=1.1)
+        return y + rows * (h + gap) - gap
+
+    def text_matrix(self, s, x, y, w, vendors, rows, cells, label_w=1.35, our_w=2.40, legend=True):
+        """Report page 44 (T89): a text comparison across vendors, ours first. vendors: [name, ...];
+        rows: [label, ...]; cells[i][j] = (status, text), status full|half|none (a filled BLUE
+        square, a TINT square with a BLUE line, a dashed grey outline). Our column has a NAVY header
+        cell and TINT cells; row heights follow the longest cell. Report type sizes. Returns the y
+        under the last rule, or under the legend when legend=True."""
+        n = len(vendors)
+        other_w = (w - label_w - our_w) / max(1, n - 1)
+        def col_x(j):
+            return x + label_w + (0 if j == 0 else our_w + (j - 1) * other_w)
+        def col_w(j):
+            return our_w if j == 0 else other_w
+        self.rect(s, col_x(0), y, our_w, 0.38, fill=NAVY)
+        self.txt(s, col_x(0) + 0.13, y + 0.10, our_w - 0.2, 0.2, vendors[0], size=9.38, color=WHITE, wrap=False)
+        for j in range(1, n):
+            self.txt(s, col_x(j) + 0.08, y + 0.10, col_w(j) - 0.1, 0.2, vendors[j], size=9, color=NAVY, wrap=False)
+            self.rect(s, col_x(j), y + 0.36, col_w(j), 0.01, fill=NAVY)
+        ry = y + 0.37
+        for i, label in enumerate(rows):
+            rh = 0.42
+            for j in range(n):
+                bl = self._est_lines(cells[i][j][1], col_w(j) - 0.38, 7.5)
+                rh = max(rh, bl * 7.5 / 72.0 * 1.25 + 0.15)
+            self.rect(s, x, ry, label_w, 0.01, fill=LINE_SOFT)
+            self.rect(s, col_x(0), ry, our_w, rh, fill=TINT)
+            for j in range(1, n):
+                self.rect(s, col_x(j), ry, col_w(j), 0.01, fill=LINE_SOFT)
+            self.txt(s, x, ry + 0.07, label_w - 0.08, rh - 0.08, label, size=8.63, color=NAVY, line_sp=1.05)
+            for j in range(n):
+                st, tx = cells[i][j]
+                self._status_square(s, col_x(j) + 0.11, ry + 0.10, st)
+                self.txt(s, col_x(j) + 0.30, ry + 0.07, col_w(j) - 0.38, rh - 0.08, tx, size=7.5, color=NAVY, line_sp=1.08)
+            ry += rh
+        self.rect(s, x, ry, label_w, 0.01, fill=LINE_SOFT)
+        for j in range(1, n):
+            self.rect(s, col_x(j), ry, col_w(j), 0.01, fill=LINE_SOFT)
+        if legend:
+            ly = ry + 0.14
+            lx = x
+            for st, text in (('full', 'shipped and published'), ('half', 'configured per deployment'), ('none', 'nothing published')):
+                self._status_square(s, lx, ly + 0.03, st)
+                self.txt(s, lx + 0.17, ly, text_w(text, 7.88) + 0.1, 0.18, text, size=7.88, color=NAVY, wrap=False)
+                lx += 0.17 + text_w(text, 7.88) + 0.30
+            ry = ly + 0.20
+        return ry
 
     def hero_number(self, s, x, y, w, h, number, caption, dark=True, layout='side', num_size=33,
                     cap_size=9):

@@ -101,8 +101,9 @@ Shyam, on the first full Apex deck in Google Slides: "tiles look cleaner; the ch
 clean; I worry the wrong framework is used for the depiction." The rule, in order:
 
 1. **The report's own idioms come first, and a measured page's own form is the recipe.** When a
-   Claude Design page has a form of its own (the story cards of page 8, T85; the moment rows; the
-   numbered columns), rebuild that form; swapping in a plainer tile or a framework is a regression
+   Claude Design page has a form of its own (the story cards of page 8, T85; the section cards,
+   rail columns, walk cards and text matrix of pages 15, 16, 41 and 44, T86 to T89; the moment
+   rows; the numbered columns), rebuild that form; swapping in a plainer tile or a framework is a regression
    (Shyam, 28 Sep 2026: "the original has icons, highlights, and it is clean"). Tiles and cards for
    a set of things (stat blocks, story cards, option cards, numbered cards, lane grids, `d.tiles`).
    Numbered columns (`d.step_columns`, T84) for a process: a blue two-digit number, an uppercase
