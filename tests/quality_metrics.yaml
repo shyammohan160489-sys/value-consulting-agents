@@ -182,7 +182,9 @@ knowledge_files:
     - name: "No client names (anonymization check)"
       pattern: "\\b(Bank of|First National|Wells|Chase|HSBC|Barclays)\\b"
       max_matches: 0
-      description: "Knowledge files should use anonymized references"
+      exclude_paths:
+        - "knowledge/domains/ai-value-evidence/"
+      description: "Engagement-derived knowledge must use anonymized references. Public outside-in evidence packs (primary-source-cited, e.g. ai-value-evidence/) are exempt via exclude_paths."
 
     - name: "Has confidence levels for benchmarks"
       pattern: "[Hh]igh|[Mm]edium|[Ll]ow"

@@ -101,6 +101,25 @@ their place. Decide per slide:
   "the fastest, lowest-risk *way in*"). If a good line won't come, **drop it — don't force
   it**. Applies to both renderers.
 
+## Rule 6 — Exhibit grammar for data slides (Kit fusion)
+When a slide's job is quantitative, use the **adopted exhibit vocabulary** (mined from
+the Claude-Design "McKinsey exhibit" kit, adoption approved 8 Jul 2026, re-rendered in
+Frontline tokens — provenance in `claude-design-exhibit-kit/DIGEST.md`):
+- **Patterns:** sorted bars · segmented to-scale bar · quadrant bubble · unit dot-grid
+  (Tranche 1, sampled) · cohort cascade · milestone strip · dotted region map · roadmap
+  gates · concern→answer (Tranche 2). Round-2 catalogue (target-walk waterfall,
+  attainment bullet-bars, drift board, layer ziggurat, current-vs-future paired bars,
+  R6–R10) in `claude-design-exhibit-kit/EXHIBIT_MINING_ROUND2.md`.
+- **Grammar:** one exhibit per slide · 2–3 callouts max · **source footnote on every
+  numeric slide** · ranges as ranges · color semantics: blue = lead/forecast, green =
+  actuals/success, red = current/"from", amber = warning, gray = neutral, cyan = hero
+  total on dark; sequential ramp = alpha steps of token blue, light steps direct-labelled.
+- **Library:** `claude-design-exhibit-kit/frontline-exhibit-adoption-sample.html` — every
+  adopted exhibit as a Frontline structured body in token colors; copy markup, swap data.
+- **Never** the kit's own palette (`#4066F5/#071224`) or chrome in Frontline deliverables.
+- Open backlog: first-class `engine.js` layouts + `frontline_slides_pptx.py` equivalents
+  (DIGEST "next step"); until then, exhibits ship as structured bodies from the library.
+
 ## Builder constants (single source of truth)
 `tools/frontline_slides_pptx.py`:
 ```

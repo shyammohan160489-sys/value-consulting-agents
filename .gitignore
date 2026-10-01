@@ -91,3 +91,6 @@ frontline-2026-for-claude-design/
 knowledge/product/source/*.pptx
 ~\$*
 *.pre-*.bak
+
+# Apex QA renders (render_preview.py points _qa/latest at the newest render)
+.claude/skills/exhibit-slides-pptx/_qa/

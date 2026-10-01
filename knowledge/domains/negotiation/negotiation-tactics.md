@@ -147,7 +147,35 @@ Reframe from "what's your discount?" to "which configuration?". Worked example s
 
 **Deploy:** plan within authority; when a move crosses a tier or breaches a GM threshold, the deal goes to Deal Desk — so come with the **complete commercial model + GM-by-component + Digital Solutioning / RFF / Deal-QA summaries** ready. *The proposal builder's job is to produce exactly this pack and flag the tier/threshold before you commit.* *Source: CFO "enhanced Deal Desk framework" email + Deal Desk Process & Template decks (Jun 2026); editions/packaging context from Elevate Rookie Basecamp.*
 
-## 10. Provenance & related
+## 10. The Strategic Deal Framework — Preparation → Analysis & Strategy → Delivery
+
+**Source: Negotiation Strategy Enablement deck (Jun 2026, draws on Corporate Visions).** The *process* wrapper around the math in §1–§6. Three steps:
+
+### 10.1 Preparation (do this BEFORE any pricing talk)
+- **Strategic deal prework** (existing customers): current BoM, AOV history, footprint & pricing analysis, current contract terms. Know what you want out of the transaction — TCV/ACV, terms, initial pricing, **planned gives**, target end-state. Identify stakeholders (decision makers, influencers); engage both sides' execs early.
+- **The Demand Plan — segment demand by FIRMNESS** (the anchor of preparation):
+  | Tier | What it is | How to treat it |
+  |---|---|---|
+  | **Validated** (near-term) | Budgeted, has project owner/schedule | The **beachhead** — foundation of the deal |
+  | **Projected** (future, yet valued) | Credible via proof points/PoCs; timeline unclear; may not be budgeted | Grows the deal & ACV — include with care |
+  | **Pipeline** | Unconsidered needs; value not yet understood | **Do NOT price into the proposal** — proceed carefully or you paint yourself into a corner; use **small seeding bundles** to drive the *next* deal |
+  Goal: align the demand plan to customer initiatives; clarify firmness **and sponsorship**. **Only validated + projected demand goes into proposals.**
+- **Customer scoping:** positions vs **interests** (what actually matters: unit price? TCV? year-1 spend? renewal terms?); separate wants from needs (probe *why* and *who*, funding, a sponsor who can sign); the **compelling event** (why now vs later); the decision process (decision maker, what they need, influencers, approvals); **true constraints** (in-year budget, approval authority).
+
+### 10.2 Analysis & Strategy (adds to §2–§3)
+- **Plan 3 proposals across the negotiation:** Opening Offer — *Safe, Simple, Strong* (deliberate, start high & credible) → Counter Offers — *Planned, Paced, Progress* (listen, address risks, pace concessions, move in chunks) → Closing Offer — *Slow, Small, Superficial* (cease structural concessions, signal you're done, hone the appeal).
+- **Scenario discipline:** limit what the customer sees to **2 scenarios** (1: the customer's request · 2: our recommendation using our levers); a 3rd only to break a stuck negotiation or expose the economics of one lever. *(House rule refinement: at negotiation start, the client-facing proposal presents ONE option — the two-scenario structure is A-anchor + deliberately-lighter-B.)*
+- **Term:** default a **5-year horizon**; position shorter terms as a *concession*; never let the customer get longer term AND lower price.
+- **Deal economics:** target **12–16-month breakeven** (CFO appeal). **Avoid selling future volumes** — it erodes future negotiating power; use **price holds** instead. Every pricing concession is conditional on: timing · current-agreement continuity (no attrition) · inclusions/exclusions · term (lead X yrs, concede to Y) · funding commitment.
+- **Additional levers by owning team** (extends §3): *Pricing* — pricing addendums (VPA on the MSA = affects ALL contracts, "high-calorie", negotiate hard). *Legal* — swap language capped (e.g. 3×/yr). *Marketing* — case study, press, speaking (extracts). *Product* — Client Advisory Board seat, SLA tiers. *Sales Ops* — license activation modes: **buy-up-front flat · staggered activation (matches rollout, no price change) · price ramp (all users now, rising annual cost, higher exit price)** · stub bills for budget-year fit.
+
+### 10.3 Delivery
+- **Package the proposal storyline:** Our journey / mutual benefits (anchored to what matters to *them*) → pricing options (2 > 3) → **concession history** (remind them of every concession already given) → business case → case studies → mutual close plan.
+- **Plan a final exec give** — anticipate the ask, hold one give back, get it **pre-approved before you need it**; "no" is an acceptable answer.
+- **Capped renewals are never free:** don't give 0% uplift away — make it an explicit **give-to-get** and frame it as the big win it is.
+- **Focus on closing:** agree next steps (signatories, procurement, timelines, PTO schedules); **ask for the business** once trust is earned; know when to **stop selling**; use the **power of silence** (MIT Sloan 2021: extended silence improves outcomes).
+
+## 11. Provenance & related
 
 - **Source:** Aniket's Negotiation Planner (Jun 2026). The planner also computes a live offer table, detects the concession shape, and meters discount headroom to floor.
 - **Related:** Schroders negotiation playbook + "travel" anchoring 1-pager; `deal-pricing-system/knowledge_base/templates/`; the deal-desk codification (`knowledge/learnings/pipeline_gaps/deal_desk_commercial_track.md`); the **proposal builder** (`presentations/gtm-os-proposal-builder/`).

@@ -303,6 +303,7 @@ class ROIModelGenerator:
             self._create_bank_profile_sheet()
         self._create_assumptions_sheet()
         self._create_data_gaps_sheet()
+        self._create_sources_sheet()
 
         # Phase 6: Named ranges
         self._define_named_ranges()
@@ -330,6 +331,7 @@ class ROIModelGenerator:
             'Bank Profile',
             'Assumptions',
             'Data Gaps',
+            'Sources',
         ]
         # Build ordered list, skipping sheets that don't exist
         existing = list(self.wb.sheetnames)
@@ -344,6 +346,32 @@ class ROIModelGenerator:
     def _has_servicing(self):
         """Check if any lever group has servicing_analysis."""
         return any('servicing_analysis' in g for g in self.lever_groups.values())
+
+    def _create_sources_sheet(self):
+        """Sources & Provenance legend — names the real artifact behind every input
+        (renders only if the config carries a `sources` list; additive/optional)."""
+        srcs = self.config.get('sources')
+        if not srcs:
+            return
+        ws = self.wb.create_sheet("Sources", self.sheet_index)
+        self.sheet_index += 1
+        for col, w in [('A', 4), ('B', 28), ('C', 66), ('D', 44)]:
+            ws.column_dimensions[col].width = w
+        ws['B2'] = "Sources & Provenance"
+        ws['B2'].font = Font(bold=True, size=18, color=self.COLORS['primary'])
+        ws['B3'] = ("Every input on 'Model Inputs' traces to one of these. Real client data "
+                    "+ explicitly-flagged benchmarks; no external / web / MCP data used.")
+        ws['B3'].font = Font(italic=True, size=10)
+        self._write_header_row(ws, 5, ['Source', 'What it provides', 'File / location'])
+        r = 6
+        for s in srcs:
+            ws.cell(row=r, column=2, value=s.get('ref', '')).font = Font(bold=True, size=10, color=self.COLORS['primary'])
+            ws.cell(row=r, column=3, value=s.get('detail', '')).font = Font(size=9)
+            ws.cell(row=r, column=4, value=s.get('file', '')).font = Font(size=9, italic=True)
+            for c in (2, 3, 4):
+                ws.cell(row=r, column=c).alignment = Alignment(wrap_text=True, vertical='top')
+            ws.row_dimensions[r].height = 34
+            r += 1
 
     # ── Cover Page (unchanged) ────────────────────────────────────────
 
@@ -599,7 +627,8 @@ class ROIModelGenerator:
         basic = self.config.get('basic_information', {})
         basic_start = row
         # Write all basic info fields (skip source fields)
-        basic_fields = [(k, v) for k, v in basic.items() if not k.endswith('_source')]
+        basic_fields = [(k, v) for k, v in basic.items()
+                        if not (k.endswith('_source') or k.endswith('_confidence'))]
         self.cell_map['model_inputs']['basic'] = {}
         for field_name, field_val in basic_fields:
             ws.cell(row=row, column=2, value=field_name.replace('_', ' ').title())
@@ -610,12 +639,24 @@ class ROIModelGenerator:
             elif isinstance(field_val, float) and field_val < 1:
                 ws.cell(row=row, column=3).number_format = '0.00%'
             source = basic.get(f'{field_name}_source', basic.get(f'{field_name.rstrip("_annual")}_source', ''))
-            conf = 'HIGH' if 'TRANSCRIPT' in str(source).upper() else ('MED' if 'BACKBASE' in str(source).upper() else 'LOW')
+            # Explicit per-field confidence wins; else fall back to the keyword heuristic.
+            conf = basic.get(f'{field_name}_confidence') or (
+                'HIGH' if 'TRANSCRIPT' in str(source).upper()
+                else ('MED' if 'BACKBASE' in str(source).upper() else 'LOW'))
             ws.cell(row=row, column=4, value=conf)
             ws.cell(row=row, column=5, value=str(source)[:80])
             ws.cell(row=row, column=5).font = Font(size=9)
             self.cell_map['model_inputs']['basic'][field_name] = f'C{row}'
             row += 1
+
+        # Operating Costs as a LIVE formula (= Annual Revenue × Cost-to-Income) when both exist,
+        # so the only derived figure in Basic Information traces to its drivers rather than sitting hard-coded.
+        _bm = self.cell_map['model_inputs']['basic']
+        if all(k in _bm for k in ('operating_costs', 'annual_revenue', 'cost_to_income_ratio')):
+            _oc = ws[_bm['operating_costs']]
+            _oc.value = f"={_bm['annual_revenue']}*{_bm['cost_to_income_ratio']}"
+            _oc.fill = PatternFill(fill_type=None)
+            _oc.number_format = '#,##0'
 
         row += 1
         # Discount Rate
@@ -632,6 +673,8 @@ class ROIModelGenerator:
         ws.cell(row=row, column=3, value=self.config.get('analysis_years', 5))
         row += 1
         yoy = self.config.get('backbase_loading', {}).get('yoy_growth', [0.08]*5)
+        if isinstance(yoy, (int, float)):
+            yoy = [yoy] * 5
         ws.cell(row=row, column=2, value="YoY Growth Rate")
         ws.cell(row=row, column=3, value=yoy[0] if yoy else 0.08)
         ws.cell(row=row, column=3).number_format = '0.0%'
@@ -653,7 +696,7 @@ class ROIModelGenerator:
             row += 1
 
             # Revenue drivers
-            for drv_key, driver in group.get('revenue_drivers', {}).items():
+            for drv_key, driver in (group.get('revenue_drivers') or {}).items():
                 ws[f'B{row}'] = f"  {driver.get('name', drv_key)}"
                 ws[f'B{row}'].font = Font(bold=True, size=10)
                 row += 1
@@ -672,9 +715,21 @@ class ROIModelGenerator:
                         else:
                             ws.cell(row=row, column=3, value=inp_data.get('value', 0))
                             ws.cell(row=row, column=3).fill = PatternFill("solid", fgColor=self.COLORS['editable'])
+                    elif inp_data.get('formula'):
+                        # Derived input: render a LIVE Excel formula on the cells above
+                        # (token {key} -> the cell ref already assigned to that input).
+                        _f = '=' + inp_data['formula']
+                        for _k, _ref in driver_inputs.items():
+                            _f = _f.replace('{' + _k + '}', _ref)
+                        ws.cell(row=row, column=3, value=_f)  # computed, not editable
                     else:
                         ws.cell(row=row, column=3, value=inp_data.get('value', 0))
                         ws.cell(row=row, column=3).fill = PatternFill("solid", fgColor=self.COLORS['editable'])
+                    # Number format: explicit 'fmt' hint, else infer from magnitude.
+                    _vv = inp_data.get('value', 0)
+                    _ff = inp_data.get('fmt') or ('0.0%' if isinstance(_vv, (int, float)) and 0 < abs(_vv) < 1
+                                                  else ('#,##0' if isinstance(_vv, (int, float)) and abs(_vv) >= 1000 else '#,##0.00'))
+                    ws.cell(row=row, column=3).number_format = _ff
                     self._apply_confidence_coloring(ws, ws.cell(row=row, column=3), inp_data)
                     ws.cell(row=row, column=4, value=inp_data.get('confidence', 'LOW'))
                     ws.cell(row=row, column=5, value=str(inp_data.get('assumption', '')))
@@ -714,7 +769,7 @@ class ROIModelGenerator:
                 row += 1  # space between drivers
 
             # Cost drivers
-            for drv_key, driver in group.get('cost_drivers', {}).items():
+            for drv_key, driver in (group.get('cost_drivers') or {}).items():
                 ws[f'B{row}'] = f"  {driver.get('name', drv_key)}"
                 ws[f'B{row}'].font = Font(bold=True, size=10)
                 row += 1
@@ -731,9 +786,21 @@ class ROIModelGenerator:
                         else:
                             ws.cell(row=row, column=3, value=inp_data.get('value', 0))
                             ws.cell(row=row, column=3).fill = PatternFill("solid", fgColor=self.COLORS['editable'])
+                    elif inp_data.get('formula'):
+                        # Derived input: render a LIVE Excel formula on the cells above
+                        # (token {key} -> the cell ref already assigned to that input).
+                        _f = '=' + inp_data['formula']
+                        for _k, _ref in driver_inputs.items():
+                            _f = _f.replace('{' + _k + '}', _ref)
+                        ws.cell(row=row, column=3, value=_f)  # computed, not editable
                     else:
                         ws.cell(row=row, column=3, value=inp_data.get('value', 0))
                         ws.cell(row=row, column=3).fill = PatternFill("solid", fgColor=self.COLORS['editable'])
+                    # Number format: explicit 'fmt' hint, else infer from magnitude.
+                    _vv = inp_data.get('value', 0)
+                    _ff = inp_data.get('fmt') or ('0.0%' if isinstance(_vv, (int, float)) and 0 < abs(_vv) < 1
+                                                  else ('#,##0' if isinstance(_vv, (int, float)) and abs(_vv) >= 1000 else '#,##0.00'))
+                    ws.cell(row=row, column=3).number_format = _ff
                     self._apply_confidence_coloring(ws, ws.cell(row=row, column=3), inp_data)
                     ws.cell(row=row, column=4, value=inp_data.get('confidence', 'LOW'))
                     ws.cell(row=row, column=5, value=str(inp_data.get('assumption', '')))
@@ -923,12 +990,12 @@ class ROIModelGenerator:
 
         # 2. Already-built Model Inputs cell (populated if section order is changed in future)
         for imp_key, imp_val in mod_impacts.items():
-            if abs(imp_val - val) < 0.001 and imp_key in mi_impacts:
+            if isinstance(imp_val, (int, float)) and abs(imp_val - val) < 0.001 and imp_key in mi_impacts:
                 return mi_impacts[imp_key]
 
         # 3. Build INDEX formula directly over Scenario Data (always available)
         for imp_key, imp_val in mod_impacts.items():
-            if abs(imp_val - val) < 0.001 and imp_key in sd_impacts:
+            if isinstance(imp_val, (int, float)) and abs(imp_val - val) < 0.001 and imp_key in sd_impacts:
                 sd_row = sd_impacts[imp_key]
                 return f"INDEX('Scenario Data'!$C${sd_row}:$E${sd_row},1,{self.sc_cell})"
 

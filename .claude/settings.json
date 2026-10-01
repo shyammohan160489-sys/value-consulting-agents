@@ -17,6 +17,10 @@
           {
             "type": "command",
             "command": "echo 'OUTPUT-FORMAT DEFAULT — Ask which format ONLY the first time, i.e. when (a) this turn requests a client-facing deliverable (deck, document, presentation, one-pager, report, slides, briefing) AND (b) no output format has been established yet in this session. In that one case, ASK FIRST: which format would you prefer — HTML deck, long-form HTML, PDF, or PPT? — and wait for the choice. If a format is already being worked on, was chosen earlier in the session, or is named this turn, do NOT ask — just proceed in that format.'"
+          },
+          {
+            "type": "command",
+            "command": "cat \"$CLAUDE_PROJECT_DIR\"/.claude/routing-card.md 2>/dev/null || true"
           }
         ]
       }
