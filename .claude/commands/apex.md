@@ -18,8 +18,9 @@ Non-negotiables, restated:
    the Apex recipes (`references/exhibit-catalog.md` T40–T55), titles 28pt regular without a
    period, no bold anywhere, statement line or hero number for the so-what, footnote on every
    numeric slide.
-4. Render to PNG and read every page before delivering; ship the `.pptx` with its build script
-   next to it.
+4. Render to PNG with `scripts/render_preview.py` (LibreOffice, never PowerPoint), open the QA
+   page it writes in the Claude browser pane, and read every page before delivering; ship the
+   `.pptx` with its build script next to it.
 5. Use `look='v3'` only when the deck extends an account series that is still on v3 mid-cycle.
 
 ## "Visualize better" (28 Sep 2026)

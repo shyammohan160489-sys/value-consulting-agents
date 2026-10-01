@@ -2,6 +2,30 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "nedbank-book",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8842",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Nedbank/Output"
+      ],
+      "port": 8842
+    },
+    {
+      "name": "hsbc-prototypes",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8834",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/HSBC/Output"
+      ],
+      "port": 8834
+    },
+    {
       "name": "bacb-pov",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
@@ -26,14 +50,14 @@
       "port": 8765
     },
     {
-      "name": "emea-apac-retro",
+      "name": "global-retro",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
         "-m",
         "http.server",
         "8107",
         "--directory",
-        "/Users/shyam/cortex/Engagement/internal/2026-05-05_emea_apac_retro"
+        "/Users/shyam/cortex/Engagement/internal/retros/2026-07-24_global_retro"
       ],
       "port": 8107
     },
@@ -218,6 +242,42 @@
       "port": 8801
     },
     {
+      "name": "skill-drops",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8829",
+        "--directory",
+        "/Users/shyam/cortex/.claude/skills"
+      ],
+      "port": 8829
+    },
+    {
+      "name": "snbc-proposal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8843",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/SNB Capital/Output"
+      ],
+      "port": 8843
+    },
+    {
+      "name": "snbc-agentic-pack",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8848",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/SNB Capital/Output/workshops-aug2026"
+      ],
+      "port": 8848
+    },
+    {
       "name": "cb-matrix",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
@@ -228,6 +288,78 @@
         "/Users/shyam/cortex/knowledge/domains/conversational-banking"
       ],
       "port": 8823
+    },
+    {
+      "name": "nedbank-proposal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8852",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/Nedbank/Output"
+      ],
+      "port": 8852
+    },
+    {
+      "name": "nbb-proposal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8856",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/NBB/Output"
+      ],
+      "port": 8856
+    },
+    {
+      "name": "nedbank-book",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8858",
+        "--directory",
+        "/private/tmp/claude-503/-Users-shyam-cortex/a90efcda-5b03-4021-8e0a-2e885eca2719/scratchpad/verify2"
+      ],
+      "port": 8858
+    },
+    {
+      "name": "ai-native-org",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8799",
+        "--directory",
+        "/Users/shyam/cortex/Engagement/internal/ai-native-org-project"
+      ],
+      "port": 8799
+    },
+    {
+      "name": "cb-modeler",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8797",
+        "--directory",
+        "Engagement/_enablement/conversational-banking-gtm/toolkit"
+      ],
+      "port": 8797
+    },
+    {
+      "name": "apex-qa",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8861",
+        "--directory",
+        "/Users/shyam/cortex/.claude/skills/exhibit-slides-pptx/_qa"
+      ],
+      "port": 8861
     }
   ]
 }

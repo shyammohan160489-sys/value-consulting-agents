@@ -33,12 +33,13 @@ def para_lines(p, inner_w, wrap):
     runs = [(r.text, (r.font.size.pt if r.font.size else None)) for r in p.runs]
     size = next((s for (_, s) in runs if s), None) or 14.0
     ls = p.line_spacing if isinstance(p.line_spacing, float) else 1.0
-    text = "".join(t for (t, _) in runs)
+    text = p.text.replace("\v", "\n")          # v5.7: <a:br/> reads back as \v; count it as a line break
     if not text.strip():
         return 1, size, ls, 0.0
-    total_w = sum(text_w(t, s or size) for (t, s) in runs)
     if not wrap:
-        return 1, size, ls, total_w
+        segs = text.replace("\r", "\n").split("\n")
+        return len(segs), size, ls, max(text_w(seg, size) for seg in segs)
+    total_w = sum(text_w(t, s or size) for (t, s) in runs)
     lines = 0
     for chunk in text.replace("\r", "\n").split("\n"):
         words = chunk.split(" ")

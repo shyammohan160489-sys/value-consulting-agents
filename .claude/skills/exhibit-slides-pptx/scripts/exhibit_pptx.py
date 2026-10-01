@@ -5,6 +5,17 @@ Extracted VERBATIM from the validated production builders:
   - Engagement/SNB Capital/Output/build_snbc_vc_pptx.py   (21 Jul 2026, chrome v3 FINAL)
   - Engagement/BACB/Output/build_scripts/bacb_close_exhibit_pptx.py (16 Jul 2026)
 
+v5.7 (30 Sep 2026, PowerPoint-clean files and a QA loop that never opens PowerPoint. Shyam: "it shows
+  repair, repair, repair... none of us will have a PowerPoint licence"): a straight stroke (hairline,
+  arrow, straight icon segment) is a connector and a coincident stroke is a dot; a freeform is only
+  ever drawn with real width AND height. PowerPoint offers to "repair" a deck whose freeform path has
+  w=0 or h=0 (every Apex deck had them: 14 in the Nedbank test, 43 in the frameworks sampler). Run
+  text with a newline becomes runs around <a:br/>; the checker counts those breaks. The design-system
+  assets (icons, fonts, the humanizer lint) resolve from the repo, else from a copy inside the skill
+  folder (the team zip), else from APEX_DESIGN_SYSTEM. scripts/render_preview.py renders through
+  LibreOffice only and writes a QA page for the Claude browser pane; scripts/package_apex.py builds
+  the team zip and verifies it from an empty folder.
+
 v5.6 (29 Sep 2026, four more measured forms, Shyam: "pages 15, 16, 41, 44: I like the original more"):
   section_cards (T86, page 15), rail_columns (T87, page 16), walk_cards (T88, page 41), text_matrix
   (T89, page 44). Report-density recipes: they keep the report's type sizes at every scale.
@@ -307,8 +318,23 @@ def icon(name):
 ENGAGEMENT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "Engagement"))
 
 
-_FONT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..",
-                                         "knowledge", "design-system", "fonts", "libre-franklin"))
+def _design_system_dir(*sub):
+    """v5.7: a design-system asset folder (icons, fonts). Looked up in the Cortex repo
+    (knowledge/design-system), then inside the skill folder (design-system/, the team zip), then
+    under $APEX_DESIGN_SYSTEM. Returns the first that exists, else the repo path (callers degrade)."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    roots = [os.path.abspath(os.path.join(here, "..", "..", "..", "..", "knowledge", "design-system")),
+             os.path.abspath(os.path.join(here, "..", "design-system"))]
+    if os.environ.get("APEX_DESIGN_SYSTEM"):
+        roots.insert(0, os.path.abspath(os.path.expanduser(os.environ["APEX_DESIGN_SYSTEM"])))
+    for r in roots:
+        p = os.path.join(r, *sub)
+        if os.path.exists(p):
+            return p
+    return os.path.join(roots[-2] if len(roots) > 2 else roots[0], *sub)
+
+
+_FONT_DIR = _design_system_dir("fonts", "libre-franklin")
 _FONT_CACHE = {}
 
 
@@ -360,8 +386,7 @@ def _fmt_from_texts(texts):
 # Lucide (ISC) and Tabler (MIT) live in knowledge/design-system/icons/<family>/icons/*.svg: 24 x 24 stroke
 # icons, width 2, round caps. icon_glyph() draws one as native freeform shapes: crisp, recolourable,
 # Google Slides-safe. A bare name resolves Lucide first, then Tabler; 'tabler:name' or 'lucide:name' pins one.
-_ICONS_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..",
-                                           "knowledge", "design-system", "icons"))
+_ICONS_ROOT = _design_system_dir("icons")
 ICON_FAMILIES = ("lucide", "tabler")
 LUCIDE_DIR = os.path.join(_ICONS_ROOT, "lucide")
 _ICON_TAGS = {}
@@ -821,13 +846,16 @@ class ExhibitDeck:
             p.space_after = Pt(sp_after)
             p.line_spacing = line_sp
             for (t, sz, c, b) in para:
-                r = p.add_run()
-                r.text = t
-                f = r.font
-                f.name = FONT
-                f.size = Pt(sz)
-                f.color.rgb = c
-                f.bold = (False if no_bold else b)
+                for k, piece in enumerate(str(t).split("\n")):   # v5.7: a newline is <a:br/>, never a raw LF
+                    if k:
+                        p.add_line_break()
+                    r = p.add_run()
+                    r.text = piece
+                    f = r.font
+                    f.name = FONT
+                    f.size = Pt(sz)
+                    f.color.rgb = c
+                    f.bold = (False if no_bold else b)
                 if track is not None:
                     r._r.get_or_add_rPr().set('spc', str(track))
         return tb
@@ -1120,18 +1148,58 @@ class ExhibitDeck:
             yy += row_h
         return yy
 
-    def _polyline(self, s, pts, color, lw):
-        """Open freeform polyline through absolute-inch points. Flat, no fill."""
-        emu = [(int(px * 914400), int(py * 914400)) for (px, py) in pts]
-        fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
-        fb.add_line_segments(emu[1:], close=False)
-        shp = fb.convert_to_shape()
-        shp.fill.background()
+    def _stroke_shape(self, s, emu, color, width_pt, dash=False, arrow=False, round_join=False):
+        """v5.7: one open stroke through EMU points, as the shape PowerPoint itself would use.
+        A stroke with real width AND height is a freeform. A stroke that is straight along one axis
+        (a hairline, an arrow, the stem of an icon) is a connector. A stroke whose points coincide is
+        a dot (an oval the width of the line). PowerPoint opens a deck with a freeform whose path has
+        w=0 or h=0 only after a "repair" prompt (30 Sep 2026: 14 such shapes in the Nedbank test deck,
+        43 in the frameworks sampler); connectors and ovals are its own idiom for those shapes, and
+        Google Slides and LibreOffice import both as editable lines."""
+        xs = [p[0] for p in emu]
+        ys = [p[1] for p in emu]
+        dx, dy = max(xs) - min(xs), max(ys) - min(ys)
+        if dx > 0 and dy > 0:
+            fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
+            fb.add_line_segments(emu[1:], close=False)
+            shp = fb.convert_to_shape()
+            shp.fill.background()
+        elif dx == 0 and dy == 0:
+            r = max(1, int(Pt(width_pt)) // 2)
+            shp = s.shapes.add_shape(MSO_SHAPE.OVAL, emu[0][0] - r, emu[0][1] - r, 2 * r, 2 * r)
+            shp.fill.solid()
+            shp.fill.fore_color.rgb = color
+            shp.line.fill.background()
+            shp.shadow.inherit = False
+            self.flat(shp)
+            return shp
+        else:
+            if arrow:
+                (x1, y1), (x2, y2) = emu[0], emu[-1]
+            else:
+                x1, y1, x2, y2 = min(xs), min(ys), max(xs), max(ys)
+            shp = s.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, x1, y1, x2, y2)
+            for st in shp._element.findall(qn('p:style')):
+                shp._element.remove(st)
         shp.line.color.rgb = color
-        shp.line.width = Pt(lw)
+        shp.line.width = Pt(width_pt)
+        if dash:
+            shp.line.dash_style = MSO_LINE.DASH
         shp.shadow.inherit = False
+        ln = shp._element.spPr.find(qn('a:ln'))
+        if ln is not None:
+            ln.set('cap', 'rnd')
+            if round_join and ln.find(qn('a:round')) is None:
+                ln.append(ln.makeelement(qn('a:round'), {}))
+            if arrow:
+                ln.append(ln.makeelement(qn('a:tailEnd'), {'type': 'triangle', 'w': 'med', 'len': 'med'}))
         self.flat(shp)
         return shp
+
+    def _polyline(self, s, pts, color, lw):
+        """Open stroke through absolute-inch points, flat, no fill (v5.7: straight strokes are connectors)."""
+        emu = [(int(px * 914400), int(py * 914400)) for (px, py) in pts]
+        return self._stroke_shape(s, emu, color, lw)
 
     def line_panel(self, s, x, y, w, h, series, label=None, color=BLUE3, lw=2.25,
                    ticks=None, annos=None, end_dot=False):
@@ -3818,24 +3886,10 @@ class ExhibitDeck:
     # map, chevron flow, rings, stack, hub and spoke, icon rows, venn, pillars. Apex tokens, stage-aware.
 
     def _stroke(self, s, pts, color, width_pt=1.25, arrow=False, dash=None):
-        """An open polyline (inches) as a freeform stroke; arrow=True adds a triangle head at the end."""
+        """An open polyline (inches) as a stroke; arrow=True adds a triangle head at the end
+        (v5.7: a straight stroke is a connector, see _stroke_shape)."""
         emu = [(int(px * 914400), int(py * 914400)) for (px, py) in pts]
-        fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
-        fb.add_line_segments(emu[1:], close=False)
-        shp = fb.convert_to_shape()
-        shp.fill.background()
-        shp.line.color.rgb = color
-        shp.line.width = Pt(width_pt)
-        if dash:
-            shp.line.dash_style = MSO_LINE.DASH
-        shp.shadow.inherit = False
-        ln = shp._element.spPr.find(qn('a:ln'))
-        if ln is not None:
-            ln.set('cap', 'rnd')
-            if arrow:
-                ln.append(ln.makeelement(qn('a:tailEnd'), {'type': 'triangle', 'w': 'med', 'len': 'med'}))
-        self.flat(shp)
-        return shp
+        return self._stroke_shape(s, emu, color, width_pt, dash=bool(dash), arrow=arrow)
 
     @staticmethod
     def _alpha(shape, pct):
@@ -3852,6 +3906,10 @@ class ExhibitDeck:
     def _polygon(self, s, pts, fill, line=None, alpha=None):
         """A closed freeform polygon (inches). alpha = visible share in percent (a wash)."""
         emu = [(int(px * 914400), int(py * 914400)) for (px, py) in pts]
+        xs = [p[0] for p in emu]
+        ys = [p[1] for p in emu]
+        if max(xs) - min(xs) == 0 or max(ys) - min(ys) == 0:       # v5.7: never a zero-size freeform
+            return self._stroke_shape(s, emu, line, 0.75) if line is not None else None
         fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
         fb.add_line_segments(emu[1:], close=True)
         shp = fb.convert_to_shape()
@@ -4379,20 +4437,7 @@ class ExhibitDeck:
             if len(pts) < 2:
                 continue
             emu = [(int((x + px * sc) * 914400), int((y + py * sc) * 914400)) for (px, py) in pts]
-            fb = s.shapes.build_freeform(emu[0][0], emu[0][1], scale=1.0)
-            fb.add_line_segments(emu[1:], close=False)
-            shp = fb.convert_to_shape()
-            shp.fill.background()
-            shp.line.color.rgb = color
-            shp.line.width = Pt(lw_pt)
-            shp.shadow.inherit = False
-            ln = shp._element.spPr.find(qn('a:ln'))
-            if ln is not None:
-                ln.set('cap', 'rnd')
-                if ln.find(qn('a:round')) is None:
-                    ln.append(ln.makeelement(qn('a:round'), {}))
-            self.flat(shp)
-            shapes.append(shp)
+            shapes.append(self._stroke_shape(s, emu, color, lw_pt, round_join=True))
         return shapes
 
     # ------------------------------------------------------------ dark slides
@@ -4474,8 +4519,12 @@ class ExhibitDeck:
         return path
 
     def voice_check(self, path, voice='strict'):
-        lint = os.path.expanduser("~/.claude/skills/humanizer/scripts/humanizer_lint.py")
-        if not os.path.exists(lint):
+        here = os.path.dirname(os.path.abspath(__file__))
+        cands = [os.path.expanduser("~/.claude/skills/humanizer/scripts/humanizer_lint.py"),
+                 os.path.join(here, "..", "humanizer", "scripts", "humanizer_lint.py")]   # v5.7: the team zip
+        lint = next((c for c in cands if os.path.exists(c)), None)
+        if not lint:
+            print("voice check skipped (humanizer lint not installed)")
             return None
         try:
             import importlib.util

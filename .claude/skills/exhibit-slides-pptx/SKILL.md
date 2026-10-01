@@ -196,10 +196,13 @@ Never green, never a gradient, never a 3D or shadowed shape.
    script and rebuild. Before the render step, run the `humanizer` agent over the script's copy
    for the altitude pass (stupid simple where the room reads, detail in footnotes and notes).
 5. **Render and look** (mandatory since 24 Sep 2026): `python3 scripts/render_preview.py <deck.pptx>`
-   renders through PowerPoint when it is installed (the true renderer: real fonts, real shapes)
-   and through LibreOffice otherwise, at 160 dpi, with a contact sheet. Read every page. Check
-   that labels clear their nodes, nothing bleeds off the page, captions are not squeezed,
-   nothing crosses the footnote. Judge sharpness in PowerPoint, never in a downscaled sheet.
+   renders through LibreOffice at 160 dpi into page PNGs, a contact sheet and `index.html`, the
+   QA page (every page with its layout-check faults under it). PowerPoint is never opened (30 Sep
+   2026: nobody on the team has a licence, and the AppleScript export left "repair" dialogs on
+   Shyam's screen). Open the QA page in the Claude browser pane (`preview_start` with the file
+   URL) or send the sheet, and read every page. Check that labels clear their nodes, nothing
+   bleeds off the page, captions are not squeezed, nothing crosses the footnote. Judge sharpness
+   on a single page PNG, never in a downscaled sheet.
 6. **QA against the checklist** below, then deliver the `.pptx` plus the build script (the
    script IS the editable source; keep it next to the output).
 
@@ -237,6 +240,7 @@ need to verify a detail or extend the engine; the engine already implements both
 - [ ] Voice: the save-time lint passed with no hard hit; the humanizer agent's altitude pass ran
 - [ ] Form: tiles, cards, numbered columns and drawn charts first; a framework form only where its shape is the claim; no chevrons, hubs or venns
 - [ ] Slides-safe: drawn charts only (Google Slides turns native chart objects into pictures), no autofit, no gradients, Libre Franklin; when in doubt open the file in Slides before calling it done
+- [ ] PowerPoint-clean: no freeform with a zero-width or zero-height path (the engine draws straight strokes as connectors since v5.7; `python3 scripts/layout_check.py` is not the check for this, the XML is: a deck that prompts PowerPoint to "repair" is a bug in the engine, never in the deck)
 - [ ] Layout: `save()` printed no LAYOUT lines (overflow, bleed, overlap, footnote zone, a rule through text); if it did, fix the build script until it is quiet, then render and read the pages. `python3 scripts/layout_check.py deck.pptx` runs the same check on any deck; `APEX_LAYOUT=strict` makes save() refuse a deck with faults
 - [ ] Busyness: icons small (0.25 to 0.30) and at most one set per page; one title size, never shrunk; in-page labels four words; a row of numbers on one line; at stage scale a page holds about six rows, seven words a row
 - [ ] One exhibit per slide, at most 2 or 3 callouts, nothing crossing y 6.55
@@ -259,7 +263,10 @@ need to verify a detail or extend the engine; the engine already implements both
 - `scripts/example_apex_stage_build.py`: five pages built at both scales, stage and report, for the
   type-size trade-off.
 - `scripts/example_apex_frameworks_build.py`: the twelve framework forms, one page each, with icons.
-- `scripts/render_preview.py`: the QA render (PowerPoint, else LibreOffice) to page PNGs and a sheet.
+- `scripts/render_preview.py`: the QA render (LibreOffice only, never PowerPoint) to page PNGs, a sheet
+  and `index.html`, the QA page for the Claude browser pane.
+- `scripts/package_apex.py`: builds the team zip (skill, engine, checker, renderer, icons, fonts, the
+  humanizer lint, the /apex command) and verifies it from an empty folder with `--verify`.
 - `knowledge/design-system/icons/`: the two icon sets (Lucide, Tabler) the engine draws as native shapes; `README.md` there.
 - `scripts/example_build.py`, `example_data_build.py`, `example_charts_build.py`,
   `example_bcg_build.py`: the v3-era examples for the data, comparison and evidence layers;
